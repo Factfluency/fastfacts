@@ -8,7 +8,7 @@
 <style>
 body {
   font-family: Arial, sans-serif;
-  background: #f4f6f8;
+  background: #cfe9f7;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -162,9 +162,17 @@ input {
   <div id="timesTableDifficulty" style="display:none; margin-bottom:10px;">
     <div class="menu-title">Times Tables Level</div>
     <div class="button-grid">
-      <button id="tt1" onclick="setTimesTableLevel(1)">Level 1</button>
-      <button id="tt2" class="active" onclick="setTimesTableLevel(2)">Level 2</button>
-      <button id="tt3" onclick="setTimesTableLevel(3)">Level 3</button>
+      <button onclick="setTimesTableLevel(1)">
+  Level 1 – 2s, 4s, 5s &amp; 10s
+</button>
+
+<button class="active" onclick="setTimesTableLevel(2)">
+  Level 2 – 1–12 tables
+</button>
+
+<button onclick="setTimesTableLevel(3)">
+  Level 3 – 1–20 tables
+</button>
     </div>
   </div>
 
