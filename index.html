@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Fast Facts – Secondary</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #f4f6f8;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+.app {
+  background: white;
+  max-width: 480px;
+  width: 100%;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+h1 {
+  text-align: center;
+  margin-top: 0;
+}
+
+.menu-title {
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.button-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+button {
+  padding: 10px;
+  font-size: 1rem;
+  border-radius: 10px;
+  border: 2px solid #ccc;
+  background: #f4f6f8;
+  cursor: pointer;
+}
+
+button.active {
+  background: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+
+.session.active {
+  background: #28a745;
+  color: white;
+  border-color: #28a745;
+}
+
+.stats {
+  text-align: center;
+  margin-bottom: 10px;
+  font-size: 1.1rem;
+}
+
+.instruction {
+  font-size: 0.95rem;
+  color: #666;
+  margin-bottom: 6px;
+}
+
+.question {
+  font-size: 2.6rem;
+  font-family: monospace;
+  margin: 15px auto;
+  width: 240px;
+  text-align: right;
+  white-space: pre-line;
+}
+
+.single-line {
+  white-space: nowrap;
+  text-align: center;
+  width: auto;
+}
+
+input {
+  font-size: 1.5rem;
+  width: 140px;
+  text-align: center;
+  padding: 6px;
+  display: block;
+  margin: auto;
+}
+
+.correct {
+  border: 3px solid #28a745;
+  background: #eafaf1;
+}
+
+.incorrect {
+  border: 3px solid #dc3545;
+  background: #fdecea;
+}
+
+.feedback {
+  min-height: 32px;
+  margin-top: 10px;
+  text-align: center;
+}
+</style>
+</head>
+
+<body>
+<div class="app">
+
+<h1>Fast Facts</h1>
+
+<!-- SESSION MODE -->
+<div class="session-buttons">
+  <button id="btn-practice" class="session active" onclick="setSessionMode('practice')">Practice</button>
+  <button id="btn-fluency" class="session" onclick="setSessionMode('fluency')">Fluency (60s)</button>
+</div>
+
+<!-- CATEGORY MENU -->
+<div id="categoryMenu">
+  <div class="menu-title">Choose a category</div>
+  <div class="button-grid">
+    <button onclick="openCategory('number')">Number</button>
+    <button onclick="openCategory('integers')">Integers</button>
+    <button onclick="openCategory('exponents')">Exponents</button>
+  </div>
+</div>
+
+<!-- SKILL MENU -->
+<div id="skillMenu" style="display:none;">
+  <div class="menu-title" id="skillTitle"></div>
+  <div class="button-grid" id="skillButtons"></div>
+  <button onclick="backToCategories()">⬅ Back</button>
+</div>
+
+<!-- GAME -->
+<div id="game" style="display:none;">
+  <div class="stats">
+    ⏱ <span id="time">∞</span> | ✅ <span id="score">0</span>
+  </div>
+
+  <div class="instruction" id="instruction">
+    Choose a skill, then press Start
+  </div>
+
+  <div class="question" id="question"></div>
+
+  <input type="number" id="answer" disabled>
+
+  <!-- TIMES TABLES DIFFICULTY -->
+  <div id="timesTableDifficulty" style="display:none; margin-bottom:10px;">
+    <div class="menu-title">Times Tables Level</div>
+    <div class="button-grid">
+      <button id="tt1" onclick="setTimesTableLevel(1)">Level 1</button>
+      <button id="tt2" class="active" onclick="setTimesTableLevel(2)">Level 2</button>
+      <button id="tt3" onclick="setTimesTableLevel(3)">Level 3</button>
+    </div>
+  </div>
+
+  <button onclick="startGame()">Start</button>
+  <button onclick="resetGame()">Reset</button>
+
+  <div class="feedback" id="feedback"></div>
+</div>
+
+</div>
+
+<script>
+/* ========= GLOBAL STATE ========= */
+let sessionMode = "practice";
+let currentSkill = null;
+let timesTableLevel = 2;
+
+let num1, num2, correctAnswer;
+let score = 0, attempts = 0, timer, timeLeft = 60;
+
+/* ========= SKILLS ========= */
+const skills = {
+  number: [
+    ["timesTables","Times Tables"],
+    ["division","Division"],
+    ["addition","Addition"],
+    ["subtraction","Subtraction"],
+    ["orderOps","Order of Operations"]
+  ],
+  integers: [
+    ["intAddSub","Add / Subtract Integers"],
+    ["intMultDiv","Multiply / Divide Integers"]
+  ],
+  exponents: [
+    ["squares","Square Numbers"],
+    ["roots","Square Roots"]
+  ]
+};
+
+/* ========= ELEMENTS ========= */
+const questionEl = document.getElementById("question");
+const answerEl = document.getElementById("answer");
+const scoreEl = document.getElementById("score");
+const timeEl = document.getElementById("time");
+const feedbackEl = document.getElementById("feedback");
+const instructionEl = document.getElementById("instruction");
+
+/* ========= ENTER KEY SUBMIT (✅ FIX) ========= */
+answerEl.addEventListener("keydown", function (event) {
+  if (event.key === "Enter") {
+    checkAnswer();
+  }
+});
+
+/* ========= MENU ========= */
+function setSessionMode(mode) {
+  sessionMode = mode;
+  document.querySelectorAll(".session").forEach(b => b.classList.remove("active"));
+  document.getElementById("btn-" + mode).classList.add("active");
+}
+
+function openCategory(cat) {
+  document.getElementById("categoryMenu").style.display = "none";
+  document.getElementById("skillMenu").style.display = "block";
+  document.getElementById("skillTitle").textContent = "Choose a skill";
+  const holder = document.getElementById("skillButtons");
+  holder.innerHTML = "";
+
+  skills[cat].forEach(s => {
+    const b = document.createElement("button");
+    b.textContent = s[1];
+    b.onclick = () => chooseSkill(s[0]);
+    holder.appendChild(b);
+  });
+}
+
+function backToCategories() {
+  document.getElementById("skillMenu").style.display = "none";
+  document.getElementById("categoryMenu").style.display = "block";
+}
+
+function chooseSkill(skill) {
+  currentSkill = skill;
+  document.getElementById("skillMenu").style.display = "none";
+  document.getElementById("game").style.display = "block";
+  instructionEl.textContent = "Press Start when ready";
+
+  document.getElementById("timesTableDifficulty").style.display =
+    skill === "timesTables" ? "block" : "none";
+}
+
+/* ========= GAME ========= */
+function startGame() {
+  score = 0;
+  attempts = 0;
+  scoreEl.textContent = "0";
+  feedbackEl.textContent = "";
+  answerEl.value = "";
+  answerEl.disabled = false;
+  answerEl.focus();
+
+  clearInterval(timer);
+
+  if (sessionMode === "fluency") {
+    timeLeft = 60;
+    timeEl.textContent = 60;
+    timer = setInterval(() => {
+      timeLeft--;
+      timeEl.textContent = timeLeft;
+      if (timeLeft <= 0) endGame();
+    }, 1000);
+  } else {
+    timeEl.textContent = "∞";
+  }
+
+  nextQuestion();
+}
+
+/* ========= QUESTIONS ========= */
+function nextQuestion() {
+  questionEl.classList.remove("single-line");
+
+  if (currentSkill === "timesTables") {
+    let tables;
+    if (timesTableLevel === 1) tables = [1,2,4,5,10];
+    if (timesTableLevel === 2) tables = Array.from({length:12},(_,i)=>i+1);
+    if (timesTableLevel === 3) tables = Array.from({length:20},(_,i)=>i+1);
+
+    num1 = tables[randIndex(tables.length)];
+    num2 = tables[randIndex(tables.length)];
+    correctAnswer = num1 * num2;
+    out(`${num1} × ${num2}`);
+  }
+
+  if (currentSkill === "division") {
+    num2 = rand(12);
+    correctAnswer = rand(12);
+    num1 = num2 * correctAnswer;
+    out(`${num1} ÷ ${num2}`);
+  }
+
+  if (currentSkill === "addition") addSub("+");
+  if (currentSkill === "subtraction") addSub("-");
+
+  if (currentSkill === "orderOps") {
+    const a=rand(10), b=rand(10), c=rand(10);
+    const t=rand(3);
+    if (t===1) { correctAnswer=a+b*c; out(`${a} + ${b} × ${c}`); }
+    if (t===2) { correctAnswer=(a+b)*c; out(`(${a} + ${b}) × ${c}`); }
+    if (t===3) { correctAnswer=a*b-c; out(`${a} × ${b} − ${c}`); }
+  }
+
+  if (currentSkill === "intAddSub") {
+    num1 = randRange(-20,20);
+    num2 = randRange(-20,20);
+    if (Math.random()<.5) {
+      correctAnswer=num1+num2;
+      out(`${num1} + ${num2}`);
+    } else {
+      correctAnswer=num1-num2;
+      out(`${num1} − ${num2}`);
+    }
+  }
+
+  if (currentSkill === "intMultDiv") {
+    num1 = randRange(-10,10) || 1;
+    num2 = randRange(-10,10) || 1;
+    if (Math.random()<.5) {
+      correctAnswer=num1*num2;
+      out(`${num1} × ${num2}`);
+    } else {
+      const p=num1*num2;
+      correctAnswer=num1;
+      out(`${p} ÷ ${num2}`);
+    }
+  }
+
+  if (currentSkill === "squares") {
+    num1 = rand(15);
+    correctAnswer = num1 * num1;
+    out(`${num1}²`);
+  }
+
+  if (currentSkill === "roots") {
+    correctAnswer = rand(15);
+    num1 = correctAnswer * correctAnswer;
+    out(`√${num1}`);
+  }
+}
+
+/* ========= HELPERS ========= */
+function out(text){
+  questionEl.textContent=text;
+  questionEl.classList.add("single-line");
+}
+
+function addSub(op){
+  let a=randRange(10,999), b=randRange(10,999);
+  if(op==="-"&&b>a)[a,b]=[b,a];
+  num1=a; num2=b;
+  correctAnswer=op==="+"?a+b:a-b;
+  questionEl.textContent=`${a}\n${op==="+"?"+":"−"} ${b}`;
+}
+
+function setTimesTableLevel(level){
+  timesTableLevel=level;
+  ["tt1","tt2","tt3"].forEach(id=>document.getElementById(id).classList.remove("active"));
+  document.getElementById("tt"+level).classList.add("active");
+}
+
+function checkAnswer(){
+  attempts++;
+  answerEl.classList.remove("correct","incorrect");
+
+  if(Number(answerEl.value)===correctAnswer){
+    score++;
+    answerEl.classList.add("correct");
+  } else {
+    answerEl.classList.add("incorrect");
+    feedbackEl.textContent=`⛔ ${correctAnswer}`;
+  }
+
+  scoreEl.textContent=score;
+  setTimeout(()=>{
+    answerEl.value="";
+    answerEl.focus();
+    nextQuestion();
+  },400);
+}
+
+function endGame(){
+  clearInterval(timer);
+  answerEl.disabled=true;
+  const acc=attempts?score/attempts:0;
+  feedbackEl.innerHTML=`Accuracy: ${(acc*100).toFixed(0)}%<br>
+  Fluency Score: <strong>${Math.round(score*acc*acc)}</strong>`;
+}
+
+function resetGame(){
+  if(score>0||attempts>0){
+    if(!confirm("Reset and choose again?"))return;
+  }
+  clearInterval(timer);
+  document.getElementById("game").style.display="none";
+  document.getElementById("categoryMenu").style.display="block";
+  feedbackEl.textContent="";
+}
+
+/* ========= RANDOM ========= */
+function rand(max){return Math.floor(Math.random()*max)+1;}
+function randRange(min,max){return Math.floor(Math.random()*(max-min+1))+min;}
+function randIndex(len){return Math.floor(Math.random()*len);}
+</script>
+</body>
+</html>
