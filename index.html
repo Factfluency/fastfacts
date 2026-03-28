@@ -18,14 +18,17 @@ body {
 
 .app {
   background: white;
-  max-width: 500px;
+  max-width: 480px;
   width: 100%;
   padding: 20px;
   border-radius: 12px;
   box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
 
-h1 { text-align: center; margin-top: 0; }
+h1 {
+  text-align: center;
+  margin-top: 0;
+}
 
 .menu-title {
   font-weight: bold;
@@ -61,7 +64,7 @@ button.active {
 
 .stats {
   text-align: center;
-  margin: 10px 0;
+  margin-bottom: 10px;
   font-size: 1.1rem;
 }
 
@@ -72,7 +75,7 @@ button.active {
 }
 
 .question {
-  font-size: 2.4rem;
+  font-size: 2.6rem;
   font-family: monospace;
   margin: 15px auto;
   width: 240px;
@@ -87,20 +90,23 @@ button.active {
 }
 
 input {
-  padding: 6px;
-  font-size: 1rem;
-}
-
-.answer-input {
   font-size: 1.5rem;
   width: 140px;
   text-align: center;
+  padding: 6px;
   display: block;
   margin: auto;
 }
 
-.correct { border: 3px solid #28a745; background: #eafaf1; }
-.incorrect { border: 3px solid #dc3545; background: #fdecea; }
+.correct {
+  border: 3px solid #28a745;
+  background: #eafaf1;
+}
+
+.incorrect {
+  border: 3px solid #dc3545;
+  background: #fdecea;
+}
 
 .feedback {
   min-height: 32px;
@@ -133,73 +139,32 @@ input {
 
 <!-- SKILL MENU -->
 <div id="skillMenu" style="display:none;">
-  <div class="menu-title">Choose a skill</div>
+  <div class="menu-title" id="skillTitle"></div>
   <div class="button-grid" id="skillButtons"></div>
   <button onclick="backToCategories()">⬅ Back</button>
 </div>
 
 <!-- GAME -->
 <div id="game" style="display:none;">
-
-  <!-- ✅ STUDENT IDENTIFICATION -->
-  <div style="margin-bottom:12px;">
-    <label>
-      Name:<br>
-      <input type="text" id="studentName" placeholder="Your name">
-    </label><br>
-
-    <label>
-      Class:<br>
-      <input type="text" id="classCode" placeholder="e.g. 9A">
-    </label>
-  </div>
-
   <div class="stats">
     ⏱ <span id="time">∞</span> | ✅ <span id="score">0</span>
   </div>
 
   <div class="instruction" id="instruction">
-    Press Start when ready
+    Choose a skill, then press Start
   </div>
 
   <div class="question" id="question"></div>
 
-  <input type="number" id="answer" class="answer-input" disabled>
+  <input type="number" id="answer" disabled>
 
   <!-- TIMES TABLES DIFFICULTY -->
   <div id="timesTableDifficulty" style="display:none; margin-bottom:10px;">
     <div class="menu-title">Times Tables Level</div>
     <div class="button-grid">
-      <button onclick="setTimesTableLevel(1)">Level 1</button>
-      <button class="active" onclick="setTimesTableLevel(2)">Level 2</button>
-      <button onclick="setTimesTableLevel(3)">Level 3</button>
-    </div>
-  </div>
-
-  <button onclick="startGame()">Start</button>
-  <button onclick="resetGame()">Reset</button>
-
-  <div class="feedback" id="feedback"></div>
-</div>
-  <div class="stats">
-    ⏱ <span id="time">∞</span> | ✅ <span id="score">0</span>
-  </div>
-
-  <div class="instruction" id="instruction">
-    Press Start when ready
-  </div>
-
-  <div class="question" id="question"></div>
-
-  <input type="number" id="answer" class="answer-input" disabled>
-
-  <!-- TIMES TABLES DIFFICULTY -->
-  <div id="timesTableDifficulty" style="display:none; margin-bottom:10px;">
-    <div class="menu-title">Times Tables Level</div>
-    <div class="button-grid">
-      <button onclick="setTimesTableLevel(1)">Level 1</button>
-      <button class="active" onclick="setTimesTableLevel(2)">Level 2</button>
-      <button onclick="setTimesTableLevel(3)">Level 3</button>
+      <button id="tt1" onclick="setTimesTableLevel(1)">Level 1</button>
+      <button id="tt2" class="active" onclick="setTimesTableLevel(2)">Level 2</button>
+      <button id="tt3" onclick="setTimesTableLevel(3)">Level 3</button>
     </div>
   </div>
 
@@ -212,14 +177,15 @@ input {
 </div>
 
 <script>
-/* ---------- STATE ---------- */
+/* ========= GLOBAL STATE ========= */
 let sessionMode = "practice";
 let currentSkill = null;
 let timesTableLevel = 2;
-let score = 0, attempts = 0, timer, timeLeft = 60;
-let correctAnswer;
 
-/* ---------- SKILLS ---------- */
+let num1, num2, correctAnswer;
+let score = 0, attempts = 0, timer, timeLeft = 60;
+
+/* ========= SKILLS ========= */
 const skills = {
   number: [
     ["timesTables","Times Tables"],
@@ -229,8 +195,8 @@ const skills = {
     ["orderOps","Order of Operations"]
   ],
   integers: [
-    ["intAddSub","Integer Add/Subtract"],
-    ["intMultDiv","Integer Multiply/Divide"]
+    ["intAddSub","Add / Subtract Integers"],
+    ["intMultDiv","Multiply / Divide Integers"]
   ],
   exponents: [
     ["squares","Square Numbers"],
@@ -238,156 +204,191 @@ const skills = {
   ]
 };
 
-/* ---------- ELEMENTS ---------- */
+/* ========= ELEMENTS ========= */
 const questionEl = document.getElementById("question");
 const answerEl = document.getElementById("answer");
 const scoreEl = document.getElementById("score");
 const timeEl = document.getElementById("time");
 const feedbackEl = document.getElementById("feedback");
-const studentNameEl = document.getElementById("studentName");
-const classCodeEl = document.getElementById("classCode");
+const instructionEl = document.getElementById("instruction");
 
-/* Enter key submit */
-answerEl.addEventListener("keydown", e => {
-  if (e.key === "Enter") checkAnswer();
+/* ========= ENTER KEY SUBMIT (✅ FIX) ========= */
+answerEl.addEventListener("keydown", function (event) {
+  if (event.key === "Enter") {
+    checkAnswer();
+  }
 });
 
-/* ---------- MENU ---------- */
-function setSessionMode(mode){
+/* ========= MENU ========= */
+function setSessionMode(mode) {
   sessionMode = mode;
-  document.querySelectorAll(".session").forEach(b=>b.classList.remove("active"));
-  document.getElementById("btn-"+mode).classList.add("active");
+  document.querySelectorAll(".session").forEach(b => b.classList.remove("active"));
+  document.getElementById("btn-" + mode).classList.add("active");
 }
 
-function openCategory(cat){
-  categoryMenu.style.display = "none";
-  skillMenu.style.display = "block";
-  skillButtons.innerHTML = "";
-  skills[cat].forEach(s=>{
-    const b=document.createElement("button");
-    b.textContent=s[1];
-    b.onclick=()=>chooseSkill(s[0]);
-    skillButtons.appendChild(b);
+function openCategory(cat) {
+  document.getElementById("categoryMenu").style.display = "none";
+  document.getElementById("skillMenu").style.display = "block";
+  document.getElementById("skillTitle").textContent = "Choose a skill";
+  const holder = document.getElementById("skillButtons");
+  holder.innerHTML = "";
+
+  skills[cat].forEach(s => {
+    const b = document.createElement("button");
+    b.textContent = s[1];
+    b.onclick = () => chooseSkill(s[0]);
+    holder.appendChild(b);
   });
 }
 
-function backToCategories(){
-  skillMenu.style.display="none";
-  categoryMenu.style.display="block";
+function backToCategories() {
+  document.getElementById("skillMenu").style.display = "none";
+  document.getElementById("categoryMenu").style.display = "block";
 }
 
-function chooseSkill(skill){
+function chooseSkill(skill) {
   currentSkill = skill;
-  skillMenu.style.display="none";
-  game.style.display="block";
-  timesTableDifficulty.style.display =
-    skill==="timesTables"?"block":"none";
+  document.getElementById("skillMenu").style.display = "none";
+  document.getElementById("game").style.display = "block";
+  instructionEl.textContent = "Press Start when ready";
+
+  document.getElementById("timesTableDifficulty").style.display =
+    skill === "timesTables" ? "block" : "none";
 }
 
-/* ---------- GAME ---------- */
-function startGame(){
-  if(sessionMode==="fluency" && (!studentNameEl.value || !classCodeEl.value)){
-    alert("Enter name and class for Fluency mode");
-    return;
-  }
-  score = attempts = 0;
+/* ========= GAME ========= */
+function startGame() {
+  score = 0;
+  attempts = 0;
   scoreEl.textContent = "0";
-  feedbackEl.textContent="";
-  answerEl.disabled=false;
-  answerEl.value="";
+  feedbackEl.textContent = "";
+  answerEl.value = "";
+  answerEl.disabled = false;
   answerEl.focus();
 
   clearInterval(timer);
-  if(sessionMode==="fluency"){
-    timeLeft=60;
-    timeEl.textContent=60;
-    timer=setInterval(()=>{
+
+  if (sessionMode === "fluency") {
+    timeLeft = 60;
+    timeEl.textContent = 60;
+    timer = setInterval(() => {
       timeLeft--;
-      timeEl.textContent=timeLeft;
-      if(timeLeft<=0)endGame();
-    },1000);
-  } else timeEl.textContent="∞";
+      timeEl.textContent = timeLeft;
+      if (timeLeft <= 0) endGame();
+    }, 1000);
+  } else {
+    timeEl.textContent = "∞";
+  }
 
   nextQuestion();
 }
 
-/* ---------- QUESTION LOGIC ---------- */
-function nextQuestion(){
+/* ========= QUESTIONS ========= */
+function nextQuestion() {
   questionEl.classList.remove("single-line");
 
-  if(currentSkill==="timesTables"){
-    let tables = timesTableLevel===1?[1,2,4,5,10]:
-                 timesTableLevel===2?[...Array(12).keys()].map(i=>i+1):
-                 [...Array(20).keys()].map(i=>i+1);
-    const a=tables[randIndex(tables.length)];
-    const b=tables[randIndex(tables.length)];
-    correctAnswer=a*b;
-    out(`${a} × ${b}`);
+  if (currentSkill === "timesTables") {
+    let tables;
+    if (timesTableLevel === 1) tables = [1,2,4,5,10];
+    if (timesTableLevel === 2) tables = Array.from({length:12},(_,i)=>i+1);
+    if (timesTableLevel === 3) tables = Array.from({length:20},(_,i)=>i+1);
+
+    num1 = tables[randIndex(tables.length)];
+    num2 = tables[randIndex(tables.length)];
+    correctAnswer = num1 * num2;
+    out(`${num1} × ${num2}`);
   }
 
-  if(currentSkill==="division"){
-    const b=rand(12), a=b*rand(12);
-    correctAnswer=a/b;
-    out(`${a} ÷ ${b}`);
+  if (currentSkill === "division") {
+    num2 = rand(12);
+    correctAnswer = rand(12);
+    num1 = num2 * correctAnswer;
+    out(`${num1} ÷ ${num2}`);
   }
 
-  if(currentSkill==="addition"){
-    const a=randRange(10,999), b=randRange(10,999);
-    correctAnswer=a+b;
-    questionEl.textContent=`${a}\n+ ${b}`;
-  }
+  if (currentSkill === "addition") addSub("+");
+  if (currentSkill === "subtraction") addSub("-");
 
-  if(currentSkill==="subtraction"){
-    let a=randRange(10,999), b=randRange(10,999);
-    if(b>a)[a,b]=[b,a];
-    correctAnswer=a-b;
-    questionEl.textContent=`${a}\n− ${b}`;
-  }
-
-  if(currentSkill==="orderOps"){
+  if (currentSkill === "orderOps") {
     const a=rand(10), b=rand(10), c=rand(10);
-    correctAnswer=a+b*c;
-    out(`${a} + ${b} × ${c}`);
+    const t=rand(3);
+    if (t===1) { correctAnswer=a+b*c; out(`${a} + ${b} × ${c}`); }
+    if (t===2) { correctAnswer=(a+b)*c; out(`(${a} + ${b}) × ${c}`); }
+    if (t===3) { correctAnswer=a*b-c; out(`${a} × ${b} − ${c}`); }
   }
 
-  if(currentSkill==="intAddSub"){
-    const a=randRange(-20,20), b=randRange(-20,20);
-    correctAnswer=a+b;
-    out(`${a} + ${b}`);
+  if (currentSkill === "intAddSub") {
+    num1 = randRange(-20,20);
+    num2 = randRange(-20,20);
+    if (Math.random()<.5) {
+      correctAnswer=num1+num2;
+      out(`${num1} + ${num2}`);
+    } else {
+      correctAnswer=num1-num2;
+      out(`${num1} − ${num2}`);
+    }
   }
 
-  if(currentSkill==="intMultDiv"){
-    const a=randRange(-10,10)||1, b=randRange(-10,10)||1;
-    correctAnswer=a*b;
-    out(`${a} × ${b}`);
+  if (currentSkill === "intMultDiv") {
+    num1 = randRange(-10,10) || 1;
+    num2 = randRange(-10,10) || 1;
+    if (Math.random()<.5) {
+      correctAnswer=num1*num2;
+      out(`${num1} × ${num2}`);
+    } else {
+      const p=num1*num2;
+      correctAnswer=num1;
+      out(`${p} ÷ ${num2}`);
+    }
   }
 
-  if(currentSkill==="squares"){
-    const a=rand(15);
-    correctAnswer=a*a;
-    out(`${a}²`);
+  if (currentSkill === "squares") {
+    num1 = rand(15);
+    correctAnswer = num1 * num1;
+    out(`${num1}²`);
   }
 
-  if(currentSkill==="roots"){
-    const a=rand(15);
-    correctAnswer=a;
-    out(`√${a*a}`);
+  if (currentSkill === "roots") {
+    correctAnswer = rand(15);
+    num1 = correctAnswer * correctAnswer;
+    out(`√${num1}`);
   }
 }
 
-/* ---------- ANSWER ---------- */
+/* ========= HELPERS ========= */
+function out(text){
+  questionEl.textContent=text;
+  questionEl.classList.add("single-line");
+}
+
+function addSub(op){
+  let a=randRange(10,999), b=randRange(10,999);
+  if(op==="-"&&b>a)[a,b]=[b,a];
+  num1=a; num2=b;
+  correctAnswer=op==="+"?a+b:a-b;
+  questionEl.textContent=`${a}\n${op==="+"?"+":"−"} ${b}`;
+}
+
+function setTimesTableLevel(level){
+  timesTableLevel=level;
+  ["tt1","tt2","tt3"].forEach(id=>document.getElementById(id).classList.remove("active"));
+  document.getElementById("tt"+level).classList.add("active");
+}
+
 function checkAnswer(){
   attempts++;
+  answerEl.classList.remove("correct","incorrect");
+
   if(Number(answerEl.value)===correctAnswer){
     score++;
-    answerEl.className="answer-input correct";
+    answerEl.classList.add("correct");
   } else {
-    answerEl.className="answer-input incorrect";
+    answerEl.classList.add("incorrect");
     feedbackEl.textContent=`⛔ ${correctAnswer}`;
   }
+
   scoreEl.textContent=score;
   setTimeout(()=>{
-    answerEl.className="answer-input";
     answerEl.value="";
     answerEl.focus();
     nextQuestion();
@@ -403,18 +404,19 @@ function endGame(){
 }
 
 function resetGame(){
-  if(score>0&&!confirm("Reset and choose again?"))return;
+  if(score>0||attempts>0){
+    if(!confirm("Reset and choose again?"))return;
+  }
   clearInterval(timer);
-  game.style.display="none";
-  categoryMenu.style.display="block";
+  document.getElementById("game").style.display="none";
+  document.getElementById("categoryMenu").style.display="block";
   feedbackEl.textContent="";
 }
 
-/* ---------- HELPERS ---------- */
-function out(t){questionEl.textContent=t;questionEl.classList.add("single-line");}
-function rand(m){return Math.floor(Math.random()*m)+1;}
-function randRange(a,b){return Math.floor(Math.random()*(b-a+1))+a;}
-function randIndex(l){return Math.floor(Math.random()*l);}
+/* ========= RANDOM ========= */
+function rand(max){return Math.floor(Math.random()*max)+1;}
+function randRange(min,max){return Math.floor(Math.random()*(max-min+1))+min;}
+function randIndex(len){return Math.floor(Math.random()*len);}
 </script>
 </body>
 </html>
