@@ -141,16 +141,46 @@ input {
 <!-- GAME -->
 <div id="game" style="display:none;">
 
-  <!-- STUDENT INFO -->
-  <div style="margin-bottom:10px;">
-    <label>Name:<br>
+  <!-- ✅ STUDENT IDENTIFICATION -->
+  <div style="margin-bottom:12px;">
+    <label>
+      Name:<br>
       <input type="text" id="studentName" placeholder="Your name">
     </label><br>
-    <label>Class:<br>
+
+    <label>
+      Class:<br>
       <input type="text" id="classCode" placeholder="e.g. 9A">
     </label>
   </div>
 
+  <div class="stats">
+    ⏱ <span id="time">∞</span> | ✅ <span id="score">0</span>
+  </div>
+
+  <div class="instruction" id="instruction">
+    Press Start when ready
+  </div>
+
+  <div class="question" id="question"></div>
+
+  <input type="number" id="answer" class="answer-input" disabled>
+
+  <!-- TIMES TABLES DIFFICULTY -->
+  <div id="timesTableDifficulty" style="display:none; margin-bottom:10px;">
+    <div class="menu-title">Times Tables Level</div>
+    <div class="button-grid">
+      <button onclick="setTimesTableLevel(1)">Level 1</button>
+      <button class="active" onclick="setTimesTableLevel(2)">Level 2</button>
+      <button onclick="setTimesTableLevel(3)">Level 3</button>
+    </div>
+  </div>
+
+  <button onclick="startGame()">Start</button>
+  <button onclick="resetGame()">Reset</button>
+
+  <div class="feedback" id="feedback"></div>
+</div>
   <div class="stats">
     ⏱ <span id="time">∞</span> | ✅ <span id="score">0</span>
   </div>
