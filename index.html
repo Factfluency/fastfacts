@@ -18,7 +18,7 @@ body {
 
 .app {
   background: white;
-  max-width: 480px;
+  max-width: 500px;
   width: 100%;
   padding: 20px;
   border-radius: 12px;
@@ -61,7 +61,7 @@ button.active {
 
 .stats {
   text-align: center;
-  margin-bottom: 10px;
+  margin: 10px 0;
   font-size: 1.1rem;
 }
 
@@ -72,7 +72,7 @@ button.active {
 }
 
 .question {
-  font-size: 2.6rem;
+  font-size: 2.4rem;
   font-family: monospace;
   margin: 15px auto;
   width: 240px;
@@ -87,10 +87,8 @@ button.active {
 }
 
 input {
-  font-size: 1rem;
-  width: 180px;
   padding: 6px;
-  margin: 4px 0;
+  font-size: 1rem;
 }
 
 .answer-input {
@@ -135,7 +133,7 @@ input {
 
 <!-- SKILL MENU -->
 <div id="skillMenu" style="display:none;">
-  <div class="menu-title" id="skillTitle"></div>
+  <div class="menu-title">Choose a skill</div>
   <div class="button-grid" id="skillButtons"></div>
   <button onclick="backToCategories()">⬅ Back</button>
 </div>
@@ -143,14 +141,12 @@ input {
 <!-- GAME -->
 <div id="game" style="display:none;">
 
-  <!-- ✅ STUDENT IDENTIFICATION -->
-  <div style="margin-bottom:12px;">
-    <label>
-      Name:<br>
+  <!-- STUDENT INFO -->
+  <div style="margin-bottom:10px;">
+    <label>Name:<br>
       <input type="text" id="studentName" placeholder="Your name">
     </label><br>
-    <label>
-      Class:<br>
+    <label>Class:<br>
       <input type="text" id="classCode" placeholder="e.g. 9A">
     </label>
   </div>
@@ -160,7 +156,7 @@ input {
   </div>
 
   <div class="instruction" id="instruction">
-    Choose a skill, then press Start
+    Press Start when ready
   </div>
 
   <div class="question" id="question"></div>
@@ -171,9 +167,9 @@ input {
   <div id="timesTableDifficulty" style="display:none; margin-bottom:10px;">
     <div class="menu-title">Times Tables Level</div>
     <div class="button-grid">
-      <button id="tt1" onclick="setTimesTableLevel(1)">Level 1</button>
-      <button id="tt2" class="active" onclick="setTimesTableLevel(2)">Level 2</button>
-      <button id="tt3" onclick="setTimesTableLevel(3)">Level 3</button>
+      <button onclick="setTimesTableLevel(1)">Level 1</button>
+      <button class="active" onclick="setTimesTableLevel(2)">Level 2</button>
+      <button onclick="setTimesTableLevel(3)">Level 3</button>
     </div>
   </div>
 
@@ -186,70 +182,89 @@ input {
 </div>
 
 <script>
-/* ========= GLOBAL STATE ========= */
-let sessionMode="practice", currentSkill=null, timesTableLevel=2;
-let num1,num2,correctAnswer,score=0,attempts=0,timer,timeLeft=60;
+/* ---------- STATE ---------- */
+let sessionMode = "practice";
+let currentSkill = null;
+let timesTableLevel = 2;
+let score = 0, attempts = 0, timer, timeLeft = 60;
+let correctAnswer;
 
-/* ========= ELEMENTS ========= */
-const questionEl=document.getElementById("question");
-const answerEl=document.getElementById("answer");
-const scoreEl=document.getElementById("score");
-const timeEl=document.getElementById("time");
-const feedbackEl=document.getElementById("feedback");
-const instructionEl=document.getElementById("instruction");
-const studentNameEl=document.getElementById("studentName");
-const classCodeEl=document.getElementById("classCode");
+/* ---------- SKILLS ---------- */
+const skills = {
+  number: [
+    ["timesTables","Times Tables"],
+    ["division","Division"],
+    ["addition","Addition"],
+    ["subtraction","Subtraction"],
+    ["orderOps","Order of Operations"]
+  ],
+  integers: [
+    ["intAddSub","Integer Add/Subtract"],
+    ["intMultDiv","Integer Multiply/Divide"]
+  ],
+  exponents: [
+    ["squares","Square Numbers"],
+    ["roots","Square Roots"]
+  ]
+};
 
-/* ENTER KEY */
-answerEl.addEventListener("keydown",e=>{if(e.key==="Enter")checkAnswer();});
+/* ---------- ELEMENTS ---------- */
+const questionEl = document.getElementById("question");
+const answerEl = document.getElementById("answer");
+const scoreEl = document.getElementById("score");
+const timeEl = document.getElementById("time");
+const feedbackEl = document.getElementById("feedback");
+const studentNameEl = document.getElementById("studentName");
+const classCodeEl = document.getElementById("classCode");
 
-/* ========= MENU ========= */
+/* Enter key submit */
+answerEl.addEventListener("keydown", e => {
+  if (e.key === "Enter") checkAnswer();
+});
+
+/* ---------- MENU ---------- */
 function setSessionMode(mode){
-  sessionMode=mode;
+  sessionMode = mode;
   document.querySelectorAll(".session").forEach(b=>b.classList.remove("active"));
   document.getElementById("btn-"+mode).classList.add("active");
 }
 
 function openCategory(cat){
-  document.getElementById("categoryMenu").style.display="none";
-  document.getElementById("skillMenu").style.display="block";
-  const holder=document.getElementById("skillButtons");
-  holder.innerHTML="";
+  categoryMenu.style.display = "none";
+  skillMenu.style.display = "block";
+  skillButtons.innerHTML = "";
   skills[cat].forEach(s=>{
     const b=document.createElement("button");
     b.textContent=s[1];
     b.onclick=()=>chooseSkill(s[0]);
-    holder.appendChild(b);
+    skillButtons.appendChild(b);
   });
 }
 
 function backToCategories(){
-  document.getElementById("skillMenu").style.display="none";
-  document.getElementById("categoryMenu").style.display="block";
+  skillMenu.style.display="none";
+  categoryMenu.style.display="block";
 }
 
 function chooseSkill(skill){
-  currentSkill=skill;
-  document.getElementById("skillMenu").style.display="none";
-  document.getElementById("game").style.display="block";
-  instructionEl.textContent="Press Start when ready";
-  document.getElementById("timesTableDifficulty").style.display=
+  currentSkill = skill;
+  skillMenu.style.display="none";
+  game.style.display="block";
+  timesTableDifficulty.style.display =
     skill==="timesTables"?"block":"none";
 }
 
-/* ========= START GAME ========= */
+/* ---------- GAME ---------- */
 function startGame(){
-  if(sessionMode==="fluency"){
-    if(!studentNameEl.value||!classCodeEl.value){
-      alert("Please enter your name and class before starting Fluency mode.");
-      return;
-    }
+  if(sessionMode==="fluency" && (!studentNameEl.value || !classCodeEl.value)){
+    alert("Enter name and class for Fluency mode");
+    return;
   }
-  score=attempts=0;
-  scoreEl.textContent="0";
+  score = attempts = 0;
+  scoreEl.textContent = "0";
   feedbackEl.textContent="";
-  answerEl.value="";
   answerEl.disabled=false;
+  answerEl.value="";
   answerEl.focus();
 
   clearInterval(timer);
@@ -262,40 +277,91 @@ function startGame(){
       if(timeLeft<=0)endGame();
     },1000);
   } else timeEl.textContent="∞";
+
   nextQuestion();
 }
 
-/* ========= QUESTIONS ========= */
+/* ---------- QUESTION LOGIC ---------- */
 function nextQuestion(){
   questionEl.classList.remove("single-line");
 
   if(currentSkill==="timesTables"){
-    let t=timesTableLevel===1?[1,2,4,5,10]:
-          timesTableLevel===2?[...Array(12).keys()].map(i=>i+1):
-          [...Array(20).keys()].map(i=>i+1);
-    num1=t[Math.floor(Math.random()*t.length)];
-    num2=t[Math.floor(Math.random()*t.length)];
-    correctAnswer=num1*num2;
-    out(`${num1} × ${num2}`);
+    let tables = timesTableLevel===1?[1,2,4,5,10]:
+                 timesTableLevel===2?[...Array(12).keys()].map(i=>i+1):
+                 [...Array(20).keys()].map(i=>i+1);
+    const a=tables[randIndex(tables.length)];
+    const b=tables[randIndex(tables.length)];
+    correctAnswer=a*b;
+    out(`${a} × ${b}`);
+  }
+
+  if(currentSkill==="division"){
+    const b=rand(12), a=b*rand(12);
+    correctAnswer=a/b;
+    out(`${a} ÷ ${b}`);
+  }
+
+  if(currentSkill==="addition"){
+    const a=randRange(10,999), b=randRange(10,999);
+    correctAnswer=a+b;
+    questionEl.textContent=`${a}\n+ ${b}`;
+  }
+
+  if(currentSkill==="subtraction"){
+    let a=randRange(10,999), b=randRange(10,999);
+    if(b>a)[a,b]=[b,a];
+    correctAnswer=a-b;
+    questionEl.textContent=`${a}\n− ${b}`;
+  }
+
+  if(currentSkill==="orderOps"){
+    const a=rand(10), b=rand(10), c=rand(10);
+    correctAnswer=a+b*c;
+    out(`${a} + ${b} × ${c}`);
+  }
+
+  if(currentSkill==="intAddSub"){
+    const a=randRange(-20,20), b=randRange(-20,20);
+    correctAnswer=a+b;
+    out(`${a} + ${b}`);
+  }
+
+  if(currentSkill==="intMultDiv"){
+    const a=randRange(-10,10)||1, b=randRange(-10,10)||1;
+    correctAnswer=a*b;
+    out(`${a} × ${b}`);
+  }
+
+  if(currentSkill==="squares"){
+    const a=rand(15);
+    correctAnswer=a*a;
+    out(`${a}²`);
+  }
+
+  if(currentSkill==="roots"){
+    const a=rand(15);
+    correctAnswer=a;
+    out(`√${a*a}`);
   }
 }
 
-function out(text){
-  questionEl.textContent=text;
-  questionEl.classList.add("single-line");
-}
-
+/* ---------- ANSWER ---------- */
 function checkAnswer(){
   attempts++;
   if(Number(answerEl.value)===correctAnswer){
     score++;
-    answerEl.classList.add("correct");
+    answerEl.className="answer-input correct";
   } else {
-    answerEl.classList.add("incorrect");
+    answerEl.className="answer-input incorrect";
     feedbackEl.textContent=`⛔ ${correctAnswer}`;
   }
   scoreEl.textContent=score;
-  setTimeout(()=>{answerEl.value="";answerEl.focus();nextQuestion();},400);
+  setTimeout(()=>{
+    answerEl.className="answer-input";
+    answerEl.value="";
+    answerEl.focus();
+    nextQuestion();
+  },400);
 }
 
 function endGame(){
@@ -309,17 +375,16 @@ function endGame(){
 function resetGame(){
   if(score>0&&!confirm("Reset and choose again?"))return;
   clearInterval(timer);
-  document.getElementById("game").style.display="none";
-  document.getElementById("categoryMenu").style.display="block";
+  game.style.display="none";
+  categoryMenu.style.display="block";
   feedbackEl.textContent="";
 }
 
-/* ========= DATA ========= */
-const skills={
-  number:[["timesTables","Times Tables"]],
-  integers:[],
-  exponents:[]
-};
+/* ---------- HELPERS ---------- */
+function out(t){questionEl.textContent=t;questionEl.classList.add("single-line");}
+function rand(m){return Math.floor(Math.random()*m)+1;}
+function randRange(a,b){return Math.floor(Math.random()*(b-a+1))+a;}
+function randIndex(l){return Math.floor(Math.random()*l);}
 </script>
 </body>
 </html>
