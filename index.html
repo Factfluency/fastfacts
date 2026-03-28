@@ -25,10 +25,7 @@ body {
   box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
 
-h1 {
-  text-align: center;
-  margin-top: 0;
-}
+h1 { text-align: center; margin-top: 0; }
 
 .menu-title {
   font-weight: bold;
@@ -90,23 +87,22 @@ button.active {
 }
 
 input {
+  font-size: 1rem;
+  width: 180px;
+  padding: 6px;
+  margin: 4px 0;
+}
+
+.answer-input {
   font-size: 1.5rem;
   width: 140px;
   text-align: center;
-  padding: 6px;
   display: block;
   margin: auto;
 }
 
-.correct {
-  border: 3px solid #28a745;
-  background: #eafaf1;
-}
-
-.incorrect {
-  border: 3px solid #dc3545;
-  background: #fdecea;
-}
+.correct { border: 3px solid #28a745; background: #eafaf1; }
+.incorrect { border: 3px solid #dc3545; background: #fdecea; }
 
 .feedback {
   min-height: 32px;
@@ -146,6 +142,19 @@ input {
 
 <!-- GAME -->
 <div id="game" style="display:none;">
+
+  <!-- ✅ STUDENT IDENTIFICATION -->
+  <div style="margin-bottom:12px;">
+    <label>
+      Name:<br>
+      <input type="text" id="studentName" placeholder="Your name">
+    </label><br>
+    <label>
+      Class:<br>
+      <input type="text" id="classCode" placeholder="e.g. 9A">
+    </label>
+  </div>
+
   <div class="stats">
     ⏱ <span id="time">∞</span> | ✅ <span id="score">0</span>
   </div>
@@ -156,7 +165,7 @@ input {
 
   <div class="question" id="question"></div>
 
-  <input type="number" id="answer" disabled>
+  <input type="number" id="answer" class="answer-input" disabled>
 
   <!-- TIMES TABLES DIFFICULTY -->
   <div id="timesTableDifficulty" style="display:none; margin-bottom:10px;">
@@ -178,207 +187,106 @@ input {
 
 <script>
 /* ========= GLOBAL STATE ========= */
-let sessionMode = "practice";
-let currentSkill = null;
-let timesTableLevel = 2;
-
-let num1, num2, correctAnswer;
-let score = 0, attempts = 0, timer, timeLeft = 60;
-
-/* ========= SKILLS ========= */
-const skills = {
-  number: [
-    ["timesTables","Times Tables"],
-    ["division","Division"],
-    ["addition","Addition"],
-    ["subtraction","Subtraction"],
-    ["orderOps","Order of Operations"]
-  ],
-  integers: [
-    ["intAddSub","Add / Subtract Integers"],
-    ["intMultDiv","Multiply / Divide Integers"]
-  ],
-  exponents: [
-    ["squares","Square Numbers"],
-    ["roots","Square Roots"]
-  ]
-};
+let sessionMode="practice", currentSkill=null, timesTableLevel=2;
+let num1,num2,correctAnswer,score=0,attempts=0,timer,timeLeft=60;
 
 /* ========= ELEMENTS ========= */
-const questionEl = document.getElementById("question");
-const answerEl = document.getElementById("answer");
-const scoreEl = document.getElementById("score");
-const timeEl = document.getElementById("time");
-const feedbackEl = document.getElementById("feedback");
-const instructionEl = document.getElementById("instruction");
+const questionEl=document.getElementById("question");
+const answerEl=document.getElementById("answer");
+const scoreEl=document.getElementById("score");
+const timeEl=document.getElementById("time");
+const feedbackEl=document.getElementById("feedback");
+const instructionEl=document.getElementById("instruction");
+const studentNameEl=document.getElementById("studentName");
+const classCodeEl=document.getElementById("classCode");
 
-/* ========= ENTER KEY SUBMIT (✅ FIX) ========= */
-answerEl.addEventListener("keydown", function (event) {
-  if (event.key === "Enter") {
-    checkAnswer();
-  }
-});
+/* ENTER KEY */
+answerEl.addEventListener("keydown",e=>{if(e.key==="Enter")checkAnswer();});
 
 /* ========= MENU ========= */
-function setSessionMode(mode) {
-  sessionMode = mode;
-  document.querySelectorAll(".session").forEach(b => b.classList.remove("active"));
-  document.getElementById("btn-" + mode).classList.add("active");
+function setSessionMode(mode){
+  sessionMode=mode;
+  document.querySelectorAll(".session").forEach(b=>b.classList.remove("active"));
+  document.getElementById("btn-"+mode).classList.add("active");
 }
 
-function openCategory(cat) {
-  document.getElementById("categoryMenu").style.display = "none";
-  document.getElementById("skillMenu").style.display = "block";
-  document.getElementById("skillTitle").textContent = "Choose a skill";
-  const holder = document.getElementById("skillButtons");
-  holder.innerHTML = "";
-
-  skills[cat].forEach(s => {
-    const b = document.createElement("button");
-    b.textContent = s[1];
-    b.onclick = () => chooseSkill(s[0]);
+function openCategory(cat){
+  document.getElementById("categoryMenu").style.display="none";
+  document.getElementById("skillMenu").style.display="block";
+  const holder=document.getElementById("skillButtons");
+  holder.innerHTML="";
+  skills[cat].forEach(s=>{
+    const b=document.createElement("button");
+    b.textContent=s[1];
+    b.onclick=()=>chooseSkill(s[0]);
     holder.appendChild(b);
   });
 }
 
-function backToCategories() {
-  document.getElementById("skillMenu").style.display = "none";
-  document.getElementById("categoryMenu").style.display = "block";
+function backToCategories(){
+  document.getElementById("skillMenu").style.display="none";
+  document.getElementById("categoryMenu").style.display="block";
 }
 
-function chooseSkill(skill) {
-  currentSkill = skill;
-  document.getElementById("skillMenu").style.display = "none";
-  document.getElementById("game").style.display = "block";
-  instructionEl.textContent = "Press Start when ready";
-
-  document.getElementById("timesTableDifficulty").style.display =
-    skill === "timesTables" ? "block" : "none";
+function chooseSkill(skill){
+  currentSkill=skill;
+  document.getElementById("skillMenu").style.display="none";
+  document.getElementById("game").style.display="block";
+  instructionEl.textContent="Press Start when ready";
+  document.getElementById("timesTableDifficulty").style.display=
+    skill==="timesTables"?"block":"none";
 }
 
-/* ========= GAME ========= */
-function startGame() {
-  score = 0;
-  attempts = 0;
-  scoreEl.textContent = "0";
-  feedbackEl.textContent = "";
-  answerEl.value = "";
-  answerEl.disabled = false;
+/* ========= START GAME ========= */
+function startGame(){
+  if(sessionMode==="fluency"){
+    if(!studentNameEl.value||!classCodeEl.value){
+      alert("Please enter your name and class before starting Fluency mode.");
+      return;
+    }
+  }
+  score=attempts=0;
+  scoreEl.textContent="0";
+  feedbackEl.textContent="";
+  answerEl.value="";
+  answerEl.disabled=false;
   answerEl.focus();
 
   clearInterval(timer);
-
-  if (sessionMode === "fluency") {
-    timeLeft = 60;
-    timeEl.textContent = 60;
-    timer = setInterval(() => {
+  if(sessionMode==="fluency"){
+    timeLeft=60;
+    timeEl.textContent=60;
+    timer=setInterval(()=>{
       timeLeft--;
-      timeEl.textContent = timeLeft;
-      if (timeLeft <= 0) endGame();
-    }, 1000);
-  } else {
-    timeEl.textContent = "∞";
-  }
-
+      timeEl.textContent=timeLeft;
+      if(timeLeft<=0)endGame();
+    },1000);
+  } else timeEl.textContent="∞";
   nextQuestion();
 }
 
 /* ========= QUESTIONS ========= */
-function nextQuestion() {
+function nextQuestion(){
   questionEl.classList.remove("single-line");
 
-  if (currentSkill === "timesTables") {
-    let tables;
-    if (timesTableLevel === 1) tables = [1,2,4,5,10];
-    if (timesTableLevel === 2) tables = Array.from({length:12},(_,i)=>i+1);
-    if (timesTableLevel === 3) tables = Array.from({length:20},(_,i)=>i+1);
-
-    num1 = tables[randIndex(tables.length)];
-    num2 = tables[randIndex(tables.length)];
-    correctAnswer = num1 * num2;
+  if(currentSkill==="timesTables"){
+    let t=timesTableLevel===1?[1,2,4,5,10]:
+          timesTableLevel===2?[...Array(12).keys()].map(i=>i+1):
+          [...Array(20).keys()].map(i=>i+1);
+    num1=t[Math.floor(Math.random()*t.length)];
+    num2=t[Math.floor(Math.random()*t.length)];
+    correctAnswer=num1*num2;
     out(`${num1} × ${num2}`);
-  }
-
-  if (currentSkill === "division") {
-    num2 = rand(12);
-    correctAnswer = rand(12);
-    num1 = num2 * correctAnswer;
-    out(`${num1} ÷ ${num2}`);
-  }
-
-  if (currentSkill === "addition") addSub("+");
-  if (currentSkill === "subtraction") addSub("-");
-
-  if (currentSkill === "orderOps") {
-    const a=rand(10), b=rand(10), c=rand(10);
-    const t=rand(3);
-    if (t===1) { correctAnswer=a+b*c; out(`${a} + ${b} × ${c}`); }
-    if (t===2) { correctAnswer=(a+b)*c; out(`(${a} + ${b}) × ${c}`); }
-    if (t===3) { correctAnswer=a*b-c; out(`${a} × ${b} − ${c}`); }
-  }
-
-  if (currentSkill === "intAddSub") {
-    num1 = randRange(-20,20);
-    num2 = randRange(-20,20);
-    if (Math.random()<.5) {
-      correctAnswer=num1+num2;
-      out(`${num1} + ${num2}`);
-    } else {
-      correctAnswer=num1-num2;
-      out(`${num1} − ${num2}`);
-    }
-  }
-
-  if (currentSkill === "intMultDiv") {
-    num1 = randRange(-10,10) || 1;
-    num2 = randRange(-10,10) || 1;
-    if (Math.random()<.5) {
-      correctAnswer=num1*num2;
-      out(`${num1} × ${num2}`);
-    } else {
-      const p=num1*num2;
-      correctAnswer=num1;
-      out(`${p} ÷ ${num2}`);
-    }
-  }
-
-  if (currentSkill === "squares") {
-    num1 = rand(15);
-    correctAnswer = num1 * num1;
-    out(`${num1}²`);
-  }
-
-  if (currentSkill === "roots") {
-    correctAnswer = rand(15);
-    num1 = correctAnswer * correctAnswer;
-    out(`√${num1}`);
   }
 }
 
-/* ========= HELPERS ========= */
 function out(text){
   questionEl.textContent=text;
   questionEl.classList.add("single-line");
 }
 
-function addSub(op){
-  let a=randRange(10,999), b=randRange(10,999);
-  if(op==="-"&&b>a)[a,b]=[b,a];
-  num1=a; num2=b;
-  correctAnswer=op==="+"?a+b:a-b;
-  questionEl.textContent=`${a}\n${op==="+"?"+":"−"} ${b}`;
-}
-
-function setTimesTableLevel(level){
-  timesTableLevel=level;
-  ["tt1","tt2","tt3"].forEach(id=>document.getElementById(id).classList.remove("active"));
-  document.getElementById("tt"+level).classList.add("active");
-}
-
 function checkAnswer(){
   attempts++;
-  answerEl.classList.remove("correct","incorrect");
-
   if(Number(answerEl.value)===correctAnswer){
     score++;
     answerEl.classList.add("correct");
@@ -386,13 +294,8 @@ function checkAnswer(){
     answerEl.classList.add("incorrect");
     feedbackEl.textContent=`⛔ ${correctAnswer}`;
   }
-
   scoreEl.textContent=score;
-  setTimeout(()=>{
-    answerEl.value="";
-    answerEl.focus();
-    nextQuestion();
-  },400);
+  setTimeout(()=>{answerEl.value="";answerEl.focus();nextQuestion();},400);
 }
 
 function endGame(){
@@ -404,19 +307,19 @@ function endGame(){
 }
 
 function resetGame(){
-  if(score>0||attempts>0){
-    if(!confirm("Reset and choose again?"))return;
-  }
+  if(score>0&&!confirm("Reset and choose again?"))return;
   clearInterval(timer);
   document.getElementById("game").style.display="none";
   document.getElementById("categoryMenu").style.display="block";
   feedbackEl.textContent="";
 }
 
-/* ========= RANDOM ========= */
-function rand(max){return Math.floor(Math.random()*max)+1;}
-function randRange(min,max){return Math.floor(Math.random()*(max-min+1))+min;}
-function randIndex(len){return Math.floor(Math.random()*len);}
+/* ========= DATA ========= */
+const skills={
+  number:[["timesTables","Times Tables"]],
+  integers:[],
+  exponents:[]
+};
 </script>
 </body>
 </html>
