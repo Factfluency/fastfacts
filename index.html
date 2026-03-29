@@ -147,8 +147,10 @@ input {
 <!-- GAME -->
 <div id="game" style="display:none;">
   <div class="stats">
-    ⏱ <span id="time">∞</span> | ✅ <span id="score">0</span>
-  </div>
+  Time ⏱  <span id="time">∞</span> |
+  Correct ✅  <span id="score">0</span> |
+  CPM⚡ <span id="cpm">0</span>/min
+</div>
 
   <div class="instruction" id="instruction">
     Choose a skill, then press Start
@@ -162,15 +164,19 @@ input {
   <div id="timesTableDifficulty" style="display:none; margin-bottom:10px;">
     <div class="menu-title">Times Tables Level</div>
     <div class="button-grid">
-<button id="tt1" onclick="setTimesTableLevel(1)">
+<button id="tt1" data-base-label="Level 1 – 2s, 4s, 5s &amp; 10s"
+        onclick="setTimesTableLevel(1)">
   Level 1 – 2s, 4s, 5s &amp; 10s
 </button>
 
-<button id="tt2" class="active" onclick="setTimesTableLevel(2)">
+<button id="tt2" data-base-label="Level 2 – 1–12 tables"
+        class="active"
+        onclick="setTimesTableLevel(2)">
   Level 2 – 1–12 tables
 </button>
 
-<button id="tt3" onclick="setTimesTableLevel(3)">
+<button id="tt3" data-base-label="Level 3 – 1–20 tables"
+        onclick="setTimesTableLevel(3)">
   Level 3 – 1–20 tables
 </button>
     </div>
@@ -187,6 +193,7 @@ input {
 <script>
 /* ========= GLOBAL STATE ========= */
 let sessionMode = "practice";
+let startTime = null;
 let currentSkill = null;
 let timesTableLevel = 2;
 
@@ -219,7 +226,7 @@ const scoreEl = document.getElementById("score");
 const timeEl = document.getElementById("time");
 const feedbackEl = document.getElementById("feedback");
 const instructionEl = document.getElementById("instruction");
-
+const cpmEl = document.getElementById("cpm");
 /* ========= ENTER KEY SUBMIT (✅ FIX) ========= */
 answerEl.addEventListener("keydown", function (event) {
   if (event.key === "Enter") {
@@ -260,8 +267,14 @@ function chooseSkill(skill) {
   document.getElementById("game").style.display = "block";
   instructionEl.textContent = "Press Start when ready";
 
-  document.getElementById("timesTableDifficulty").style.display =
-    skill === "timesTables" ? "block" : "none";
+  const ttBlock = document.getElementById("timesTableDifficulty");
+
+  if (skill === "timesTables") {
+    ttBlock.style.display = "block";
+    updateTimesTablePBLabels();   // 
+  } else {
+    ttBlock.style.display = "none";
+  }
 }
 
 /* ========= GAME ========= */
@@ -287,6 +300,9 @@ function startGame() {
   } else {
     timeEl.textContent = "∞";
   }
+if (sessionMode === "fluency") {
+  startTime = Date.now();
+}
 
   nextQuestion();
 }
@@ -405,6 +421,42 @@ function getPBKey() {
   return `pb_${currentSkill}`;
 }
 
+function updateTimesTablePBLabels() {
+  const levels = [1, 2, 3];
+
+  levels.forEach(level => {
+    const key = `pb_timesTables_L${level}`;
+    const pb = localStorage.getItem(key) || 0;
+
+    const btn = document.getElementById(`tt${level}`);
+    if (!btn) return;
+
+    // Remove any existing PB line first
+    const baseText = btn.getAttribute("data-base-label");
+
+    if (baseText) {
+      btn.innerHTML = `${baseText}<br><small>PB: ${pb}</small>`;
+    }
+  });
+}
+function getTrendKey() {
+  if (currentSkill === "timesTables") {
+    return `trend_${currentSkill}_L${timesTableLevel}`;
+  }
+  return `trend_${currentSkill}`;
+}
+
+function updateTrend(score) {
+  const key = getTrendKey();
+  const stored = JSON.parse(localStorage.getItem(key) || "[]");
+
+  stored.push(score);
+  if (stored.length > 3) stored.shift();
+
+  localStorage.setItem(key, JSON.stringify(stored));
+  return stored;
+}
+
 function setTimesTableLevel(level){
   timesTableLevel=level;
   ["tt1","tt2","tt3"].forEach(id=>document.getElementById(id).classList.remove("active"));
@@ -422,7 +474,20 @@ function checkAnswer(){
     answerEl.classList.add("incorrect");
     feedbackEl.textContent=`⛔ ${correctAnswer}`;
   }
+if (sessionMode === "fluency" && startTime) {
+  const elapsedSeconds = (Date.now() - startTime) / 1000;
+  const minutes = elapsedSeconds / 60;
 
+  const cpm = minutes > 0 ? Math.round(score / minutes) : 0;
+  if (cpmEl) {
+    cpmEl.textContent = cpm;
+  }
+}
+if (sessionMode === "fluency" && startTime) {
+  const accuracy = attempts ? score / attempts : 0;
+  const estimate = Math.round(score * accuracy * accuracy);
+  // 
+}
   scoreEl.textContent=score;
   setTimeout(()=>{
     answerEl.value="";
@@ -437,6 +502,10 @@ function endGame() {
 
   const accuracy = attempts ? score / attempts : 0;
   const fluencyScore = Math.round(score * accuracy * accuracy);
+const trend = updateTrend(fluencyScore);
+const trendText = trend.length
+  ? trend.join(" → ")
+  : "";
 
   // PB logic (fluency only)
   const pbResult = updatePersonalBest(fluencyScore);
@@ -447,21 +516,25 @@ function endGame() {
   if (pbResult === "equal") pbIndicator = "▬";
   if (pbResult === "down" && personalBest > 0) pbIndicator = "▼";
 
-  feedbackEl.innerHTML = `
-    <div style="font-size:2.4rem; font-weight:bold; margin-bottom:6px; color:#007bff;">
-      ⭐ ${fluencyScore}
-    </div>
+feedbackEl.innerHTML = `
+  <div style="font-size:2.4rem; font-weight:bold; margin-bottom:6px; color:#007bff;">
+    ⭐ ${fluencyScore}
+  </div>
 
-    <div style="font-size:1.05rem; margin-bottom:4px;">
-      Accuracy: ${(accuracy * 100).toFixed(0)}%
-    </div>
+  <div style="font-size:1.05rem; margin-bottom:4px;">
+    Accuracy: ${(accuracy * 100).toFixed(0)}%
+  </div>
 
-    <div style="font-size:1rem;">
-      Personal best: ${personalBest}
-      ${pbIndicator ? `<strong> ${pbIndicator}</strong>` : ""}
-      ${pbResult === "up" ? " 🎉 New PB!" : ""}
-    </div>
-  `;
+  <div style="font-size:0.95rem; margin-top:6px;">
+    Last ${trend.length} attempt${trend.length === 1 ? "" : "s"}: ${trend.join(" → ")}
+  </div>
+
+  <div style="font-size:1rem; margin-top:6px;">
+    Personal best: ${personalBest}
+    ${pbIndicator ? `<strong> ${pbIndicator}</strong>` : ""}
+    ${pbResult === "up" ? " 🎉 New PB!" : ""}
+  </div>
+`;
 }
 
 function resetGame(){
