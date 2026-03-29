@@ -41,6 +41,10 @@ h1 {
   gap: 10px;
 }
 
+.level-title {
+  font-weight: bold;
+}
+
 button {
   padding: 10px;
   font-size: 1rem;
@@ -164,20 +168,23 @@ input {
   <div id="timesTableDifficulty" style="display:none; margin-bottom:10px;">
     <div class="menu-title">Times Tables Level</div>
     <div class="button-grid">
-<button id="tt1" data-base-label="Level 1 – 2s, 4s, 5s &amp; 10s"
+<button id="tt1"
+        data-base-label="<span class='level-title'>Level 1 – 2s, 4s, 5s &amp; 10s</span>"
         onclick="setTimesTableLevel(1)">
-  Level 1 – 2s, 4s, 5s &amp; 10s
+  <span class="level-title">Level 1 – 2s, 4s, 5s &amp; 10s</span>
 </button>
 
-<button id="tt2" data-base-label="Level 2 – 1–12 tables"
+<button id="tt2"
+        data-base-label="<span class='level-title'>Level 2 – 1–12 tables</span>"
         class="active"
         onclick="setTimesTableLevel(2)">
-  Level 2 – 1–12 tables
+  <span class="level-title">Level 2 – 1–12 tables</span>
 </button>
 
-<button id="tt3" data-base-label="Level 3 – 1–20 tables"
+<button id="tt3"
+        data-base-label="<span class='level-title'>Level 3 – 1–20 tables</span>"
         onclick="setTimesTableLevel(3)">
-  Level 3 – 1–20 tables
+  <span class="level-title">Level 3 – 1–20 tables</span>
 </button>
     </div>
   </div>
