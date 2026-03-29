@@ -403,14 +403,46 @@ function checkAnswer(){
   },400);
 }
 
-function endGame(){
-  clearInterval(timer);
-  answerEl.disabled=true;
-  const acc=attempts?score/attempts:0;
-  feedbackEl.innerHTML=`Accuracy: ${(acc*100).toFixed(0)}%<br>
-  Fluency Score: <strong>${Math.round(score*acc*acc)}</strong>`;
+function getPersonalBest(skill) {
+  const stored = localStorage.getItem("pb_" + skill);
+  return stored ? Number(stored) : 0;
 }
 
+function updatePersonalBest(skill, score) {
+  const currentBest = getPersonalBest(skill);
+  if (score > currentBest) {
+    localStorage.setItem("pb_" + skill, score);
+    return true; // new PB!
+  }
+  return false;
+}
+
+function endGame() {
+  clearInterval(timer);
+  answerEl.disabled = true;
+
+  const accuracy = attempts ? score / attempts : 0;
+  const fluencyScore = Math.round(score * accuracy * accuracy);
+
+  // Personal Best logic (fluency only)
+  const isNewPB = updatePersonalBest(currentSkill, fluencyScore);
+  const personalBest = getPersonalBest(currentSkill);
+
+  feedbackEl.innerHTML = `
+ <div style="font-size:2.4rem; font-weight:bold; margin-bottom:8px; color:#007bff;">
+      ⭐ ${fluencyScore}
+    </div>
+
+    <div style="font-size:1.1rem; margin-bottom:6px;">
+      Accuracy: ${(accuracy * 100).toFixed(0)}%
+    </div>
+
+    <div style="font-size:1rem;">
+      Personal best: ${personalBest}
+      ${isNewPB ? " 🎉 New PB!" : ""}
+    </div>
+  `;
+}
 function resetGame(){
   if(score>0||attempts>0){
     if(!confirm("Reset and choose again?"))return;
