@@ -190,6 +190,12 @@ input {
   </div>
 
   <button onclick="startGame()">Start</button>
+<button id="stopPractice"
+        onclick="stopPractice()"
+        style="display:none;">
+  Stop Practice
+</button>
+``
   <button onclick="resetGame()">Reset</button>
 
   <div class="feedback" id="feedback"></div>
@@ -283,6 +289,29 @@ function chooseSkill(skill) {
     ttBlock.style.display = "none";
   }
 }
+function stopPractice() {
+  answerEl.disabled = true;
+  clearInterval(timer);
+
+  const elapsedSeconds = startTime
+    ? (Date.now() - startTime) / 1000
+    : 0;
+  const minutes = elapsedSeconds / 60;
+  const cpm = minutes > 0 ? Math.round(score / minutes) : 0;
+
+  feedbackEl.innerHTML = `
+    <div style="font-size:1.2rem; font-weight:bold;">
+      Practice stopped
+    </div>
+    <div style="margin-top:6px;">
+      ✅ Correct: ${score}<br>
+      ⚡ ${cpm} per minute
+    </div>
+  `;
+
+  document.getElementById("stopPractice").style.display = "none";
+}
+``
 
 /* ========= GAME ========= */
 function startGame() {
@@ -296,7 +325,18 @@ function startGame() {
 
   clearInterval(timer);
 
-  if (sessionMode === "fluency") {
+  // ✅ START TIME FOR BOTH MODES
+  startTime = Date.now();
+
+  // ✅ Toggle Stop Practice button
+  const stopBtn = document.getElementById("stopPractice");
+  if (sessionMode === "practice") {
+    stopBtn.style.display = "inline-block";
+    timeEl.textContent = "∞";
+  } else {
+    stopBtn.style.display = "none";
+
+    // Fluency timer
     timeLeft = 60;
     timeEl.textContent = 60;
     timer = setInterval(() => {
@@ -304,16 +344,10 @@ function startGame() {
       timeEl.textContent = timeLeft;
       if (timeLeft <= 0) endGame();
     }, 1000);
-  } else {
-    timeEl.textContent = "∞";
   }
-if (sessionMode === "fluency") {
-  startTime = Date.now();
-}
 
   nextQuestion();
 }
-
 /* ========= QUESTIONS ========= */
 function nextQuestion() {
   questionEl.classList.remove("single-line");
@@ -481,11 +515,11 @@ function checkAnswer(){
     answerEl.classList.add("incorrect");
     feedbackEl.textContent=`⛔ ${correctAnswer}`;
   }
-if (sessionMode === "fluency" && startTime) {
+if (startTime) {
   const elapsedSeconds = (Date.now() - startTime) / 1000;
   const minutes = elapsedSeconds / 60;
-
   const cpm = minutes > 0 ? Math.round(score / minutes) : 0;
+
   if (cpmEl) {
     cpmEl.textContent = cpm;
   }
