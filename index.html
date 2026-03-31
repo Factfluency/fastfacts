@@ -111,6 +111,15 @@ input {
   border: 3px solid #dc3545;
   background: #fdecea;
 }
+.fade {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.fade.show {
+  opacity: 1;
+}
+
 
 .feedback {
   min-height: 32px;
@@ -150,50 +159,87 @@ input {
 
 <!-- GAME -->
 <div id="game" style="display:none;">
+
   <div class="stats">
-  Time ⏱  <span id="time">∞</span> |
-  Correct ✅  <span id="score">0</span> |
-  CPM⚡ <span id="cpm">0</span>/min
-</div>
+    Time ⏱ <span id="time">∞</span> |
+    Correct ✅ <span id="score">0</span> |
+    CPM ⚡ <span id="cpm">0</span>/min
+  </div>
+
   <div style="margin-top:4px;">
-Accuracy 🎯 <span id="accuracy">0</span>%
-</div>
-</div>
+    Accuracy 🎯 <span id="accuracy">0</span>%
+  </div>
+
   <div class="instruction" id="instruction">
     Choose a skill, then press Start
   </div>
 
   <div class="question" id="question"></div>
-
   <input type="number" id="answer" disabled>
 
   <!-- TIMES TABLES DIFFICULTY -->
   <div id="timesTableDifficulty" style="display:none; margin-bottom:10px;">
     <div class="menu-title">Times Tables Level</div>
     <div class="button-grid">
-<button id="tt1"
-        data-base-label="<span class='level-title'>Level 1 – 2s, 4s, 5s &amp; 10s</span>"
+      <button id="tt1" data-base-label="<span class='level-title'>Level 1 – 2s, 4s, 5s & 10s</span>"
         onclick="setTimesTableLevel(1)">
-  <span class="level-title">Level 1 – 2s, 4s, 5s &amp; 10s</span>
-</button>
+        <span class="level-title">Level 1 – 2s, 4s, 5s & 10s</span>
+      </button>
 
-<button id="tt2"
+      <button id="tt2" class="active"
         data-base-label="<span class='level-title'>Level 2 – 1–12 tables</span>"
-        class="active"
         onclick="setTimesTableLevel(2)">
-  <span class="level-title">Level 2 – 1–12 tables</span>
-</button>
+        <span class="level-title">Level 2 – 1–12 tables</span>
+      </button>
 
-<button id="tt3"
+      <button id="tt3"
         data-base-label="<span class='level-title'>Level 3 – 1–20 tables</span>"
         onclick="setTimesTableLevel(3)">
-  <span class="level-title">Level 3 – 1–20 tables</span>
-</button>
+        <span class="level-title">Level 3 – 1–20 tables</span>
+      </button>
     </div>
   </div>
 
-<button type="button" onclick="startGame()">Start</button>
+  <!-- ADD / SUBTRACT DIFFICULTY -->
+  <div id="addSubDifficulty" style="display:none; margin-bottom:10px;">
+    <div class="menu-title">Level</div>
+    <div class="button-grid">
+      <button id="as1" data-base-label="<span class='level-title'>Level 1 – Single digits</span>"
+        onclick="setAddSubLevel(1)">
+        <span class="level-title">Level 1 – Single digits</span>
+      </button>
+
+      <button id="as2" data-base-label="<span class='level-title'>Level 2 – Two digits</span>"
+        onclick="setAddSubLevel(2)">
+        <span class="level-title">Level 2 – Two digits</span>
+      </button>
+
+      <button id="as3" data-base-label="<span class='level-title'>Level 3 – Three digits</span>"
+        onclick="setAddSubLevel(3)">
+        <span class="level-title">Level 3 – Three digits</span>
+      </button>
+    </div>
+  </div>
+
+
+  <button id="stopPractice" type="button"
+    onclick="stopPractice()" style="display:none;">
+    Stop Practice
+  </button>
+
+  <div class="feedback" id="feedback"></div>
+
+</div>
+
+<button
+  id="startBtn"
+  type="button"
+  onclick="startGame()"
+>
+  Start
+</button>
 <button type="button" onclick="resetGame()">Reset</button>
+<button type="button" onclick="softReset()">↻ Try Again</button>
 <button id="stopPractice"
         onclick="stopPractice()"
         style="display:none;">
@@ -212,9 +258,13 @@ let sessionMode = "practice";
 let startTime = null;
 let currentSkill = null;
 let timesTableLevel = 2;
-
+let addSubLevel = 1;
+let elapsedSeconds = 0;
 let num1, num2, correctAnswer;
 let score = 0, attempts = 0, timer, timeLeft = 60;
+let startLocked = false;
+let gameEnded = false;
+
 
 /* ========= SKILLS ========= */
 const skills = {
@@ -281,17 +331,40 @@ function backToCategories() {
 
 function chooseSkill(skill) {
   currentSkill = skill;
-  document.getElementById("skillMenu").style.display = "none";
-  document.getElementById("game").style.display = "block";
-  instructionEl.textContent = "Press Start when ready";
+
+  const skillMenu = document.getElementById("skillMenu");
+  const game = document.getElementById("game");
 
   const ttBlock = document.getElementById("timesTableDifficulty");
+  const asBlock = document.getElementById("addSubDifficulty");
 
+  // Hide menus and show game
+  skillMenu.style.display = "none";
+  game.style.display = "block";
+
+  instructionEl.textContent = "Press Start when ready";
+
+  // Hide all level blocks initially
+  ttBlock.style.display = "none";
+  asBlock.style.display = "none";
+
+  startLocked = false;
+  unlockStartButton();
+
+  // Times Tables
   if (skill === "timesTables") {
     ttBlock.style.display = "block";
-    updateTimesTablePBLabels();   // 
-  } else {
-    ttBlock.style.display = "none";
+    startLocked = true;
+    lockStartButton();
+    updateTimesTablePBLabels();
+  }
+
+  // Addition or Subtraction
+  if (skill === "addition" || skill === "subtraction") {
+    asBlock.style.display = "block";
+    startLocked = true;
+    lockStartButton();
+    updateAddSubPBLabels();
   }
 }
 function stopPractice() {
@@ -320,37 +393,61 @@ function stopPractice() {
 
 /* ========= GAME ========= */
 function startGame() {
-  score = 0;
+if (currentSkill === "timesTables" && startLocked === true) {
+  return;
+}
+gameEnded = false;
+ score = 0;
   attempts = 0;
   scoreEl.textContent = "0";
-  feedbackEl.textContent = "";
-  answerEl.style.display = "block";
+  feedbackEl.textContent = ""; 
+answerEl.disabled = false;
+answerEl.style.display = "block";
 answerEl.value = "";
-  answerEl.disabled = false;
-  answerEl.focus();
+answerEl.focus();
 
-  clearInterval(timer);
 
-  // ✅ START TIME FOR BOTH MODES
-  startTime = Date.now();
+ // ✅ START TIME FOR BOTH MODES
+startTime = Date.now();
+clearInterval(timer);
 
-  // ✅ Toggle Stop Practice button
-  const stopBtn = document.getElementById("stopPractice");
-  if (sessionMode === "practice") {
-    stopBtn.style.display = "inline-block";
-    timeEl.textContent = "∞";
-  } else {
-    stopBtn.style.display = "none";
+if (sessionMode === "practice") {
 
-    // Fluency timer
-    timeLeft = 60;
-    timeEl.textContent = 60;
-    timer = setInterval(() => {
-      timeLeft--;
-      timeEl.textContent = timeLeft;
-      if (timeLeft <= 0) endGame();
-    }, 1000);
-  }
+  // ✅ PRACTICE: count UP continuously (unchanged behaviour)
+  elapsedSeconds = 0;
+  timeEl.textContent = "0";
+
+  timer = setInterval(() => {
+    elapsedSeconds++;
+    timeEl.textContent = elapsedSeconds;
+  }, 1000);
+
+  document.getElementById("stopPractice").style.display = "inline-block";
+
+} else {
+
+  // ✅ FLUENCY: count DOWN and STOP cleanly at 0
+  timeLeft = 60;
+  timeEl.textContent = "60";
+
+  timer = setInterval(() => {
+    timeLeft--;
+
+    if (timeLeft <= 0) {
+      clearInterval(timer);   // ✅ stop timer
+      timeLeft = 0;           // ✅ clamp to zero
+      timeEl.textContent = "0";
+      endGame();              // ✅ run once
+      return;                 // ✅ exit interval tick
+    }
+
+    timeEl.textContent = timeLeft;
+  }, 1000);
+
+  document.getElementById("stopPractice").style.display = "none";
+}
+
+  
 
   nextQuestion();
 }
@@ -377,8 +474,38 @@ function nextQuestion() {
     out(`${num1} ÷ ${num2}`);
   }
 
-  if (currentSkill === "addition") addSub("+");
-  if (currentSkill === "subtraction") addSub("-");
+if (currentSkill === "addition") addSubLevelled("+");
+if (currentSkill === "subtraction") addSubLevelled("-");
+function addSubLevelled(op) {
+  let a, b;
+
+  // LEVEL 1: single digits
+  if (addSubLevel === 1) {
+    a = randRange(1, 9);
+    b = randRange(1, 9);
+  }
+
+  // LEVEL 2: two digits (can include 1-digit + 2-digit)
+  if (addSubLevel === 2) {
+    a = randRange(10, 99);
+    b = randRange(1, 99);
+  }
+
+  // LEVEL 3: three digits (one number must be 3 digits)
+  if (addSubLevel === 3) {
+    a = randRange(100, 999);
+    b = randRange(1, 999);
+  }
+
+  // ✅ Ensure positive answers for subtraction
+  if (op === "-" && b > a) [a, b] = [b, a];
+
+  num1 = a;
+  num2 = b;
+  correctAnswer = op === "+" ? a + b : a - b;
+
+  questionEl.textContent = `${a}\n${op === "+" ? "+" : "−"} ${b}`;
+}
 
   if (currentSkill === "orderOps") {
     const a=rand(10), b=rand(10), c=rand(10);
@@ -465,13 +592,38 @@ function updatePersonalBest(score) {
 }
 function getPBKey() {
   // Times Tables → PB per level
-  if (currentSkill === "timesTables") {
-    return `pb_${currentSkill}_L${timesTableLevel}`;
-  }
+if (currentSkill === "timesTables") {
+  return `pb_${currentSkill}_L${timesTableLevel}`;
+}
+
+// Addition / Subtraction → PB per level
+if (currentSkill === "addition" || currentSkill === "subtraction") {
+  return `pb_${currentSkill}_L${addSubLevel}`;
+}
+
+return `pb_${currentSkill}`;
 
   // All other skills → PB per skill
   return `pb_${currentSkill}`;
 }
+
+// ===== START BUTTON CONTROL =====
+function lockStartButton() {
+  const startBtn = document.getElementById("startBtn");
+  if (!startBtn) return;
+
+  startBtn.disabled = true;
+  startBtn.style.opacity = "0.5";
+}
+
+function unlockStartButton() {
+  const startBtn = document.getElementById("startBtn");
+  if (!startBtn) return;
+
+  startBtn.disabled = false;
+  startBtn.style.opacity = "1";
+}
+
 
 function updateTimesTablePBLabels() {
   const levels = [1, 2, 3];
@@ -479,7 +631,6 @@ function updateTimesTablePBLabels() {
   levels.forEach(level => {
     const key = `pb_timesTables_L${level}`;
     const pb = localStorage.getItem(key) || 0;
-
     const btn = document.getElementById(`tt${level}`);
     if (!btn) return;
 
@@ -491,6 +642,18 @@ function updateTimesTablePBLabels() {
     }
   });
 }
+function updateAddSubPBLabels() {
+  [1, 2, 3].forEach(level => {
+    const key = `pb_${currentSkill}_L${level}`;
+    const pb = localStorage.getItem(key) || 0;
+    const btn = document.getElementById(`as${level}`);
+    if (!btn) return;
+
+    const base = btn.getAttribute("data-base-label");
+    btn.innerHTML = `${base}<br><small>PB: ${pb}</small>`;
+  });
+}
+
 function getTrendKey() {
   if (currentSkill === "timesTables") {
     return `trend_${currentSkill}_L${timesTableLevel}`;
@@ -509,10 +672,41 @@ function updateTrend(score) {
   return stored;
 }
 
+function softReset() {
+  clearInterval(timer);
+
+  score = 0;
+  attempts = 0;
+  startTime = null;
+
+  scoreEl.textContent = "0";
+  if (accuracyEl) accuracyEl.textContent = "0";
+  if (cpmEl) cpmEl.textContent = "0";
+
+  feedbackEl.textContent = "";
+  answerEl.value = "";
+  answerEl.classList.remove("correct", "incorrect");
+
+  startGame();
+}
+
 function setTimesTableLevel(level){
   timesTableLevel=level;
   ["tt1","tt2","tt3"].forEach(id=>document.getElementById(id).classList.remove("active"));
   document.getElementById("tt"+level).classList.add("active");
+startLocked = false;
+unlockStartButton();
+}
+function setAddSubLevel(level) {
+  addSubLevel = level;
+
+  ["as1", "as2", "as3"].forEach(id =>
+    document.getElementById(id).classList.remove("active")
+);
+
+  document.getElementById("as" + level).classList.add("active");
+startLocked = false;
+  unlockStartButton();
 }
 
 function checkAnswer(){
@@ -558,7 +752,10 @@ if (sessionMode === "fluency" && startTime) {
   },400);
 }
 
+
 function endGame() {
+if (gameEnded) return;
+  gameEnded = true;
   clearInterval(timer);
   answerEl.disabled = true;
 
@@ -631,6 +828,8 @@ function resetGame() {
   // ✅ Hide times‑tables levels (VERY IMPORTANT)
   const ttBlock = document.getElementById("timesTableDifficulty");
   if (ttBlock) ttBlock.style.display = "none";
+const asBlock = document.getElementById("addSubDifficulty");
+if (asBlock) asBlock.style.display = "none";
 
   // ✅ Clear feedback
   feedbackEl.textContent = "";
