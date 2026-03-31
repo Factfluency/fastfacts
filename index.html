@@ -40,6 +40,15 @@ h1 {
   grid-template-columns: repeat(2, 1fr);
   gap: 10px;
 }
+.main-category {
+  background-color: #0d47a1; /* royal blue */
+  color: white;
+  border-color: #0d47a1;
+}
+
+.main-category:hover {
+  background-color: #1565c0;
+}
 
 .level-title {
   font-weight: bold;
@@ -143,11 +152,11 @@ input {
 <!-- CATEGORY MENU -->
 <div id="categoryMenu">
   <div class="menu-title">Choose a category</div>
-  <div class="button-grid">
-    <button onclick="openCategory('number')">Number</button>
-    <button onclick="openCategory('integers')">Integers</button>
-    <button onclick="openCategory('exponents')">Exponents</button>
-  </div>
+ <div class="button-grid">
+  <button class="main-category" onclick="openCategory('number')">Number</button>
+  <button class="main-category" onclick="openCategory('integers')">Integers</button>
+  <button class="main-category" onclick="openCategory('exponents')">Exponents</button>
+</div>
 </div>
 
 <!-- SKILL MENU -->
@@ -231,15 +240,9 @@ input {
 
 </div>
 
-<button
-  id="startBtn"
-  type="button"
-  onclick="startGame()"
->
-  Start
-</button>
-<button type="button" onclick="resetGame()">Reset</button>
-<button type="button" onclick="softReset()">↻ Try Again</button>
+<button id="startBtn" type="button" onclick="startGame()" style="display:none;">Start</button>
+<button id="resetBtn" type="button" onclick="resetGame()" style="display:none;">Reset</button>
+<button id="tryAgainBtn" type="button" onclick="softReset()" style="display:none;">↻ Try Again</button>
 <button id="stopPractice"
         onclick="stopPractice()"
         style="display:none;">
@@ -366,6 +369,10 @@ function chooseSkill(skill) {
     lockStartButton();
     updateAddSubPBLabels();
   }
+// Show control buttons once a skill is chosen
+document.getElementById("startBtn").style.display = "inline-block";
+document.getElementById("resetBtn").style.display = "inline-block";
+document.getElementById("tryAgainBtn").style.display = "inline-block";
 }
 function stopPractice() {
   answerEl.disabled = true;
@@ -837,7 +844,10 @@ if (asBlock) asBlock.style.display = "none";
   // ✅ Hide game + skill menu
   document.getElementById("game").style.display = "none";
   document.getElementById("skillMenu").style.display = "none";
-
+// Hide control buttons again
+document.getElementById("startBtn").style.display = "none";
+document.getElementById("resetBtn").style.display = "none";
+document.getElementById("tryAgainBtn").style.display = "none";
   // ✅ Show category menu only
   document.getElementById("categoryMenu").style.display = "block";
 }
