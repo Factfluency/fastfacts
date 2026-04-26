@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Sandy Fast Facts</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
 <style>
@@ -340,6 +340,7 @@ body {
   color: var(--accent);
 }
 .lv-pb { font-size: 0.72rem; font-weight: 800; color: var(--amber); margin-top: 6px; display: block; grid-column: 2; }
+.lv-trend { grid-column: 2; margin-top: 4px; display: flex; align-items: flex-end; }
 
 /* ── GAME ── */
 .game-stats {
@@ -602,7 +603,9 @@ body {
 .lb-table td:last-child {
   text-align: right; font-weight: 900;
   font-size: 1rem; color: var(--accent);
+  white-space: nowrap;
 }
+.lb-table td:nth-child(3) { white-space: nowrap; }
 .lb-empty { text-align: center; color: var(--muted); padding: 36px 12px; font-size: 0.88rem; font-weight: 700; }
 
 /* ── UTILITY ── */
@@ -741,10 +744,259 @@ body {
   color: var(--text);
 }
 
+
+/* ══════════════════════════════════════════════
+   MOBILE KEYPAD
+══════════════════════════════════════════════ */
+#mobileKeypad {
+  padding: 0 0 8px;
+}
+.kb-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+  justify-content: center;
+}
+.kb-key {
+  flex: 1;
+  border: none;
+  border-radius: var(--r-sm);
+  font-family: 'Nunito', sans-serif;
+  font-weight: 800;
+  font-size: 1.3rem;
+  padding: 16px 8px;
+  cursor: pointer;
+  transition: transform .1s, opacity .1s;
+  box-shadow: 0 3px 0 rgba(0,0,0,0.12);
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+.kb-key:active {
+  transform: translateY(2px);
+  box-shadow: none;
+}
+/* Number keys — white */
+.kb-num {
+  background: var(--surface);
+  color: var(--text);
+  border: 1.5px solid var(--border);
+}
+/* Symbol keys (−, .) — light accent */
+.kb-sym {
+  background: var(--accent-bg);
+  color: var(--accent);
+  border: 1.5px solid rgba(67,56,202,0.2);
+  font-size: 1.4rem;
+}
+/* Inactive state — always visible but greyed out */
+.kb-sym-inactive {
+  background: var(--surface2) !important;
+  color: var(--border) !important;
+  border-color: var(--border) !important;
+  cursor: default !important;
+  box-shadow: none !important;
+}
+.kb-next-inactive {
+  background: var(--surface2) !important;
+  color: var(--border) !important;
+  border-color: var(--border) !important;
+  cursor: default !important;
+  box-shadow: none !important;
+}
+/* Delete key */
+.kb-del {
+  background: var(--surface2);
+  color: var(--muted);
+  border: 1.5px solid var(--border);
+  font-size: 1.1rem;
+}
+/* Next box key */
+.kb-next {
+  background: var(--accent-bg);
+  color: var(--accent);
+  border: 1.5px solid rgba(67,56,202,0.2);
+  font-size: 0.95rem;
+}
+/* 0 key — wider */
+.kb-zero {
+  flex: 2;
+}
+/* Submit / Enter key — primary colour */
+.kb-submit {
+  flex: 2;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  font-size: 1.1rem;
+  box-shadow: 0 3px 0 rgba(67,56,202,0.4);
+}
+.kb-submit:active { box-shadow: none; }
+
+
+/* Highlight the currently active input field on mobile (kbTarget) */
+.kb-focused {
+  border-color: var(--accent) !important;
+  background: var(--accent-bg) !important;
+  outline: 3px solid rgba(67,56,202,0.15);
+}
+
+/* ── Small phones ── */
 @media (max-width: 380px) {
   .q-text { font-size: 2.3rem; }
   .res-score { font-size: 3.2rem; }
   .cat-grid { grid-template-columns: 1fr; }
+}
+
+/* ══════════════════════════════════════════════════
+   MOBILE GAME LAYOUT  (< 768px)
+   Goal: entire game visible above the pinned keypad.
+   Keypad height ≈ 260px. Available above ≈ viewport - 260px.
+══════════════════════════════════════════════════ */
+
+/* ── STREAK PILL ── */
+#streakPill { border-color: var(--amber); }
+#streakPill b { color: var(--amber); }
+#streakPill.hot { background: var(--amber-bg); animation: streakPop .25s ease; }
+@keyframes streakPop {
+  0%  { transform: scale(1); }
+  50% { transform: scale(1.18); }
+  100%{ transform: scale(1); }
+}
+
+
+/* ── ONBOARDING ── */
+.ob-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: var(--border); transition: background .25s, transform .25s;
+}
+.ob-dot.active { background: var(--accent); transform: scale(1.25); }
+.ob-replay-btn { font-size:0.7rem;font-weight:800;color:var(--muted);cursor:pointer;text-decoration:underline; }
+.ob-replay-btn:hover { color:var(--accent); }
+
+.ob-card {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--r);
+  box-shadow: var(--shadow);
+  padding: 24px 20px;
+  min-height: 180px;
+}
+
+.ob-row {
+  display: flex; align-items: flex-start; gap: 14px;
+  padding: 10px 0;
+}
+.ob-row + .ob-row { border-top: 1px solid var(--border); }
+
+.ob-badge {
+  width: 40px; height: 40px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem; flex-shrink: 0; font-weight: 900;
+}
+.ob-badge.fluency { background: var(--accent-bg); color: var(--accent); }
+.ob-badge.practice { background: var(--green-bg); color: var(--green); }
+.ob-badge.score { background: var(--amber-bg); color: var(--amber); }
+.ob-badge.pb { background: #fce7f3; color: #9d174d; }
+.ob-badge.spark { background: var(--surface2); color: var(--muted); }
+
+.ob-row-text .ob-row-title {
+  font-weight: 900; font-size: 0.95rem; color: var(--text); margin-bottom: 3px;
+}
+.ob-row-text .ob-row-desc {
+  font-size: 0.82rem; color: var(--muted); font-weight: 700; line-height: 1.5;
+}
+
+@media (max-width: 767px) {
+
+  /* ── Body: add bottom padding so fixed keypad doesn't cover content ── */
+  body {
+    padding-bottom: 280px;   /* matches keypad height + breathing room */
+  }
+
+  /* ── Pin keypad to bottom of viewport ── */
+  #mobileKeypad {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: var(--bg);
+    border-top: 2px solid var(--border);
+    padding: 10px 12px 16px;
+    z-index: 100;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.10);
+    margin: 0;   /* override any inherited margin */
+  }
+
+  /* ── Shrink keypad display strip ── */
+  #kbDisplay {
+    padding: 6px 12px !important;
+    font-size: 1.2rem !important;
+    min-height: 36px !important;
+    margin-bottom: 8px !important;
+  }
+
+  /* ── Key sizing: slightly smaller so all 4 rows fit ── */
+  .kb-key {
+    padding: 12px 4px !important;
+    font-size: 1.15rem !important;
+  }
+  .kb-row { gap: 6px !important; margin-bottom: 6px !important; }
+
+  /* ── Game stats bar: tighten up ── */
+  .game-stats { padding: 8px 0 6px; }
+  .stat-pill { padding: 5px 10px; font-size: 0.85rem; }
+
+  /* ── Progress bar: slimmer ── */
+  .prog-wrap { height: 6px; margin-bottom: 8px; }
+
+  /* ── PB nudge: smaller ── */
+  .pb-nudge { font-size: 0.75rem; margin-bottom: 6px; min-height: 16px; }
+
+  /* ── Question box: less padding, smaller font ── */
+  .q-box {
+    padding: 16px 12px;
+    min-height: 90px;
+    margin-bottom: 10px;
+  }
+  .q-text { font-size: 2.2rem; }
+
+  /* ── Fraction input: smaller boxes ── */
+  .frac-num-input,
+  .frac-den-input {
+    font-size: 1.4rem !important;
+    width: 110px !important;
+    padding: 8px 6px !important;
+  }
+
+  /* ── Standard answer input ── */
+  .ans-input {
+    font-size: 1.6rem;
+    width: 150px;
+    padding: 8px 12px;
+  }
+  .ans-wrap { margin-bottom: 8px; }
+
+  /* ── Index inputs ── */
+  .idx-input { font-size: 1.2rem !important; width: 70px !important; padding: 6px 4px !important; }
+  .idx-exp-input { font-size: 0.95rem !important; width: 46px !important; padding: 4px 3px !important; }
+  .idx-var-letter { font-size: 1.8rem !important; }
+
+  /* ── Accuracy row: compress ── */
+  .acc-row { margin-bottom: 6px; }
+
+  /* ── Feedback: smaller ── */
+  .feedback { font-size: 0.82rem; min-height: 20px; }
+
+  /* ── Control buttons: compress ── */
+  .ctrl-row { margin-top: 8px; gap: 8px; }
+  .btn-primary, .btn-ghost { padding: 10px; font-size: 0.88rem; }
+
+  /* ── Back button on game screen: shorten ── */
+  #s-game .back-btn { padding: 8px 0 4px; font-size: 0.8rem; }
+
+  /* ── Simplify notice: compact ── */
+  .simplify-notice { padding: 6px 10px; font-size: 0.76rem; margin-bottom: 6px; }
+
+  /* ── idx-q-display: smaller on mobile ── */
+  .idx-q-display { font-size: 1.6rem; }
 }
 </style>
 </head>
@@ -755,7 +1007,7 @@ body {
 <div id="s-welcome" class="screen active">
   <div class="hero">
     <div class="logo">⚡ Sandy<span>FastFacts</span></div>
-    <div class="tagline">Secondary College — Maths Fluency Trainer</div>
+    <div class="tagline">Secondary Maths Fluency Trainer</div>
   </div>
   <div class="slabel">Choose Your Profile</div>
   <div class="profile-grid" id="profileGrid"></div>
@@ -770,6 +1022,30 @@ body {
       <button class="btn-ghost" onclick="cancelNameForm()">Cancel</button>
     </div>
   </div>
+</div>
+
+
+<!-- ══════════════ ONBOARDING ══════════════ -->
+<div id="s-onboard" class="screen">
+  <div style="padding: 32px 0 20px; text-align:center;">
+    <div style="font-size:2.4rem;margin-bottom:8px" id="obIcon">⚡</div>
+    <h2 style="font-size:1.4rem;font-weight:900;margin-bottom:8px" id="obTitle">Welcome to Sandy FastFacts!</h2>
+    <p style="font-size:0.92rem;color:var(--muted);font-weight:700;line-height:1.6;max-width:360px;margin:0 auto" id="obBody"></p>
+  </div>
+
+  <!-- Slide content area -->
+  <div class="ob-card" id="obCard"></div>
+
+  <!-- Dot progress indicator -->
+  <div style="display:flex;justify-content:center;gap:8px;margin:20px 0 24px;">
+    <div class="ob-dot active" id="obDot0"></div>
+    <div class="ob-dot" id="obDot1"></div>
+    <div class="ob-dot" id="obDot2"></div>
+  </div>
+
+  <button class="btn-primary" id="obNextBtn" onclick="obNext()">Next →</button>
+  <div style="height:10px"></div>
+  <button class="btn-ghost" onclick="obSkip()">Skip intro</button>
 </div>
 
 <!-- ══════════════ HOME ══════════════ -->
@@ -793,7 +1069,7 @@ body {
     <div class="cat-card" onclick="openCat('number')">
       <span class="cat-icon">🔢</span>
       <div class="cat-name">Number</div>
-      <div class="cat-desc">Tables, division, add &amp; subtract</div>
+      <div class="cat-desc">Tables, division, add, subtract &amp; BODMAS</div>
     </div>
     <div class="cat-card" onclick="openCat('integers')">
       <span class="cat-icon">±</span>
@@ -802,22 +1078,26 @@ body {
     </div>
     <div class="cat-card" onclick="openCat('exponents')">
       <span class="cat-icon">x²</span>
-      <div class="cat-name">Powers</div>
-      <div class="cat-desc">Squares &amp; square roots</div>
+      <div class="cat-name">Exponents</div>
+      <div class="cat-desc">Squares, cubes &amp; index laws</div>
     </div>
-    <div class="cat-card" onclick="openCat('order')">
-      <span class="cat-icon">( )</span>
-      <div class="cat-name">Order of Ops</div>
-      <div class="cat-desc">BODMAS challenges</div>
-    </div>
+
     <div class="cat-card" onclick="openCat('fractions')">
       <span class="cat-icon">½</span>
       <div class="cat-name">Fractions</div>
       <div class="cat-desc">Simplify, add, multiply &amp; more</div>
     </div>
+    <div class="cat-card" onclick="openCat('decimals')">
+      <span class="cat-icon">0.1</span>
+      <div class="cat-name">Decimals</div>
+      <div class="cat-desc">Add, multiply, round &amp; more</div>
+    </div>
+
   </div>
 
   <button class="btn-ghost" onclick="goLeaderboard()">🏆  Personal Bests</button>
+  <div style="height:8px"></div>
+  <button class="btn-ghost" onclick="replayTutorial()" style="font-size:0.85rem;padding:10px">📖  Replay Tutorial</button>
 </div>
 
 <!-- ══════════════ SKILL SELECT ══════════════ -->
@@ -847,6 +1127,7 @@ body {
     <div class="stat-pill"><span class="lbl">Score</span><b id="gScore">0</b></div>
     <div class="stat-pill"><span class="lbl" id="gTimeLbl">Time</span><b id="gTime">∞</b></div>
     <div class="stat-pill"><span class="lbl">CPM</span><b id="gCpm">–</b></div>
+    <div class="stat-pill" id="streakPill" style="display:none"><span class="lbl">🔥</span><b id="gStreak">0</b></div>
   </div>
   <div class="prog-wrap" id="progWrap" style="display:none">
     <div class="prog-bar" id="progBar"></div>
@@ -862,7 +1143,7 @@ body {
 
   <!-- Standard numeric answer -->
   <div class="ans-wrap" id="stdAnsWrap">
-    <input id="ansInput" class="ans-input" type="number" disabled placeholder="?">
+    <input id="ansInput" class="ans-input" type="text" inputmode="decimal" disabled placeholder="?" autocomplete="off">
   </div>
 
   <!-- Index notation answer panel -->
@@ -970,6 +1251,53 @@ body {
     <button class="btn-ghost" id="gameStopBtn" onclick="stopPractice()" style="display:none">Stop</button>
     <button class="btn-ghost" onclick="abortGame()">Reset</button>
   </div>
+
+  <!-- ── CUSTOM MOBILE KEYPAD ── -->
+  <!-- Shown only on screens < 768px. Suppresses native keyboard on all inputs. -->
+  <!-- Layout adapts per skill via JS (keypadMode). -->
+  <div id="mobileKeypad" style="display:none; margin-top:16px;">
+
+    <!-- Display strip — shows what's being typed into the focused field -->
+    <div id="kbDisplay" style="
+      background:var(--surface2); border:2px solid var(--border);
+      border-radius:var(--r-sm); padding:10px 16px; margin-bottom:10px;
+      font-family:'Nunito',sans-serif; font-weight:900; font-size:1.5rem;
+      color:var(--text); min-height:46px; text-align:right;
+      letter-spacing:1px; box-shadow:var(--shadow);
+    ">
+      <span id="kbDisplayText" style="color:var(--muted)">–</span>
+    </div>
+
+    <!-- Row 1: 7 8 9 ⌫ -->
+    <div class="kb-row">
+      <button class="kb-key kb-num" onclick="kbPress('7')">7</button>
+      <button class="kb-key kb-num" onclick="kbPress('8')">8</button>
+      <button class="kb-key kb-num" onclick="kbPress('9')">9</button>
+      <button class="kb-key kb-del" onclick="kbDel()" aria-label="Delete">⌫</button>
+    </div>
+    <!-- Row 2: 4 5 6 − -->
+    <div class="kb-row">
+      <button class="kb-key kb-num" onclick="kbPress('4')">4</button>
+      <button class="kb-key kb-num" onclick="kbPress('5')">5</button>
+      <button class="kb-key kb-num" onclick="kbPress('6')">6</button>
+      <button class="kb-key kb-sym kb-sym-inactive" id="kbNegBtn" onclick="kbPressIfActive('kbNegBtn','-')">−</button>
+    </div>
+    <!-- Row 3: 1 2 3 . -->
+    <div class="kb-row">
+      <button class="kb-key kb-num" onclick="kbPress('1')">1</button>
+      <button class="kb-key kb-num" onclick="kbPress('2')">2</button>
+      <button class="kb-key kb-num" onclick="kbPress('3')">3</button>
+      <button class="kb-key kb-sym kb-sym-inactive" id="kbDotBtn" onclick="kbPressIfActive('kbDotBtn','.')">.</button>
+    </div>
+    <!-- Row 4: 0  Next→  ✓Enter -->
+    <div class="kb-row">
+      <button class="kb-key kb-num kb-zero" onclick="kbPress('0')">0</button>
+      <button class="kb-key kb-next kb-next-inactive" id="kbNextBtn" onclick="kbNextIfActive()">Next →</button>
+      <button class="kb-key kb-submit" onclick="kbSubmit()">✓</button>
+    </div>
+
+  </div>
+
 </div>
 
 <!-- ══════════════ RESULTS ══════════════ -->
@@ -1018,21 +1346,25 @@ const CATS = {
   number: {
     label: '🔢 Number',
     skills: [
-      { id:'timesTables', name:'Times Tables',  inputMode:'number', lvKey:'tt'  },
-      { id:'division',    name:'Division',       inputMode:'number', lvKey:'div' },
-      { id:'addition',    name:'Addition',       inputMode:'number', lvKey:'as'  },
-      { id:'subtraction', name:'Subtraction',    inputMode:'number', lvKey:'as'  },
+      { id:'timesTables', name:'Times Tables',          inputMode:'number', lvKey:'tt'  },
+      { id:'division',    name:'Division',               inputMode:'number', lvKey:'div' },
+      { id:'addition',    name:'Addition',               inputMode:'number', lvKey:'as'  },
+      { id:'subtraction', name:'Subtraction',            inputMode:'number', lvKey:'as'  },
+      { id:'orderOps',    name:'Order of Operations',    inputMode:'number', lvKey:'oo'  },
+      { id:'sigFigs',     name:'Significant Figures',    inputMode:'number', lvKey:'sf'  },
     ]
   },
   integers: {
     label: '± Integers',
     skills: [
-      { id:'intAddSub',  name:'Add / Subtract Integers',    inputMode:'number', lvKey:'int' },
-      { id:'intMultDiv', name:'Multiply / Divide Integers', inputMode:'number', lvKey:'int' },
+      { id:'intAddSub',    name:'Add / Subtract Integers',         inputMode:'number', lvKey:'int'  },
+      { id:'intMultDiv',   name:'Multiply / Divide Integers',      inputMode:'number', lvKey:'int'  },
+      { id:'intSquareCube',name:'Squares &amp; Cubes of Integers', inputMode:'number', lvKey:'isc'  },
+      { id:'intOrderOps',  name:'Order of Operations (Integers)',   inputMode:'number', lvKey:'ioo'  },
     ]
   },
   exponents: {
-    label: 'x² Powers',
+    label: 'x² Exponents',
     skills: [
       { id:'squares',    name:'Square Numbers',          inputMode:'number', lvKey:'sq'   },
       { id:'roots',      name:'Square Roots',            inputMode:'number', lvKey:'sq'   },
@@ -1045,19 +1377,28 @@ const CATS = {
       { id:'sciFrom',    name:'Scientific Notation → Number', inputMode:'number', lvKey:'sci' },
     ]
   },
-  order: {
-    label: '( ) Order of Operations',
-    skills: [
-      { id:'orderOps', name:'Order of Operations', inputMode:'number', lvKey:'oo' },
-    ]
-  },
+
   fractions: {
     label: '½ Fractions',
     skills: [
-      { id:'fracSimplify', name:'Simplify Fractions',           inputMode:'fraction', lvKey:'fs' },
-      { id:'fracAddSub',   name:'Add &amp; Subtract Fractions', inputMode:'fraction', lvKey:'fas'},
-      { id:'fracMultiply', name:'Multiply Fractions',           inputMode:'fraction', lvKey:'fmu'},
-      { id:'fracDivide',   name:'Divide Fractions',             inputMode:'fraction', lvKey:'fd' },
+      { id:'fracSimplify',   name:'Simplify Fractions',                inputMode:'fraction', lvKey:'fs'   },
+      { id:'fracAddSub',     name:'Add &amp; Subtract Fractions',      inputMode:'fraction', lvKey:'fas'  },
+      { id:'fracMultiply',   name:'Multiply Fractions',                inputMode:'fraction', lvKey:'fmu'  },
+      { id:'fracDivide',     name:'Divide Fractions',                  inputMode:'fraction', lvKey:'fd'   },
+      { id:'mixedToImp',     name:'Mixed Number → Improper Fraction',  inputMode:'fraction', lvKey:'mi'   },
+      { id:'impToMixed',     name:'Improper Fraction → Mixed Number',  inputMode:'mixed',    lvKey:'mi'   },
+      { id:'fracOrderOps',   name:'Order of Operations (Fractions)',   inputMode:'fraction', lvKey:'foo'  },
+    ]
+  },
+  decimals: {
+    label: '0.1 Decimals',
+    skills: [
+      { id:'decAddSub',    name:'Add &amp; Subtract Decimals',   inputMode:'number', lvKey:'das'  },
+      { id:'decMultiply',  name:'Multiply Decimals',              inputMode:'number', lvKey:'dmu'  },
+      { id:'decDivide',    name:'Divide Decimals',                inputMode:'number', lvKey:'dd'   },
+      { id:'decSquareCube',name:'Squares &amp; Cubes of Decimals',inputMode:'number', lvKey:'dsc'  },
+      { id:'decOrderOps',  name:'Order of Operations (Decimals)', inputMode:'number', lvKey:'doo'  },
+      { id:'decRound',     name:'Rounding Decimals',              inputMode:'number', lvKey:'dr'   },
     ]
   }
 };
@@ -1132,6 +1473,72 @@ const LEVEL_DEFS = {
     { title:'Level 2 — One Variable',    desc:'Divide expressions with one variable. Divide the coefficients and subtract the powers of x. Enter the coefficient and power.', examples:['6x⁵ ÷ 3x² = ?'] },
     { title:'Level 3 — Two Variables',   desc:'Divide expressions with two variables x and y. Enter the coefficient and power of x (power of y shown in hint).', examples:['6x⁴y³ ÷ 2x²y = ?'] },
   ],
+
+  /* ── SIG FIGS (2 levels only) ── */
+  sf: [
+    { title:'Level 1 — Count Significant Figures', desc:'Count how many significant figures are in a given number. Zeros can be tricky — learn the rules.', examples:['sig figs in 0.0043', 'sig figs in 4700', 'sig figs in 3.05'] },
+    { title:'Level 2 — Round to Significant Figures', desc:'Round a number to a given number of significant figures. Enter the rounded value.', examples:['4756 to 2 s.f.', '0.003862 to 2 s.f.', '12.74 to 3 s.f.'] },
+  ],
+  /* ── INTEGER SQUARES & CUBES ── */
+  isc: [
+    { title:'Level 1 — Squares of Integers',   desc:'Square positive and negative integers. Remember: a negative × a negative = a positive.', examples:['(−3)²', '(−7)²', '(−5)²'] },
+    { title:'Level 2 — Cubes of Integers',     desc:'Cube positive and negative integers. A negative cubed stays negative.', examples:['(−2)³', '(−4)³', '(−3)³'] },
+    { title:'Level 3 — Mixed Squares & Cubes', desc:'A random mix of squaring and cubing negative integers. You must apply the correct power each time.', examples:['(−5)²', '(−3)³', '(−2)⁴'] },
+  ],
+  /* ── OO WITH INTEGERS ── */
+  ioo: [
+    { title:'Level 1 — No Brackets',   desc:'Apply BODMAS with negative integers. Multiplication and division before addition and subtraction.', examples:['−3 + 4 × 2', '6 × (−2) + 5', '−8 ÷ 2 + 3'] },
+    { title:'Level 2 — With Brackets', desc:'Brackets with negative integers — work inside brackets first, then apply remaining operations.', examples:['(−3 + 4) × 2', '5 × (−2 + 6)', '−2 × (3 − 7)'] },
+    { title:'Level 3 — Mixed Challenge',desc:'Three or more operations with negative numbers and brackets. Tests full BODMAS with integers.', examples:['−2 + 3 × (−4)', '(−5 + 2) × (−3)', '4 × (−2) + (−3) × 2'] },
+  ],
+  /* ── MIXED ↔ IMPROPER ── */
+  mi: [
+    { title:'Level 1 — Simple Denominators',  desc:'Convert between mixed numbers and improper fractions with denominators 2–5. Build the core method.', examples:['2½ → 5/2', '7/3 → 2⅓', '3¼ → 13/4'] },
+    { title:'Level 2 — Any Denominator',       desc:'Denominators up to 12. Practise the algorithm fluently across a wider range.', examples:['4⅔ → 14/3', '17/5 → 3⅖', '5⅞ → 47/8'] },
+    { title:'Level 3 — Larger Values',         desc:'Larger whole parts and denominators. Demands fast mental multiplication.', examples:['8 7/9 → 79/9', '53/7 → 7⁴⁄₇', '12⅗ → 63/5'] },
+  ],
+  mim: [
+    { title:'Level 1 — Mixed → Improper',   desc:'Convert a mixed number to an improper fraction. Multiply the whole number by the denominator then add the numerator. Simplify if needed.', examples:['2½ → 5/2', '3¼ → 13/4', '4⅔ → 14/3'] },
+    { title:'Level 2 — Improper → Mixed',   desc:'Convert an improper fraction to a mixed number. Divide the numerator by the denominator to find the whole number and remainder.', examples:['7/2 → 3½', '11/4 → 2¾', '17/5 → 3⅖'] },
+    { title:'Level 3 — Mixed Directions',   desc:'A random mix of both directions. Read the question carefully — some show mixed numbers and some show improper fractions.', examples:['9/4 → ?', '3⅗ → ?', '13/5 → ?'] },
+  ],
+  /* ── OO WITH FRACTIONS ── */
+  foo: [
+    { title:'Level 1 — Add & Multiply',   desc:'Apply BODMAS to fractions: multiply before adding. Same denominator fractions only.', examples:['½ + ¼ × 2', '⅓ × 3 + ½', '¾ + ¼ × 4'] },
+    { title:'Level 2 — With Brackets',    desc:'Brackets containing fractions — work inside first, then apply the outer operation.', examples:['(½ + ¼) × 2', '⅓ × (1 + ½)', '(¾ − ¼) × 4'] },
+    { title:'Level 3 — Mixed Operations', desc:'Three operations including division with fractions and brackets. Full BODMAS challenge.', examples:['½ + ¼ × ⅔', '(⅓ + ½) ÷ ¼', '⅔ × ¾ + ⅙'] },
+  ],
+  /* ── DECIMALS ── */
+  das: [
+    { title:'Level 1 — 1 Decimal Place',  desc:'Add or subtract numbers with 1 decimal place. Focus on aligning decimal points correctly.', examples:['3.4 + 2.7', '8.1 − 3.6', '5.5 + 4.8'] },
+    { title:'Level 2 — 2 Decimal Places', desc:'Add or subtract numbers with up to 2 decimal places. Includes regrouping across the decimal point.', examples:['4.37 + 2.85', '9.20 − 3.47', '6.08 + 1.95'] },
+    { title:'Level 3 — Mixed Decimals',   desc:'Add or subtract numbers with different numbers of decimal places. Align carefully before computing.', examples:['3.4 + 1.85', '7.2 − 3.45', '12.05 + 4.7'] },
+  ],
+  dmu: [
+    { title:'Level 1 — Decimal × Whole',    desc:'Multiply a decimal by a single-digit whole number. Use mental methods or the grid approach.', examples:['0.6 × 4', '1.3 × 5', '2.4 × 3'] },
+    { title:'Level 2 — Decimal × Decimal',  desc:'Multiply two decimals together. Count decimal places in factors to place the decimal correctly.', examples:['0.3 × 0.4', '1.2 × 0.5', '2.4 × 1.3'] },
+    { title:'Level 3 — Harder Products',    desc:'Multiply decimals with more digits. Demands careful place-value thinking.', examples:['3.6 × 2.5', '0.12 × 0.4', '4.5 × 1.8'] },
+  ],
+  dd: [
+    { title:'Level 1 — Decimal ÷ Whole',    desc:'Divide a decimal by a single-digit whole number. Think of sharing into equal parts.', examples:['0.8 ÷ 4', '3.6 ÷ 3', '2.4 ÷ 6'] },
+    { title:'Level 2 — Decimal ÷ Decimal',  desc:'Divide by a decimal by converting to an equivalent whole-number division first.', examples:['0.6 ÷ 0.3', '1.8 ÷ 0.6', '2.4 ÷ 0.4'] },
+    { title:'Level 3 — Harder Quotients',   desc:'Division with multi-digit decimals. May require rounding to 1 decimal place.', examples:['7.2 ÷ 2.4', '0.36 ÷ 0.09', '4.5 ÷ 1.5'] },
+  ],
+  dsc: [
+    { title:'Level 1 — Squares of Decimals',    desc:'Square decimals with 1 decimal place. Remember: answer has twice as many decimal places.', examples:['0.3²', '1.2²', '0.5²'] },
+    { title:'Level 2 — Cubes of Decimals',      desc:'Cube decimals with 1 decimal place. Careful with place value as you multiply three times.', examples:['0.2³', '0.5³', '1.1³'] },
+    { title:'Level 3 — Mixed Squares & Cubes',  desc:'A mix of squaring and cubing decimals, including 2 d.p. inputs.', examples:['0.12²', '0.4³', '1.5²'] },
+  ],
+  doo: [
+    { title:'Level 1 — No Brackets',    desc:'Apply BODMAS with decimals. Multiply and divide before adding and subtracting.', examples:['0.5 + 0.2 × 3', '1.2 × 2 + 0.4', '3.6 ÷ 4 + 0.1'] },
+    { title:'Level 2 — With Brackets',  desc:'Use brackets with decimal calculations — work inside first.', examples:['(0.5 + 0.3) × 4', '0.6 × (1 + 0.5)', '(1.2 − 0.4) × 5'] },
+    { title:'Level 3 — Mixed Challenge',desc:'Three or more operations with decimals and brackets.', examples:['0.5 + 0.2 × (3 − 1)', '(0.4 + 0.6) × 0.5 ÷ 0.2'] },
+  ],
+  dr: [
+    { title:'Level 1 — Round to 1 d.p.',       desc:'Round a decimal to 1 decimal place. Look at the second decimal place to decide.', examples:['3.47 → 3.5', '8.23 → 8.2', '6.75 → 6.8'] },
+    { title:'Level 2 — Round to 1 or 2 d.p.',  desc:'A mix of rounding to 1 or 2 decimal places. The question tells you how many.', examples:['3.467 to 2 d.p.', '8.235 to 1 d.p.', '12.744 to 2 d.p.'] },
+  ],
+
   ipow: [
     { title:'Level 1 — Numbers Only',    desc:'Multiply the indices when raising a power to another power. Enter the resulting power.', examples:['(3²)⁴ = 3?'] },
     { title:'Level 2 — One Variable',    desc:'Raise an expression with one variable to a power. Raise the coefficient and multiply the index of x. Enter both.', examples:['(2x²)³ = ?'] },
@@ -1158,7 +1565,7 @@ let level = null;
 let currentCat = null;
 let lbPidx = 0;
 
-let score = 0, attempts = 0;
+let score = 0, attempts = 0, streak = 0, bestStreak = 0;
 let startTime = null;
 let timer = null;
 let timeLeft = 60, elapsedSec = 0;
@@ -1224,8 +1631,18 @@ function renderProfiles() {
     c.innerHTML = `
       <div class="avatar" style="background:${p.color}18;color:${p.color}">${ini(p.name)}</div>
       <div class="p-name">${p.name}</div>
-      <div class="p-sub">Best score: ${b || '–'}</div>`;
-    c.onclick = () => { pidx = i; goHome(); };
+      <div class="p-sub">Best score: ${b || '–'}</div>
+      <div style="margin-top:8px">
+        <span class="ob-replay-btn" data-idx="${i}">? Replay intro</span>
+      </div>`;
+    c.onclick = (e) => {
+      if (e.target.classList.contains('ob-replay-btn')) {
+        pidx = parseInt(e.target.dataset.idx);
+        obStart();
+        return;
+      }
+      pidx = i; goHome();
+    };
     g.appendChild(c);
   });
   if (profiles.length < 4) {
@@ -1267,7 +1684,12 @@ function saveProfile() {
   else { profiles.push({ name, color: selColor }); pidx = profiles.length - 1; }
   saveProfiles();
   document.getElementById('nameFormWrap').classList.add('hide');
-  goHome();
+  // New profiles (editPidx null) always get the onboarding walkthrough
+  if (editPidx === null) {
+    obStart();
+  } else {
+    goHome();
+  }
 }
 
 /* ═══════════════════════════════════════════════
@@ -1339,19 +1761,22 @@ function selectSkill(smeta) {
   defs.forEach((def, i) => {
     const lv = i + 1;
     const pb = getPB(skill, lv);
+    const trend = getTrend(skill, lv).slice(-3);
     const card = document.createElement('div');
     card.className = 'lv-card';
     card.id = `lc${lv}`;
 
     const exHTML = def.examples.map(e => `<span class="lv-example">${e}</span>`).join('');
     const pbHTML = pb > 0 ? `<span class="lv-pb">Personal best: ${pb}</span>` : '';
+    const sparkHTML = trend.length > 0
+      ? `<div class="lv-trend">${buildLvlSpark(trend, pb)}</div>` : '';
 
     card.innerHTML = `
       <div class="lv-badge">L${lv}</div>
       <div class="lv-title">${def.title}</div>
       <div class="lv-desc">${def.desc}</div>
       <div class="lv-examples">${exHTML}</div>
-      ${pbHTML}
+      ${pbHTML}${sparkHTML}
     `;
     card.onclick = () => {
       level = lv;
@@ -1379,7 +1804,7 @@ function beginGame() {
    GAME SCREEN SETUP
 ═══════════════════════════════════════════════ */
 function getInputMode() { return skillMeta ? skillMeta.inputMode : 'number'; }
-function isFractionSkill() { return ['fracSimplify','fracAddSub','fracMultiply','fracDivide'].includes(skill); }
+function isFractionSkill() { return ['fracSimplify','fracAddSub','fracMultiply','fracDivide','fracOrderOps','mixedToImp','impToMixed'].includes(skill); }
 function isIndexSkill()    { return ['indexMult','indexDiv','indexPow'].includes(skill); }
 function isSciSkill()      { return skill === 'sciTo'; }
 
@@ -1401,6 +1826,7 @@ function prepGameScreen() {
   id('gameStartBtn').disabled = false;
   id('gameStartBtn').textContent = 'Start';
   id('gameStopBtn').style.display = 'none';
+  kbHide();
 
   if (sessionMode === 'fluency') {
     setText('gTimeLbl','Time'); setText('gTime','60');
@@ -1434,9 +1860,11 @@ function resetAnswerInputs() {
     if (el) { el.value=''; el.disabled=true; el.classList.remove('ok','bad'); }
   });
 
-  // Simplify notice — only for fraction category skills
+  // Simplify notice — only for fraction skills that REQUIRE simplifying.
+  // fracMultiply L1 and fracDivide L1 are designed to NOT need simplifying.
   const sn = id('simplifyNotice');
-  sn.style.display = isFractionSkill() ? 'block' : 'none';
+  const noSimplifyNeeded = (skill === 'fracMultiply' || skill === 'fracDivide') && level === 1;
+  sn.style.display = (isFractionSkill() && !noSimplifyNeeded) ? 'block' : 'none';
 
   // ── Show only the correct panel ──
   if (mode === 'fraction') {
@@ -1470,6 +1898,7 @@ function enableInputs() {
     inp.focus();
     id('fracAlgLabel').textContent = 'Answer is a whole number — type it in the box';
     id('fracAlgLabel').classList.remove('hide');
+    kbActivateInputs(); kbShow();
     return;
   }
 
@@ -1504,6 +1933,9 @@ function enableInputs() {
     inp.disabled = false;
     inp.focus();
   }
+  // Show keypad on mobile after inputs are enabled
+  kbActivateInputs();
+  kbShow();
 }
 
 /* ── setupIndexInput: shows the right sub-row and enables the right inputs ── */
@@ -1553,8 +1985,9 @@ function setupSciInput() {
 ═══════════════════════════════════════════════ */
 function launchSession() {
   clearInterval(timer);
-  gameOver = false; score = 0; attempts = 0;
+  gameOver = false; score = 0; attempts = 0; streak = 0; bestStreak = 0;
   setText('gScore','0'); setText('feedback','');
+  setText('gStreak','0'); id('streakPill').style.display='none'; id('streakPill').classList.remove('hot');
   id('gameStartBtn').style.display = 'none';
 
   startTime = Date.now();
@@ -1583,20 +2016,24 @@ function launchSession() {
 
 function stopPractice() {
   clearInterval(timer);
-  const mode = getInputMode();
-  if (mode === 'fraction') { id('fracNum').disabled=true; id('fracDen').disabled=true; }
-  else if (mode === 'mixed')  { id('mixedWhole').disabled=true; id('mixedNum').disabled=true; id('mixedDen').disabled=true; }
-  else if (mode === 'index')  { id('idxCoeff').disabled=true; id('idxExp').disabled=true; id('idxExpB').disabled=true; id('idxExpC').disabled=true; }
-  else if (mode === 'sci')    { id('sciCoeff').disabled=true; id('sciExp').disabled=true; }
-  else { id('ansInput').disabled=true; }
-  id('gameStopBtn').style.display='none';
-  id('gameStartBtn').style.display='inline-block';
-  id('gameStartBtn').textContent='↻ Again';
-  const mins = (Date.now() - startTime) / 60000;
+  // Disable all inputs
+  ['ansInput','fracNum','fracDen','mixedWhole','mixedNum','mixedDen',
+   'idxCoeff','idxExp','idxExpB','idxExpC','sciCoeff','sciExp'].forEach(i => {
+    const el = document.getElementById(i); if (el) el.disabled = true;
+  });
+  kbHide();
+
+  // Show full results screen for practice mode
+  const acc = attempts > 0 ? score / attempts : 0;
+  const mins = startTime ? (Date.now() - startTime) / 60000 : 0;
   const cpm = mins > 0 ? Math.round(score / mins) : 0;
-  const acc = attempts ? Math.round(score/attempts*100) : 0;
-  id('feedback').style.color='var(--muted)';
-  setText('feedback', `Stopped — ${score} correct · ${acc}% accuracy · ${cpm}/min`);
+  // Practice score = correct × accuracy (no time pressure so no ² penalty)
+  const practiceScore = Math.round(score * acc);
+
+  pushTrend(skill, level, practiceScore);
+  const trend = getTrend(skill, level);
+
+  showResults(practiceScore, score, acc, cpm, 'practice', 0, trend);
 }
 
 function abortGame() {
@@ -1628,21 +2065,20 @@ function nextQ() {
   }
   else if (skill === 'division') {
     const mx = [5,12,20][level-1];
-    const n2 = rr(2,mx), ans = rr(1,mx);
+    const n2 = rr(2,mx); // rr(2,...) guarantees n2 >= 2, never zero
+    const ans = rr(1,mx);
     qData.ans = ans;
     el.textContent = `${n2*ans} ÷ ${n2}`;
   }
   else if (skill === 'addition') {
     const [a,b] = asNums(false);
     qData.ans = a + b;
-    el.style.fontSize = '2.3rem';
-    el.textContent = `${a}\n+ ${b}`;
+    id('qBox').innerHTML = `<div style="font-family:'Nunito',sans-serif;font-weight:900;font-size:2.4rem;text-align:right;line-height:1.4;border-bottom:3px solid var(--text);padding-bottom:6px;min-width:140px;display:inline-block"><div>${a}</div><div>+&nbsp;${b}</div></div>`;
   }
   else if (skill === 'subtraction') {
     const [a,b] = asNums(true);
     qData.ans = a - b;
-    el.style.fontSize = '2.3rem';
-    el.textContent = `${a}\n− ${b}`;
+    id('qBox').innerHTML = `<div style="font-family:'Nunito',sans-serif;font-weight:900;font-size:2.4rem;text-align:right;line-height:1.4;border-bottom:3px solid var(--text);padding-bottom:6px;min-width:140px;display:inline-block"><div>${a}</div><div>−&nbsp;${b}</div></div>`;
   }
   else if (skill === 'intAddSub') {
     const mx = [10,20,50][level-1];
@@ -1652,7 +2088,9 @@ function nextQ() {
   }
   else if (skill === 'intMultDiv') {
     const mx = [6,10,15][level-1];
-    const a = nz(rr(-mx,mx)), b = nz(rr(-mx,mx));
+    let a = nz(rr(-mx,mx)), b = nz(rr(-mx,mx));
+    // nz() ensures neither is zero; extra guard for b in division
+    if (b === 0) b = 1;
     if (Math.random() < 0.5) { qData.ans = a*b; el.textContent = `${f(a)} × ${f(b)}`; }
     else { qData.ans = a; el.textContent = `${f(a*b)} ÷ ${f(b)}`; }
   }
@@ -1680,6 +2118,18 @@ function nextQ() {
   else if (skill === 'fracAddSub')    { genFracAddSub(); }
   else if (skill === 'fracMultiply')  { genFracMultiply(); }
   else if (skill === 'fracDivide')    { genFracDivide(); }
+  else if (skill === 'intSquareCube') { genIntSquareCube(); }
+  else if (skill === 'intOrderOps')   { genIntOrderOps(); }
+  else if (skill === 'sigFigs')       { genSigFigs(); }
+  else if (skill === 'mixedToImp')    { genMixedToImp(); }
+  else if (skill === 'impToMixed')    { genImpToMixed(); }
+  else if (skill === 'fracOrderOps')  { genFracOrderOps(); }
+  else if (skill === 'decAddSub')     { genDecAddSub(); }
+  else if (skill === 'decMultiply')   { genDecMultiply(); }
+  else if (skill === 'decDivide')     { genDecDivide(); }
+  else if (skill === 'decSquareCube') { genDecSquareCube(); }
+  else if (skill === 'decOrderOps')   { genDecOrderOps(); }
+  else if (skill === 'decRound')      { genDecRound(); }
 
   enableInputs();
 }
@@ -1713,8 +2163,11 @@ function clearInputState() {
     setText('idxInstruction','');
   } else {
     id('ansInput').value = '';
-    id('ansInput').classList.remove('ok','bad');
+    id('ansInput').classList.remove('ok','bad','kb-focused');
   }
+  // Clear kb-focused from all inputs
+  KB_INPUTS.forEach(i => { const el = document.getElementById(i); if(el) el.classList.remove('kb-focused'); });
+  kbTarget = null;
 }
 
 /* ── TIMES TABLES ── */
@@ -1736,19 +2189,35 @@ function asNums(sub) {
 
 /* ── ORDER OF OPS ── */
 function genOO(el) {
-  const a=rr(1,10), b=rr(1,10), c=rr(1,10), d=rr(1,5);
-  if (level===1) {
-    if (Math.random()<0.5) { qData.ans=a+b*c; el.textContent=`${a} + ${b} × ${c}`; }
-    else { qData.ans=a*b+c; el.textContent=`${a} × ${b} + ${c}`; }
-  } else if (level===2) {
-    if (Math.random()<0.5) { qData.ans=(a+b)*c; el.textContent=`(${a} + ${b}) × ${c}`; }
-    else { qData.ans=a*(b+c); el.textContent=`${a} × (${b} + ${c})`; }
-  } else {
-    const t=r(3);
-    if (t===1) { qData.ans=a+b*c-d; el.textContent=`${a} + ${b} × ${c} − ${d}`; }
-    else if (t===2) { qData.ans=(a+b)*c-d; el.textContent=`(${a} + ${b}) × ${c} − ${d}`; }
-    else { qData.ans=a*b+c*d; el.textContent=`${a} × ${b} + ${c} × ${d}`; }
-  }
+  // All answers guaranteed positive — regenerate if negative
+  let a,b,c,d, ans, txt;
+  let safety = 0;
+  do {
+    a=rr(1,10); b=rr(1,10); c=rr(1,10); d=rr(1,5);
+    if (level===1) {
+      if (Math.random()<0.5) { ans=a+b*c; txt=`${a} + ${b} × ${c}`; }
+      else { ans=a*b+c; txt=`${a} × ${b} + ${c}`; }
+    } else if (level===2) {
+      if (Math.random()<0.5) { ans=(a+b)*c; txt=`(${a} + ${b}) × ${c}`; }
+      else { ans=a*(b+c); txt=`${a} × (${b} + ${c})`; }
+    } else {
+      const t=r(3);
+      // L3: use only forms that can't go negative given our ranges
+      if (t===1) {
+        // ensure b*c > d so subtraction stays positive
+        if (b*c > d) { ans=a+b*c-d; txt=`${a} + ${b} × ${c} − ${d}`; }
+        else { ans=a+b*c; txt=`${a} + ${b} × ${c}`; } // fallback
+      } else if (t===2) {
+        ans=(a+b)*c; txt=`(${a} + ${b}) × ${c}`;
+      } else {
+        ans=a*b+c*d; txt=`${a} × ${b} + ${c} × ${d}`;
+      }
+    }
+    safety++;
+  } while (ans <= 0 && safety < 50);
+
+  qData.ans = ans;
+  el.textContent = txt;
   el.style.fontSize = '1.8rem';
 }
 
@@ -2198,7 +2667,16 @@ function genFracDivide() {
 ═══════════════════════════════════════════════ */
 // Keyboard listeners
 document.addEventListener('DOMContentLoaded', () => {
-  // Standard input
+  // Keypad setup — must run before any input interactions
+  kbSetup();
+
+  // Standard input — filter to numeric chars on desktop
+  id('ansInput').addEventListener('keydown', e => {
+    const allowed = ['Backspace','Delete','ArrowLeft','ArrowRight','Tab','Enter','-','.'];
+    if (allowed.includes(e.key) || (e.key >= '0' && e.key <= '9')) return;
+    if (e.ctrlKey || e.metaKey) return; // allow copy/paste
+    e.preventDefault();
+  });
   id('ansInput').addEventListener('keyup', e => {
     if (e.key === 'Enter' && !id('ansInput').disabled) checkAns();
   });
@@ -2252,8 +2730,15 @@ function checkAns() {
   attempts++;
 
   if (mode === 'number') {
-    const val = parseInt(id('ansInput').value, 10);
-    correct = val === qData.ans;
+    const raw = id('ansInput').value.trim();
+    // Reject empty / incomplete entries without counting as attempt
+    if (raw === '' || raw === '-' || raw === '.') { attempts--; id('ansInput').focus(); return; }
+    // Always parseFloat — safe for integers (parseFloat('7') === 7) and decimals
+    const val = parseFloat(raw);
+    if (isNaN(val)) { attempts--; id('ansInput').focus(); return; }
+    // Tolerance for decimal floating-point (e.g. 0.1+0.2 = 0.30000000001)
+    const tol = 0.0001;
+    correct = Math.abs(val - qData.ans) <= tol;
     if (!correct) feedbackStr = `Answer: ${qData.ans}`;
     id('ansInput').classList.remove('ok','bad');
     id('ansInput').classList.add(correct ? 'ok' : 'bad');
@@ -2261,8 +2746,8 @@ function checkAns() {
   else if (mode === 'fraction') {
     // Whole-number answer — student used the standard number box
     if (id('stdAnsWrap').dataset.wholeFromFrac === 'true') {
-      const val = parseInt(id('ansInput').value, 10);
-      correct = val === qData.ansNum; // ansDen is 1, so ansNum IS the whole number
+      const val = parseFloat(id('ansInput').value.trim());
+      correct = !isNaN(val) && Math.abs(val - qData.ansNum) < 0.0001; // ansDen is 1
       if (!correct) feedbackStr = `Answer: ${qData.ansNum}`;
       id('ansInput').classList.remove('ok','bad');
       id('ansInput').classList.add(correct ? 'ok' : 'bad');
@@ -2376,13 +2861,29 @@ function checkAns() {
     });
   }
 
-  if (correct) { score++; setText('feedback',''); }
-  else {
+  if (correct) {
+    score++;
+    streak++;
+    if (streak > bestStreak) bestStreak = streak;
+    setText('feedback','');
+    // Update streak pill
+    setText('gStreak', streak);
+    const sp = id('streakPill');
+    sp.style.display = 'flex';
+    sp.classList.remove('hot');
+    void sp.offsetWidth; // force reflow for animation restart
+    if (streak >= 3) sp.classList.add('hot');
+  } else {
+    streak = 0;
+    setText('gStreak', '0');
+    id('streakPill').classList.remove('hot');
     id('feedback').style.color = 'var(--red)';
     setText('feedback', '✕  ' + feedbackStr);
   }
 
   setText('gScore', score);
+  // Refresh keypad display after check (value gets cleared by clearInputState)
+  kbRefreshDisplay();
   const accPct = Math.round(score / attempts * 100);
   setText('accPct', accPct + '%');
   const fill = id('accFill');
@@ -2441,14 +2942,17 @@ function showResults(fluency, correct, acc, cpm, pbResult, pb, trend) {
   setText('rScore', fluency);
   setText('rLabel', sessionMode === 'fluency'
     ? 'Fluency Score = correct answers × accuracy²'
-    : 'Practice complete');
+    : 'Practice Score = correct answers × accuracy');
   setText('rCorrect', correct);
   setText('rAcc', Math.round(acc*100) + '%');
   setText('rCpm', cpm);
   setText('rSparkSkill', skillMeta ? skillMeta.name.replace(/&amp;/g,'&') + ' · L' + level : '');
 
   const banner = id('rPbBanner');
-  if (pbResult === 'new') {
+  if (pbResult === 'practice') {
+    banner.className = 'pb-banner pb-below';
+    banner.textContent = `Practice session complete — best streak: ${bestStreak}`;
+  } else if (pbResult === 'new') {
     banner.className = 'pb-banner pb-new';
     banner.textContent = `🎉 New Personal Best! PB: ${pb}`;
   } else if (pbResult === 'equal') {
@@ -2495,12 +2999,33 @@ function renderLBTabs() {
     tabs.appendChild(t);
   });
 }
+
+/* Sparkline for level selection card */
+function buildLvlSpark(trend, pb) {
+  if (!trend || trend.length === 0) return '';
+  const mx = Math.max(pb, ...trend, 1);
+  const bars = trend.map((v, i) => {
+    const h = Math.max(4, Math.round(v / mx * 22));
+    const isLast = i === trend.length - 1;
+    const col = isLast ? 'var(--accent)' : 'rgba(67,56,202,0.25)';
+    return `<span style="display:inline-block;width:12px;height:${h}px;background:${col};border-radius:2px 2px 0 0;vertical-align:bottom;margin-right:3px" title="Score: ${v}"></span>`;
+  });
+  return `<span style="display:inline-flex;align-items:flex-end;height:22px;gap:0;margin-top:4px">${bars.join('')}</span><span style="font-size:0.7rem;color:var(--muted);font-weight:700;margin-left:6px;vertical-align:bottom">recent scores</span>`;
+}
+
 function renderLB() {
   const div = id('lbContent'); div.innerHTML = '';
   const rows = [];
   Object.values(CATS).forEach(cat => cat.skills.forEach(s => [1,2,3].forEach(lv => {
     const pb = getPB(s.id, lv, lbPidx);
-    if (pb > 0) rows.push({ name: s.name.replace(/&amp;/g,'&'), lv, pb });
+    if (pb > 0) {
+      // Get trend for this profile — temporarily swap pidx
+      const savedPidx = pidx;
+      pidx = lbPidx;
+      const trend = getTrend(s.id, lv).slice(-3); // last 3 scores
+      pidx = savedPidx;
+      rows.push({ name: s.name.replace(/&amp;/g,'&'), lv, pb, trend });
+    }
   })));
   rows.sort((a,b) => b.pb - a.pb);
   if (!rows.length) {
@@ -2509,14 +3034,589 @@ function renderLB() {
   }
   const tbl = document.createElement('table');
   tbl.className = 'lb-table';
-  tbl.innerHTML = '<thead><tr><th>Skill</th><th>Level</th><th>Best</th></tr></thead>';
+  tbl.innerHTML = '<thead><tr><th>Skill</th><th>Lvl</th><th>Last 3</th><th>Best</th></tr></thead>';
   const tbody = document.createElement('tbody');
   rows.forEach(r => {
     const tr = document.createElement('tr');
-    tr.innerHTML = `<td>${r.name}</td><td>L${r.lv}</td><td>${r.pb}</td>`;
+    const sparkHtml = buildLBSpark(r.trend, r.pb);
+    tr.innerHTML = `<td>${r.name}</td><td>L${r.lv}</td><td>${sparkHtml}</td><td>${r.pb}</td>`;
     tbody.appendChild(tr);
   });
   tbl.appendChild(tbody); div.appendChild(tbl);
+}
+
+/* Build a tiny inline sparkline for the leaderboard */
+function buildLBSpark(trend, pb) {
+  if (!trend || trend.length === 0) return '<span style="color:var(--border);font-size:0.75rem">–</span>';
+  const mx = Math.max(pb, ...trend, 1);
+  const bars = trend.map((v, i) => {
+    const h = Math.max(4, Math.round(v / mx * 28));
+    const isLast = i === trend.length - 1;
+    const col = isLast ? 'var(--accent)' : 'var(--border)';
+    return `<span style="display:inline-block;width:10px;height:${h}px;background:${col};border-radius:2px 2px 0 0;vertical-align:bottom;margin-right:2px" title="${v}"></span>`;
+  });
+  return `<span style="display:inline-flex;align-items:flex-end;height:28px;gap:0">${bars.join('')}</span>`;
+}
+
+
+/* ════════════════════════════════════════════
+   NEW SKILL GENERATORS
+════════════════════════════════════════════ */
+
+/* ── SIGNIFICANT FIGURES ── */
+function genSigFigs() {
+  const el = id('qText');
+  if (level === 1) {
+    // Count sig figs in a number
+    const nums = [
+      [0.0043, 2], [4700, 2], [3.05, 3], [0.020, 2],
+      [100.0, 4], [0.00106, 3], [5300, 2], [60.20, 4],
+      [0.004, 1], [120, 2], [3.004, 4], [0.0700, 3],
+      [5010, 3], [6.020, 4], [0.00050, 2], [900, 1],
+    ];
+    const pick = nums[ri(nums.length)];
+    qData.ans = pick[1];
+    el.textContent = `sig figs in ${pick[0]}`;
+    el.style.fontSize = '1.8rem';
+  } else {
+    // Round to n sig figs — generate number and sig fig target
+    const vals = [
+      [4756, 2, 4800], [0.003862, 2, 0.0039], [12.74, 3, 12.7],
+      [38500, 2, 39000], [0.05738, 3, 0.0574], [7.835, 2, 7.8],
+      [463, 1, 500], [0.006271, 3, 0.00627], [9.996, 3, 10.0],
+      [84700, 3, 84700], [0.04053, 2, 0.041], [328.6, 2, 330],
+    ];
+    const pick = vals[ri(vals.length)];
+    qData.ans = pick[2];
+    el.textContent = `Round ${pick[0]} to ${pick[1]} s.f.`;
+    el.style.fontSize = '1.6rem';
+  }
+}
+
+/* ── INTEGER SQUARES & CUBES ── */
+function genIntSquareCube() {
+  const el = id('qText');
+  const ranges = [5, 10, 12];
+  const mx = ranges[level-1];
+  const base = -rr(1, mx); // always negative for interest
+
+  if (level === 1) {
+    // squares only
+    qData.ans = base * base;
+    el.textContent = `(${base})²`;
+  } else if (level === 2) {
+    // cubes only
+    qData.ans = base * base * base;
+    el.textContent = `(${base})³`;
+  } else {
+    // mix of squares and cubes
+    const pow = Math.random() < 0.5 ? 2 : 3;
+    qData.ans = Math.pow(base, pow);
+    el.textContent = `(${base})${pow === 2 ? '²' : '³'}`;
+  }
+}
+
+/* ── ORDER OF OPERATIONS (INTEGERS) ── */
+function genIntOrderOps() {
+  const el = id('qText');
+  let ans, txt, safety = 0;
+  do {
+    const a = rr(-8,8)||1, b = rr(-6,6)||1, c = rr(-6,6)||1;
+    if (level === 1) {
+      if (Math.random() < 0.5) { ans = a + b*c; txt = `${f(a)} + ${f(b)} × ${f(c)}`; }
+      else { ans = a*b + c; txt = `${f(a)} × ${f(b)} + ${f(c)}`; }
+    } else if (level === 2) {
+      if (Math.random() < 0.5) { ans = (a+b)*c; txt = `(${f(a)} + ${f(b)}) × ${f(c)}`; }
+      else { ans = a*(b+c); txt = `${f(a)} × (${f(b)} + ${f(c)})`; }
+    } else {
+      const d = rr(-4,4)||1;
+      if (Math.random() < 0.5) { ans = a + b*c + d; txt = `${f(a)} + ${f(b)} × ${f(c)} + ${f(d)}`; }
+      else { ans = (a+b)*c - d; txt = `(${f(a)} + ${f(b)}) × ${f(c)} − ${f(Math.abs(d))}`; if(c<0&&(a+b)<0)ans=(a+b)*c-d; }
+    }
+    safety++;
+  } while (Math.abs(ans) > 200 && safety < 50);
+  qData.ans = ans;
+  el.textContent = txt;
+  el.style.fontSize = '1.7rem';
+}
+
+/* ── MIXED NUMBER → IMPROPER FRACTION ── */
+function genMixedImpMix() {
+  // L1: always mixed→improper; L2: always improper→mixed; L3: random
+  const doToImproper = (level === 1) ? true : (level === 2) ? false : Math.random() < 0.5;
+  qData.mixedMode = doToImproper ? 'toImproper' : 'toMixed';
+  if (doToImproper) {
+    genMixedToImp();
+  } else {
+    genImpToMixed();
+  }
+}
+
+function genMixedToImp() {
+  const denRanges = [[2,5],[2,9],[2,15]];
+  const [dMin, dMax] = denRanges[level-1];
+  const wholeRanges = [[1,5],[1,9],[1,12]];
+  const [wMin, wMax] = wholeRanges[level-1];
+  const den = rr(dMin, dMax);
+  const whole = rr(wMin, wMax);
+  const num = rr(1, den-1);
+  qData.ansNum = whole * den + num;
+  qData.ansDen = den;
+  // Display as mixed number in qBox
+  id('qBox').innerHTML = `<div class="idx-q-display" style="font-size:2rem;gap:8px;align-items:center">
+    <span style="font-weight:900">${whole}</span>
+    ${fracHTML(num, den)}
+    <span style="font-size:1.3rem;color:var(--muted)">→ improper</span>
+  </div>`;
+}
+
+/* ── IMPROPER FRACTION → MIXED NUMBER ── */
+function genImpToMixed() {
+  const denRanges = [[2,5],[2,9],[2,15]];
+  const [dMin, dMax] = denRanges[level-1];
+  const den = rr(dMin, dMax);
+  const whole = rr(1, level === 1 ? 5 : level === 2 ? 9 : 12);
+  const rem = rr(1, den-1);
+  const impNum = whole * den + rem;
+  qData.ansWhole = whole;
+  qData.ansNum = rem;
+  qData.ansDen = den;
+  qData.mixedMode = 'toMixed';
+  id('qBox').innerHTML = `<div class="idx-q-display" style="font-size:2rem;gap:8px;align-items:center">
+    ${fracHTML(impNum, den)}
+    <span style="font-size:1.3rem;color:var(--muted)">→ mixed</span>
+  </div>`;
+}
+
+/* ── ORDER OF OPERATIONS (FRACTIONS) ── */
+function genFracOrderOps() {
+  // Use simple unit fractions to keep mental arithmetic feasible
+  const simpleF = [[1,2],[1,3],[1,4],[2,3],[3,4],[1,6],[1,8]];
+  const pf = () => simpleF[ri(simpleF.length)];
+  let [n1,d1]=pf(), [n2,d2]=pf(), [n3,d3]=pf();
+  let ans, txt;
+  if (level === 1) {
+    // a + b × c (where b×c = whole number for simplicity, or use unit frac)
+    const mult = rr(2,4);
+    ans = n1/d1 + (n2/d2)*mult;
+    txt = `${n1}/${d1} + ${n2}/${d2} × ${mult}`;
+  } else if (level === 2) {
+    const mult = rr(2,4);
+    ans = (n1/d1 + n2/d2) * mult;
+    txt = `(${n1}/${d1} + ${n2}/${d2}) × ${mult}`;
+  } else {
+    ans = n1/d1 + (n2/d2) * (n3/d3);
+    txt = `${n1}/${d1} + ${n2}/${d2} × ${n3}/${d3}`;
+  }
+  // Convert ans to fraction
+  const ansRat = toRat(ans);
+  qData.ansNum = ansRat[0]; qData.ansDen = ansRat[1];
+  id('qBox').innerHTML = `<div class="idx-q-display" style="font-size:1.6rem;gap:6px;flex-wrap:wrap">${txt}</div>`;
+}
+
+/* Convert decimal to simplified fraction */
+function toRat(dec) {
+  // Use 1000 as denominator, then simplify
+  const n = Math.round(dec * 1000), d = 1000;
+  const g = gcd(Math.abs(n), d);
+  return [n/g, d/g];
+}
+
+/* fracHTML helper (if not already accessible) */
+function fracHTML(n, d, col) {
+  const c = col ? `style="color:${col}"` : '';
+  return `<div class="q-frac" ${c}><div class="fnum">${n}</div><div class="fline"></div><div class="fden">${d}</div></div>`;
+}
+
+/* ── DECIMAL GENERATORS ── */
+
+
+
+function genDecDivide() {
+  const el = id('qText');
+  let a, b, ans;
+  if (level === 1) { ans = rr(10,99)/10; b = rr(2,9); a = Math.round(ans*b*10)/10; }
+  else if (level === 2) { ans = rr(10,99)/10; b = rr(10,99)/10; a = Math.round(ans*b*100)/100; }
+  else { ans = rr(10,99)/10; b = rr(10,99)/10; a = Math.round(ans*b*1000)/1000; }
+  qData.ans = ans;
+  el.textContent = `${a} ÷ ${b}`;
+}
+
+function genDecSquareCube() {
+  const el = id('qText');
+  let base, ans;
+  if (level === 1) { base = rr(1,9)/10; ans = Math.round(base*base*10000)/10000; el.textContent = `${base}²`; }
+  else if (level === 2) { base = rr(1,5)/10; ans = Math.round(Math.pow(base,3)*100000)/100000; el.textContent = `${base}³`; }
+  else {
+    base = rr(10,19)/10;
+    if (Math.random()<0.5){ ans = Math.round(base*base*10000)/10000; el.textContent = `${base}²`; }
+    else { ans = Math.round(Math.pow(base,3)*100000)/100000; el.textContent = `${base}³`; }
+  }
+  qData.ans = ans;
+}
+
+function genDecOrderOps() {
+  const el = id('qText');
+  let ans, txt, safety=0;
+  do {
+    const a = rr(10,99)/10, b = rr(10,99)/10, c = rr(2,5), d = rr(10,50)/10;
+    if (level === 1) {
+      ans = Math.round((a + b*c)*1000)/1000; txt = `${a} + ${b} × ${c}`;
+    } else if (level === 2) {
+      ans = Math.round(((a+b)*c)*1000)/1000; txt = `(${a} + ${b}) × ${c}`;
+    } else {
+      ans = Math.round((a*c + b*c)*1000)/1000; txt = `${a} × ${c} + ${b} × ${c}`;
+    }
+    safety++;
+  } while (ans <= 0 && safety < 50);
+  qData.ans = ans;
+  el.textContent = txt;
+  el.style.fontSize = '1.8rem';
+}
+
+function genDecRound() {
+  const el = id('qText');
+  let num, dp, ans;
+  if (level === 1) {
+    // Always 1 dp
+    dp = 1;
+    num = rr(100,9999)/100; // e.g. 3.47
+    ans = Math.round(num * 10) / 10;
+  } else {
+    // Mix of 1 or 2 dp
+    dp = Math.random() < 0.5 ? 1 : 2;
+    num = rr(1000,99999)/1000;
+    ans = dp === 1 ? Math.round(num*10)/10 : Math.round(num*100)/100;
+  }
+  qData.ans = ans;
+  el.textContent = `Round ${num} to ${dp} d.p.`;
+  el.style.fontSize = '1.6rem';
+}
+
+
+
+/* ════════════════════════════════════════════
+   INTEGER SQUARES & CUBES
+════════════════════════════════════════════ */
+function genIntSquareCube() {
+  const el = id('qText');
+  // L1: squares of neg integers, L2: cubes, L3: mix
+  const mx = [8, 6, 8][level - 1];
+  const n = -rr(1, mx);  // always negative base
+  let doSquare;
+  if (level === 1) doSquare = true;
+  else if (level === 2) doSquare = false;
+  else doSquare = Math.random() < 0.5;
+
+  if (doSquare) {
+    qData.ans = n * n;
+    el.textContent = `(${n})²`;
+  } else {
+    qData.ans = n * n * n;
+    el.textContent = `(${n})³`;
+  }
+}
+
+/* ════════════════════════════════════════════
+   ORDER OF OPERATIONS WITH INTEGERS
+════════════════════════════════════════════ */
+function genIntOrderOps() {
+  const el = id('qText');
+  el.style.fontSize = '1.8rem';
+  let ans, txt, safety = 0;
+  do {
+    const a = rr(1, 8), b = rr(1, 6), c = rr(1, 6);
+    const na = -a, nb = -b, nc = -c;
+    if (level === 1) {
+      const t = r(3);
+      if (t === 1) { ans = na + b * c;  txt = `${na} + ${b} × ${c}`; }
+      else if (t === 2) { ans = a * nb + c; txt = `${a} × (${nb}) + ${c}`; }
+      else { ans = a + b * nc; txt = `${a} + ${b} × (${nc})`; }
+    } else if (level === 2) {
+      const t = r(2);
+      if (t === 1) { ans = (na + b) * c;  txt = `(${na} + ${b}) × ${c}`; }
+      else { ans = a * (nb + c); txt = `${a} × (${nb} + ${c})`; }
+    } else {
+      const t = r(3);
+      if (t === 1) { ans = na + b * nc; txt = `${na} + ${b} × (${nc})`; }
+      else if (t === 2) { ans = (na + b) * nc; txt = `(${na} + ${b}) × (${nc})`; }
+      else { ans = a * nb + c * na; txt = `${a} × (${nb}) + ${c} × (${na})`; }
+    }
+    safety++;
+  } while (safety < 50 && (isNaN(ans) || !isFinite(ans)));
+  qData.ans = ans;
+  el.textContent = txt;
+}
+
+/* ════════════════════════════════════════════
+   SIGNIFICANT FIGURES  (2 levels only)
+════════════════════════════════════════════ */
+function genSigFigs() {
+  const el = id('qText');
+  el.style.fontSize = '2rem';
+  if (level === 1) {
+    // Count sig figs — generate a variety of number forms
+    const types = ['leadingZero','trailing','decimal','plain'];
+    const t = types[ri(types.length)];
+    let num, sfCount, display;
+    if (t === 'leadingZero') {
+      // e.g. 0.0043 → 2 sig figs
+      const exp = rr(1, 4), sig = rr(1, 9);
+      num = sig / Math.pow(10, exp + 1);
+      sfCount = 1;
+      display = num.toFixed(exp + 1).replace(/0+$/, '') || '0';
+      sfCount = 1;
+    } else if (t === 'trailing') {
+      // e.g. 4700 → could be 2,3,4 — we use unambiguous cases
+      const base = rr(1, 9), extra = rr(1, 3);
+      num = base * Math.pow(10, extra);
+      sfCount = 1; // we only count the non-zero leading digit for simplicity
+      display = String(num);
+      sfCount = String(base).replace(/0/g,'').length;
+    } else if (t === 'decimal') {
+      // e.g. 3.05 → 3 sig figs
+      const a = rr(1, 9), b = rr(0, 9), c = rr(1, 9);
+      display = `${a}.${b}${c}`;
+      sfCount = b === 0 ? 2 : 3;
+    } else {
+      // plain integer
+      const digits = rr(2, 4);
+      const n = rr(Math.pow(10, digits-1), Math.pow(10, digits) - 1);
+      display = String(n);
+      sfCount = digits;
+    }
+    qData.ans = sfCount;
+    el.textContent = `sig figs in ${display}`;
+  } else {
+    // Level 2: Round to given sig figs
+    // Generate a number and ask to round to 1, 2, or 3 s.f.
+    const sf = rr(1, 3);
+    const rawInt = rr(1000, 9999);
+    const factor = Math.pow(10, 4 - sf);
+    const rounded = Math.round(rawInt / factor) * factor;
+    qData.ans = rounded;
+    el.textContent = `${rawInt} to ${sf} s.f.`;
+    el.style.fontSize = '1.7rem';
+  }
+}
+
+/* ════════════════════════════════════════════
+   MIXED NUMBER ↔ IMPROPER FRACTION
+════════════════════════════════════════════ */
+function genMixedImpMix() {
+  // L1: always mixed→improper; L2: always improper→mixed; L3: random
+  const doToImproper = (level === 1) ? true : (level === 2) ? false : Math.random() < 0.5;
+  qData.mixedMode = doToImproper ? 'toImproper' : 'toMixed';
+  if (doToImproper) {
+    genMixedToImp();
+  } else {
+    genImpToMixed();
+  }
+}
+
+function genMixedToImp() {
+  // Convert mixed number → improper fraction
+  const denMax = [5, 12, 15][level - 1];
+  const wholeMax = [5, 9, 15][level - 1];
+  const den = rr(2, denMax);
+  const whole = rr(1, wholeMax);
+  const num = rr(1, den - 1);
+  qData.ansNum = whole * den + num;
+  qData.ansDen = den;
+  // Display as mixed number
+  id('qBox').innerHTML = `<div class="idx-q-display" style="font-size:2rem;gap:8px;align-items:center">
+    <span>${whole}</span>${fracHTML(num, den)}
+    <span style="font-size:1.2rem;color:var(--muted)">→ improper</span>
+  </div>`;
+}
+
+function genImpToMixed() {
+  // Convert improper fraction → mixed number
+  const denMax = [5, 12, 15][level - 1];
+  const wholeMax = [5, 9, 15][level - 1];
+  const den = rr(2, denMax);
+  const whole = rr(1, wholeMax);
+  const num = rr(1, den - 1);
+  const impNum = whole * den + num;
+  qData.ansWhole = whole;
+  qData.ansNum = num;
+  qData.ansDen = den;
+  // Display improper fraction
+  id('qBox').innerHTML = `<div class="idx-q-display" style="font-size:2rem;gap:8px;align-items:center">
+    ${fracHTML(impNum, den)}
+    <span style="font-size:1.2rem;color:var(--muted)">→ mixed</span>
+  </div>`;
+}
+
+/* ════════════════════════════════════════════
+   ORDER OF OPERATIONS WITH FRACTIONS
+════════════════════════════════════════════ */
+function genFracOrderOps() {
+  let ansNum, ansDen, html, safety = 0;
+  do {
+    const d = rr(2, 8);
+    const n1 = rr(1, d - 1), n2 = rr(1, d - 1), w = rr(2, 5);
+    if (level === 1) {
+      ansNum = n1 + n2 * w; ansDen = d;
+      const [sn, sd] = simplify(ansNum, ansDen);
+      ansNum = sn; ansDen = sd;
+      html = `${fracHTML(n1, d)} + ${fracHTML(n2, d)} × ${w}`;
+    } else if (level === 2) {
+      ansNum = (n1 + n2) * w; ansDen = d;
+      const [sn, sd] = simplify(ansNum, ansDen);
+      ansNum = sn; ansDen = sd;
+      html = `(${fracHTML(n1, d)} + ${fracHTML(n2, d)}) × ${w}`;
+    } else {
+      const d2 = rr(2, 6);
+      const n3 = rr(1, d - 1);
+      const prodN = n1 * n2, prodD = d * d2;
+      const commonD = lcm(prodD, d);
+      const totalN = (prodN * (commonD / prodD)) + (n3 * (commonD / d));
+      const [sn, sd] = simplify(totalN, commonD);
+      ansNum = sn; ansDen = sd;
+      html = `${fracHTML(n1, d)} × ${fracHTML(n2, d2)} + ${fracHTML(n3, d)}`;
+    }
+    safety++;
+  } while (ansNum <= 0 && safety < 50);
+
+  qData.ansNum = ansNum;
+  qData.ansDen = ansDen;
+  if (ansDen === 1) qData.ans = ansNum;
+  id('qBox').innerHTML = `<div class="idx-q-display" style="font-size:1.6rem;gap:8px;align-items:center;flex-wrap:wrap">${html} =</div>`;
+}
+
+/* ════════════════════════════════════════════
+   DECIMAL GENERATORS
+   All answers stored with limited precision to avoid
+   floating point display issues.
+════════════════════════════════════════════ */
+function dp(n, places) { return Math.round(n * Math.pow(10, places)) / Math.pow(10, places); }
+
+function genDecAddSub() {
+  let a, b, ans;
+  const sub = Math.random() < 0.5;
+  if (level === 1) {
+    a = dp(rr(10, 99) / 10, 1); b = dp(rr(10, 99) / 10, 1);
+  } else if (level === 2) {
+    a = dp(rr(100, 999) / 100, 2); b = dp(rr(100, 999) / 100, 2);
+  } else {
+    a = dp(rr(10, 99) / 10, 1); b = dp(rr(100, 999) / 100, 2);
+  }
+  if (sub && b > a) [a, b] = [b, a];
+  ans = dp(sub ? a - b : a + b, 3);
+  qData.ans = ans;
+  // Right-aligned column layout so decimal points line up
+  const op = sub ? '−' : '+';
+  id('qBox').innerHTML = `
+    <div style="font-family:'Nunito',sans-serif;font-weight:900;font-size:2.4rem;
+                text-align:right;letter-spacing:0;line-height:1.4;
+                border-bottom:3px solid var(--text);padding-bottom:6px;
+                min-width:160px;display:inline-block;">
+      <div>${a}</div>
+      <div>${op}&nbsp;${b}</div>
+    </div>`;
+}
+
+function genDecMultiply() {
+  const el = id('qText');
+  let a, b, ans;
+  if (level === 1) {
+    a = dp(rr(10, 99) / 10, 1); b = rr(2, 9);
+    ans = dp(a * b, 2);
+  } else if (level === 2) {
+    a = dp(rr(10, 99) / 10, 1); b = dp(rr(10, 99) / 10, 1);
+    ans = dp(a * b, 2);
+  } else {
+    a = dp(rr(10, 99) / 10, 1); b = dp(rr(100, 999) / 100, 2);
+    ans = dp(a * b, 3);
+  }
+  qData.ans = ans;
+  el.textContent = `${a} × ${b}`;
+}
+
+function genDecDivide() {
+  const el = id('qText');
+  let a, b, ans;
+  if (level === 1) {
+    // dividend / whole = nice decimal
+    b = rr(2, 9); ans = dp(rr(10, 99) / 10, 1);
+    a = dp(ans * b, 2);
+  } else if (level === 2) {
+    // divide by decimal — use multiples to keep clean
+    b = dp(rr(2, 9) / 10, 1); ans = rr(1, 9);
+    a = dp(ans * b, 2);
+  } else {
+    b = dp(rr(10, 99) / 10, 1); ans = dp(rr(10, 99) / 10, 1);
+    a = dp(ans * b, 2);
+  }
+  qData.ans = ans;
+  el.textContent = `${a} ÷ ${b}`;
+}
+
+function genDecSquareCube() {
+  const el = id('qText');
+  let n, ans;
+  if (level === 1) {
+    // squares of x.x decimals
+    n = dp(rr(1, 9) / 10, 1);
+    ans = dp(n * n, 2);
+    el.textContent = `${n}²`;
+  } else if (level === 2) {
+    // cubes of x.x decimals
+    n = dp(rr(1, 5) / 10, 1);
+    ans = dp(n * n * n, 3);
+    el.textContent = `${n}³`;
+  } else {
+    // mix including 2 d.p.
+    const doSquare = Math.random() < 0.5;
+    n = doSquare ? dp(rr(10, 99) / 100, 2) : dp(rr(1, 5) / 10, 1);
+    ans = doSquare ? dp(n * n, 4) : dp(n * n * n, 3);
+    el.textContent = `${n}${doSquare ? '²' : '³'}`;
+  }
+  qData.ans = ans;
+}
+
+function genDecOrderOps() {
+  const el = id('qText');
+  el.style.fontSize = '1.8rem';
+  let ans, txt, safety = 0;
+  do {
+    const a = dp(rr(1, 9) / 10, 1), b = dp(rr(1, 9) / 10, 1), c = rr(2, 5);
+    if (level === 1) {
+      if (Math.random() < 0.5) { ans = dp(a + b * c, 2); txt = `${a} + ${b} × ${c}`; }
+      else { ans = dp(a * c + b, 2); txt = `${a} × ${c} + ${b}`; }
+    } else if (level === 2) {
+      if (Math.random() < 0.5) { ans = dp((a + b) * c, 2); txt = `(${a} + ${b}) × ${c}`; }
+      else { ans = dp(a * (b + c), 2); txt = `${a} × (${b} + ${c})`; }
+    } else {
+      ans = dp(a + b * c - dp(rr(1,9)/10, 1), 2);
+      const sub = dp(rr(1,9)/10, 1);
+      ans = dp(a + b * c - sub, 2);
+      txt = `${a} + ${b} × ${c} − ${sub}`;
+    }
+    safety++;
+  } while ((ans <= 0 || !isFinite(ans)) && safety < 50);
+  qData.ans = ans;
+  el.textContent = txt;
+}
+
+function genDecRound() {
+  const el = id('qText');
+  el.style.fontSize = '1.9rem';
+  // Generate a decimal then ask student to round it
+  let num, places, ans;
+  if (level === 1) {
+    // Always round to 1 d.p.
+    num = dp(rr(100, 999) / 100, 2); // e.g. 3.47
+    places = 1;
+  } else {
+    // Mix of 1 and 2 d.p.
+    places = Math.random() < 0.5 ? 1 : 2;
+    num = dp(rr(1000, 9999) / 1000, 3); // e.g. 3.467
+  }
+  ans = dp(Math.round(num * Math.pow(10, places)) / Math.pow(10, places), places);
+  qData.ans = ans;
+  el.textContent = `${num} to ${places} d.p.`;
 }
 
 /* ═══════════════════════════════════════════════
@@ -2529,6 +3629,310 @@ function rr(a,b)     { return Math.floor(Math.random()*(b-a+1))+a; }
 function ri(n)       { return Math.floor(Math.random()*n); }
 function nz(x)       { return x===0?1:x; }
 function f(x)        { return x<0?`(${x})`:String(x); }
+
+
+/* ════════════════════════════════════════════════════════════
+   MOBILE KEYPAD SYSTEM
+   - Shows on screens < 768px only
+   - Suppresses native keyboard (readonly trick + custom input)
+   - Tracks which input is "focused" (kbTarget)
+   - Adapts key layout per skill mode (kbMode)
+════════════════════════════════════════════════════════════ */
+
+const IS_MOBILE = () => window.innerWidth < 768;
+
+let kbTarget = null;   // the currently "focused" input element
+let kbMode   = 'num';  // 'num' | 'numNeg' | 'numNegDot' | 'frac' | 'idx' | 'sci'
+
+/* All game input IDs — we attach keypad logic to these */
+const KB_INPUTS = ['ansInput','fracNum','fracDen','mixedWhole','mixedNum','mixedDen',
+                   'idxCoeff','idxExp','idxExpB','idxExpC','sciCoeff','sciExp'];
+
+/* ── Setup: called once on load ── */
+function kbSetup() {
+  if (!IS_MOBILE()) return;
+
+  KB_INPUTS.forEach(inputId => {
+    const el = document.getElementById(inputId);
+    if (!el) return;
+
+    /* Suppress native keyboard */
+    el.setAttribute('inputmode', 'none');
+    el.setAttribute('readonly', 'readonly');
+
+    /* Focus tracking — highlight the active input visually */
+    el.addEventListener('click', () => kbFocus(el));
+    el.addEventListener('focus', () => kbFocus(el));
+  });
+}
+
+/* Called whenever an input becomes active */
+function kbFocus(el) {
+  if (!IS_MOBILE()) return;
+  // Remove highlight from previous target
+  if (kbTarget && kbTarget !== el) kbTarget.classList.remove('kb-focused');
+  kbTarget = el;
+  el.classList.add('kb-focused');
+  kbRefreshDisplay();
+}
+
+/* Update the display strip to show current field value */
+function kbRefreshDisplay() {
+  const disp = document.getElementById('kbDisplayText');
+  if (!kbTarget) { disp.textContent = '–'; disp.style.color = 'var(--muted)'; return; }
+  const val = kbTarget.value;
+  disp.textContent = val === '' ? '–' : val;
+  disp.style.color = val === '' ? 'var(--muted)' : 'var(--text)';
+}
+
+/* ── Key press handlers ── */
+/* Only fires if the button is not in inactive state */
+function kbPressIfActive(btnId, char) {
+  const btn = document.getElementById(btnId);
+  if (btn && btn.classList.contains('kb-sym-inactive')) return;
+  kbPress(char);
+}
+function kbNextIfActive() {
+  const btn = document.getElementById('kbNextBtn');
+  if (btn && btn.classList.contains('kb-next-inactive')) return;
+  kbNext();
+}
+
+function kbPress(char) {
+  if (!kbTarget || kbTarget.disabled) return;
+
+  let cur = kbTarget.value;
+
+  /* Dot: only allow one, only for sci coeff */
+  if (char === '.' && cur.includes('.')) return; // only one dot allowed
+
+  /* Negative: only allow at start, only for inputs that accept negatives */
+  if (char === '-') {
+    if (cur.startsWith('-')) { kbTarget.value = cur.slice(1); kbRefreshDisplay(); return; }
+    if (cur !== '') return; // only at start
+  }
+
+  kbTarget.value = cur + char;
+  kbRefreshDisplay();
+}
+
+function kbDel() {
+  if (!kbTarget || kbTarget.disabled) return;
+  kbTarget.value = kbTarget.value.slice(0, -1);
+  kbRefreshDisplay();
+}
+
+/* "Next →" moves focus to the next logical input */
+function kbNext() {
+  if (!kbTarget) return;
+  const order = getKbInputOrder();
+  const idx = order.indexOf(kbTarget.id);
+  if (idx >= 0 && idx < order.length - 1) {
+    const nextEl = document.getElementById(order[idx + 1]);
+    if (nextEl && !nextEl.disabled) { nextEl.focus(); kbFocus(nextEl); }
+  }
+}
+
+/* Submit — same as pressing Enter */
+function kbSubmit() {
+  checkAns();
+}
+
+/* Returns the ordered list of active input IDs for the current question */
+function getKbInputOrder() {
+  const mode = getInputMode();
+  if (mode === 'fraction') {
+    if (document.getElementById('stdAnsWrap').dataset.wholeFromFrac === 'true') return ['ansInput'];
+    return ['fracNum','fracDen'];
+  }
+  if (mode === 'mixed') return ['mixedWhole','mixedNum','mixedDen'];
+  if (mode === 'index') {
+    const m = (typeof qData !== 'undefined' && qData.idxMode) || 'expOnly';
+    if (m === 'expOnly') return ['idxExp'];
+    const hasY = typeof qData !== 'undefined' && qData.ansExpY !== undefined && qData.ansExpY !== null;
+    return hasY ? ['idxCoeff','idxExpB','idxExpC'] : ['idxCoeff','idxExpB'];
+  }
+  if (mode === 'sci') return ['sciCoeff','sciExp'];
+  return ['ansInput'];
+}
+
+/* ── Show/configure keypad based on current skill ── */
+function kbShow() {
+  if (!IS_MOBILE()) return;
+  const pad = document.getElementById('mobileKeypad');
+  if (!pad) return;
+  pad.style.display = 'block';
+
+  const mode = getInputMode();
+  const skillId = (typeof skill !== 'undefined') ? skill : '';
+
+  /* Decide which optional keys to show */
+  const showNeg = ['intAddSub','intMultDiv','indexDiv','indexMult','indexPow','indexNeg','sciTo','sciFrom'].includes(skillId)
+                  || mode === 'index' || mode === 'sci';
+  const decSkillsWithDot = ['sciTo','sciFrom','decAddSub','decMultiply','decDivide','decSquareCube','decOrderOps','decRound','sigFigs'];
+  const showDot  = (mode === 'sci' || decSkillsWithDot.includes(skillId));
+  const showNext = (mode === 'fraction' || mode === 'mixed' || mode === 'index' || mode === 'sci');
+
+  const negBtn  = document.getElementById('kbNegBtn');
+  const dotBtn  = document.getElementById('kbDotBtn');
+  const nextBtn = document.getElementById('kbNextBtn');
+
+  // Toggle active/inactive — buttons are always visible, just styled differently
+  if (negBtn)  negBtn.classList.toggle('kb-sym-inactive',  !showNeg);
+  if (dotBtn)  dotBtn.classList.toggle('kb-sym-inactive',  !showDot);
+  if (nextBtn) nextBtn.classList.toggle('kb-next-inactive', !showNext);
+
+  /* Auto-focus first input */
+  const order = getKbInputOrder();
+  if (order.length > 0) {
+    const first = document.getElementById(order[0]);
+    if (first && !first.disabled) { kbTarget = first; kbRefreshDisplay(); }
+  }
+
+  /* Scroll game screen to top so stats + question are visible */
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function kbHide() {
+  const pad = document.getElementById('mobileKeypad');
+  if (pad) pad.style.display = 'none';
+  kbTarget = null;
+}
+
+/* ── Re-apply readonly on enabled inputs so native keyboard stays away ── */
+function kbActivateInputs() {
+  if (!IS_MOBILE()) return;
+  KB_INPUTS.forEach(inputId => {
+    const el = document.getElementById(inputId);
+    if (el && !el.disabled) {
+      el.setAttribute('inputmode', 'none');
+      el.setAttribute('readonly', 'readonly');
+    }
+  });
+}
+
+/* Window resize — show/hide keypad if crossing the 768px threshold */
+window.addEventListener('resize', () => {
+  const pad = document.getElementById('mobileKeypad');
+  if (!pad) return;
+  if (!IS_MOBILE() && pad.style.display !== 'none') kbHide();
+});
+
+
+/* ═══════════════════════════════════════════════
+   ONBOARDING
+═══════════════════════════════════════════════ */
+const OB_SLIDES = [
+  {
+    icon: '⏱',
+    title: 'Two ways to train',
+    body: 'Choose how you want to practise before you start.',
+    card: `
+      <div class="ob-row">
+        <div class="ob-badge fluency">⏱</div>
+        <div class="ob-row-text">
+          <div class="ob-row-title">Fluency — 60 seconds</div>
+          <div class="ob-row-desc">Answer as many questions as you can before time runs out. Your score is recorded and compared to your personal best.</div>
+        </div>
+      </div>
+      <div class="ob-row">
+        <div class="ob-badge practice">∞</div>
+        <div class="ob-row-text">
+          <div class="ob-row-title">Practice — unlimited time</div>
+          <div class="ob-row-desc">No timer. Work through questions at your own pace to build confidence before going for a fluency score.</div>
+        </div>
+      </div>`
+  },
+  {
+    icon: '⭐',
+    title: 'How your score works',
+    body: 'Speed matters — but accuracy matters more.',
+    card: `
+      <div class="ob-row">
+        <div class="ob-badge fluency">⭐</div>
+        <div class="ob-row-text">
+          <div class="ob-row-title">Fluency Score = Correct × Accuracy²</div>
+          <div class="ob-row-desc">If you get 20 correct but only 50% accurate, your score is 20 × 0.25 = 5. Getting 15 correct at 100% scores 15 — much better! Slow down and think first.</div>
+        </div>
+      </div>
+      <div class="ob-row">
+        <div class="ob-badge score">🔥</div>
+        <div class="ob-row-text">
+          <div class="ob-row-title">Streak bonus</div>
+          <div class="ob-row-desc">A streak counter tracks your consecutive correct answers. Try to keep it going — it resets to zero on any wrong answer.</div>
+        </div>
+      </div>`
+  },
+  {
+    icon: '📈',
+    title: 'Tracking your progress',
+    body: 'Every score is saved so you can see how you improve over time.',
+    card: `
+      <div class="ob-row">
+        <div class="ob-badge pb">🏆</div>
+        <div class="ob-row-text">
+          <div class="ob-row-title">Personal Best</div>
+          <div class="ob-row-desc">Your highest ever Fluency Score for each skill and level is saved. The app tells you when you beat it — aim for a new PB every session.</div>
+        </div>
+      </div>
+      <div class="ob-row">
+        <div class="ob-badge spark">📊</div>
+        <div class="ob-row-text">
+          <div class="ob-row-title">Score history sparkline</div>
+          <div class="ob-row-desc">After each session you'll see a small bar chart of your recent scores. The tallest bar is your best — try to keep them growing.</div>
+        </div>
+      </div>`
+  }
+];
+
+let obSlide = 0;
+
+function obStart() {
+  obSlide = 0;
+  obRender();
+  show('s-onboard');
+}
+
+function obRender() {
+  const s = OB_SLIDES[obSlide];
+  setText('obIcon', s.icon);
+  setText('obTitle', s.title);
+  setText('obBody', s.body);
+  document.getElementById('obCard').innerHTML = s.card;
+  document.getElementById('obNextBtn').textContent = obSlide === OB_SLIDES.length - 1 ? "Let's go! →" : 'Next →';
+  // Update dots
+  OB_SLIDES.forEach((_, i) => {
+    const dot = document.getElementById('obDot' + i);
+    if (dot) dot.classList.toggle('active', i === obSlide);
+  });
+}
+
+function obNext() {
+  if (obSlide < OB_SLIDES.length - 1) {
+    obSlide++;
+    obRender();
+  } else {
+    obFinish();
+  }
+}
+
+function obSkip() { obFinish(); }
+
+function obFinish() {
+  // Mark this profile as onboarded
+  localStorage.setItem('ff_onboarded_' + pidx, '1');
+  goHome();
+}
+
+function replayTutorial() {
+  obSlide = 0;
+  obRender();
+  show('s-onboard');
+}
+
+function isOnboarded() {
+  return localStorage.getItem('ff_onboarded_' + pidx) === '1';
+}
 
 /* ═══════════════════════════════════════════════
    BOOT
