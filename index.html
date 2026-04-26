@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Fast Facts</title>
+<title>Sandy Fast Facts</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
@@ -610,6 +610,137 @@ body {
 .hide { display: none !important; }
 .text-center { text-align: center; }
 
+
+
+/* ── INDEX ANSWER INPUT LAYOUT ── */
+/* ── INDEX INPUT BOXES ── */
+/* Coefficient box — medium width, same style as ans-input but smaller */
+.idx-input {
+  background: var(--surface);
+  border: 3px solid var(--border);
+  border-radius: var(--r-sm);
+  color: var(--text);
+  font-family: 'Nunito', sans-serif; font-weight: 900;
+  font-size: 1.4rem; text-align: center;
+  padding: 7px 6px;
+  width: 80px; outline: none;
+  transition: border-color .18s, background .18s;
+  -moz-appearance: textfield;
+  box-shadow: var(--shadow);
+}
+.idx-input::-webkit-outer-spin-button,
+.idx-input::-webkit-inner-spin-button { -webkit-appearance: none; }
+.idx-input:focus { border-color: var(--accent); background: #fff; }
+.idx-input.wide { width: 110px; }
+.idx-input.ok   { border-color: var(--green); background: var(--green-bg); }
+.idx-input.bad  { border-color: var(--red);   background: var(--red-bg); }
+
+/* Exponent box — smaller, accent-coloured border to signal "this is a power" */
+.idx-exp-input {
+  background: var(--surface);
+  border: 3px solid rgba(67,56,202,0.35);
+  border-radius: var(--r-sm);
+  color: var(--accent);
+  font-family: 'Nunito', sans-serif; font-weight: 900;
+  font-size: 1.1rem; text-align: center;
+  padding: 5px 4px;
+  width: 54px; outline: none;
+  transition: border-color .18s, background .18s;
+  -moz-appearance: textfield;
+  box-shadow: var(--shadow);
+}
+.idx-exp-input::-webkit-outer-spin-button,
+.idx-exp-input::-webkit-inner-spin-button { -webkit-appearance: none; }
+.idx-exp-input:focus { border-color: var(--accent); background: var(--accent-bg); }
+.idx-exp-input.ok  { border-color: var(--green); background: var(--green-bg); color: var(--green); }
+.idx-exp-input.bad { border-color: var(--red);   background: var(--red-bg);   color: var(--red);   }
+
+
+/* Label above an input field */
+.idx-field-lbl {
+  display: block;
+  font-size: 0.68rem; font-weight: 800;
+  color: var(--muted);
+  text-transform: uppercase; letter-spacing: 0.06em;
+  margin-bottom: 3px; text-align: center;
+}
+
+/* Generic field group: label on top, input below */
+.idx-field-group {
+  display: flex; flex-direction: column; align-items: center;
+}
+
+/* Variable + superscript power box — the key layout piece.
+   The variable letter sits at the bottom baseline.
+   The superscript box sits at the top, shifted right. */
+.idx-var-group {
+  display: inline-flex;
+  align-items: flex-end;   /* baseline-align the variable letter */
+  position: relative;
+}
+
+/* The serif italic variable letter (x, y) */
+.idx-var-letter {
+  font-family: 'Times New Roman', Times, serif;
+  font-style: italic;
+  font-weight: 700;
+  font-size: 2.2rem;
+  color: var(--text);
+  line-height: 1;
+  /* sits at the bottom of the group */
+  align-self: flex-end;
+  padding-bottom: 4px;
+}
+
+/* The power input — floats to top-right of the variable */
+.idx-superscript-box {
+  display: flex; flex-direction: column; align-items: center;
+  /* pull it up so it sits like a true exponent */
+  margin-bottom: 22px;  /* pushes the box up relative to the variable */
+  margin-left: 1px;
+}
+
+/* Also update .idx-var inside question display to be serif italic */
+
+/* ── INDEX QUESTION DISPLAY ── */
+.idx-q-display {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 900;
+  font-size: 2rem;
+  text-align: center;
+  line-height: 1.3;
+  color: var(--text);
+}
+/* base+exponent pair — keeps them together, exponent floats top-right */
+.idx-base-exp {
+  display: inline-flex;
+  align-items: flex-start;
+  line-height: 1;
+}
+.idx-base {
+  align-self: flex-end;
+  padding-bottom: 2px;
+}
+.idx-sup {
+  font-size: 0.58em;
+  color: var(--accent);
+  margin-top: -2px;
+  font-weight: 900;
+}
+/* Variable letters — Times New Roman italic for mathematical x, y */
+.idx-var {
+  font-family: 'Times New Roman', Times, serif;
+  font-style: italic;
+  font-weight: 700;
+  font-size: 1.05em;
+  color: var(--text);
+}
+
 @media (max-width: 380px) {
   .q-text { font-size: 2.3rem; }
   .res-score { font-size: 3.2rem; }
@@ -623,8 +754,8 @@ body {
 <!-- ══════════════ WELCOME ══════════════ -->
 <div id="s-welcome" class="screen active">
   <div class="hero">
-    <div class="logo">⚡ Fast<span>Facts</span></div>
-    <div class="tagline">Secondary Maths Fluency Trainer</div>
+    <div class="logo">⚡ Sandy<span>FastFacts</span></div>
+    <div class="tagline">Sandy Bay Secondary College — Maths Fluency Trainer</div>
   </div>
   <div class="slabel">Choose Your Profile</div>
   <div class="profile-grid" id="profileGrid"></div>
@@ -726,20 +857,91 @@ body {
     <div class="q-text" id="qText"></div>
   </div>
 
+  <!-- Simplify reminder (shown for fraction skills) -->
+  <div class="simplify-notice" id="simplifyNotice">✏️ Remember to simplify your answer fully</div>
+
   <!-- Standard numeric answer -->
   <div class="ans-wrap" id="stdAnsWrap">
     <input id="ansInput" class="ans-input" type="number" disabled placeholder="?">
+  </div>
+
+  <!-- Index notation answer panel -->
+  <!-- Completely hidden unless mode=index or mode=sci. Never shown for other skills. -->
+  <div id="idxAnsWrap" style="display:none; flex-direction:column; align-items:center; gap:14px; margin-bottom:14px;">
+
+    <!-- Instruction line explaining exactly what to type -->
+    <div id="idxInstruction" style="font-size:0.82rem;font-weight:800;color:var(--muted);text-align:center;padding:0 8px;"></div>
+
+    <!-- POWER ONLY row: base^[?] — one box, student types the exponent -->
+    <div id="idxPowerOnlyRow" style="display:none; align-items:center; gap:6px; font-family:Nunito,sans-serif; font-weight:900; font-size:2rem;">
+      <span id="idxBaseLabel" style="color:var(--text)"></span>
+      <sup style="font-size:1rem;color:var(--accent);padding-bottom:8px">
+        <input id="idxExp" class="idx-exp-input" type="number" disabled placeholder="?">
+      </sup>
+    </div>
+
+    <!-- COEFF + POWER row: [coeff] x^[expB] y^[expC] -->
+    <!-- Uses idx-var-group to position the power box as a true superscript -->
+    <div id="idxCoeffPowerRow" style="display:none; align-items:flex-end; gap:10px; flex-wrap:wrap; justify-content:center;">
+
+      <!-- Coefficient -->
+      <div class="idx-field-group">
+        <span class="idx-field-lbl">Coefficient</span>
+        <input id="idxCoeff" class="idx-input" type="number" disabled placeholder="?">
+      </div>
+
+      <!-- x^[power] group -->
+      <div class="idx-var-group" id="idxXGroup">
+        <span class="idx-var-letter" id="idxVarDisplay">x</span>
+        <div class="idx-superscript-box">
+          <span class="idx-field-lbl">x power</span>
+          <input id="idxExpB" class="idx-exp-input" type="number" disabled placeholder="?">
+        </div>
+      </div>
+
+      <!-- y^[power] group — hidden unless L3 -->
+      <div class="idx-var-group" id="idxYGroup" style="display:none">
+        <span class="idx-var-letter" id="idxVarYDisplay">y</span>
+        <div class="idx-superscript-box">
+          <span class="idx-field-lbl">y power</span>
+          <input id="idxExpC" class="idx-exp-input" type="number" disabled placeholder="?">
+        </div>
+      </div>
+
+    </div>
+
+    <!-- SCIENTIFIC NOTATION row: [coeff] × 10^[exp] -->
+    <!-- Uses idx-var-group so the power box sits above "10" like a true exponent -->
+    <div id="idxSciRow" style="display:none; align-items:flex-end; gap:10px; flex-wrap:wrap; justify-content:center;">
+
+      <!-- Coefficient a -->
+      <div class="idx-field-group">
+        <span class="idx-field-lbl">a (e.g. 3.2)</span>
+        <input id="sciCoeff" class="idx-input wide" type="number" step="0.01" disabled placeholder="?">
+      </div>
+
+      <!-- × symbol -->
+      <span style="font-size:1.8rem;font-weight:900;color:var(--muted);padding-bottom:6px;">×</span>
+
+      <!-- 10^[power] — uses same idx-var-group pattern so power floats above -->
+      <div class="idx-var-group">
+        <span class="idx-var-letter" style="font-family:'Nunito',sans-serif;font-style:normal;font-size:2rem;padding-bottom:4px;">10</span>
+        <div class="idx-superscript-box">
+          <span class="idx-field-lbl">Power</span>
+          <input id="sciExp" class="idx-exp-input" type="number" disabled placeholder="?">
+        </div>
+      </div>
+
+    </div>
   </div>
 
   <!-- Stacked fraction answer -->
   <div class="frac-input-wrap" id="fracAnsWrap">
     <div id="fracAlgLabel" class="frac-alg-label hide"></div>
     <div class="frac-box">
-      <div class="frac-hint">Numerator (top)</div>
       <input id="fracNum" class="frac-num-input" type="number" disabled placeholder="?">
       <div class="frac-line-bar"></div>
       <input id="fracDen" class="frac-den-input" type="number" disabled placeholder="?">
-      <div class="frac-hint" style="margin-top:4px">Denominator (bottom)</div>
     </div>
   </div>
 
@@ -750,11 +952,9 @@ body {
       <div class="whole-label">Whole</div>
     </div>
     <div class="mixed-frac-col">
-      <div class="frac-hint">Numerator</div>
       <input id="mixedNum" class="frac-num-input" type="number" disabled placeholder="?">
       <div class="frac-line-bar"></div>
       <input id="mixedDen" class="frac-den-input" type="number" disabled placeholder="?">
-      <div class="frac-hint" style="margin-top:4px">Denominator</div>
     </div>
   </div>
 
@@ -834,8 +1034,15 @@ const CATS = {
   exponents: {
     label: 'x² Powers',
     skills: [
-      { id:'squares', name:'Square Numbers', inputMode:'number', lvKey:'sq' },
-      { id:'roots',   name:'Square Roots',   inputMode:'number', lvKey:'sq' },
+      { id:'squares',    name:'Square Numbers',          inputMode:'number', lvKey:'sq'   },
+      { id:'roots',      name:'Square Roots',            inputMode:'number', lvKey:'sq'   },
+      { id:'cubes',      name:'Cube Numbers',            inputMode:'number', lvKey:'cu'   },
+      { id:'cubeRoots',  name:'Cube Roots',              inputMode:'number', lvKey:'cu'   },
+      { id:'indexMult',  name:'Index Law (Multiplication Law)',  inputMode:'index',  lvKey:'imul' },
+      { id:'indexDiv',   name:'Index Law (Division Law)',        inputMode:'index',  lvKey:'idiv' },
+      { id:'indexPow',   name:'Index Law (Power of a Power)',    inputMode:'index',  lvKey:'ipow' },
+      { id:'sciTo',      name:'Number → Scientific Notation', inputMode:'sci', lvKey:'sci' },
+      { id:'sciFrom',    name:'Scientific Notation → Number', inputMode:'number', lvKey:'sci' },
     ]
   },
   order: {
@@ -848,7 +1055,6 @@ const CATS = {
     label: '½ Fractions',
     skills: [
       { id:'fracSimplify', name:'Simplify Fractions',           inputMode:'fraction', lvKey:'fs' },
-      { id:'fracMixed',    name:'Improper ↔ Mixed Numbers',     inputMode:'mixed',    lvKey:'fm' },
       { id:'fracAddSub',   name:'Add &amp; Subtract Fractions', inputMode:'fraction', lvKey:'fas'},
       { id:'fracMultiply', name:'Multiply Fractions',           inputMode:'fraction', lvKey:'fmu'},
       { id:'fracDivide',   name:'Divide Fractions',             inputMode:'fraction', lvKey:'fd' },
@@ -894,11 +1100,7 @@ const LEVEL_DEFS = {
     { title:'Level 2 — Any Common Factor',    desc:'Simplify any fraction by finding the highest common factor (HCF). Numbers up to 12.', examples:['8/12', '9/15', '14/21'] },
     { title:'Level 3 — Algebraic Fractions',  desc:'Simplify fractions with the variable x. Enter the numeric coefficient of x on top, and the denominator below.', examples:['6x/10 → 3/5', '4x/12 → x/3', '15x/25 → 3/5'] },
   ],
-  fm: [
-    { title:'Level 1 — Mixed → Improper',   desc:'Convert a mixed number to an improper fraction. Multiply the whole by the denominator, then add the numerator.', examples:['2½ → 5/2', '3¼ → 13/4', '4⅔ → 14/3'] },
-    { title:'Level 2 — Improper → Mixed',   desc:'Convert an improper fraction to a mixed number. Divide the top by the bottom and find the remainder.', examples:['7/2 → 3½', '11/4 → 2¾', '17/5 → 3⅖'] },
-    { title:'Level 3 — Mixed Directions',   desc:'A random mix of both conversions. You need to decide which way to go before answering.', examples:['5/3 → ?', '2⅗ → ?', '9/4 → ?'] },
-  ],
+
   fas: [
     { title:'Level 1 — Same Denominator',    desc:'Add or subtract fractions that already have the same denominator. Always simplify your answer.', examples:['1/5 + 2/5', '7/8 − 3/8', '2/9 + 4/9'] },
     { title:'Level 2 — Related Denominators',desc:'One denominator is a multiple of the other — convert just one fraction before adding or subtracting.', examples:['1/2 + 1/4', '5/6 − 1/3', '3/4 + 1/8'] },
@@ -913,6 +1115,33 @@ const LEVEL_DEFS = {
     { title:'Level 1 — Divide (No Simplifying)',  desc:'Flip the second fraction (find its reciprocal) then multiply. Answers will not need simplifying.', examples:['2/3 ÷ 4/5', '1/2 ÷ 3/7', '3/5 ÷ 6/7'] },
     { title:'Level 2 — Divide with Simplifying',  desc:'Keep–Change–Flip, then simplify the result to its lowest terms.', examples:['2/3 ÷ 4/9', '5/6 ÷ 5/8', '3/4 ÷ 9/10'] },
     { title:'Level 3 — Negatives Included',       desc:'Division of fractions including negative values. Apply sign rules after the Keep–Change–Flip step.', examples:['−2/3 ÷ 4/5', '−1/2 ÷ −3/4', '3/7 ÷ −7/9'] },
+  ],
+    /* ── NEW EXPONENT LEVELS ── */
+  cu: [
+    { title:'Level 1 — Cubes 1–5',   desc:'Cube numbers from 1³ to 5³ and their cube roots. Builds the core set of 5 values.', examples:['2³', '∛27', '4³'] },
+    { title:'Level 2 — Cubes 1–10',  desc:'Extends to 10³ = 1000. Covers the full set students encounter in Years 7–10.', examples:['6³', '∛512', '9³'] },
+    { title:'Level 3 — Cubes 1–15',  desc:'Up to 15³ = 3375 for students who want a real challenge beyond the standard set.', examples:['11³', '∛1728', '14³'] },
+  ],
+  imul: [
+    { title:'Level 1 — Numbers Only',    desc:'Add the indices when multiplying powers with the same base. Enter the resulting power.', examples:['2³ × 2⁴ = 2?'] },
+    { title:'Level 2 — One Variable',    desc:'Multiply expressions with one variable. Multiply the coefficients and add the powers of x. Enter the coefficient and power.', examples:['2x² × 3x³ = ?'] },
+    { title:'Level 3 — Two Variables',   desc:'Multiply expressions with two variables x and y. Enter the coefficient and power of x (power of y shown in hint).', examples:['2x²y × 3xy² = ?'] },
+  ],
+  idiv: [
+    { title:'Level 1 — Numbers Only',    desc:'Subtract the indices when dividing powers with the same base. Enter the resulting power.', examples:['5⁶ ÷ 5² = 5?'] },
+    { title:'Level 2 — One Variable',    desc:'Divide expressions with one variable. Divide the coefficients and subtract the powers of x. Enter the coefficient and power.', examples:['6x⁵ ÷ 3x² = ?'] },
+    { title:'Level 3 — Two Variables',   desc:'Divide expressions with two variables x and y. Enter the coefficient and power of x (power of y shown in hint).', examples:['6x⁴y³ ÷ 2x²y = ?'] },
+  ],
+  ipow: [
+    { title:'Level 1 — Numbers Only',    desc:'Multiply the indices when raising a power to another power. Enter the resulting power.', examples:['(3²)⁴ = 3?'] },
+    { title:'Level 2 — One Variable',    desc:'Raise an expression with one variable to a power. Raise the coefficient and multiply the index of x. Enter both.', examples:['(2x²)³ = ?'] },
+    { title:'Level 3 — Two Variables',   desc:'Raise expressions with two variables to a power. Enter the coefficient and power of x (power of y shown in hint).', examples:['(xy²)³ = ?'] },
+  ],
+
+  sci: [
+    { title:'Level 1 — Powers of 10 (1–6)',   desc:'Convert between standard form and scientific notation using powers of 10 from 10¹ to 10⁶. Positive powers only.', examples:['3 200 000', '4.5 × 10⁴', '72 000'] },
+    { title:'Level 2 — All Positive Powers',   desc:'Any positive power of 10. Includes decimals like 3.75 × 10⁵. Builds fluency with the standard form.', examples:['0.000 045', '6.02 × 10⁵', '3.14 × 10⁸'] },
+    { title:'Level 3 — Positive & Negative',   desc:'Both positive and negative powers of 10, including very small numbers like 3 × 10⁻⁴.', examples:['0.0032', '4.1 × 10⁻³', '5 × 10⁻⁶'] },
   ],
 };
 
@@ -1150,7 +1379,9 @@ function beginGame() {
    GAME SCREEN SETUP
 ═══════════════════════════════════════════════ */
 function getInputMode() { return skillMeta ? skillMeta.inputMode : 'number'; }
-function isFractionSkill() { return ['fracSimplify','fracMixed','fracAddSub','fracMultiply','fracDivide'].includes(skill); }
+function isFractionSkill() { return ['fracSimplify','fracAddSub','fracMultiply','fracDivide'].includes(skill); }
+function isIndexSkill()    { return ['indexMult','indexDiv','indexPow'].includes(skill); }
+function isSciSkill()      { return skill === 'sciTo'; }
 
 function prepGameScreen() {
   show('s-game');
@@ -1187,48 +1418,75 @@ function prepGameScreen() {
 
 function resetAnswerInputs() {
   const mode = getInputMode();
-  id('stdAnsWrap').style.display   = mode === 'number'   ? 'block' : 'none';
-  id('fracAnsWrap').classList.remove('visible','ok','bad');
-  id('mixedAnsWrap').classList.remove('visible','ok','bad');
 
+  // ── Always hide ALL panels first ──
+  id('stdAnsWrap').style.display  = 'none';
+  id('fracAnsWrap').style.display = 'none';
+  id('mixedAnsWrap').style.display= 'none';
+  id('idxAnsWrap').style.display  = 'none';
+  id('fracAlgLabel').classList.add('hide');
+  id('stdAnsWrap').dataset.wholeFromFrac = '';
+
+  // Clear and disable every input
+  ['ansInput','fracNum','fracDen','mixedWhole','mixedNum','mixedDen',
+   'idxCoeff','idxExp','idxExpB','idxExpC','sciCoeff','sciExp'].forEach(i => {
+    const el = id(i);
+    if (el) { el.value=''; el.disabled=true; el.classList.remove('ok','bad'); }
+  });
+
+  // Simplify notice — only for fraction category skills
+  const sn = id('simplifyNotice');
+  sn.style.display = isFractionSkill() ? 'block' : 'none';
+
+  // ── Show only the correct panel ──
   if (mode === 'fraction') {
-    id('fracAnsWrap').classList.add('visible');
-    id('fracNum').value = ''; id('fracNum').disabled = true;
-    id('fracDen').value = ''; id('fracDen').disabled = true;
-    id('fracNum').className = 'frac-num-input';
-    id('fracDen').className = 'frac-den-input';
-    id('fracAlgLabel').classList.add('hide');
+    id('fracAnsWrap').style.display = 'flex';
   } else if (mode === 'mixed') {
-    id('mixedAnsWrap').classList.add('visible');
-    id('mixedWhole').value = ''; id('mixedWhole').disabled = true;
-    id('mixedNum').value = '';   id('mixedNum').disabled = true;
-    id('mixedDen').value = '';   id('mixedDen').disabled = true;
+    id('mixedAnsWrap').style.display = 'flex';
+  } else if (mode === 'index' || mode === 'sci') {
+    id('idxAnsWrap').style.display = 'flex';
+    // hide all sub-rows — enableInputs/setupXxx will reveal the right one
+    id('idxPowerOnlyRow').style.display  = 'none';
+    id('idxCoeffPowerRow').style.display = 'none';
+    id('idxSciRow').style.display        = 'none';
   } else {
-    const inp = id('ansInput');
-    inp.value = ''; inp.disabled = true;
-    inp.className = 'ans-input';
+    // 'number'
+    id('stdAnsWrap').style.display = 'block';
+    id('ansInput').className = 'ans-input';
   }
 }
 
 function enableInputs() {
   const mode = getInputMode();
+
+  // Fraction skill but answer is a whole number (ansDen === 1):
+  // hide the stacked fraction input and use the standard number box instead.
+  if (mode === 'fraction' && qData.ansDen === 1) {
+    id('fracAnsWrap').classList.remove('visible');
+    id('stdAnsWrap').style.display = 'block';
+    id('stdAnsWrap').dataset.wholeFromFrac = 'true';
+    const inp = id('ansInput');
+    inp.value = ''; inp.disabled = false; inp.placeholder = '?';
+    inp.focus();
+    id('fracAlgLabel').textContent = 'Answer is a whole number — type it in the box';
+    id('fracAlgLabel').classList.remove('hide');
+    return;
+  }
+
   if (mode === 'fraction') {
+    id('stdAnsWrap').dataset.wholeFromFrac = '';
     id('fracNum').disabled = false;
     id('fracDen').disabled = false;
     id('fracNum').focus();
   } else if (mode === 'mixed') {
-    // For L1 (mixed→improper) we need fraction input for the answer
-    // Determined per question in nextQ
     const mixMode = qData.mixedMode;
     if (mixMode === 'toImproper') {
-      // answer is a fraction → use fracAnsWrap
       id('fracAnsWrap').classList.add('visible');
       id('mixedAnsWrap').classList.remove('visible');
       id('fracNum').disabled = false;
       id('fracDen').disabled = false;
       id('fracNum').focus();
     } else {
-      // answer is a mixed number
       id('mixedAnsWrap').classList.add('visible');
       id('fracAnsWrap').classList.remove('visible');
       id('mixedWhole').disabled = false;
@@ -1236,11 +1494,58 @@ function enableInputs() {
       id('mixedDen').disabled = false;
       id('mixedWhole').focus();
     }
+  } else if (mode === 'index') {
+    setupIndexInput();
+  } else if (mode === 'sci') {
+    setupSciInput();
   } else {
+    id('stdAnsWrap').dataset.wholeFromFrac = '';
     const inp = id('ansInput');
     inp.disabled = false;
     inp.focus();
   }
+}
+
+/* ── setupIndexInput: shows the right sub-row and enables the right inputs ── */
+function setupIndexInput() {
+  const m = qData.idxMode || 'expOnly';
+  setText('idxInstruction', '');
+
+  if (m === 'expOnly') {
+    id('idxPowerOnlyRow').style.display  = 'flex';
+    id('idxCoeffPowerRow').style.display = 'none';
+    id('idxExp').disabled = false;
+    id('idxExp').focus();
+  } else {
+    id('idxPowerOnlyRow').style.display  = 'none';
+    id('idxCoeffPowerRow').style.display = 'flex';
+
+    // Set variable letters (serif italic spans)
+    setText('idxVarDisplay', qData.var1 || 'x');
+
+    // Level 3: show y-variable group with its own power box
+    const hasY = (qData.ansExpY !== undefined && qData.ansExpY !== null);
+    id('idxYGroup').style.display = hasY ? 'inline-flex' : 'none';
+    if (hasY) {
+      setText('idxVarYDisplay', qData.var2 || 'y');
+      id('idxExpC').disabled = false;
+    } else {
+      id('idxExpC').disabled = true;
+    }
+
+    id('idxCoeff').disabled = false;
+    id('idxExpB').disabled  = false;
+    id('idxCoeff').focus();
+  }
+}
+
+function setupSciInput() {
+  // idxAnsWrap already display:flex
+  id('idxSciRow').style.display = 'flex';
+  setText('idxInstruction', '');  // no hints during gameplay
+  id('sciCoeff').disabled = false;
+  id('sciExp').disabled   = false;
+  id('sciCoeff').focus();
 }
 
 /* ═══════════════════════════════════════════════
@@ -1280,7 +1585,9 @@ function stopPractice() {
   clearInterval(timer);
   const mode = getInputMode();
   if (mode === 'fraction') { id('fracNum').disabled=true; id('fracDen').disabled=true; }
-  else if (mode === 'mixed') { id('mixedWhole').disabled=true; id('mixedNum').disabled=true; id('mixedDen').disabled=true; }
+  else if (mode === 'mixed')  { id('mixedWhole').disabled=true; id('mixedNum').disabled=true; id('mixedDen').disabled=true; }
+  else if (mode === 'index')  { id('idxCoeff').disabled=true; id('idxExp').disabled=true; id('idxExpB').disabled=true; id('idxExpC').disabled=true; }
+  else if (mode === 'sci')    { id('sciCoeff').disabled=true; id('sciExp').disabled=true; }
   else { id('ansInput').disabled=true; }
   id('gameStopBtn').style.display='none';
   id('gameStartBtn').style.display='inline-block';
@@ -1362,8 +1669,14 @@ function nextQ() {
     el.textContent = `√${n*n}`;
   }
   else if (skill === 'orderOps')  { genOO(el); }
-  else if (skill === 'fracSimplify')  { genFracSimplify(); }
-  else if (skill === 'fracMixed')     { genFracMixed(); }
+  else if (skill === 'cubes')         { genCubes(false); }
+  else if (skill === 'cubeRoots')    { genCubes(true); }
+  else if (skill === 'indexMult')    { genIndexMult(); }
+  else if (skill === 'indexDiv')     { genIndexDiv(); }
+  else if (skill === 'indexPow')     { genIndexPow(); }
+  else if (skill === 'sciTo')        { genSciTo(); }
+  else if (skill === 'sciFrom')      { genSciFrom(); }
+  else if (skill === 'fracSimplify') { genFracSimplify(); }
   else if (skill === 'fracAddSub')    { genFracAddSub(); }
   else if (skill === 'fracMultiply')  { genFracMultiply(); }
   else if (skill === 'fracDivide')    { genFracDivide(); }
@@ -1373,15 +1686,31 @@ function nextQ() {
 
 function clearInputState() {
   const mode = getInputMode();
+  // Always reset the wholeFromFrac flag and hint label
+  id('stdAnsWrap').dataset.wholeFromFrac = '';
+  id('fracAlgLabel').classList.add('hide');
   if (mode === 'fraction') {
     id('fracNum').value = ''; id('fracDen').value = '';
     id('fracAnsWrap').classList.remove('ok','bad');
     id('fracNum').style.borderColor = ''; id('fracDen').style.borderColor = '';
+    // Re-show stacked input in case it was hidden for a whole-number question
+    id('fracAnsWrap').classList.add('visible');
+    id('stdAnsWrap').style.display = 'none';
+    id('ansInput').classList.remove('ok','bad');
   } else if (mode === 'mixed') {
     id('fracNum').value = ''; id('fracDen').value = '';
     id('mixedWhole').value = ''; id('mixedNum').value = ''; id('mixedDen').value = '';
     id('fracAnsWrap').classList.remove('ok','bad');
     id('mixedAnsWrap').classList.remove('ok','bad');
+  } else if (mode === 'index' || mode === 'sci') {
+    ['idxCoeff','idxExp','idxExpB','idxExpC','sciCoeff','sciExp'].forEach(i => {
+      const el = id(i); if(el){el.value='';el.classList.remove('ok','bad');}
+    });
+    // Reset sub-row visibility — setupIndexInput/setupSciInput will re-show correct one
+    id('idxPowerOnlyRow').style.display  = 'none';
+    id('idxCoeffPowerRow').style.display = 'none';
+    id('idxSciRow').style.display        = 'none';
+    setText('idxInstruction','');
   } else {
     id('ansInput').value = '';
     id('ansInput').classList.remove('ok','bad');
@@ -1421,6 +1750,240 @@ function genOO(el) {
     else { qData.ans=a*b+c*d; el.textContent=`${a} × ${b} + ${c} × ${d}`; }
   }
   el.style.fontSize = '1.8rem';
+}
+
+
+/* ════════════════════════════════════════════
+   EXPONENT / INDEX QUESTION GENERATORS
+════════════════════════════════════════════ */
+
+/* ── CUBE NUMBERS & CUBE ROOTS ── */
+function genCubes(isRoot) {
+  const maxes = [5, 10, 15];
+  const mx = maxes[level-1];
+  const el = id('qText');
+  if (isRoot) {
+    qData.ans = rr(1, mx);
+    el.textContent = '∛' + (qData.ans ** 3);
+  } else {
+    const n = rr(1, mx);
+    qData.ans = n ** 3;
+    el.textContent = n + '³';
+  }
+}
+
+/* ── Render index question in qBox ── */
+function renderIdxQ(html) {
+  id('qBox').innerHTML = `<div class="idx-q-display">${html}</div>`;
+}
+
+/* Superscript helper — uses CSS class for proper vertical positioning */
+function sup(base, exp) {
+  if (base === '') return `<sup class="idx-sup">${exp}</sup>`;
+  return `<span class="idx-base-exp"><span class="idx-base">${base}</span><sup class="idx-sup">${exp}</sup></span>`;
+}
+
+/* Variable span — serif italic font for x, y to look mathematical */
+function vr(v) {
+  return `<span class="idx-var">${v}</span>`;
+}
+
+/* ── MULTIPLICATION LAW ── */
+function genIndexMult() {
+  if (level === 1) {
+    // numbers only: base^m × base^n = base^(m+n)
+    const base = rr(2,9), m = rr(1,6), n = rr(1,6);
+    qData.idxMode = 'expOnly';
+    qData.ansExp  = m + n;
+    qData.idxHint = `Multiply the powers: ${m} + ${n} = ?`;
+    setText('idxBaseLabel', base + '');
+    renderIdxQ(`${sup(base,m)} × ${sup(base,n)} = ${sup(base,"?")}`);
+  } else if (level === 2) {
+    // one variable: a·x^m × b·x^n = (a·b)·x^(m+n)
+    const a = rr(1,6), b = rr(1,6), m = rr(1,5), n = rr(1,5);
+    qData.idxMode  = 'coeffXExp';
+    qData.ansCoeff = a * b;
+    qData.ansExp   = m + n;
+    qData.var1     = 'x';
+    qData.idxHint  = '';
+    const am = a===1?'':a, bm = b===1?'':b;
+    renderIdxQ(`${am}${sup(vr('x'),m)} × ${bm}${sup(vr('x'),n)} =`);
+  } else {
+    // two variables: a·x^m·y^p × b·x^n·y^q = (ab)·x^(m+n)·y^(p+q)
+    const a=rr(1,4),b=rr(1,4),m=rr(1,4),n=rr(1,4),p=rr(1,3),q=rr(1,3);
+    qData.idxMode  = 'coeffXExp';
+    qData.ansCoeff = a*b;
+    qData.ansExp   = m+n;
+    qData.ansExpY  = p+q;
+    qData.var1     = 'x';
+    qData.var2     = 'y';
+    qData.idxHint  = '';
+    const am=a===1?'':a, bm=b===1?'':b;
+    renderIdxQ(`${am}${sup(vr('x'),m)}${sup(vr('y'),p)} × ${bm}${sup(vr('x'),n)}${sup(vr('y'),q)}`);
+  }
+}
+
+/* ── DIVISION LAW ── */
+function genIndexDiv() {
+  if (level === 1) {
+    const base = rr(2,9);
+    const res = rr(1,5), n = rr(1,4);
+    const m = res + n; // m - n = res, m > n always
+    qData.idxMode = 'expOnly';
+    qData.ansExp  = res;
+    qData.idxHint = `Subtract the powers: ${m} − ${n} = ?`;
+    setText('idxBaseLabel', base + '');
+    renderIdxQ(`${sup(base,m)} ÷ ${sup(base,n)} = ${sup(base,"?")}`);
+  } else if (level === 2) {
+    const bFact = rr(2,5), mult = rr(2,5);
+    const aFact = bFact * mult; // always divisible
+    const m=rr(2,6), n=rr(1,m-1);
+    qData.idxMode  = 'coeffXExp';
+    qData.ansCoeff = mult;
+    qData.ansExp   = m - n;
+    qData.var1     = 'x';
+    qData.idxHint  = '';
+    renderIdxQ(`${aFact}${sup(vr('x'),m)} ÷ ${bFact}${sup(vr('x'),n)} =`);
+  } else {
+    const a=rr(2,6),b=rr(1,a),m=rr(2,5),n=rr(1,m-1),p=rr(2,4),q=rr(1,p-1);
+    qData.idxMode  = 'coeffXExp';
+    qData.ansCoeff = a/b;
+    qData.ansExp   = m-n;
+    qData.ansExpY  = p-q;
+    qData.var1     = 'x';
+    qData.var2     = 'y';
+    qData.idxHint  = '';
+    renderIdxQ(`${a}${sup(vr('x'),m)}${sup(vr('y'),p)} ÷ ${b}${sup(vr('x'),n)}${sup(vr('y'),q)}`);
+  }
+}
+
+/* ── POWER OF A POWER ── */
+function genIndexPow() {
+  if (level === 1) {
+    const base=rr(2,7), m=rr(2,4), n=rr(2,4);
+    qData.idxMode = 'expOnly';
+    qData.ansExp  = m*n;
+    qData.idxHint = `Multiply the powers: ${m} × ${n} = ?`;
+    setText('idxBaseLabel', base + '');
+    id('qBox').innerHTML = `<div class="idx-q-display">(${sup(base,m)})<sup class="idx-sup">${n}</sup> = ${sup(base,'?')}</div>`;
+  } else if (level === 2) {
+    const a=rr(1,5), m=rr(2,4), n=rr(2,3);
+    qData.idxMode  = 'coeffXExp';
+    qData.ansCoeff = a===1 ? 1 : Math.pow(a,n);
+    qData.ansExp   = m*n;
+    qData.var1     = 'x';
+    qData.idxHint  = '';
+    const am = a===1?'':a;
+    id('qBox').innerHTML = `<div class="idx-q-display">(${am}${sup(vr('x'),m)})<sup class="idx-sup">${n}</sup></div>`;
+  } else {
+    const a=rr(1,4), m=rr(2,3), p=rr(1,3), n=rr(2,3);
+    qData.idxMode  = 'coeffXExp';
+    qData.ansCoeff = a===1?1:Math.pow(a,n);
+    qData.ansExp   = m*n;
+    qData.ansExpY  = p*n;
+    qData.var1     = 'x';
+    qData.var2     = 'y';
+    qData.idxHint  = '';
+    const am = a===1?'':a;
+    id('qBox').innerHTML = `<div class="idx-q-display">(${am}${sup(vr('x'),m)}${sup(vr('y'),p)})<sup class="idx-sup">${n}</sup></div>`;
+  }
+}
+
+/* ── NEGATIVE INDICES ── */
+function genIndexNeg() {
+  if (level === 1) {
+    // a^(-n) = 1/a^n  — student enters the positive power n that goes in the denominator
+    const negExp = rr(1,6);
+    const useNum = Math.random() < 0.5;
+    const base = useNum ? rr(2,9) : 'x';
+    qData.idxMode = 'expOnly';
+    qData.ansExp  = negExp;
+    qData.idxHint = `Write as 1 ÷ ${base}^? — enter the positive power`;
+    setText('idxBaseLabel', String(base));
+    const baseDisp = (base === 'x') ? vr('x') : base;
+    // Display: base^-n = 1/base^? (show a small fraction structure)
+    id('qBox').innerHTML = `<div class="idx-q-display" style="flex-direction:column;gap:4px">
+      <div>${sup(baseDisp,'−'+negExp)} =</div>
+      <div style="display:inline-flex;flex-direction:column;align-items:center;font-size:1.4rem">
+        <span>1</span>
+        <span style="display:block;width:100%;height:3px;background:var(--text);border-radius:2px;margin:2px 0"></span>
+        <span>${sup(baseDisp,'?')}</span>
+      </div>
+    </div>`;
+  } else if (level === 2) {
+    // numbers: base^m ÷ base^n where n>m → result is base^(m-n) negative
+    const base=rr(2,7), m=rr(1,4), extra=rr(1,3), n=m+extra;
+    qData.idxMode = 'expOnly';
+    qData.ansExp  = m-n;
+    qData.idxHint = `The resulting power is negative — enter it (e.g. −2)`;
+    setText('idxBaseLabel', base + '');
+    id('qBox').innerHTML = `<div class="idx-q-display">${sup(base,m)} ÷ ${sup(base,n)} = ${sup(base,'?')}</div>`;
+  } else {
+    // variables: x^m ÷ x^n where n>m
+    const m=rr(1,4), extra=rr(1,3), n=m+extra;
+    const a=rr(1,5), b=rr(1,a);
+    qData.idxMode  = 'coeffXExp';
+    qData.ansCoeff = a/b;
+    qData.ansExp   = m-n; // negative
+    qData.var1     = 'x';
+    qData.idxHint  = '';
+    renderIdxQ(`${a}${sup(vr('x'),m)} ÷ ${b}${sup(vr('x'),n)} =`);
+  }
+}
+
+/* ── SCIENTIFIC NOTATION: number → sci ── */
+function genSciTo() {
+  let coeff, exp;
+  if (level === 1) {
+    // whole numbers, positive powers 1–6
+    exp = rr(1,6);
+    const c = rr(1,9);
+    coeff = c; // e.g. 3, so number = 3 × 10^exp
+    qData.sciCoeffAns = c;   // student types e.g. 3.0
+    qData.sciExpAns   = exp;
+    const numDisplay = (c * Math.pow(10, exp)).toLocaleString();
+    id('qBox').innerHTML = `<div style="font-family:'Nunito',sans-serif;font-weight:900;font-size:2.2rem;text-align:center">${numDisplay}</div>`;
+  } else if (level === 2) {
+    // decimal coefficient, positive powers
+    exp = rr(2,8);
+    // coefficient has 1 or 2 decimal places
+    const mantissa = (rr(10,99)/10); // e.g. 3.2
+    qData.sciCoeffAns = mantissa;
+    qData.sciExpAns   = exp;
+    const val = mantissa * Math.pow(10, exp);
+    const numDisplay = val >= 1000 ? val.toLocaleString() : val.toPrecision(4);
+    id('qBox').innerHTML = `<div style="font-family:'Nunito',sans-serif;font-weight:900;font-size:2rem;text-align:center">${numDisplay}</div>`;
+  } else {
+    // positive and negative powers
+    exp = Math.random()<0.5 ? rr(1,6) : -rr(1,6);
+    const mantissa = (rr(10,99)/10);
+    qData.sciCoeffAns = mantissa;
+    qData.sciExpAns   = exp;
+    let numDisplay;
+    const val = mantissa * Math.pow(10, exp);
+    if (exp < 0) numDisplay = val.toFixed(Math.abs(exp)+2).replace(/0+$/,'').replace(/\.$/, '');
+    else numDisplay = val >= 1000 ? val.toLocaleString() : val.toString();
+    id('qBox').innerHTML = `<div style="font-family:'Nunito',sans-serif;font-weight:900;font-size:2rem;text-align:center">${numDisplay}</div>`;
+  }
+}
+
+/* ── SCIENTIFIC NOTATION: sci → number ── */
+function genSciFrom() {
+  const el = id('qText');
+  let exp, mantissa;
+  if (level === 1) {
+    exp = rr(1,5); mantissa = rr(1,9);
+  } else if (level === 2) {
+    exp = rr(1,8); mantissa = rr(10,99)/10;
+  } else {
+    exp = Math.random()<0.5 ? rr(1,6) : -rr(1,6);
+    mantissa = rr(10,99)/10;
+  }
+  const val = mantissa * Math.pow(10, exp);
+  qData.ans = Math.round(val * 1e9) / 1e9; // avoid float dust
+  // Display as a × 10^n
+  id('qBox').innerHTML = `<div style="font-family:'Nunito',sans-serif;font-weight:900;font-size:2rem;text-align:center">${mantissa} × 10${sup('',''+exp)}</div>`;
+  el.textContent = ''; // qBox replaced
 }
 
 /* ════════════════════════════════════════════
@@ -1574,10 +2137,12 @@ function genFracAddSub() {
 function genFracMultiply() {
   let n1 = rr(1,8), d1 = rr(2,9), n2 = rr(1,8), d2 = rr(2,9);
 
-  // For level 1: choose pairs that don't simplify
+  // For level 1: guarantee answer needs no simplifying (GCD of product = 1)
   if (level === 1) {
-    // ensure gcd(n1*n2, d1*d2) == 1 — just pick coprime pairs
-    while (gcd(n1, d2) > 1 || gcd(n2, d1) > 1) { n1=rr(1,8); d1=rr(2,9); n2=rr(1,8); d2=rr(2,9); }
+    let safety = 0;
+    while (gcd(n1*n2, d1*d2) !== 1 && safety++ < 200) {
+      n1=rr(1,7); d1=rr(2,9); n2=rr(1,7); d2=rr(2,9);
+    }
   }
 
   if (level === 3 && Math.random() < 0.4) n1 = -n1;
@@ -1600,6 +2165,14 @@ function genFracMultiply() {
 /* ── DIVIDE FRACTIONS ── */
 function genFracDivide() {
   let n1 = rr(1,8), d1 = rr(2,9), n2 = rr(1,8), d2 = rr(2,9);
+
+  // Level 1: guarantee answer (n1*d2)/(d1*n2) needs no simplifying
+  if (level === 1) {
+    let safety = 0;
+    while (gcd(n1*d2, d1*n2) !== 1 && safety++ < 200) {
+      n1=rr(1,7); d1=rr(2,9); n2=rr(1,7); d2=rr(2,9);
+    }
+  }
 
   if (level === 3 && Math.random() < 0.4) n1 = -n1;
   if (level === 3 && Math.random() < 0.4) n2 = -n2;
@@ -1646,6 +2219,29 @@ document.addEventListener('DOMContentLoaded', () => {
   id('mixedDen').addEventListener('keyup', e => {
     if (e.key === 'Enter' && !id('mixedDen').disabled) checkAns();
   });
+  // Index inputs: coeff → exp → submit
+  id('idxCoeff').addEventListener('keyup', e => {
+    if (e.key === 'Enter') id('idxExpB').focus();
+  });
+  id('idxExp').addEventListener('keyup', e => {
+    if (e.key === 'Enter' && !id('idxExp').disabled) checkAns();
+  });
+  id('idxExpB').addEventListener('keyup', e => {
+    if (e.key !== 'Enter') return;
+    // If y-power box is visible, move to it; otherwise submit
+    if (!id('idxExpC').disabled) id('idxExpC').focus();
+    else checkAns();
+  });
+  id('idxExpC').addEventListener('keyup', e => {
+    if (e.key === 'Enter' && !id('idxExpC').disabled) checkAns();
+  });
+  // Sci notation: coeff → exp → submit
+  id('sciCoeff').addEventListener('keyup', e => {
+    if (e.key === 'Enter') id('sciExp').focus();
+  });
+  id('sciExp').addEventListener('keyup', e => {
+    if (e.key === 'Enter' && !id('sciExp').disabled) checkAns();
+  });
 });
 
 function checkAns() {
@@ -1663,19 +2259,44 @@ function checkAns() {
     id('ansInput').classList.add(correct ? 'ok' : 'bad');
   }
   else if (mode === 'fraction') {
+    // Whole-number answer — student used the standard number box
+    if (id('stdAnsWrap').dataset.wholeFromFrac === 'true') {
+      const val = parseInt(id('ansInput').value, 10);
+      correct = val === qData.ansNum; // ansDen is 1, so ansNum IS the whole number
+      if (!correct) feedbackStr = `Answer: ${qData.ansNum}`;
+      id('ansInput').classList.remove('ok','bad');
+      id('ansInput').classList.add(correct ? 'ok' : 'bad');
+    } else {
+
     const un = parseInt(id('fracNum').value, 10);
     const ud = parseInt(id('fracDen').value, 10);
     if (isNaN(un) || isNaN(ud) || ud === 0) { attempts--; id('fracDen').focus(); return; }
-    // Check equivalence: un/ud == ansNum/ansDen  →  un*ansDen == ud*ansNum
-    const [sn, sd] = simplify(un, ud);
-    correct = sn === qData.ansNum && sd === qData.ansDen;
-    if (!correct) {
-      feedbackStr = qData.isAlgebraic
-        ? `Answer: ${qData.ansNum}x / ${qData.ansDen}`
-        : `Answer: ${qData.ansNum}/${qData.ansDen}`;
+
+    if (skill === 'fracSimplify') {
+      // Must be FULLY simplified — exact match only (simplify the student input
+      // and check it equals the stored fully-simplified answer AND that the
+      // student didn't just re-enter the original unsimplified fraction)
+      const [sn, sd] = simplify(un, ud);
+      const studentAlreadySimplified = gcd(Math.abs(un), Math.abs(ud)) === 1;
+      correct = studentAlreadySimplified && sn === qData.ansNum && sd === qData.ansDen;
+      if (!correct) {
+        feedbackStr = qData.isAlgebraic
+          ? `Simplified: ${qData.ansNum}x / ${qData.ansDen}`
+          : `Simplified: ${qData.ansNum}/${qData.ansDen}`;
+      }
+    } else {
+      // Add/subtract, multiply, divide — answer MUST be fully simplified.
+      // Student input must have no common factors (gcd == 1) AND equal the stored answer.
+      const studentIsSimplified = gcd(Math.abs(un), Math.abs(ud)) === 1;
+      const [sn, sd] = simplify(un, ud);
+      correct = studentIsSimplified && sn === qData.ansNum && sd === qData.ansDen;
+      if (!correct) {
+        feedbackStr = `Simplified answer: ${qData.ansNum}/${qData.ansDen}`;
+      }
     }
     id('fracAnsWrap').classList.remove('ok','bad');
     id('fracAnsWrap').classList.add(correct ? 'ok' : 'bad');
+    } // end non-whole branch
   }
   else if (mode === 'mixed') {
     if (qData.mixedMode === 'toImproper') {
@@ -1683,7 +2304,8 @@ function checkAns() {
       const un = parseInt(id('fracNum').value, 10);
       const ud = parseInt(id('fracDen').value, 10);
       if (isNaN(un) || isNaN(ud) || ud === 0) { attempts--; id('fracDen').focus(); return; }
-      correct = un === qData.ansNum && ud === qData.ansDen;
+      // Accept any equivalent fraction (cross-multiply)
+      correct = un * qData.ansDen === qData.ansNum * ud;
       if (!correct) feedbackStr = `Answer: ${qData.ansNum}/${qData.ansDen}`;
       id('fracAnsWrap').classList.remove('ok','bad');
       id('fracAnsWrap').classList.add(correct ? 'ok' : 'bad');
@@ -1698,6 +2320,60 @@ function checkAns() {
       id('mixedAnsWrap').classList.remove('ok','bad');
       id('mixedAnsWrap').classList.add(correct ? 'ok' : 'bad');
     }
+  }
+
+  else if (mode === 'index') {
+    const m = qData.idxMode || 'expOnly';
+    if (m === 'expOnly') {
+      const userExp = parseInt(id('idxExp').value, 10);
+      if (isNaN(userExp)) { attempts--; id('idxExp').focus(); return; }
+      correct = userExp === qData.ansExp;
+      if (!correct) feedbackStr = `Power should be: ${qData.ansExp}`;
+      id('idxExp').classList.remove('ok','bad');
+      id('idxExp').classList.add(correct ? 'ok' : 'bad');
+    } else {
+      const userCoeff = parseFloat(id('idxCoeff').value);
+      const userExp   = parseInt(id('idxExpB').value, 10);
+      if (isNaN(userCoeff)) { attempts--; id('idxCoeff').focus(); return; }
+      if (isNaN(userExp))   { attempts--; id('idxExpB').focus(); return; }
+
+      const hasY    = qData.ansExpY !== undefined && qData.ansExpY !== null;
+      const coeffOk = Math.round(userCoeff * 100) === Math.round(qData.ansCoeff * 100);
+      const expOk   = userExp === qData.ansExp;
+
+      let expYOk = true;
+      if (hasY) {
+        const userExpY = parseInt(id('idxExpC').value, 10);
+        if (isNaN(userExpY)) { attempts--; id('idxExpC').focus(); return; }
+        expYOk = userExpY === qData.ansExpY;
+      }
+
+      correct = coeffOk && expOk && expYOk;
+
+      const varPart = qData.var1 ? `${qData.var1}^${qData.ansExp}` : `^${qData.ansExp}`;
+      const yPart   = hasY ? ` y^${qData.ansExpY}` : '';
+      if (!correct) feedbackStr = `Answer: ${qData.ansCoeff}${varPart}${yPart}`;
+
+      [['idxCoeff', coeffOk],['idxExpB', expOk]].forEach(([inp, ok]) => {
+        const el = id(inp); el.classList.remove('ok','bad'); el.classList.add(correct ? 'ok' : ok ? 'ok' : 'bad');
+      });
+      if (hasY) {
+        const el = id('idxExpC'); el.classList.remove('ok','bad'); el.classList.add(correct ? 'ok' : expYOk ? 'ok' : 'bad');
+      }
+    }
+  }
+  else if (mode === 'sci') {
+    const userCoeff = parseFloat(id('sciCoeff').value);
+    const userExp   = parseInt(id('sciExp').value, 10);
+    if (isNaN(userCoeff)) { attempts--; id('sciCoeff').focus(); return; }
+    if (isNaN(userExp))   { attempts--; id('sciExp').focus(); return; }
+    const coeffOk = Math.round(userCoeff * 100) === Math.round(qData.sciCoeffAns * 100);
+    const expOk   = userExp === qData.sciExpAns;
+    correct = coeffOk && expOk;
+    if (!correct) feedbackStr = `Answer: ${qData.sciCoeffAns} × 10^${qData.sciExpAns}`;
+    [['sciCoeff', coeffOk],['sciExp', expOk]].forEach(([inp, ok]) => {
+      const el = id(inp); el.classList.remove('ok','bad'); el.classList.add(correct ? 'ok' : ok ? 'ok' : 'bad');
+    });
   }
 
   if (correct) { score++; setText('feedback',''); }
@@ -1735,7 +2411,7 @@ function endSession() {
   if (gameOver) return;
   gameOver = true;
   clearInterval(timer);
-  ['ansInput','fracNum','fracDen','mixedWhole','mixedNum','mixedDen'].forEach(i => {
+  ['ansInput','fracNum','fracDen','mixedWhole','mixedNum','mixedDen','idxCoeff','idxExp','sciCoeff','sciExp'].forEach(i => {
     const el = document.getElementById(i);
     if (el) el.disabled = true;
   });
