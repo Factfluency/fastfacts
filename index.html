@@ -183,9 +183,9 @@ body {
 .sess-toggle button {
   flex: 1; background: transparent; border: none;
   color: var(--muted); font-family: 'Nunito', sans-serif;
-  font-weight: 800; font-size: 0.9rem;
-  padding: 10px 8px; border-radius: 10px; cursor: pointer;
-  transition: all .2s;
+  font-weight: 800; font-size: 0.82rem;
+  padding: 10px 4px; border-radius: 10px; cursor: pointer;
+  transition: all .2s; line-height: 1.2;
 }
 .sess-toggle button.active {
   background: var(--accent); color: #fff;
@@ -613,6 +613,96 @@ body {
 .hide { display: none !important; }
 .text-center { text-align: center; }
 
+/* ── CHALLENGE / FLUENCY MODE badges ── */
+.ob-badge.challenge { background: var(--accent-bg); color: var(--accent); }
+.ob-badge.fluency   { background: var(--amber-bg);  color: var(--amber); }
+
+/* ── CLASS CODE chip on home ── */
+.class-code-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--accent-bg); color: var(--accent);
+  border: 1.5px solid rgba(67,56,202,0.2);
+  border-radius: 20px; padding: 4px 12px;
+  font-size: 0.78rem; font-weight: 800;
+  margin-top: 2px;
+}
+
+/* ── TODAY / SESSION HISTORY SCREEN ── */
+.today-header {
+  padding: 16px 0 20px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.today-header h2 { font-size: 1.25rem; font-weight: 900; }
+.session-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+.session-row {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--r); box-shadow: var(--shadow);
+  padding: 14px 16px;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+}
+.session-row.is-pb { border-color: var(--amber); background: var(--amber-bg); }
+.session-skill { font-weight: 900; font-size: 0.95rem; color: var(--text); }
+.session-meta { font-size: 0.75rem; color: var(--muted); font-weight: 700; margin-top: 2px; }
+.session-score-col { text-align: right; flex-shrink: 0; }
+.session-score { font-weight: 900; font-size: 1.4rem; color: var(--accent); }
+.session-pb-tag {
+  font-size: 0.65rem; font-weight: 800;
+  color: var(--amber); display: block; margin-top: 1px;
+}
+.session-sent-tag {
+  font-size: 0.65rem; font-weight: 800;
+  color: var(--green); display: block; margin-top: 1px;
+}
+
+/* ── SHARE PANEL ── */
+.share-card {
+  background: var(--surface);
+  border: 2px solid var(--accent);
+  border-radius: var(--r); box-shadow: var(--shadow-md);
+  padding: 22px 20px; margin-bottom: 16px;
+}
+.share-card h3 { font-size: 1.05rem; font-weight: 900; margin-bottom: 6px; }
+.share-card p { font-size: 0.85rem; color: var(--muted); font-weight: 700; margin-bottom: 16px; }
+.share-preview {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: var(--r-sm); padding: 12px 14px;
+  font-family: monospace; font-size: 0.78rem;
+  color: var(--text); white-space: pre-wrap;
+  margin-bottom: 14px; line-height: 1.6;
+}
+.btn-share {
+  width: 100%; background: #0078d4; border: none;
+  border-radius: var(--r); color: #fff;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 800; font-size: 1.05rem;
+  padding: 14px; cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,120,212,0.3);
+  transition: opacity .18s;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.btn-share:hover { opacity: 0.9; }
+.btn-copy {
+  width: 100%; background: var(--surface);
+  border: 2px solid var(--border);
+  border-radius: var(--r); color: var(--muted);
+  font-family: 'Nunito', sans-serif;
+  font-weight: 800; font-size: 0.92rem;
+  padding: 13px; cursor: pointer; margin-top: 8px;
+  transition: border-color .18s, color .18s;
+}
+.btn-copy:hover { border-color: var(--accent); color: var(--accent); }
+.share-success {
+  background: var(--green-bg); color: var(--green);
+  border: 1.5px solid #86efac; border-radius: var(--r-sm);
+  padding: 12px 16px; font-weight: 800; font-size: 0.9rem;
+  text-align: center; margin-top: 10px; display: none;
+}
+.nothing-to-share {
+  text-align: center; color: var(--muted);
+  padding: 32px 16px; font-size: 0.88rem; font-weight: 700;
+}
+
 
 
 /* ── INDEX ANSWER INPUT LAYOUT ── */
@@ -894,7 +984,7 @@ body {
   border-radius: var(--r);
   box-shadow: var(--shadow);
   padding: 24px 20px;
-  min-height: 180px;
+  min-height: 220px;
 }
 
 .ob-row {
@@ -1004,6 +1094,9 @@ body {
   .ctrl-row { margin-top: 8px; gap: 8px; }
   .btn-primary, .btn-ghost { padding: 10px; font-size: 0.88rem; }
 
+  /* ── Today screen: share card needs clearance above fixed keypad ── */
+  #s-today { padding-bottom: 20px; }
+
   /* ── Back button on game screen: shorten ── */
   #s-game .back-btn { padding: 8px 0 4px; font-size: 0.8rem; }
 
@@ -1022,14 +1115,16 @@ body {
 <div id="s-welcome" class="screen active">
   <div class="hero">
     <div class="logo">⚡ Sandy<span>FastFacts</span></div>
-    <div class="tagline">Secondary Maths Fluency Trainer</div>
+    <div class="tagline">Secondary Maths Fluency &amp; Challenge Trainer</div>
   </div>
   <div class="slabel">Choose Your Profile</div>
   <div class="profile-grid" id="profileGrid"></div>
   <div id="nameFormWrap" class="hide">
     <div class="name-form">
       <h2 id="nameFormTitle">New Profile</h2>
-      <input id="nameInput" class="txt-input" type="text" placeholder="Your first name" maxlength="18" autocomplete="off">
+      <input id="nameInputFirst" class="txt-input" type="text" placeholder="First name" maxlength="18" autocomplete="given-name" autocapitalize="words">
+      <input id="nameInputLast"  class="txt-input" type="text" placeholder="Last name"  maxlength="24" autocomplete="family-name" autocapitalize="words">
+      <input id="classCodeInput" class="txt-input" type="text" placeholder="Class code — ask your teacher (e.g. 7A-MATHS)" maxlength="20" autocomplete="off" autocapitalize="characters" spellcheck="false">
       <div class="slabel">Pick a colour</div>
       <div class="color-row" id="colorRow"></div>
       <button class="btn-primary" onclick="saveProfile()">Save Profile</button>
@@ -1071,12 +1166,17 @@ body {
       <div class="greeting" id="homeGreeting"></div>
       <div class="greeting-sub" id="homeSub"></div>
     </div>
-    <button class="switch-btn" onclick="goWelcome()">Switch profile</button>
+    <div class="switch-btn" onclick="goWelcome()">Switch profile</div>
+  </div>
+  <div style="margin-bottom:16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+    <div class="class-code-chip" id="homeClassChip">🏫 <span id="homeClassCode">No class code set</span></div>
+    <span class="ob-replay-btn" onclick="editCurrentProfile()" style="font-size:0.75rem">✏️ Edit profile</span>
   </div>
 
   <div class="sess-toggle">
-    <button id="btn-fluency" class="active" onclick="setMode('fluency')">⏱ Fluency 60s</button>
-    <button id="btn-practice" onclick="setMode('practice')">∞ Practice</button>
+    <button id="btn-fluency"   onclick="setMode('fluency')">⏱ Fluency<br>60s</button>
+    <button id="btn-challenge" onclick="setMode('challenge')">⚡ Challenge<br>3 min</button>
+    <button id="btn-practice"  onclick="setMode('practice')">∞ Practice</button>
   </div>
 
   <div class="slabel">Choose a Category</div>
@@ -1111,6 +1211,8 @@ body {
   </div>
 
   <button class="btn-ghost" onclick="goLeaderboard()">🏆  Personal Bests</button>
+  <div style="height:8px"></div>
+  <button class="btn-ghost" onclick="goToday()" id="todayBtn" style="border-color:var(--accent);color:var(--accent)">📋  Today's Sessions &amp; Share</button>
   <div style="height:8px"></div>
   <button class="btn-ghost" onclick="replayTutorial()" style="font-size:0.85rem;padding:10px">📖  Replay Tutorial</button>
 </div>
@@ -1320,7 +1422,7 @@ body {
   <div style="padding-top:8px"></div>
   <div class="res-card">
     <div class="res-score" id="rScore">0</div>
-    <div class="res-label" id="rLabel">Fluency Score</div>
+    <div class="res-label" id="rLabel">Challenge Score</div>
     <div class="res-stats">
       <div class="res-stat"><div class="val" id="rCorrect">–</div><div class="key">Correct</div></div>
       <div class="res-stat"><div class="val" id="rAcc">–</div><div class="key">Accuracy</div></div>
@@ -1336,6 +1438,10 @@ body {
     <button class="btn-primary" onclick="tryAgain()">↻ Try Again</button>
     <button class="btn-ghost" onclick="goHome()">Home</button>
   </div>
+  <div style="height:8px"></div>
+  <button class="btn-ghost" onclick="goToday()" id="resultsShareBtn" style="font-size:0.88rem;padding:10px;border-color:var(--accent);color:var(--accent)">
+    📤 Share today's sessions with teacher
+  </button>
 </div>
 
 <!-- ══════════════ LEADERBOARD ══════════════ -->
@@ -1346,6 +1452,36 @@ body {
   </div>
   <div class="lb-tabs" id="lbTabs"></div>
   <div id="lbContent"></div>
+</div>
+
+<!-- ══════════════ TODAY'S RESULTS ══════════════ -->
+<div id="s-today" class="screen">
+  <div class="today-header">
+    <h2>📋 Today's Sessions</h2>
+    <button class="back-btn" style="padding:0" onclick="goHome()">← Home</button>
+  </div>
+  <div id="todayEmpty" class="nothing-to-share" style="display:none">
+    No scored sessions yet today.<br>Complete a Fluency or Challenge session to see your results here.
+  </div>
+  <div class="session-list" id="todayList"></div>
+  <div id="todayShareWrap">
+    <div class="share-card" id="todayShareCard">
+      <h3>📤 Share with your teacher</h3>
+      <p id="shareCardDesc">Sends your new sessions to your teacher. You can share multiple times — only unsent sessions are included each time.</p>
+      <div class="share-preview" id="sharePreview"></div>
+      <button class="btn-share" id="shareFormBtn" onclick="openShareForm()">
+        <span>Open Microsoft Form</span>
+        <span style="font-size:1.1rem">→</span>
+      </button>
+      <button class="btn-copy" onclick="copyShareText()">📋 Copy results text instead</button>
+      <div class="share-success" id="shareSuccess">
+        ✓ Sent! Come back after your next session to share again.
+      </div>
+    </div>
+    <button class="btn-ghost" onclick="markAllSent()" style="font-size:0.85rem;padding:10px">
+      ✓ Already submitted — mark all as sent
+    </button>
+  </div>
 </div>
 
 </div><!-- /app -->
@@ -1573,7 +1709,7 @@ const LEVEL_DEFS = {
 ═══════════════════════════════════════════════ */
 let profiles = [];
 let pidx = 0;
-let sessionMode = 'fluency';
+let sessionMode = 'fluency';   // 'fluency' | 'challenge' | 'practice'
 let skill = null;      // current skill id
 let skillMeta = null;  // current skill object
 let lvKey = null;
@@ -1624,9 +1760,11 @@ function bestForSkill(sid) {
 /* ═══════════════════════════════════════════════
    SCREEN NAV
 ═══════════════════════════════════════════════ */
-function show(id) {
+function show(screenId) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
+  document.getElementById(screenId).classList.add('active');
+  // Hide the mobile keypad on any screen except the game screen
+  if (screenId !== 's-game') kbHide();
 }
 
 /* ═══════════════════════════════════════════════
@@ -1635,7 +1773,16 @@ function show(id) {
 let editPidx = null;
 let selColor = COLORS[0];
 
-function goWelcome() { clearInterval(timer); show('s-welcome'); renderProfiles(); }
+function goWelcome() {
+  clearInterval(timer);
+  // Always reset profileGrid visibility (may have been hidden during edit)
+  const grid = document.getElementById('profileGrid');
+  if (grid) grid.style.display = '';
+  document.getElementById('nameFormWrap').classList.add('hide');
+  editFromHome = false;
+  show('s-welcome');
+  renderProfiles();
+}
 function renderProfiles() {
   document.getElementById('nameFormWrap').classList.add('hide');
   const g = document.getElementById('profileGrid');
@@ -1672,16 +1819,44 @@ function renderProfiles() {
   }
 }
 function ini(name) { return name.trim().split(/\s+/).map(w => w[0]).join('').toUpperCase().slice(0,2); }
+
 function showNameForm() {
   editPidx = null;
+  editFromHome = false;
   selColor = COLORS[profiles.length % COLORS.length];
   document.getElementById('nameFormTitle').textContent = 'New Profile';
-  document.getElementById('nameInput').value = '';
+  document.getElementById('nameInputFirst').value = '';
+  document.getElementById('nameInputLast').value = '';
+  document.getElementById('classCodeInput').value = '';
   document.getElementById('nameFormWrap').classList.remove('hide');
   renderSwatches();
-  document.getElementById('nameInput').focus();
+  document.getElementById('nameInputFirst').focus();
 }
-function cancelNameForm() { document.getElementById('nameFormWrap').classList.add('hide'); }
+
+let editFromHome = false;  // tracks whether edit was triggered from home screen
+
+function editCurrentProfile() {
+  editPidx = pidx;
+  editFromHome = true;
+  const p = ap();
+  selColor = p.color;
+  document.getElementById('nameFormTitle').textContent = 'Edit Profile';
+  document.getElementById('nameInputFirst').value = p.firstName || p.name || '';
+  document.getElementById('nameInputLast').value  = p.lastName  || '';
+  document.getElementById('classCodeInput').value = p.classCode || '';
+  // Navigate to welcome screen so nameFormWrap is visible, then show it
+  show('s-welcome');
+  document.getElementById('profileGrid').style.display = 'none';
+  document.getElementById('nameFormWrap').classList.remove('hide');
+  renderSwatches();
+  document.getElementById('nameInputFirst').focus();
+}
+
+function cancelNameForm() {
+  document.getElementById('nameFormWrap').classList.add('hide');
+  document.getElementById('profileGrid').style.display = '';
+  if (editFromHome) { editFromHome = false; goHome(); }
+}
 function renderSwatches() {
   const r = document.getElementById('colorRow');
   r.innerHTML = '';
@@ -1693,18 +1868,34 @@ function renderSwatches() {
     r.appendChild(sw);
   });
 }
+
 function saveProfile() {
-  const name = document.getElementById('nameInput').value.trim();
-  if (!name) { document.getElementById('nameInput').focus(); return; }
-  if (editPidx !== null) { profiles[editPidx] = { name, color: selColor }; }
-  else { profiles.push({ name, color: selColor }); pidx = profiles.length - 1; }
+  const firstName = document.getElementById('nameInputFirst').value.trim();
+  const lastName  = document.getElementById('nameInputLast').value.trim();
+  const classCode = document.getElementById('classCodeInput').value.trim().toUpperCase();
+
+  if (!firstName) { document.getElementById('nameInputFirst').focus(); return; }
+
+  const displayName = lastName ? `${firstName} ${lastName}` : firstName;
+  const profileData = { name: displayName, firstName, lastName, classCode, color: selColor };
+
+  if (editPidx !== null) {
+    profiles[editPidx] = { ...profiles[editPidx], ...profileData };
+  } else {
+    profiles.push(profileData);
+    pidx = profiles.length - 1;
+  }
   saveProfiles();
   document.getElementById('nameFormWrap').classList.add('hide');
-  // New profiles (editPidx null) always get the onboarding walkthrough
+  document.getElementById('profileGrid').style.display = '';
   if (editPidx === null) {
+    editFromHome = false;
     obStart();
   } else {
-    goHome();
+    const wasHome = editFromHome;
+    editFromHome = false;
+    if (wasHome) goHome();
+    else goHome();
   }
 }
 
@@ -1718,16 +1909,31 @@ function goHome() {
   const av = document.getElementById('homeAv');
   av.style.background = p.color + '18'; av.style.color = p.color;
   av.textContent = ini(p.name);
-  document.getElementById('homeGreeting').textContent = `Hey, ${p.name}!`;
+  document.getElementById('homeGreeting').textContent = `Hey, ${p.firstName || p.name}!`;
   const h = new Date().getHours();
   document.getElementById('homeSub').textContent =
     `Good ${h < 12 ? 'morning' : h < 17 ? 'afternoon' : 'evening'} — ready to train?`;
+
+  // Class code chip
+  const chip = document.getElementById('homeClassCode');
+  if (chip) chip.textContent = p.classCode || 'No class code — tap Edit profile';
+
+  // Today button — show unsent count badge
+  const unsent = getTodaySessions().filter(s => !s.sent).length;
+  const todayBtn = document.getElementById('todayBtn');
+  if (todayBtn) {
+    todayBtn.innerHTML = unsent > 0
+      ? `📋  Today's Sessions &amp; Share <span style="background:var(--red);color:#fff;border-radius:20px;padding:1px 8px;font-size:0.75rem;margin-left:4px">${unsent} unsent</span>`
+      : `📋  Today's Sessions &amp; Share`;
+  }
+
   syncModeUI();
 }
 function setMode(m) { sessionMode = m; syncModeUI(); }
 function syncModeUI() {
-  document.getElementById('btn-fluency').classList.toggle('active', sessionMode === 'fluency');
-  document.getElementById('btn-practice').classList.toggle('active', sessionMode === 'practice');
+  document.getElementById('btn-fluency').classList.toggle('active',   sessionMode === 'fluency');
+  document.getElementById('btn-challenge').classList.toggle('active', sessionMode === 'challenge');
+  document.getElementById('btn-practice').classList.toggle('active',  sessionMode === 'practice');
 }
 
 /* ═══════════════════════════════════════════════
@@ -1763,9 +1969,9 @@ function selectSkill(smeta) {
   show('s-levels');
   document.getElementById('levelScreenTitle').textContent = smeta.name.replace(/&amp;/g,'&');
   document.getElementById('levelScreenSub').textContent =
-    sessionMode === 'fluency'
-      ? 'Fluency mode — 60 seconds. Choose your difficulty level below.'
-      : 'Practice mode — unlimited time. Choose your difficulty level below.';
+    sessionMode === 'fluency'   ? 'Fluency mode — 60 seconds. Answer as many as you can.' :
+    sessionMode === 'challenge' ? 'Challenge mode — 3 minutes. More time, bigger score.' :
+    'Practice mode — unlimited time. Build confidence at your own pace.';
 
   document.getElementById('levelStartBtn').disabled = true;
   document.getElementById('levelStartLbl').textContent = '?';
@@ -1844,14 +2050,21 @@ function prepGameScreen() {
   id('gameStopBtn').style.display = 'none';
   kbHide();
 
+  const pb = getPB(skill, level);
   if (sessionMode === 'fluency') {
     setText('gTimeLbl','Time'); setText('gTime','60');
     id('progWrap').style.display = 'block';
     id('progBar').style.transition = 'none';
     id('progBar').style.width = '100%';
-    const pb = getPB(skill, level);
-    id('pbNudge').innerHTML = pb > 0 ? `🎯 Beat your personal best of <strong>${pb}</strong>` : '';
+    id('pbNudge').innerHTML = pb > 0 ? `🎯 Beat your PB of <strong>${pb}</strong>` : '⏱ 60 second sprint';
+  } else if (sessionMode === 'challenge') {
+    setText('gTimeLbl','Time'); setText('gTime','3:00');
+    id('progWrap').style.display = 'block';
+    id('progBar').style.transition = 'none';
+    id('progBar').style.width = '100%';
+    id('pbNudge').innerHTML = pb > 0 ? `🎯 Beat your PB of <strong>${pb}</strong>` : '⚡ 3 minute challenge';
   } else {
+    // practice
     setText('gTimeLbl','Secs'); setText('gTime','0');
     id('progWrap').style.display = 'none';
     id('pbNudge').textContent = '';
@@ -2015,15 +2228,21 @@ function launchSession() {
     }, 1000);
     id('gameStopBtn').style.display = 'inline-block';
   } else {
-    timeLeft = 60; setText('gTime','60');
+    // fluency = 60s, challenge = 180s
+    const totalSecs = sessionMode === 'challenge' ? 180 : 60;
+    timeLeft = totalSecs;
+    const fmt = (s) => s >= 60 ? `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}` : String(s);
+    setText('gTime', fmt(timeLeft));
     id('progBar').style.transition = 'none';
     id('progBar').style.width = '100%';
     requestAnimationFrame(() => requestAnimationFrame(() => {
-      id('progBar').style.transition = 'width 1s linear';
+      id('progBar').style.transition = `width 1s linear`;
     }));
     timer = setInterval(() => {
-      timeLeft--; setText('gTime', timeLeft);
-      id('progBar').style.width = (timeLeft / 60 * 100) + '%';
+      timeLeft--;
+      setText('gTime', fmt(timeLeft));
+      id('progBar').style.width = (timeLeft / totalSecs * 100) + '%';
+      tickCPM();
       if (timeLeft <= 0) { clearInterval(timer); id('progBar').style.width='0%'; endSession(); }
     }, 1000);
   }
@@ -2483,16 +2702,6 @@ function simplify(n,d) { const g=gcd(Math.abs(n),Math.abs(d)); return [n/g, d/g]
 function renderFracQuestion(html) {
   id('qBox').innerHTML = html;
 }
-
-function fracHTML(n, d, color) {
-  const c = color ? `style="color:${color}"` : '';
-  return `<div class="q-frac" ${c}>
-    <div class="fnum">${n}</div>
-    <div class="fline"></div>
-    <div class="fden">${d}</div>
-  </div>`;
-}
-
 /* ── SIMPLIFY FRACTIONS ── */
 function genFracSimplify() {
   let num, den, ansNum, ansDen;
@@ -3006,10 +3215,11 @@ function endSession() {
     if (el) el.disabled = true;
   });
 
-  const acc = attempts > 0 ? score / attempts : 0;
-  const fluency = Math.round(score * acc * acc);
+  const acc  = attempts > 0 ? score / attempts : 0;
   const mins = (Date.now() - startTime) / 60000;
-  const cpm = mins > 0 ? Math.round(score / mins) : 0;
+  const cpm  = mins > 0 ? Math.round(score / mins) : 0;
+  // Score = CPM × accuracy²  (clean number, same scale as CPM)
+  const fluency = Math.round(cpm * acc * acc);
 
   pushTrend(skill, level, fluency);
   const trend = getTrend(skill, level);
@@ -3019,6 +3229,11 @@ function endSession() {
   if (fluency > oldPB) { setPB(skill, level, fluency); pbResult = 'new'; }
   else if (fluency === oldPB && oldPB > 0) pbResult = 'equal';
   const newPB = getPB(skill, level);
+
+  // Record in today's queue (both fluency and challenge — practice is unscored)
+  if (sessionMode === 'fluency' || sessionMode === 'challenge') {
+    recordSession(skill, level, fluency, score, Math.round(acc * 100), cpm, pbResult === 'new');
+  }
 
   showResults(fluency, score, acc, cpm, pbResult, newPB, trend);
 }
@@ -3030,7 +3245,9 @@ function showResults(fluency, correct, acc, cpm, pbResult, pb, trend) {
   show('s-results');
   setText('rScore', fluency);
   setText('rLabel', sessionMode === 'fluency'
-    ? 'Fluency Score = correct answers × accuracy²'
+    ? 'Fluency Score = correct per minute × accuracy²'
+    : sessionMode === 'challenge'
+    ? 'Challenge Score = correct per minute × accuracy²'
     : 'Practice Score = correct answers × accuracy');
   setText('rCorrect', correct);
   setText('rAcc', Math.round(acc*100) + '%');
@@ -3038,6 +3255,10 @@ function showResults(fluency, correct, acc, cpm, pbResult, pb, trend) {
   setText('rSparkSkill', skillMeta ? skillMeta.name.replace(/&amp;/g,'&') + ' · L' + level : '');
 
   const banner = id('rPbBanner');
+  // Hide share button for practice (not recorded) — show for fluency/challenge
+  const shareBtn = id('resultsShareBtn');
+  if (shareBtn) shareBtn.style.display = sessionMode === 'practice' ? 'none' : 'block';
+
   if (pbResult === 'practice') {
     banner.className = 'pb-banner pb-below';
     banner.textContent = `Practice session complete — best streak: ${bestStreak}`;
@@ -3105,7 +3326,7 @@ function buildLvlSpark(trend, pb) {
 function renderLB() {
   const div = id('lbContent'); div.innerHTML = '';
   const rows = [];
-  Object.values(CATS).forEach(cat => cat.skills.forEach(s => [1,2,3].forEach(lv => {
+  Object.values(CATS).forEach(cat => cat.skills.forEach(s => [1,2,3,4].forEach(lv => {
     const pb = getPB(s.id, lv, lbPidx);
     if (pb > 0) {
       // Get trend for this profile — temporarily swap pidx
@@ -3118,7 +3339,7 @@ function renderLB() {
   })));
   rows.sort((a,b) => b.pb - a.pb);
   if (!rows.length) {
-    div.innerHTML = '<div class="lb-empty">No scores yet.<br>Complete a Fluency session to record your first score!</div>';
+    div.innerHTML = '<div class="lb-empty">No scores yet.<br>Complete a Challenge session to record your first score!</div>';
     return;
   }
   const tbl = document.createElement('table');
@@ -3152,156 +3373,6 @@ function buildLBSpark(trend, pb) {
    NEW SKILL GENERATORS
 ════════════════════════════════════════════ */
 
-/* ── SIGNIFICANT FIGURES ── */
-function genSigFigs() {
-  const el = id('qText');
-  if (level === 1) {
-    // Count sig figs in a number
-    const nums = [
-      [0.0043, 2], [4700, 2], [3.05, 3], [0.020, 2],
-      [100.0, 4], [0.00106, 3], [5300, 2], [60.20, 4],
-      [0.004, 1], [120, 2], [3.004, 4], [0.0700, 3],
-      [5010, 3], [6.020, 4], [0.00050, 2], [900, 1],
-    ];
-    const pick = nums[ri(nums.length)];
-    qData.ans = pick[1];
-    el.textContent = `sig figs in ${pick[0]}`;
-    el.style.fontSize = '1.8rem';
-  } else {
-    // Round to n sig figs — generate number and sig fig target
-    const vals = [
-      [4756, 2, 4800], [0.003862, 2, 0.0039], [12.74, 3, 12.7],
-      [38500, 2, 39000], [0.05738, 3, 0.0574], [7.835, 2, 7.8],
-      [463, 1, 500], [0.006271, 3, 0.00627], [9.996, 3, 10.0],
-      [84700, 3, 84700], [0.04053, 2, 0.041], [328.6, 2, 330],
-    ];
-    const pick = vals[ri(vals.length)];
-    qData.ans = pick[2];
-    el.textContent = `Round ${pick[0]} to ${pick[1]} s.f.`;
-    el.style.fontSize = '1.6rem';
-  }
-}
-
-/* ── INTEGER SQUARES & CUBES ── */
-function genIntSquareCube() {
-  const el = id('qText');
-  const ranges = [5, 10, 12];
-  const mx = ranges[level-1];
-  const base = -rr(1, mx); // always negative for interest
-
-  if (level === 1) {
-    // squares only
-    qData.ans = base * base;
-    el.textContent = `(${base})²`;
-  } else if (level === 2) {
-    // cubes only
-    qData.ans = base * base * base;
-    el.textContent = `(${base})³`;
-  } else {
-    // mix of squares and cubes
-    const pow = Math.random() < 0.5 ? 2 : 3;
-    qData.ans = Math.pow(base, pow);
-    el.textContent = `(${base})${pow === 2 ? '²' : '³'}`;
-  }
-}
-
-/* ── ORDER OF OPERATIONS (INTEGERS) ── */
-function genIntOrderOps() {
-  const el = id('qText');
-  let ans, txt, safety = 0;
-  do {
-    const a = rr(-8,8)||1, b = rr(-6,6)||1, c = rr(-6,6)||1;
-    if (level === 1) {
-      if (Math.random() < 0.5) { ans = a + b*c; txt = `${f(a)} + ${f(b)} × ${f(c)}`; }
-      else { ans = a*b + c; txt = `${f(a)} × ${f(b)} + ${f(c)}`; }
-    } else if (level === 2) {
-      if (Math.random() < 0.5) { ans = (a+b)*c; txt = `(${f(a)} + ${f(b)}) × ${f(c)}`; }
-      else { ans = a*(b+c); txt = `${f(a)} × (${f(b)} + ${f(c)})`; }
-    } else {
-      const d = rr(-4,4)||1;
-      if (Math.random() < 0.5) { ans = a + b*c + d; txt = `${f(a)} + ${f(b)} × ${f(c)} + ${f(d)}`; }
-      else { ans = (a+b)*c - d; txt = `(${f(a)} + ${f(b)}) × ${f(c)} − ${f(Math.abs(d))}`; if(c<0&&(a+b)<0)ans=(a+b)*c-d; }
-    }
-    safety++;
-  } while (Math.abs(ans) > 200 && safety < 50);
-  qData.ans = ans;
-  el.textContent = txt;
-  el.style.fontSize = '1.7rem';
-}
-
-/* ── MIXED NUMBER → IMPROPER FRACTION ── */
-function genMixedImpMix() {
-  // L1: always mixed→improper; L2: always improper→mixed; L3: random
-  const doToImproper = (level === 1) ? true : (level === 2) ? false : Math.random() < 0.5;
-  qData.mixedMode = doToImproper ? 'toImproper' : 'toMixed';
-  if (doToImproper) {
-    genMixedToImp();
-  } else {
-    genImpToMixed();
-  }
-}
-
-function genMixedToImp() {
-  const denRanges = [[2,5],[2,9],[2,15]];
-  const [dMin, dMax] = denRanges[level-1];
-  const wholeRanges = [[1,5],[1,9],[1,12]];
-  const [wMin, wMax] = wholeRanges[level-1];
-  const den = rr(dMin, dMax);
-  const whole = rr(wMin, wMax);
-  const num = rr(1, den-1);
-  qData.ansNum = whole * den + num;
-  qData.ansDen = den;
-  // Display as mixed number in qBox
-  id('qBox').innerHTML = `<div class="idx-q-display" style="font-size:2rem;gap:8px;align-items:center">
-    <span style="font-weight:900">${whole}</span>
-    ${fracHTML(num, den)}
-    <span style="font-size:1.3rem;color:var(--muted)">→ improper</span>
-  </div>`;
-}
-
-/* ── IMPROPER FRACTION → MIXED NUMBER ── */
-function genImpToMixed() {
-  const denRanges = [[2,5],[2,9],[2,15]];
-  const [dMin, dMax] = denRanges[level-1];
-  const den = rr(dMin, dMax);
-  const whole = rr(1, level === 1 ? 5 : level === 2 ? 9 : 12);
-  const rem = rr(1, den-1);
-  const impNum = whole * den + rem;
-  qData.ansWhole = whole;
-  qData.ansNum = rem;
-  qData.ansDen = den;
-  qData.mixedMode = 'toMixed';
-  id('qBox').innerHTML = `<div class="idx-q-display" style="font-size:2rem;gap:8px;align-items:center">
-    ${fracHTML(impNum, den)}
-    <span style="font-size:1.3rem;color:var(--muted)">→ mixed</span>
-  </div>`;
-}
-
-/* ── ORDER OF OPERATIONS (FRACTIONS) ── */
-function genFracOrderOps() {
-  // Use simple unit fractions to keep mental arithmetic feasible
-  const simpleF = [[1,2],[1,3],[1,4],[2,3],[3,4],[1,6],[1,8]];
-  const pf = () => simpleF[ri(simpleF.length)];
-  let [n1,d1]=pf(), [n2,d2]=pf(), [n3,d3]=pf();
-  let ans, txt;
-  if (level === 1) {
-    // a + b × c (where b×c = whole number for simplicity, or use unit frac)
-    const mult = rr(2,4);
-    ans = n1/d1 + (n2/d2)*mult;
-    txt = `${n1}/${d1} + ${n2}/${d2} × ${mult}`;
-  } else if (level === 2) {
-    const mult = rr(2,4);
-    ans = (n1/d1 + n2/d2) * mult;
-    txt = `(${n1}/${d1} + ${n2}/${d2}) × ${mult}`;
-  } else {
-    ans = n1/d1 + (n2/d2) * (n3/d3);
-    txt = `${n1}/${d1} + ${n2}/${d2} × ${n3}/${d3}`;
-  }
-  // Convert ans to fraction
-  const ansRat = toRat(ans);
-  qData.ansNum = ansRat[0]; qData.ansDen = ansRat[1];
-  id('qBox').innerHTML = `<div class="idx-q-display" style="font-size:1.6rem;gap:6px;flex-wrap:wrap">${txt}</div>`;
-}
 
 /* Convert decimal to simplified fraction */
 function toRat(dec) {
@@ -3318,69 +3389,6 @@ function fracHTML(n, d, col) {
 }
 
 /* ── DECIMAL GENERATORS ── */
-
-
-
-function genDecDivide() {
-  const el = id('qText');
-  let a, b, ans;
-  if (level === 1) { ans = rr(10,99)/10; b = rr(2,9); a = Math.round(ans*b*10)/10; }
-  else if (level === 2) { ans = rr(10,99)/10; b = rr(10,99)/10; a = Math.round(ans*b*100)/100; }
-  else { ans = rr(10,99)/10; b = rr(10,99)/10; a = Math.round(ans*b*1000)/1000; }
-  qData.ans = ans;
-  el.textContent = `${a} ÷ ${b}`;
-}
-
-function genDecSquareCube() {
-  const el = id('qText');
-  let base, ans;
-  if (level === 1) { base = rr(1,9)/10; ans = Math.round(base*base*10000)/10000; el.textContent = `${base}²`; }
-  else if (level === 2) { base = rr(1,5)/10; ans = Math.round(Math.pow(base,3)*100000)/100000; el.textContent = `${base}³`; }
-  else {
-    base = rr(10,19)/10;
-    if (Math.random()<0.5){ ans = Math.round(base*base*10000)/10000; el.textContent = `${base}²`; }
-    else { ans = Math.round(Math.pow(base,3)*100000)/100000; el.textContent = `${base}³`; }
-  }
-  qData.ans = ans;
-}
-
-function genDecOrderOps() {
-  const el = id('qText');
-  let ans, txt, safety=0;
-  do {
-    const a = rr(10,99)/10, b = rr(10,99)/10, c = rr(2,5), d = rr(10,50)/10;
-    if (level === 1) {
-      ans = Math.round((a + b*c)*1000)/1000; txt = `${a} + ${b} × ${c}`;
-    } else if (level === 2) {
-      ans = Math.round(((a+b)*c)*1000)/1000; txt = `(${a} + ${b}) × ${c}`;
-    } else {
-      ans = Math.round((a*c + b*c)*1000)/1000; txt = `${a} × ${c} + ${b} × ${c}`;
-    }
-    safety++;
-  } while (ans <= 0 && safety < 50);
-  qData.ans = ans;
-  el.textContent = txt;
-  el.style.fontSize = '1.8rem';
-}
-
-function genDecRound() {
-  const el = id('qText');
-  let num, dp, ans;
-  if (level === 1) {
-    // Always 1 dp
-    dp = 1;
-    num = rr(100,9999)/100; // e.g. 3.47
-    ans = Math.round(num * 10) / 10;
-  } else {
-    // Mix of 1 or 2 dp
-    dp = Math.random() < 0.5 ? 1 : 2;
-    num = rr(1000,99999)/1000;
-    ans = dp === 1 ? Math.round(num*10)/10 : Math.round(num*100)/100;
-  }
-  qData.ans = ans;
-  el.textContent = `Round ${num} to ${dp} d.p.`;
-  el.style.fontSize = '1.6rem';
-}
 
 
 
@@ -3914,21 +3922,28 @@ window.addEventListener('resize', () => {
 const OB_SLIDES = [
   {
     icon: '⏱',
-    title: 'Two ways to train',
+    title: 'Three ways to train',
     body: 'Choose how you want to practise before you start.',
     card: `
       <div class="ob-row">
         <div class="ob-badge fluency">⏱</div>
         <div class="ob-row-text">
           <div class="ob-row-title">Fluency — 60 seconds</div>
-          <div class="ob-row-desc">Answer as many questions as you can before time runs out. Your score is recorded and compared to your personal best.</div>
+          <div class="ob-row-desc">A quick daily sprint. Answer as many as you can. Your score is recorded and shared with your teacher.</div>
+        </div>
+      </div>
+      <div class="ob-row">
+        <div class="ob-badge challenge">⚡</div>
+        <div class="ob-row-text">
+          <div class="ob-row-title">Challenge — 3 minutes</div>
+          <div class="ob-row-desc">More time to warm up and get into the zone. Great for harder skills. Also scored and shared with your teacher.</div>
         </div>
       </div>
       <div class="ob-row">
         <div class="ob-badge practice">∞</div>
         <div class="ob-row-text">
           <div class="ob-row-title">Practice — unlimited time</div>
-          <div class="ob-row-desc">No timer. Work through questions at your own pace to build confidence before going for a fluency score.</div>
+          <div class="ob-row-desc">No timer. Build confidence at your own pace before going for a scored session. Not shared.</div>
         </div>
       </div>`
   },
@@ -3938,10 +3953,10 @@ const OB_SLIDES = [
     body: 'Speed matters — but accuracy matters more.',
     card: `
       <div class="ob-row">
-        <div class="ob-badge fluency">⭐</div>
+        <div class="ob-badge challenge">⭐</div>
         <div class="ob-row-text">
-          <div class="ob-row-title">Fluency Score = Correct × Accuracy²</div>
-          <div class="ob-row-desc">If you get 20 correct but only 50% accurate, your score is 20 × 0.25 = 5. Getting 15 correct at 100% scores 15 — much better! Slow down and think first.</div>
+          <div class="ob-row-title">Score = CPM × Accuracy²</div>
+          <div class="ob-row-desc">If you get 30 correct in 60 seconds but only 50% accurate, your score is 30 × 0.25 = 7. Getting 20 correct at 100% scores 20. Slow down and think — accuracy matters more than speed.</div>
         </div>
       </div>
       <div class="ob-row">
@@ -3961,7 +3976,7 @@ const OB_SLIDES = [
         <div class="ob-badge pb">🏆</div>
         <div class="ob-row-text">
           <div class="ob-row-title">Personal Best</div>
-          <div class="ob-row-desc">Your highest ever Fluency Score for each skill and level is saved. The app tells you when you beat it — aim for a new PB every session.</div>
+          <div class="ob-row-desc">Your highest ever Challenge Score for each skill and level is saved. The app tells you when you beat it — aim for a new PB every session.</div>
         </div>
       </div>
       <div class="ob-row">
@@ -4021,6 +4036,212 @@ function replayTutorial() {
 
 function isOnboarded() {
   return localStorage.getItem('ff_onboarded_' + pidx) === '1';
+}
+
+/* ═══════════════════════════════════════════════
+   SESSION QUEUE — today's challenge results
+   Stored per-profile, keyed by date so yesterday's
+   sessions don't accumulate.
+═══════════════════════════════════════════════ */
+function todayKey() {
+  const d = new Date();
+  return `ff_today_${pidx}_${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
+}
+
+function getTodaySessions() {
+  try { return JSON.parse(localStorage.getItem(todayKey()) || '[]'); }
+  catch { return []; }
+}
+
+function saveTodaySessions(sessions) {
+  localStorage.setItem(todayKey(), JSON.stringify(sessions));
+}
+
+function recordSession(skillId, lv, fluencyScore, correct, accPct, cpmVal, isPB) {
+  const sessions = getTodaySessions();
+  sessions.push({
+    id: Date.now(),
+    skill: skillId,
+    skillName: getSkillDisplayName(skillId),
+    level: lv,
+    mode: sessionMode,   // 'fluency' | 'challenge'
+    modeLabel: sessionMode === 'fluency' ? '⏱ Fluency' : '⚡ Challenge',
+    score: fluencyScore,
+    correct,
+    accuracy: accPct,
+    cpm: cpmVal,
+    isPB,
+    sent: false,
+    time: new Date().toLocaleTimeString('en-AU', { hour:'2-digit', minute:'2-digit' }),
+    date: new Date().toLocaleDateString('en-AU', { day:'numeric', month:'short', year:'numeric' }),
+  });
+  saveTodaySessions(sessions);
+}
+
+function getSkillDisplayName(sid) {
+  for (const cat of Object.values(CATS)) {
+    for (const s of cat.skills) {
+      if (s.id === sid) return s.name.replace(/&amp;/g, '&');
+    }
+  }
+  return sid;
+}
+
+/* ── TODAY SCREEN ── */
+function goToday() {
+  show('s-today');
+  renderTodayScreen();
+}
+
+function renderTodayScreen() {
+  const sessions = getTodaySessions();
+  const unsent = sessions.filter(s => !s.sent);
+  const list = document.getElementById('todayList');
+  const empty = document.getElementById('todayEmpty');
+  const shareWrap = document.getElementById('todayShareWrap');
+
+  list.innerHTML = '';
+
+  if (sessions.length === 0) {
+    empty.style.display = 'block';
+    shareWrap.style.display = 'none';
+    return;
+  }
+  empty.style.display = 'none';
+  shareWrap.style.display = 'block';
+
+  // Render all sessions — sent ones shown faded
+  sessions.forEach(s => {
+    const row = document.createElement('div');
+    row.className = 'session-row' + (s.isPB ? ' is-pb' : '');
+    if (s.sent) row.style.opacity = '0.5';
+    row.innerHTML = `
+      <div>
+        <div class="session-skill">${s.skillName} — Level ${s.level}</div>
+        <div class="session-meta">${s.modeLabel || ''} · Acc: ${s.accuracy}% · CPM: ${s.cpm} · ${s.time}</div>
+      </div>
+      <div class="session-score-col">
+        <div class="session-score">${s.score}</div>
+        ${s.isPB ? '<span class="session-pb-tag">★ NEW PB</span>' : ''}
+        ${s.sent ? '<span class="session-sent-tag">✓ Sent</span>' : '<span style="font-size:0.65rem;font-weight:800;color:var(--accent);display:block;margin-top:1px">● Unsent</span>'}
+      </div>`;
+    list.appendChild(row);
+  });
+
+  // Share card — show differently if nothing new to send
+  const shareCard = document.getElementById('todayShareCard');
+  const shareBtn  = document.getElementById('shareFormBtn');
+  const copyBtn   = document.querySelector('.btn-copy');
+  const desc      = document.getElementById('shareCardDesc');
+
+  if (unsent.length === 0) {
+    desc.textContent = '✓ All sessions have been sent. Do more sessions and come back to share them.';
+    shareBtn.style.opacity = '0.4';
+    shareBtn.style.pointerEvents = 'none';
+    if (copyBtn) { copyBtn.style.opacity = '0.4'; copyBtn.style.pointerEvents = 'none'; }
+    document.getElementById('sharePreview').textContent = '— nothing new to send —';
+  } else {
+    desc.textContent = `${unsent.length} unsent session${unsent.length !== 1 ? 's' : ''} ready to share. Only these will be sent.`;
+    shareBtn.style.opacity = '';
+    shareBtn.style.pointerEvents = '';
+    if (copyBtn) { copyBtn.style.opacity = ''; copyBtn.style.pointerEvents = ''; }
+    buildSharePreview(sessions);
+  }
+}
+
+function buildSharePreview(sessions) {
+  const p = ap();
+  const studentName = p.name || 'Unknown';
+  const classCode   = p.classCode || 'No class set';
+  const today = new Date().toLocaleDateString('en-AU', { day:'numeric', month:'short', year:'numeric' });
+
+  const unsent = sessions.filter(s => !s.sent);
+
+  // Header
+  let lines = [`${studentName} | ${classCode} | ${today}`, ''];
+
+  // Only unsent sessions go in the submission
+  unsent.forEach(s => {
+    const pbTag = s.isPB ? ' ★ PB' : '';
+    lines.push(`  ${s.skillName} | L${s.level} | ${s.modeLabel || s.mode} | Score: ${s.score} | Acc: ${s.accuracy}% | CPM: ${s.cpm}${pbTag}`);
+  });
+
+  lines.push('');
+  lines.push(`${unsent.length} session${unsent.length !== 1 ? 's' : ''}`);
+
+  const preview = lines.join('\n');
+  document.getElementById('sharePreview').textContent = preview;
+  return preview;
+}
+
+/* ── MICROSOFT FORM — pre-fill field IDs from the form's prefill URL ── */
+const FORM_BASE_URL    = 'https://forms.office.com/Pages/ResponsePage.aspx?id=N7Ns2Ycaz0S2mzzsM0pMH2FahnKfjQJIu_YVhXpJk7lUMzkxQktVOExKNlJNSFQ5QVpMVFo1OEc3Ty4u';
+const FORM_FIELD_NAME    = 'r87e90b847e1d47a0bcca4268c36c1b0b';
+const FORM_FIELD_CLASS   = 'r06adcb36c26c4e8d87c49926e4ef0f03';
+const FORM_FIELD_RESULTS = 'rdc803dec9ae34877855096d3eb02dea1';
+const FORM_FIELD_DATE    = 'r6ea45923690b4806ac2a2569edfc7b1d';
+
+function buildFormURL(previewText) {
+  const p = ap();
+  const today = new Date().toLocaleDateString('en-AU', { day:'numeric', month:'short', year:'numeric' });
+  const url = `${FORM_BASE_URL}`
+    + `&${FORM_FIELD_NAME}=${encodeURIComponent(p.name || '')}`
+    + `&${FORM_FIELD_CLASS}=${encodeURIComponent(p.classCode || '')}`
+    + `&${FORM_FIELD_RESULTS}=${encodeURIComponent(previewText)}`
+    + `&${FORM_FIELD_DATE}=${encodeURIComponent(today)}`;
+  return url;
+}
+
+function openShareForm() {
+  const sessions = getTodaySessions();
+  const unsent = sessions.filter(s => !s.sent);
+  if (unsent.length === 0) {
+    alert('All sessions have already been marked as sent!');
+    return;
+  }
+  const p = ap();
+  if (!p.classCode) {
+    alert('Please set your class code first — tap ✏️ Edit profile on the home screen and ask your teacher for your class code.');
+    return;
+  }
+  const preview = buildSharePreview(sessions);
+  const url = buildFormURL(preview);
+  window.open(url, '_blank');
+  markAllSent();
+}
+
+function copyShareText() {
+  const sessions = getTodaySessions();
+  const preview = buildSharePreview(sessions);
+  copyToClipboard(preview);
+  const btn = document.querySelector('.btn-copy');
+  btn.textContent = '✓ Copied!';
+  setTimeout(() => { btn.textContent = '📋 Copy results text instead'; }, 2000);
+}
+
+function copyToClipboard(text) {
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).catch(() => fallbackCopy(text));
+  } else {
+    fallbackCopy(text);
+  }
+}
+
+function fallbackCopy(text) {
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed'; ta.style.opacity = '0';
+  document.body.appendChild(ta);
+  ta.select(); document.execCommand('copy');
+  document.body.removeChild(ta);
+}
+
+function markAllSent() {
+  const sessions = getTodaySessions();
+  sessions.forEach(s => { s.sent = true; });
+  saveTodaySessions(sessions);
+  goHome();       // refreshes the unsent badge
+  goToday();      // re-show today screen with updated sent state
 }
 
 /* ═══════════════════════════════════════════════
