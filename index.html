@@ -3,6 +3,24 @@
 <head>
 <meta charset="UTF-8">
 <title>Sandy Fast Facts</title>
+<!--
+  Sandy Fast Facts — v22
+  Changes since v21:
+    + New category: Ratios & Rates (➡️) with 5 skills:
+        • Simplifying Ratios (L1 whole, L2 decimals, L3 fractions) — new 'ratio' input mode
+        • Equivalent Ratios (L1 2-part, L2 3-part, L3 decimal multiplier) — number input
+        • Sharing in a Ratio (L1 2-part, L2 3-part, L3 larger nums) — single-number forward share
+            · L1 constrained to within 12× tables (parts ≤ 9, multiplier ≤ 12)
+              so the focus is on the sharing method, not big-number multiplication
+        • Simplifying Rates (L1 whole, L2 decimal) — number input
+        • Converting Rates (L1 whole, L2 decimal, includes $/L → c/mL) — number input
+    + New input mode 'ratio' (two number boxes with colon)
+    + New keypad inputs ratioA, ratioB; Next button works in ratio mode
+    + Decimal key activates for rateSimplify/rateConvert
+  Storage safety: NO existing skill IDs, lvKeys, or storage keys changed.
+                  All v21 PBs, profiles, today queue, sent flags remain intact.
+                  VBA dashboard requires NO changes — skill names resolve from CATS at runtime.
+-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, interactive-widget=resizes-content">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
@@ -474,6 +492,35 @@ body {
 .frac-input-wrap.ok  .frac-den-input { border-color: var(--green); background: var(--green-bg); }
 .frac-input-wrap.bad .frac-num-input,
 .frac-input-wrap.bad .frac-den-input { border-color: var(--red);   background: var(--red-bg); }
+/* ── RATIO INPUT (v22) — two number boxes separated by a colon ── */
+.ratio-input-wrap {
+  display: none;
+  align-items: center; justify-content: center; gap: 12px;
+  margin-bottom: 14px;
+}
+.ratio-input-wrap.visible { display: flex; }
+.ratio-input {
+  background: var(--surface);
+  border: 3px solid var(--border);
+  border-radius: var(--r-sm);
+  color: var(--text);
+  font-family: 'Nunito', sans-serif; font-weight: 900;
+  font-size: 1.8rem; text-align: center;
+  width: 110px; padding: 10px 8px; outline: none;
+  transition: border-color .18s, background .18s;
+  -moz-appearance: textfield;
+  box-shadow: var(--shadow);
+}
+.ratio-input::-webkit-outer-spin-button,
+.ratio-input::-webkit-inner-spin-button { -webkit-appearance: none; }
+.ratio-input:focus { border-color: var(--accent); background: #fff; }
+.ratio-colon {
+  font-family: 'Nunito', sans-serif; font-weight: 900;
+  font-size: 2.4rem; color: var(--text);
+  padding-bottom: 4px;
+}
+.ratio-input-wrap.ok  .ratio-input { border-color: var(--green); background: var(--green-bg); }
+.ratio-input-wrap.bad .ratio-input { border-color: var(--red);   background: var(--red-bg); }
 /* Hint label above fraction input for algebraic */
 .frac-alg-label {
   font-size: 0.78rem; font-weight: 800; color: var(--accent);
@@ -1207,6 +1254,11 @@ body {
       <div class="cat-name">Decimals</div>
       <div class="cat-desc">Add, multiply, round &amp; more</div>
     </div>
+    <div class="cat-card" onclick="openCat('ratiosrates')">
+      <span class="cat-icon">➡️</span>
+      <div class="cat-name">Ratios &amp; Rates</div>
+      <div class="cat-desc">Simplify, equivalent, share &amp; convert</div>
+    </div>
 
   </div>
 
@@ -1356,6 +1408,13 @@ body {
     </div>
   </div>
 
+  <!-- Ratio answer: two number boxes with colon between (v22) -->
+  <div class="ratio-input-wrap" id="ratioAnsWrap">
+    <input id="ratioA" class="ratio-input" type="number" disabled placeholder="?">
+    <span class="ratio-colon">:</span>
+    <input id="ratioB" class="ratio-input" type="number" disabled placeholder="?">
+  </div>
+
   <div class="acc-row">
     <div class="acc-label">Accuracy</div>
     <div class="acc-track"><div class="acc-fill" id="accFill" style="width:0%"></div></div>
@@ -1492,7 +1551,7 @@ body {
 ═══════════════════════════════════════════════ */
 const COLORS = ['#4338CA','#DC2626','#059669','#D97706','#0891B2','#7C3AED','#DB2777'];
 
-/* inputMode: 'number' | 'fraction' | 'mixed' */
+/* inputMode: 'number' | 'fraction' | 'mixed' | 'index' | 'sci' | 'ratio' */
 const CATS = {
   number: {
     label: '🔢 Number',
@@ -1550,6 +1609,16 @@ const CATS = {
       { id:'decSquareCube',name:'Squares &amp; Cubes of Decimals',inputMode:'number', lvKey:'dsc'  },
       { id:'decOrderOps',  name:'Order of Operations (Decimals)', inputMode:'number', lvKey:'doo'  },
       { id:'decRound',     name:'Rounding Decimals',              inputMode:'number', lvKey:'dr'   },
+    ]
+  },
+  ratiosrates: {
+    label: '➡️ Ratios & Rates',
+    skills: [
+      { id:'ratioSimplify', name:'Simplifying Ratios',     inputMode:'ratio',  lvKey:'rsim' },
+      { id:'ratioEquiv',    name:'Equivalent Ratios',      inputMode:'number', lvKey:'req'  },
+      { id:'ratioShare',    name:'Sharing in a Ratio',     inputMode:'number', lvKey:'rsh'  },
+      { id:'rateSimplify',  name:'Simplifying Rates',      inputMode:'number', lvKey:'rtsim' },
+      { id:'rateConvert',   name:'Converting Rates',       inputMode:'number', lvKey:'rtcv'  },
     ]
   }
 };
@@ -1701,6 +1770,31 @@ const LEVEL_DEFS = {
     { title:'Level 1 — Powers of 10 (1–6)',   desc:'Convert between standard form and scientific notation using powers of 10 from 10¹ to 10⁶. Positive powers only.', examples:['3 200 000', '4.5 × 10⁴', '72 000'] },
     { title:'Level 2 — All Positive Powers',   desc:'Any positive power of 10. Includes decimals like 3.75 × 10⁵. Builds fluency with the standard form.', examples:['0.000 045', '6.02 × 10⁵', '3.14 × 10⁸'] },
     { title:'Level 3 — Positive & Negative',   desc:'Both positive and negative powers of 10, including very small numbers like 3 × 10⁻⁴.', examples:['0.0032', '4.1 × 10⁻³', '5 × 10⁻⁶'] },
+  ],
+
+  /* ── RATIOS & RATES (v22) ── */
+  rsim: [
+    { title:'Level 1 — Whole Numbers',  desc:'Simplify ratios using the highest common factor (HCF). Both parts are whole numbers.', examples:['8 : 10 → 4 : 5', '24 : 54 → 4 : 9', '12 : 18 → 2 : 3'] },
+    { title:'Level 2 — Decimals',       desc:'Simplify ratios that involve decimals. First multiply both sides to clear the decimals, then divide by the HCF.', examples:['1.2 : 3.2 → 3 : 8', '0.6 : 1.5 → 2 : 5', '2.5 : 4.0 → 5 : 8'] },
+    { title:'Level 3 — Fractions',      desc:'Simplify ratios that involve fractions or mixed numbers. Convert to whole numbers using a common denominator, then simplify.', examples:['½ : ¾ → 2 : 3', '1½ : 2 → 3 : 4', '⅔ : ⅖ → 10 : 6 → 5 : 3'] },
+  ],
+  req: [
+    { title:'Level 1 — Two Parts',        desc:'Find the missing value in a two-part equivalent ratio. Multiplier or divisor is always a whole number.', examples:['2 : 5 = 8 : ?', '3 : 7 = ? : 21', '4 : 9 = 12 : ?'] },
+    { title:'Level 2 — Three Parts',      desc:'Find the missing value in a three-part equivalent ratio. Multiplier or divisor is always a whole number.', examples:['1 : 2 : 3 = 4 : 8 : ?', '2 : 3 : 5 = ? : 9 : 15', '3 : 4 : 6 = 9 : 12 : ?'] },
+    { title:'Level 3 — Decimal Multiplier',desc:'Three-part equivalent ratios where the multiplier is not a whole number (e.g. ×1.5 or ×2.5). Answer is always a whole number.', examples:['2 : 4 : 6 = 3 : 6 : ?', '4 : 6 : 8 = ? : 9 : 12', '2 : 3 : 5 = 5 : 7.5 : ?'] },
+  ],
+  rsh: [
+    { title:'Level 1 — Two-Part Share',   desc:'Share a total in a two-part ratio. All arithmetic stays within the 12× tables — focus is on the sharing method, not big multiplication.', examples:['Share $24 in 1 : 2 — larger?', 'Share 35 in 3 : 4 — smaller?', 'Share $60 in 5 : 7 — larger?'] },
+    { title:'Level 2 — Three-Part Share', desc:'Share a total in a three-part ratio. Question tells you which share (smallest, middle or largest).', examples:['Share 60 kg in 2 : 3 : 5 — smallest?', 'Share $120 in 1 : 2 : 3 — middle?', 'Share 240 in 3 : 4 : 5 — largest?'] },
+    { title:'Level 3 — Larger Numbers',   desc:'Three-part shares with larger totals and ratios. Same forward-share method, bigger numbers test fluency.', examples:['Share $840 in 4 : 7 : 9 — middle?', 'Share 1500 in 2 : 5 : 8 — largest?', 'Share $660 in 3 : 4 : 4 — smallest?'] },
+  ],
+  rtsim: [
+    { title:'Level 1 — Simplify Rates',   desc:'Express a quantity as a unit rate by dividing. Whole-number answers.', examples:['$28 for 4 kg → $?/kg', '180 km in 3 h → ?km/h', '$45 for 5 L → $?/L'] },
+    { title:'Level 2 — Decimal Rates',    desc:'Simplify rates where the unit rate is a decimal. Round to 2 d.p. if needed.', examples:['$17 for 4 kg → $?/kg', '90 km in 4 h → ?km/h', '$22.50 for 5 L → $?/L'] },
+  ],
+  rtcv: [
+    { title:'Level 1 — Whole-Number Answers', desc:'Convert between metric units (km/h ↔ m/s, m/s ↔ km/h, $/kg ↔ cents/g). Numbers chosen so answers are whole.', examples:['72 km/h → ?m/s (= 20)', '15 m/s → ?km/h (= 54)', '$3/kg → ?c/g (= 0.3)'] },
+    { title:'Level 2 — Decimal Answers',      desc:'Convert rates including dollars per litre to cents per millilitre. Answers may be decimals to 2 d.p.', examples:['$1.20/L → ?c/mL (= 0.12)', '54 km/h → ?m/s (= 15)', '$2.50/kg → ?c/g (= 0.25)'] },
   ],
 };
 
@@ -2079,12 +2173,14 @@ function resetAnswerInputs() {
   id('fracAnsWrap').style.display = 'none';
   id('mixedAnsWrap').style.display= 'none';
   id('idxAnsWrap').style.display  = 'none';
+  id('ratioAnsWrap').style.display= 'none';
   id('fracAlgLabel').classList.add('hide');
   id('stdAnsWrap').dataset.wholeFromFrac = '';
 
   // Clear and disable every input
   ['ansInput','fracNum','fracDen','mixedWhole','mixedNum','mixedDen',
-   'idxCoeff','idxExp','idxExpB','idxExpC','sciCoeff','sciExp'].forEach(i => {
+   'idxCoeff','idxExp','idxExpB','idxExpC','sciCoeff','sciExp',
+   'ratioA','ratioB'].forEach(i => {
     const el = id(i);
     if (el) { el.value=''; el.disabled=true; el.classList.remove('ok','bad'); }
   });
@@ -2106,6 +2202,8 @@ function resetAnswerInputs() {
     id('idxPowerOnlyRow').style.display  = 'none';
     id('idxCoeffPowerRow').style.display = 'none';
     id('idxSciRow').style.display        = 'none';
+  } else if (mode === 'ratio') {
+    id('ratioAnsWrap').style.display = 'flex';
   } else {
     // 'number'
     id('stdAnsWrap').style.display = 'block';
@@ -2156,6 +2254,11 @@ function enableInputs() {
     setupIndexInput();
   } else if (mode === 'sci') {
     setupSciInput();
+  } else if (mode === 'ratio') {
+    id('ratioAnsWrap').classList.add('visible');
+    id('ratioA').disabled = false;
+    id('ratioB').disabled = false;
+    id('ratioA').focus();
   } else {
     id('stdAnsWrap').dataset.wholeFromFrac = '';
     const inp = id('ansInput');
@@ -2365,6 +2468,11 @@ function nextQ() {
   else if (skill === 'decSquareCube') { genDecSquareCube(); }
   else if (skill === 'decOrderOps')   { genDecOrderOps(); }
   else if (skill === 'decRound')      { genDecRound(); }
+  else if (skill === 'ratioSimplify') { genRatioSimplify(); }
+  else if (skill === 'ratioEquiv')    { genRatioEquiv(); }
+  else if (skill === 'ratioShare')    { genRatioShare(); }
+  else if (skill === 'rateSimplify')  { genRateSimplify(); }
+  else if (skill === 'rateConvert')   { genRateConvert(); }
 
   enableInputs();
 }
@@ -2396,6 +2504,11 @@ function clearInputState() {
     id('idxCoeffPowerRow').style.display = 'none';
     id('idxSciRow').style.display        = 'none';
     setText('idxInstruction','');
+  } else if (mode === 'ratio') {
+    id('ratioA').value = ''; id('ratioB').value = '';
+    id('ratioA').classList.remove('ok','bad');
+    id('ratioB').classList.remove('ok','bad');
+    id('ratioAnsWrap').classList.remove('ok','bad');
   } else {
     id('ansInput').value = '';
     id('ansInput').classList.remove('ok','bad','kb-focused');
@@ -3018,6 +3131,13 @@ document.addEventListener('DOMContentLoaded', () => {
   id('sciExp').addEventListener('keyup', e => {
     if (e.key === 'Enter' && !id('sciExp').disabled) checkAns();
   });
+  // Ratio inputs: ratioA → ratioB → submit (v22)
+  id('ratioA').addEventListener('keyup', e => {
+    if (e.key === 'Enter') id('ratioB').focus();
+  });
+  id('ratioB').addEventListener('keyup', e => {
+    if (e.key === 'Enter' && !id('ratioB').disabled) checkAns();
+  });
 });
 
 function checkAns() {
@@ -3158,6 +3278,18 @@ function checkAns() {
       const el = id(inp); el.classList.remove('ok','bad'); el.classList.add(correct ? 'ok' : ok ? 'ok' : 'bad');
     });
   }
+  else if (mode === 'ratio') {
+    // Two-part ratio answer. Must be FULLY simplified (gcd == 1) AND match stored ratio.
+    const a = parseInt(id('ratioA').value, 10);
+    const b = parseInt(id('ratioB').value, 10);
+    if (isNaN(a) || isNaN(b) || a < 0 || b < 0) { attempts--; id('ratioA').focus(); return; }
+    if (a === 0 && b === 0) { attempts--; id('ratioA').focus(); return; }
+    const studentSimplified = gcd(a, b) === 1;
+    correct = studentSimplified && a === qData.ansA && b === qData.ansB;
+    if (!correct) feedbackStr = `Simplified: ${qData.ansA} : ${qData.ansB}`;
+    id('ratioAnsWrap').classList.remove('ok','bad');
+    id('ratioAnsWrap').classList.add(correct ? 'ok' : 'bad');
+  }
 
   if (correct) {
     score++;
@@ -3210,7 +3342,7 @@ function endSession() {
   if (gameOver) return;
   gameOver = true;
   clearInterval(timer);
-  ['ansInput','fracNum','fracDen','mixedWhole','mixedNum','mixedDen','idxCoeff','idxExp','sciCoeff','sciExp'].forEach(i => {
+  ['ansInput','fracNum','fracDen','mixedWhole','mixedNum','mixedDen','idxCoeff','idxExp','sciCoeff','sciExp','ratioA','ratioB'].forEach(i => {
     const el = document.getElementById(i);
     if (el) el.disabled = true;
   });
@@ -3717,6 +3849,315 @@ function genDecRound() {
 }
 
 /* ═══════════════════════════════════════════════
+   RATIOS & RATES (v22)
+═══════════════════════════════════════════════ */
+
+/* Helper: pick a "pretty" two-part starter ratio in lowest terms (gcd=1).
+   Used to build BOTH equivalent and simplifying ratio questions. */
+function pickPrettyRatio2() {
+  const POOL = [[1,2],[1,3],[1,4],[1,5],[2,3],[2,5],[3,4],[3,5],[3,7],[4,5],[4,7],[5,7],[5,8],[5,9],[7,8],[7,9],[5,2],[7,3],[8,3],[9,4],[7,4],[5,3],[8,5]];
+  return POOL[ri(POOL.length)];
+}
+function pickPrettyRatio3() {
+  const POOL = [[1,2,3],[1,2,4],[1,3,5],[2,3,5],[2,3,4],[2,5,7],[3,4,5],[3,5,7],[1,2,5],[2,4,5],[3,4,6],[1,3,4],[2,5,8],[3,5,8],[4,5,6],[2,4,7]];
+  return POOL[ri(POOL.length)];
+}
+
+/* ── 1. SIMPLIFYING RATIOS ── */
+function genRatioSimplify() {
+  const el = id('qText');
+  el.style.fontSize = '2.4rem';
+
+  if (level === 1) {
+    // Whole-number ratio, scaled by a common factor
+    const [a, b] = pickPrettyRatio2();
+    const k = rr(2, 9);
+    const num1 = a * k, num2 = b * k;
+    qData.ansA = a; qData.ansB = b;
+    el.textContent = `${num1} : ${num2}`;
+  }
+  else if (level === 2) {
+    // Decimals — pick a clean simplified ratio, multiply by 0.1 or 0.01 + a factor
+    const [a, b] = pickPrettyRatio2();
+    const k = rr(2, 6);                    // small whole-number factor
+    const placesChoice = Math.random() < 0.5 ? 10 : 100;
+    const num1 = (a * k) / placesChoice;
+    const num2 = (b * k) / placesChoice;
+    qData.ansA = a; qData.ansB = b;
+    // Format with appropriate decimal places
+    const dp1 = placesChoice === 10 ? 1 : 2;
+    el.textContent = `${num1.toFixed(dp1)} : ${num2.toFixed(dp1)}`;
+  }
+  else {
+    // Level 3 — fractions. Build pairs of proper fractions in lowest terms,
+    // then compute what the simplified ratio is. We accept any "pretty"
+    // result (both parts ≤ 12); reject and retry if the answer is ugly.
+    const denomPool = [2, 3, 4, 5, 6];
+
+    let pickedNumL, pickedDenL, pickedNumR, pickedDenR, ansA, ansB;
+    let found = false;
+    for (let tries = 0; tries < 60 && !found; tries++) {
+      const denL = denomPool[ri(denomPool.length)];
+      const denR = denomPool[ri(denomPool.length)];
+      // Numerator: 1..(denL*2) so we sometimes get fractions > 1 (improper)
+      const numL = rr(1, denL * 2 - 1);
+      const numR = rr(1, denR * 2 - 1);
+      // Need fractions in lowest terms
+      if (gcd(numL, denL) !== 1) continue;
+      if (gcd(numR, denR) !== 1) continue;
+      // Reject whole-number fractions
+      if (denL === 1 || denR === 1) continue;
+      // Reject identical fractions (gives boring 1:1)
+      if (numL === numR && denL === denR) continue;
+      // Compute simplified ratio: (numL/denL):(numR/denR) = (numL*denR):(numR*denL)
+      const lhs = numL * denR, rhs = numR * denL;
+      const g = gcd(lhs, rhs);
+      const sa = lhs / g, sb = rhs / g;
+      // Accept only if both parts ≤ 12 (keep it mental)
+      if (sa > 12 || sb > 12) continue;
+      pickedNumL = numL; pickedDenL = denL;
+      pickedNumR = numR; pickedDenR = denR;
+      ansA = sa; ansB = sb;
+      found = true;
+    }
+    if (!found) {
+      // Safe fallback
+      pickedNumL = 1; pickedDenL = 2; pickedNumR = 3; pickedDenR = 4;
+      ansA = 2; ansB = 3;
+    }
+    qData.ansA = ansA;
+    qData.ansB = ansB;
+    el.textContent = `${pickedNumL}/${pickedDenL} : ${pickedNumR}/${pickedDenR}`;
+  }
+}
+
+/* ── 2. EQUIVALENT RATIOS (fill in the unknown — single number answer) ── */
+function genRatioEquiv() {
+  const el = id('qText');
+  el.style.fontSize = '2rem';
+
+  if (level === 1) {
+    // 2-part ratio. Pick simplified ratio a:b, multiplier k.
+    const [a, b] = pickPrettyRatio2();
+    const k = rr(2, 9);
+    // Decide which side has the unknown (left or right of the second ratio)
+    const unknownSide = ri(2); // 0 = left, 1 = right
+    if (unknownSide === 0) {
+      qData.ans = a * k;
+      el.textContent = `${a} : ${b}  =  ?  : ${b * k}`;
+    } else {
+      qData.ans = b * k;
+      el.textContent = `${a} : ${b}  =  ${a * k} : ?`;
+    }
+  }
+  else if (level === 2) {
+    // 3-part ratio, whole-number multiplier
+    const [a, b, c] = pickPrettyRatio3();
+    const k = rr(2, 6);
+    const which = ri(3); // 0,1,2 — which is unknown
+    const scaled = [a * k, b * k, c * k];
+    const ans = scaled[which];
+    qData.ans = ans;
+    const parts = scaled.map((v, i) => i === which ? '?' : v);
+    el.textContent = `${a} : ${b} : ${c}  =  ${parts[0]} : ${parts[1]} : ${parts[2]}`;
+  }
+  else {
+    // Level 3 — 3-part ratio, decimal multiplier (0.5, 1.5, 2.5)
+    // Pick base ratio whose values are even multiples so ×0.5 still gives wholes
+    // Restrict to ratios where a, b, c are all even when k = 0.5 used.
+    const evenPool = [[2,4,6],[4,6,8],[2,4,8],[4,6,10],[2,6,10],[6,8,10],[4,8,12],[2,4,10]];
+    const oddPool  = [[2,3,5],[3,5,7],[1,3,5],[3,4,5],[2,5,7]];
+    const useHalf = Math.random() < 0.5;
+    let base, k;
+    if (useHalf) {
+      base = evenPool[ri(evenPool.length)];
+      k = 0.5;
+    } else {
+      // 1.5 or 2.5 — base must be a multiple of 2 for these to work cleanly
+      base = evenPool[ri(evenPool.length)];
+      k = Math.random() < 0.5 ? 1.5 : 2.5;
+      // Avoid the oddPool reference being unused — keep variety
+      if (Math.random() < 0.2) base = oddPool[ri(oddPool.length)].map(v => v * 2);
+    }
+    const scaled = base.map(v => v * k);
+    // Sanity: all scaled values must be whole numbers
+    if (!scaled.every(v => Number.isInteger(v))) {
+      // Fallback safe choice
+      base = [2, 4, 6]; k = 1.5;
+    }
+    const finalScaled = base.map(v => v * k);
+    const which = ri(3);
+    qData.ans = finalScaled[which];
+    const parts = finalScaled.map((v, i) => i === which ? '?' : v);
+    el.textContent = `${base[0]} : ${base[1]} : ${base[2]}  =  ${parts[0]} : ${parts[1]} : ${parts[2]}`;
+  }
+}
+
+/* ── 3. SHARING RATIOS (forward share — single number answer) ── */
+function genRatioShare() {
+  const el = id('qText');
+  el.style.fontSize = '1.5rem';
+
+  if (level === 1) {
+    // Two-part share — keep ALL arithmetic inside the 12× tables so the focus
+    // is on the *method* of sharing, not big-number multiplication.
+    // Constraint: every part value ≤ 9 and the multiplier ≤ 12, so the worst
+    // case computation a student does is 9 × 12 = 108 (well within fluency).
+    const L1_RATIOS = [[1,2],[1,3],[1,4],[2,3],[2,5],[3,4],[3,5],[3,7],[4,5],[5,2],[5,3],[5,4],[7,2],[7,3],[7,4],[7,5],[8,3],[2,7],[3,8],[4,7]];
+    const [a, b] = L1_RATIOS[ri(L1_RATIOS.length)];
+    // Multiplier 2..12 — keeps all per-part products inside the 12× tables
+    const mult = rr(2, 12);
+    const sum = a + b;
+    const total = sum * mult;
+    const isMoney = Math.random() < 0.7;
+    const totalStr = isMoney ? `$${total}` : `${total}`;
+    // Ask for either the larger or smaller share (randomly)
+    const askForA = Math.random() < 0.5;
+    qData.ans = askForA ? a * mult : b * mult;
+    const which = askForA
+      ? (a > b ? 'larger' : 'smaller')
+      : (b > a ? 'larger' : 'smaller');
+    el.innerHTML = `Share ${totalStr} in <strong>${a} : ${b}</strong><br><span style="color:var(--accent)">${which} share = ?</span>`;
+  }
+  else if (level === 2) {
+    // Three-part share, smaller numbers
+    const [a, b, c] = pickPrettyRatio3();
+    const sum = a + b + c;
+    const mult = rr(3, 15);
+    const total = sum * mult;
+    const isMoney = Math.random() < 0.6;
+    const totalStr = isMoney ? `$${total}` : `${total}`;
+    // Sort to identify smallest/middle/largest
+    const sorted = [a, b, c].slice().sort((x, y) => x - y);
+    const labels = ['smallest', 'middle', 'largest'];
+    const idx = ri(3);
+    const targetVal = sorted[idx];
+    qData.ans = targetVal * mult;
+    el.innerHTML = `Share ${totalStr} in <strong>${a} : ${b} : ${c}</strong><br><span style="color:var(--accent)">${labels[idx]} share = ?</span>`;
+  }
+  else {
+    // Level 3 — three-part with larger totals
+    const [a, b, c] = pickPrettyRatio3();
+    const sum = a + b + c;
+    const mult = rr(15, 60);
+    const total = sum * mult;
+    const isMoney = Math.random() < 0.6;
+    const totalStr = isMoney ? `$${total}` : `${total}`;
+    const sorted = [a, b, c].slice().sort((x, y) => x - y);
+    const labels = ['smallest', 'middle', 'largest'];
+    const idx = ri(3);
+    const targetVal = sorted[idx];
+    qData.ans = targetVal * mult;
+    el.innerHTML = `Share ${totalStr} in <strong>${a} : ${b} : ${c}</strong><br><span style="color:var(--accent)">${labels[idx]} share = ?</span>`;
+  }
+}
+
+/* ── 4. SIMPLIFYING RATES (express as a unit rate) ── */
+function genRateSimplify() {
+  const el = id('qText');
+  el.style.fontSize = '1.5rem';
+
+  // Pick a context: $/kg, km/h, $/L
+  const contexts = [
+    { qty: '$',  per: 'kg', label: '$ per kg',     verb: 'cost' },
+    { qty: '',   per: 'h',  label: 'km per hour',  verb: 'travel', unit: 'km' },
+    { qty: '$',  per: 'L',  label: '$ per litre',  verb: 'cost' }
+  ];
+  const ctx = contexts[ri(contexts.length)];
+
+  let unitRate, total, divisor;
+  if (level === 1) {
+    // Whole-number unit rate
+    unitRate = rr(2, 12);
+    divisor = rr(2, 9);
+    total = unitRate * divisor;
+  }
+  else {
+    // Level 2 — decimal unit rate (1 d.p.)
+    // Pick a divisor and a unit rate that come out to 1 d.p. cleanly
+    divisor = rr(2, 9);
+    const unitRateTimes10 = rr(15, 99); // gives e.g. 3.7 etc.
+    unitRate = unitRateTimes10 / 10;
+    total = dp(unitRate * divisor, 2);
+  }
+  qData.ans = unitRate;
+
+  // Format the question prompt
+  let qStr;
+  if (ctx.qty === '$') {
+    qStr = `$${total} for ${divisor} ${ctx.per}`;
+    el.innerHTML = `${qStr}<br><span style="color:var(--accent)">$ per ${ctx.per} = ?</span>`;
+  } else {
+    qStr = `${total} ${ctx.unit} in ${divisor} ${ctx.per}`;
+    el.innerHTML = `${qStr}<br><span style="color:var(--accent)">${ctx.unit}/${ctx.per} = ?</span>`;
+  }
+}
+
+/* ── 5. CONVERTING RATES ── */
+function genRateConvert() {
+  const el = id('qText');
+  el.style.fontSize = '1.5rem';
+
+  // Pick a conversion type
+  // L1: km/h ↔ m/s with whole-number answers
+  //     $/kg → c/g (whole or one-decimal)
+  // L2: anything; allow decimal answers
+  if (level === 1) {
+    const choice = ri(3);
+    if (choice === 0) {
+      // km/h → m/s. Pick m/s value (whole), convert to km/h
+      const ms = rr(5, 30);
+      const kmh = ms * 3.6;
+      // Only use if kmh is whole (i.e. ms divisible by 5)
+      if (Number.isInteger(kmh)) {
+        qData.ans = ms;
+        el.innerHTML = `${kmh} km/h<br><span style="color:var(--accent)">m/s = ?</span>`;
+        return;
+      }
+      // Fallback: pick a known clean pair
+      const cleanMs = [5, 10, 15, 20, 25, 30][ri(6)];
+      qData.ans = cleanMs;
+      el.innerHTML = `${cleanMs * 3.6} km/h<br><span style="color:var(--accent)">m/s = ?</span>`;
+    }
+    else if (choice === 1) {
+      // m/s → km/h
+      const ms = [5, 10, 15, 20, 25, 30][ri(6)];
+      const kmh = ms * 3.6;
+      qData.ans = kmh;
+      el.innerHTML = `${ms} m/s<br><span style="color:var(--accent)">km/h = ?</span>`;
+    }
+    else {
+      // $/kg → cents/g. $X/kg = X/10 cents/g
+      const dollarsPerKg = rr(1, 9); // whole dollars
+      qData.ans = dp(dollarsPerKg / 10, 1);
+      el.innerHTML = `$${dollarsPerKg}/kg<br><span style="color:var(--accent)">cents per gram = ?</span>`;
+    }
+  }
+  else {
+    // Level 2 — decimal answers OK
+    const choice = ri(3);
+    if (choice === 0) {
+      // $/L → cents/mL. $X/L = X/10 c/mL.
+      const dollarsPerL = dp(rr(80, 350) / 100, 2); // e.g. 1.20
+      qData.ans = dp(dollarsPerL / 10, 3);
+      el.innerHTML = `$${dollarsPerL.toFixed(2)}/L<br><span style="color:var(--accent)">cents per mL = ?</span>`;
+    }
+    else if (choice === 1) {
+      // km/h → m/s. Pick kmh that gives a clean answer (kmh divisible by 3.6 ideally)
+      const kmh = [18, 36, 54, 72, 90, 108, 27, 45, 63, 81][ri(10)];
+      qData.ans = dp(kmh / 3.6, 2);
+      el.innerHTML = `${kmh} km/h<br><span style="color:var(--accent)">m/s = ?</span>`;
+    }
+    else {
+      // $/kg → cents/g, decimal version
+      const dollarsPerKg = dp(rr(50, 950) / 100, 2); // e.g. $2.50
+      qData.ans = dp(dollarsPerKg / 10, 3);
+      el.innerHTML = `$${dollarsPerKg.toFixed(2)}/kg<br><span style="color:var(--accent)">cents per gram = ?</span>`;
+    }
+  }
+}
+
+/* ═══════════════════════════════════════════════
    HELPERS
 ═══════════════════════════════════════════════ */
 function id(x)       { return document.getElementById(x); }
@@ -3743,7 +4184,8 @@ let kbMode   = 'num';  // 'num' | 'numNeg' | 'numNegDot' | 'frac' | 'idx' | 'sci
 
 /* All game input IDs — we attach keypad logic to these */
 const KB_INPUTS = ['ansInput','fracNum','fracDen','mixedWhole','mixedNum','mixedDen',
-                   'idxCoeff','idxExp','idxExpB','idxExpC','sciCoeff','sciExp'];
+                   'idxCoeff','idxExp','idxExpB','idxExpC','sciCoeff','sciExp',
+                   'ratioA','ratioB'];
 
 /* ── Setup: called once on load ── */
 function kbSetup() {
@@ -3850,6 +4292,7 @@ function getKbInputOrder() {
     return hasY ? ['idxCoeff','idxExpB','idxExpC'] : ['idxCoeff','idxExpB'];
   }
   if (mode === 'sci') return ['sciCoeff','sciExp'];
+  if (mode === 'ratio') return ['ratioA','ratioB'];
   return ['ansInput'];
 }
 
@@ -3866,9 +4309,10 @@ function kbShow() {
   /* Decide which optional keys to show */
   const showNeg = ['intAddSub','intMultDiv','indexDiv','indexMult','indexPow','indexNeg','sciTo','sciFrom'].includes(skillId)
                   || mode === 'index' || mode === 'sci';
-  const decSkillsWithDot = ['sciTo','sciFrom','decAddSub','decMultiply','decDivide','decSquareCube','decOrderOps','decRound','sigFigs'];
+  const decSkillsWithDot = ['sciTo','sciFrom','decAddSub','decMultiply','decDivide','decSquareCube','decOrderOps','decRound','sigFigs',
+                            'rateSimplify','rateConvert'];
   const showDot  = (mode === 'sci' || decSkillsWithDot.includes(skillId));
-  const showNext = (mode === 'fraction' || mode === 'mixed' || mode === 'index' || mode === 'sci');
+  const showNext = (mode === 'fraction' || mode === 'mixed' || mode === 'index' || mode === 'sci' || mode === 'ratio');
 
   const negBtn  = document.getElementById('kbNegBtn');
   const dotBtn  = document.getElementById('kbDotBtn');
