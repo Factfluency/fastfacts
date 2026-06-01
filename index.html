@@ -360,6 +360,23 @@ body {
 .lv-pb { font-size: 0.72rem; font-weight: 800; color: var(--amber); margin-top: 6px; display: block; grid-column: 2; }
 .lv-trend { grid-column: 2; margin-top: 4px; display: flex; align-items: flex-end; }
 
+/* ── Level recommendation tags (v23): "best played in Challenge/Practice" ── */
+.lv-rec {
+  grid-column: 2; margin-top: 8px; width: fit-content;
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 0.74rem; font-weight: 900;
+  padding: 4px 11px; border-radius: 999px;
+}
+.lv-rec.challenge { background: var(--accent-bg); color: var(--accent); }
+.lv-rec.practice  { background: var(--amber-bg);  color: var(--amber); }
+.lv-card.rec-challenge:not(.active) { border-color: rgba(67,56,202,0.40); background: rgba(67,56,202,0.03); }
+.lv-card.rec-practice:not(.active)  { border-color: rgba(217,119,6,0.42); background: rgba(217,119,6,0.045); }
+#levelRecHint .rec-switch {
+  display: inline-block; margin-left: 6px; text-decoration: underline;
+  cursor: pointer; font-weight: 900;
+}
+.btn-primary.rec-practice { background: var(--amber); border-color: var(--amber); }
+
 /* ── GAME ── */
 .game-stats {
   display: flex; justify-content: space-between;
@@ -1292,6 +1309,7 @@ body {
   <button class="btn-primary" id="levelStartBtn" onclick="beginGame()" disabled>
     Start — Level <span id="levelStartLbl">?</span>
   </button>
+  <div id="levelRecHint" style="display:none;text-align:center;margin-top:10px;font-weight:900;font-size:0.85rem;"></div>
 </div>
 
 <!-- ══════════════ GAME ══════════════ -->
@@ -1440,6 +1458,12 @@ body {
     </div>
   </div>
 
+  <!-- Free-text algebra answer (v24) — student types the whole answer (e.g. 7x, 8x + 2y, 3x + 6) -->
+  <div id="algTypeWrap" style="display:none; flex-direction:column; align-items:center; gap:10px; margin-bottom:14px;">
+    <div id="algTypeHint" style="font-size:0.82rem;font-weight:800;color:var(--muted);text-align:center;padding:0 8px;">Type the whole answer — including the letter</div>
+    <input id="algTypeInput" class="ans-input" type="text" inputmode="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" disabled placeholder="?">
+  </div>
+
   <!-- Stacked fraction answer -->
   <div class="frac-input-wrap" id="fracAnsWrap">
     <div id="fracAlgLabel" class="frac-alg-label hide"></div>
@@ -1497,6 +1521,15 @@ body {
       letter-spacing:1px; box-shadow:var(--shadow);
     ">
       <span id="kbDisplayText" style="color:var(--muted)">–</span>
+    </div>
+
+    <!-- Algebra symbol row (v24) — shown only when typing a whole algebra answer.
+         Variable keys are set per-question; + and − let students build terms. -->
+    <div class="kb-row" id="kbAlgRow" style="display:none">
+      <button class="kb-key kb-sym" id="kbVar1" onclick="kbPress('x')">x</button>
+      <button class="kb-key kb-sym" id="kbVar2" onclick="kbPress('y')" style="display:none">y</button>
+      <button class="kb-key kb-sym" id="kbPlusBtn" onclick="kbPress('+')">+</button>
+      <button class="kb-key kb-sym" id="kbMinusBtn" onclick="kbPress('-')">−</button>
     </div>
 
     <!-- Row 1: 7 8 9 ⌫ -->
@@ -1901,6 +1934,22 @@ const LEVEL_DEFS = {
   ],
 };
 
+/* ── Per-level "best played in" recommendations (v23) ──
+   Keyed by lvKey, then level number → 'challenge' | 'practice'.
+   Label-only: this never blocks any mode, it just guides students away from
+   sprinting multi-step questions on a 60-second clock. Edit freely. */
+const LEVEL_REC = {
+  oo:    { 3: 'challenge' },   // Order of Operations — Mixed Challenge
+  ioo:   { 3: 'challenge' },   // Order of Operations (Integers)
+  foo:   { 3: 'challenge' },   // Order of Operations (Fractions)
+  doo:   { 3: 'challenge' },   // Order of Operations (Decimals)
+  aexp:  { 3: 'challenge' },   // Expand Single Brackets — variable multiplier (x²)
+  aexp2: { 1: 'challenge', 2: 'challenge', 3: 'practice' }, // Expand & Simplify (Two Brackets)
+};
+function getLevelRec(key, lv) {
+  return (LEVEL_REC[key] && LEVEL_REC[key][lv]) || null;
+}
+
 /* ═══════════════════════════════════════════════
    APP STATE
 ═══════════════════════════════════════════════ */
@@ -2172,6 +2221,9 @@ function selectSkill(smeta) {
 
   document.getElementById('levelStartBtn').disabled = true;
   document.getElementById('levelStartLbl').textContent = '?';
+  // Reset recommendation hint + start-button styling for the new skill
+  document.getElementById('levelRecHint').style.display = 'none';
+  document.getElementById('levelStartBtn').classList.remove('rec-practice');
 
   const defs = LEVEL_DEFS[lvKey];
   const cards = document.getElementById('levelCards');
@@ -2181,21 +2233,25 @@ function selectSkill(smeta) {
     const lv = i + 1;
     const pb = getPB(skill, lv);
     const trend = getTrend(skill, lv).slice(-3);
+    const rec = getLevelRec(lvKey, lv);
     const card = document.createElement('div');
-    card.className = 'lv-card';
+    card.className = 'lv-card' + (rec ? ' rec-' + rec : '');
     card.id = `lc${lv}`;
 
     const exHTML = def.examples.map(e => `<span class="lv-example">${e}</span>`).join('');
     const pbHTML = pb > 0 ? `<span class="lv-pb">Personal best: ${pb}</span>` : '';
     const sparkHTML = trend.length > 0
       ? `<div class="lv-trend">${buildLvlSpark(trend, pb)}</div>` : '';
+    const recHTML = rec
+      ? `<span class="lv-rec ${rec}">${rec === 'challenge' ? '⚡' : '∞'} Best played in ${rec === 'challenge' ? 'Challenge' : 'Practice'}</span>`
+      : '';
 
     card.innerHTML = `
       <div class="lv-badge">L${lv}</div>
       <div class="lv-title">${def.title}</div>
       <div class="lv-desc">${def.desc}</div>
       <div class="lv-examples">${exHTML}</div>
-      ${pbHTML}${sparkHTML}
+      ${recHTML}${pbHTML}${sparkHTML}
     `;
     card.onclick = () => {
       level = lv;
@@ -2203,9 +2259,35 @@ function selectSkill(smeta) {
       card.classList.add('active');
       document.getElementById('levelStartBtn').disabled = false;
       document.getElementById('levelStartLbl').textContent = lv;
+      applyLevelRec(getLevelRec(lvKey, lv));
     };
     cards.appendChild(card);
   });
+}
+
+/* Show/hide the recommendation hint under Start and tint the button for the
+   selected level. Offers a one-tap switch when the current mode doesn't match. */
+function applyLevelRec(rec) {
+  const hint = document.getElementById('levelRecHint');
+  const startBtn = document.getElementById('levelStartBtn');
+  startBtn.classList.toggle('rec-practice', rec === 'practice');
+  if (!rec) { hint.style.display = 'none'; return; }
+  const label = rec === 'challenge' ? 'Challenge' : 'Practice';
+  const icon  = rec === 'challenge' ? '⚡' : '∞';
+  const colour = rec === 'challenge' ? 'var(--accent)' : 'var(--amber)';
+  hint.style.color = colour;
+  if (sessionMode === rec) {
+    hint.innerHTML = `${icon} You're in ${label} mode — good choice for this level.`;
+  } else {
+    hint.innerHTML = `${icon} <strong>Best played in ${label}.</strong>` +
+      `<span class="rec-switch" onclick="switchModeFromRec('${rec}')">Switch to ${label}</span>`;
+  }
+  hint.style.display = 'block';
+}
+
+function switchModeFromRec(rec) {
+  setMode(rec);
+  applyLevelRec(rec);
 }
 
 function goBackToSkills() {
@@ -2222,7 +2304,15 @@ function beginGame() {
 /* ═══════════════════════════════════════════════
    GAME SCREEN SETUP
 ═══════════════════════════════════════════════ */
-function getInputMode() { return skillMeta ? skillMeta.inputMode : 'number'; }
+function getInputMode() {
+  if (!skillMeta) return 'number';
+  // Like terms (all levels) and single-bracket expanding L1–L2 use free-text
+  // entry: the student types the WHOLE answer (e.g. 7x, 8x + 2y, 3x + 6) so they
+  // must produce the variable themselves — stops the "join the letters" error.
+  if (skill === 'algLikeTerms') return 'algType';
+  if (skill === 'algExpand' && (level === 1 || level === 2)) return 'algType';
+  return skillMeta.inputMode;
+}
 function isFractionSkill() { return ['fracSimplify','fracAddSub','fracMultiply','fracDivide','fracOrderOps','mixedToImp','impToMixed'].includes(skill); }
 function isIndexSkill()    { return ['indexMult','indexDiv','indexPow'].includes(skill); }
 function isSciSkill()      { return skill === 'sciTo'; }
@@ -2278,6 +2368,7 @@ function resetAnswerInputs() {
   id('idxAnsWrap').style.display  = 'none';
   id('ratioAnsWrap').style.display= 'none';
   id('algAnsWrap').style.display  = 'none';
+  id('algTypeWrap').style.display = 'none';
   id('fracAlgLabel').classList.add('hide');
   id('stdAnsWrap').dataset.wholeFromFrac = '';
 
@@ -2285,7 +2376,7 @@ function resetAnswerInputs() {
   ['ansInput','fracNum','fracDen','mixedWhole','mixedNum','mixedDen',
    'idxCoeff','idxExp','idxExpB','idxExpC','sciCoeff','sciExp',
    'ratioA','ratioB',
-   'algC0','algC1','algC2','algP0','algP1','algP2'].forEach(i => {
+   'algC0','algC1','algC2','algP0','algP1','algP2','algTypeInput'].forEach(i => {
     const el = id(i);
     if (el) { el.value=''; el.disabled=true; el.classList.remove('ok','bad'); }
   });
@@ -2312,6 +2403,9 @@ function resetAnswerInputs() {
   } else if (mode === 'algebra') {
     id('algAnsWrap').style.display = 'flex';
     id('algTermRow').style.display = 'none';
+  } else if (mode === 'algType') {
+    id('algTypeWrap').style.display = 'flex';
+    id('algTypeInput').className = 'ans-input';
   } else {
     // 'number'
     id('stdAnsWrap').style.display = 'block';
@@ -2369,6 +2463,10 @@ function enableInputs() {
     id('ratioA').focus();
   } else if (mode === 'algebra') {
     setupAlgInput();
+  } else if (mode === 'algType') {
+    const inp = id('algTypeInput');
+    inp.disabled = false;
+    inp.focus();
   } else {
     id('stdAnsWrap').dataset.wholeFromFrac = '';
     const inp = id('ansInput');
@@ -2450,7 +2548,7 @@ function setupAlgInput() {
 
       if (s.varLabel && s.varLabel !== '') {
         vg.style.display = 'inline-flex';
-        setText(vl, s.varLabel);
+        vl.textContent = s.varLabel;
         if (s.askPower) {
           pb.style.display = 'flex';
           pi.disabled = false;
@@ -2689,6 +2787,9 @@ function clearInputState() {
       if (i > 0) id('algSep' + i).style.display = 'none';
     }
     setText('algInstruction', '');
+  } else if (mode === 'algType') {
+    const inp = id('algTypeInput');
+    inp.value = ''; inp.classList.remove('ok','bad','kb-focused');
   } else {
     id('ansInput').value = '';
     id('ansInput').classList.remove('ok','bad','kb-focused');
@@ -3333,6 +3434,19 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!el.disabled) checkAns();
     });
   });
+  // Free-text algebra input (v24): allow letters/digits/+/- on desktop; Enter submits
+  const algTypeInput = id('algTypeInput');
+  if (algTypeInput) {
+    algTypeInput.addEventListener('keydown', e => {
+      const allowed = ['Backspace','Delete','ArrowLeft','ArrowRight','Tab','Enter','+','-',' '];
+      if (allowed.includes(e.key) || (e.key >= '0' && e.key <= '9') || /^[a-zA-Z]$/.test(e.key)) return;
+      if (e.ctrlKey || e.metaKey) return; // allow copy/paste
+      e.preventDefault();
+    });
+    algTypeInput.addEventListener('keyup', e => {
+      if (e.key === 'Enter' && !algTypeInput.disabled) checkAns();
+    });
+  }
 });
 
 /* ═══════════════════════════════════════════════
@@ -3391,6 +3505,56 @@ function algAnswerStr(slots) {
 }
 
 const A_LBL = 'font-size:0.95rem;font-weight:800;color:var(--muted);margin-bottom:8px;';
+
+/* Parse a typed linear answer like "7x", "8x + 2y", "3x - 6", "x", "-x + 4"
+   into a map {variable: coefficient} ('' key = constant). Returns null if the
+   format is invalid (e.g. "5xy" — joined letters — or "7x²"), which the caller
+   treats as a wrong answer. No powers/brackets: these skills are linear. */
+function parseLinearExpr(str) {
+  let s = str.toLowerCase().replace(/\s+/g, '').replace(/−/g, '-').replace(/×/g, '').replace(/·/g, '');
+  if (s === '') return null;
+  if (!/^[0-9a-z+\-]+$/.test(s)) return null;   // only digits, letters, + and -
+  const map = {};
+  let i = 0;
+  const n = s.length;
+  let first = true;
+  while (i < n) {
+    let sign = 1, sawSign = false;
+    if (s[i] === '+') { sign = 1; sawSign = true; i++; }
+    else if (s[i] === '-') { sign = -1; sawSign = true; i++; }
+    // Every term after the first must be separated by + or −
+    if (!first && !sawSign) return null;
+    let numStr = '';
+    while (i < n && s[i] >= '0' && s[i] <= '9') { numStr += s[i]; i++; }
+    let varCh = '';
+    if (i < n && s[i] >= 'a' && s[i] <= 'z') { varCh = s[i]; i++; }
+    // A second letter glued on (e.g. "xy") is the join-letters error → invalid
+    if (i < n && s[i] >= 'a' && s[i] <= 'z') return null;
+    if (numStr === '' && varCh === '') return null;       // stray sign
+    const coeff = sign * (varCh === '' ? parseInt(numStr, 10)
+                                       : (numStr === '' ? 1 : parseInt(numStr, 10)));
+    map[varCh] = (map[varCh] || 0) + coeff;
+    first = false;
+  }
+  return map;
+}
+/* slots → {variable: coefficient} expected map (linear, no powers) */
+function slotsToMap(slots) {
+  const m = {};
+  slots.forEach(s => { const k = s.varLabel || ''; m[k] = (m[k] || 0) + s.coeff; });
+  return m;
+}
+function algMapsEqual(a, b) {
+  const keys = new Set([...Object.keys(a), ...Object.keys(b)]);
+  for (const k of keys) if ((a[k] || 0) !== (b[k] || 0)) return false;
+  return true;
+}
+/* Distinct variable letters in the answer, in order — used to label keypad keys */
+function algVarsInSlots(slots) {
+  const out = [];
+  slots.forEach(s => { if (s.varLabel && !out.includes(s.varLabel)) out.push(s.varLabel); });
+  return out;
+}
 
 /* 1 — Identifying parts of an expression (numeric answer) */
 function genAlgParts(el) {
@@ -3785,6 +3949,17 @@ function checkAns() {
     correct = allOk;
     if (!correct) feedbackStr = `Answer: ${algAnswerStr(slots)}`;
   }
+  else if (mode === 'algType') {
+    const inp = id('algTypeInput');
+    const raw = inp.value.trim();
+    if (raw === '') { attempts--; inp.focus(); return; }
+    const slots = (qData.alg && qData.alg.slots) || [];
+    const got = parseLinearExpr(raw);
+    correct = got !== null && algMapsEqual(got, slotsToMap(slots));
+    if (!correct) feedbackStr = `Answer: ${algAnswerStr(slots)}`;
+    inp.classList.remove('ok','bad');
+    inp.classList.add(correct ? 'ok' : 'bad');
+  }
 
   if (correct) {
     score++;
@@ -3837,7 +4012,7 @@ function endSession() {
   if (gameOver) return;
   gameOver = true;
   clearInterval(timer);
-  ['ansInput','fracNum','fracDen','mixedWhole','mixedNum','mixedDen','idxCoeff','idxExp','sciCoeff','sciExp','ratioA','ratioB','algC0','algC1','algC2','algP0','algP1','algP2'].forEach(i => {
+  ['ansInput','fracNum','fracDen','mixedWhole','mixedNum','mixedDen','idxCoeff','idxExp','sciCoeff','sciExp','ratioA','ratioB','algC0','algC1','algC2','algP0','algP1','algP2','algTypeInput'].forEach(i => {
     const el = document.getElementById(i);
     if (el) el.disabled = true;
   });
@@ -4681,7 +4856,7 @@ let kbMode   = 'num';  // 'num' | 'numNeg' | 'numNegDot' | 'frac' | 'idx' | 'sci
 const KB_INPUTS = ['ansInput','fracNum','fracDen','mixedWhole','mixedNum','mixedDen',
                    'idxCoeff','idxExp','idxExpB','idxExpC','sciCoeff','sciExp',
                    'ratioA','ratioB',
-                   'algC0','algC1','algC2','algP0','algP1','algP2'];
+                   'algC0','algC1','algC2','algP0','algP1','algP2','algTypeInput'];
 
 /* ── Setup: called once on load ── */
 function kbSetup() {
@@ -4736,13 +4911,14 @@ function kbNextIfActive() {
 function kbPress(char) {
   if (!kbTarget || kbTarget.disabled) return;
 
+  const algType = (getInputMode() === 'algType');
   let cur = kbTarget.value;
 
   /* Dot: only allow one, only for sci coeff */
   if (char === '.' && cur.includes('.')) return; // only one dot allowed
 
-  /* Negative: only allow at start, only for inputs that accept negatives */
-  if (char === '-') {
+  /* Negative: in number modes only at start; in algType it's a term separator */
+  if (char === '-' && !algType) {
     if (cur.startsWith('-')) { kbTarget.value = cur.slice(1); kbRefreshDisplay(); return; }
     if (cur !== '') return; // only at start
   }
@@ -4798,6 +4974,7 @@ function getKbInputOrder() {
     }
     return order.length ? order : ['algC0'];
   }
+  if (mode === 'algType') return ['algTypeInput'];
   return ['ansInput'];
 }
 
@@ -4827,6 +5004,24 @@ function kbShow() {
   if (negBtn)  negBtn.classList.toggle('kb-sym-inactive',  !showNeg);
   if (dotBtn)  dotBtn.classList.toggle('kb-sym-inactive',  !showDot);
   if (nextBtn) nextBtn.classList.toggle('kb-next-inactive', !showNext);
+
+  /* Algebra free-text row: show variable + operator keys for the current answer */
+  const algRow = document.getElementById('kbAlgRow');
+  if (algRow) {
+    if (mode === 'algType') {
+      algRow.style.display = 'flex';
+      const slots = (typeof qData !== 'undefined' && qData.alg && qData.alg.slots) || [];
+      const vars = algVarsInSlots(slots);
+      const v1 = document.getElementById('kbVar1');
+      const v2 = document.getElementById('kbVar2');
+      if (vars[0]) { v1.style.display = ''; v1.textContent = vars[0]; v1.onclick = () => kbPress(vars[0]); }
+      else { v1.style.display = 'none'; }
+      if (vars[1]) { v2.style.display = ''; v2.textContent = vars[1]; v2.onclick = () => kbPress(vars[1]); }
+      else { v2.style.display = 'none'; }
+    } else {
+      algRow.style.display = 'none';
+    }
+  }
 
   /* Auto-focus first input */
   const order = getKbInputOrder();
