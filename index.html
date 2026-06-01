@@ -1259,6 +1259,11 @@ body {
       <div class="cat-name">Ratios &amp; Rates</div>
       <div class="cat-desc">Simplify, equivalent, share &amp; convert</div>
     </div>
+    <div class="cat-card" onclick="openCat('algebra')">
+      <span class="cat-icon">𝑥</span>
+      <div class="cat-name">Algebra</div>
+      <div class="cat-desc">Parts, substitute, like terms &amp; expanding</div>
+    </div>
 
   </div>
 
@@ -1379,6 +1384,56 @@ body {
         <div class="idx-superscript-box">
           <span class="idx-field-lbl">Power</span>
           <input id="sciExp" class="idx-exp-input" type="number" disabled placeholder="?">
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Algebra answer panel (v23) -->
+  <!-- Up to 3 coefficient slots, each with a pre-printed variable and an optional power box. -->
+  <!-- Completely hidden unless mode=algebra. Built from qData.alg.slots at runtime. -->
+  <div id="algAnsWrap" style="display:none; flex-direction:column; align-items:center; gap:14px; margin-bottom:14px;">
+    <div id="algInstruction" style="font-size:0.82rem;font-weight:800;color:var(--muted);text-align:center;padding:0 8px;"></div>
+    <div id="algTermRow" style="display:none; align-items:flex-end; gap:8px; flex-wrap:wrap; justify-content:center;">
+
+      <div class="idx-field-group" id="algCoeffGroup0">
+        <span class="idx-field-lbl">Coefficient</span>
+        <input id="algC0" class="idx-input" type="number" disabled placeholder="?">
+      </div>
+      <div class="idx-var-group" id="algVarGroup0">
+        <span class="idx-var-letter" id="algV0">x</span>
+        <div class="idx-superscript-box" id="algPowBox0">
+          <span class="idx-field-lbl">power</span>
+          <input id="algP0" class="idx-exp-input" type="number" disabled placeholder="?">
+        </div>
+      </div>
+
+      <span id="algSep1" class="alg-plus" style="display:none; font-family:'Nunito',sans-serif; font-weight:900; font-size:2rem; color:var(--muted); padding-bottom:6px;">+</span>
+
+      <div class="idx-field-group" id="algCoeffGroup1" style="display:none">
+        <span class="idx-field-lbl">Coefficient</span>
+        <input id="algC1" class="idx-input" type="number" disabled placeholder="?">
+      </div>
+      <div class="idx-var-group" id="algVarGroup1" style="display:none">
+        <span class="idx-var-letter" id="algV1">y</span>
+        <div class="idx-superscript-box" id="algPowBox1">
+          <span class="idx-field-lbl">power</span>
+          <input id="algP1" class="idx-exp-input" type="number" disabled placeholder="?">
+        </div>
+      </div>
+
+      <span id="algSep2" class="alg-plus" style="display:none; font-family:'Nunito',sans-serif; font-weight:900; font-size:2rem; color:var(--muted); padding-bottom:6px;">+</span>
+
+      <div class="idx-field-group" id="algCoeffGroup2" style="display:none">
+        <span class="idx-field-lbl">Coefficient</span>
+        <input id="algC2" class="idx-input" type="number" disabled placeholder="?">
+      </div>
+      <div class="idx-var-group" id="algVarGroup2" style="display:none">
+        <span class="idx-var-letter" id="algV2"></span>
+        <div class="idx-superscript-box" id="algPowBox2">
+          <span class="idx-field-lbl">power</span>
+          <input id="algP2" class="idx-exp-input" type="number" disabled placeholder="?">
         </div>
       </div>
 
@@ -1551,7 +1606,7 @@ body {
 ═══════════════════════════════════════════════ */
 const COLORS = ['#4338CA','#DC2626','#059669','#D97706','#0891B2','#7C3AED','#DB2777'];
 
-/* inputMode: 'number' | 'fraction' | 'mixed' | 'index' | 'sci' | 'ratio' */
+/* inputMode: 'number' | 'fraction' | 'mixed' | 'index' | 'sci' | 'ratio' | 'algebra' */
 const CATS = {
   number: {
     label: '🔢 Number',
@@ -1619,6 +1674,18 @@ const CATS = {
       { id:'ratioShare',    name:'Sharing in a Ratio',     inputMode:'number', lvKey:'rsh'  },
       { id:'rateSimplify',  name:'Simplifying Rates',      inputMode:'number', lvKey:'rtsim' },
       { id:'rateConvert',   name:'Converting Rates',       inputMode:'number', lvKey:'rtcv'  },
+    ]
+  },
+  algebra: {
+    label: '𝑥 Algebra',
+    skills: [
+      { id:'algParts',       name:'Parts of Expressions',                 inputMode:'number',  lvKey:'aparts' },
+      { id:'algSub',         name:'Substitute into Expressions',          inputMode:'number',  lvKey:'asub'   },
+      { id:'algLikeTerms',   name:'Add &amp; Subtract Like Terms',        inputMode:'algebra', lvKey:'alike'  },
+      { id:'algMultiply',    name:'Multiply Terms',                       inputMode:'algebra', lvKey:'amul'   },
+      { id:'algDivide',      name:'Divide Terms',                         inputMode:'algebra', lvKey:'adiv'   },
+      { id:'algExpand',      name:'Expand Single Brackets',               inputMode:'algebra', lvKey:'aexp'   },
+      { id:'algExpandTwo',   name:'Expand &amp; Simplify (Two Brackets)', inputMode:'algebra', lvKey:'aexp2'  },
     ]
   }
 };
@@ -1795,6 +1862,42 @@ const LEVEL_DEFS = {
   rtcv: [
     { title:'Level 1 — Whole-Number Answers', desc:'Convert between metric units (km/h ↔ m/s, m/s ↔ km/h, $/kg ↔ cents/g). Numbers chosen so answers are whole.', examples:['72 km/h → ?m/s (= 20)', '15 m/s → ?km/h (= 54)', '$3/kg → ?c/g (= 0.3)'] },
     { title:'Level 2 — Decimal Answers',      desc:'Convert rates including dollars per litre to cents per millilitre. Answers may be decimals to 2 d.p.', examples:['$1.20/L → ?c/mL (= 0.12)', '54 km/h → ?m/s (= 15)', '$2.50/kg → ?c/g (= 0.25)'] },
+  ],
+  /* ── ALGEBRA LEVELS ── */
+  aparts: [
+    { title:'Level 1 — Two Terms',        desc:'Read the coefficient of a pronumeral, or the constant term, in a two-term expression. Type just the number.', examples:['3x + 5 — coeff of x?', '7 + 4y — constant?', '2a + 9 — coeff of a?'] },
+    { title:'Level 2 — Three Terms',      desc:'Three-term expressions with two pronumerals. Read off the coefficient of the named pronumeral, or the constant.', examples:['4x + 7y + 2 — coeff of y?', '5a + 3b + 8 — coeff of a?', '6m + 2n + 5 — constant?'] },
+    { title:'Level 3 — Negatives & Unit Coefficients', desc:'Coefficients can be negative or 1 (e.g. the coefficient of x in x + 7 is 1, and in 8 − 5x is −5).', examples:['8 − 5x — coeff of x?', 'x + 7 — coeff of x?', '4 − y — coeff of y?'] },
+  ],
+  asub: [
+    { title:'Level 1 — One Variable',     desc:'Substitute one whole-number value and evaluate. Answers stay positive.', examples:['x = 4: 2x + 5', 'x = 3: 4x − 2', 'a = 5: 3a + 1'] },
+    { title:'Level 2 — Two Variables',    desc:'Substitute two whole-number values and evaluate. Answers stay positive.', examples:['a=3, b=2: 4a + 2b', 'x=5, y=1: 2x + 3y', 'm=4, n=6: m + 2n'] },
+    { title:'Level 3 — Negatives & Squares', desc:'Negative values and a squared term. Answers may be negative — mind the order of operations.', examples:['x = −2: x² + 3x', 'x = −3: 2x + 5', 'x = −4: x² − 1'] },
+  ],
+  alike: [
+    { title:'Level 1 — One Variable, Add', desc:'Collect like terms in one variable. Type the coefficient; the variable is shown for you.', examples:['3x + 5x', '4y + 2y', '6a + a'] },
+    { title:'Level 2 — Mixed + / −',      desc:'Add and subtract like terms in one variable. Results stay positive.', examples:['2a + 6a − 3a', '9x − 4x', '5m + 2m − m'] },
+    { title:'Level 3 — Two Variables',    desc:'Collect like terms across two variables, with negatives. Answer has two terms.', examples:['3x + 2y + 5x', '5a − 2b − 3a + 4b', '7p + q − 2p'] },
+  ],
+  amul: [
+    { title:'Level 1 — Same Variable',    desc:'Multiply terms in the same variable. Type the coefficient and the power.', examples:['3a × 4a', '2x × 5x', '6m × m'] },
+    { title:'Level 2 — Two Variables',    desc:'Multiply terms in two different variables. Type the coefficient; the variables are shown.', examples:['2x × 5y', '3a × 4b', '6p × 2q'] },
+    { title:'Level 3 — Higher Powers & Negatives', desc:'Negative coefficients and powers of three. Type the coefficient and the power.', examples:['−3x × 4x', '2x² × 3x', '−2a × 5a'] },
+  ],
+  adiv: [
+    { title:'Level 1 — Same Variable',    desc:'Divide terms in the same variable. Type the coefficient and the power (subtract the indices).', examples:['12a² ÷ 3a', '20x² ÷ 4x', '15m² ÷ 5m'] },
+    { title:'Level 2 — Two Variables',    desc:'Divide a two-variable term so one variable cancels. Type the coefficient; the variable is shown.', examples:['12xy ÷ 3x', '20ab ÷ 5a', '18pq ÷ 6q'] },
+    { title:'Level 3 — Higher Powers & Negatives', desc:'Negative coefficients and powers of three. Type the coefficient and the power.', examples:['−20x³ ÷ 5x', '18a³ ÷ 3a', '−24m³ ÷ 6m'] },
+  ],
+  aexp: [
+    { title:'Level 1 — k(x + a)',         desc:'Expand a single bracket with a number outside. Fill the coefficient of each term in the template.', examples:['3(x + 2)', '5(y + 1)', '2(a + 6)'] },
+    { title:'Level 2 — k(ax ± b)',        desc:'Expand a single bracket where the x-term has a coefficient and the bracket may subtract.', examples:['2(3x − 4)', '4(2x + 3)', '3(5x − 1)'] },
+    { title:'Level 3 — Variable Multiplier', desc:'Expand a bracket multiplied by a pronumeral — this produces an x² term.', examples:['2x(x − 3)', '3x(x + 2)', 'x(4x − 5)'] },
+  ],
+  aexp2: [
+    { title:'Level 1 — Add Two Brackets', desc:'Expand two brackets and collect like terms. All terms stay positive. Best played in Challenge mode.', examples:['2(x+3) + 3(x+2)', '4(x+1) + 2(x+5)', '3(x+2) + (x+4)'] },
+    { title:'Level 2 — Subtract a Bracket', desc:'Expand two brackets where the second is subtracted — distribute the minus carefully.', examples:['5(x+2) − 3(x+1)', '4(x+3) − 2(x+1)', '6(x+1) − 4(x+2)'] },
+    { title:'Level 3 — Quadratic Result', desc:'A pronumeral outside the first bracket gives an x² term, so the simplified answer has three terms.', examples:['x(2x−3) − 4(x−1)', 'x(x+5) − 3(x−2)', '2x(x−1) + 3(x+4)'] },
   ],
 };
 
@@ -2174,13 +2277,15 @@ function resetAnswerInputs() {
   id('mixedAnsWrap').style.display= 'none';
   id('idxAnsWrap').style.display  = 'none';
   id('ratioAnsWrap').style.display= 'none';
+  id('algAnsWrap').style.display  = 'none';
   id('fracAlgLabel').classList.add('hide');
   id('stdAnsWrap').dataset.wholeFromFrac = '';
 
   // Clear and disable every input
   ['ansInput','fracNum','fracDen','mixedWhole','mixedNum','mixedDen',
    'idxCoeff','idxExp','idxExpB','idxExpC','sciCoeff','sciExp',
-   'ratioA','ratioB'].forEach(i => {
+   'ratioA','ratioB',
+   'algC0','algC1','algC2','algP0','algP1','algP2'].forEach(i => {
     const el = id(i);
     if (el) { el.value=''; el.disabled=true; el.classList.remove('ok','bad'); }
   });
@@ -2204,6 +2309,9 @@ function resetAnswerInputs() {
     id('idxSciRow').style.display        = 'none';
   } else if (mode === 'ratio') {
     id('ratioAnsWrap').style.display = 'flex';
+  } else if (mode === 'algebra') {
+    id('algAnsWrap').style.display = 'flex';
+    id('algTermRow').style.display = 'none';
   } else {
     // 'number'
     id('stdAnsWrap').style.display = 'block';
@@ -2259,6 +2367,8 @@ function enableInputs() {
     id('ratioA').disabled = false;
     id('ratioB').disabled = false;
     id('ratioA').focus();
+  } else if (mode === 'algebra') {
+    setupAlgInput();
   } else {
     id('stdAnsWrap').dataset.wholeFromFrac = '';
     const inp = id('ansInput');
@@ -2310,6 +2420,57 @@ function setupSciInput() {
   id('sciCoeff').disabled = false;
   id('sciExp').disabled   = false;
   id('sciCoeff').focus();
+}
+
+/* ── setupAlgInput: reveal the right number of coefficient slots (v23) ── */
+/* Reads qData.alg.slots = [{coeff, varLabel, askPower, power}, ...]. Each slot
+   shows a coefficient box; a non-empty varLabel shows the variable letter; an
+   askPower slot also shows a power box. Powers baked into the label (e.g. 'x²')
+   use askPower:false. Separators between slots are always '+'; negative answers
+   are entered as negative coefficients. */
+function setupAlgInput() {
+  setText('algInstruction', '');
+  id('algTermRow').style.display = 'flex';
+  const slots = (qData.alg && qData.alg.slots) || [];
+
+  for (let i = 0; i < 3; i++) {
+    const cg  = id('algCoeffGroup' + i);
+    const vg  = id('algVarGroup' + i);
+    const ci  = id('algC' + i);
+    const pi  = id('algP' + i);
+    const vl  = id('algV' + i);
+    const pb  = id('algPowBox' + i);
+    const sep = (i > 0) ? id('algSep' + i) : null;
+
+    if (i < slots.length) {
+      const s = slots[i];
+      cg.style.display = 'flex';
+      ci.disabled = false;
+      if (sep) sep.style.display = 'inline-block';
+
+      if (s.varLabel && s.varLabel !== '') {
+        vg.style.display = 'inline-flex';
+        setText(vl, s.varLabel);
+        if (s.askPower) {
+          pb.style.display = 'flex';
+          pi.disabled = false;
+        } else {
+          pb.style.display = 'none';
+          pi.disabled = true;
+        }
+      } else {
+        vg.style.display = 'none';
+        pi.disabled = true;
+      }
+    } else {
+      cg.style.display = 'none';
+      vg.style.display = 'none';
+      ci.disabled = true;
+      pi.disabled = true;
+      if (sep) sep.style.display = 'none';
+    }
+  }
+  id('algC0').focus();
 }
 
 /* ═══════════════════════════════════════════════
@@ -2473,6 +2634,13 @@ function nextQ() {
   else if (skill === 'ratioShare')    { genRatioShare(); }
   else if (skill === 'rateSimplify')  { genRateSimplify(); }
   else if (skill === 'rateConvert')   { genRateConvert(); }
+  else if (skill === 'algParts')      { genAlgParts(el); }
+  else if (skill === 'algSub')        { genAlgSub(el); }
+  else if (skill === 'algLikeTerms')  { genAlgLikeTerms(el); }
+  else if (skill === 'algMultiply')   { genAlgMultiply(el); }
+  else if (skill === 'algDivide')     { genAlgDivide(el); }
+  else if (skill === 'algExpand')     { genAlgExpand(el); }
+  else if (skill === 'algExpandTwo')  { genAlgExpandTwo(el); }
 
   enableInputs();
 }
@@ -2509,6 +2677,18 @@ function clearInputState() {
     id('ratioA').classList.remove('ok','bad');
     id('ratioB').classList.remove('ok','bad');
     id('ratioAnsWrap').classList.remove('ok','bad');
+  } else if (mode === 'algebra') {
+    ['algC0','algC1','algC2','algP0','algP1','algP2'].forEach(i => {
+      const el = id(i); if (el) { el.value = ''; el.classList.remove('ok','bad'); }
+    });
+    // Hide all slots/separators — setupAlgInput re-shows the right ones
+    id('algTermRow').style.display = 'none';
+    for (let i = 0; i < 3; i++) {
+      id('algCoeffGroup' + i).style.display = 'none';
+      id('algVarGroup' + i).style.display   = 'none';
+      if (i > 0) id('algSep' + i).style.display = 'none';
+    }
+    setText('algInstruction', '');
   } else {
     id('ansInput').value = '';
     id('ansInput').classList.remove('ok','bad','kb-focused');
@@ -3138,7 +3318,299 @@ document.addEventListener('DOMContentLoaded', () => {
   id('ratioB').addEventListener('keyup', e => {
     if (e.key === 'Enter' && !id('ratioB').disabled) checkAns();
   });
+  // Algebra inputs: Enter advances through visible slots, submits on the last (v23)
+  ['algC0','algC1','algC2','algP0','algP1','algP2'].forEach(idn => {
+    const el = id(idn);
+    if (!el) return;
+    el.addEventListener('keyup', e => {
+      if (e.key !== 'Enter') return;
+      const order = getKbInputOrder();
+      const i = order.indexOf(idn);
+      if (i >= 0 && i < order.length - 1) {
+        const nx = id(order[i + 1]);
+        if (nx && !nx.disabled) { nx.focus(); return; }
+      }
+      if (!el.disabled) checkAns();
+    });
+  });
 });
+
+/* ═══════════════════════════════════════════════
+   ALGEBRA GENERATORS (v23)
+   inputMode 'number' : algParts, algSub  (qData.ans)
+   inputMode 'algebra': algLikeTerms, algMultiply, algDivide,
+                        algExpand, algExpandTwo  (qData.alg.slots)
+═══════════════════════════════════════════════ */
+
+/* Display helpers — pronumerals render serif italic via the .idx-var class */
+function aVar(s)        { return `<span class="idx-var">${s}</span>`; }
+function aPow(base, p)  {
+  if (p === 1) return aVar(base);
+  return `<span class="idx-base-exp"><span class="idx-base idx-var">${base}</span><span class="idx-sup">${p}</span></span>`;
+}
+function aNum(n)        { return n < 0 ? '−' + Math.abs(n) : String(n); }
+function aSupChar(p)    { return p === 2 ? '²' : p === 3 ? '³' : '^' + p; }
+function nzrand(a, b)   { let x, t = 0; do { x = rr(a, b); t++; } while (x === 0 && t < 25); return x === 0 ? 1 : x; }
+
+/* Build an expression like "8 − 5x" from terms [{coeff, base, p}]. base '' = constant.
+   Coefficient of 1 in front of a variable is hidden; signs joined automatically. */
+function aExpr(terms) {
+  let html = '';
+  terms.forEach((t, i) => {
+    const c = t.coeff;
+    if (i === 0) { if (c < 0) html += '−'; }
+    else         { html += (c < 0) ? ' − ' : ' + '; }
+    const mag = Math.abs(c);
+    const p   = (t.p === undefined) ? 1 : t.p;
+    if (!t.base) { html += String(mag); }
+    else {
+      const cstr = (mag === 1) ? '' : String(mag);
+      html += cstr + aPow(t.base, p);
+    }
+  });
+  return html;
+}
+
+/* Plain-text answer string for feedback, e.g. "8x + 2y" or "2x² − 7x + 4" */
+function algAnswerStr(slots) {
+  let out = '';
+  slots.forEach((s, i) => {
+    const c = s.coeff, mag = Math.abs(c);
+    let term;
+    if (!s.varLabel) { term = String(mag); }
+    else {
+      const cstr = (mag === 1) ? '' : String(mag);
+      let varpart = s.varLabel;
+      if (s.askPower && s.power && s.power !== 1) varpart = s.varLabel + aSupChar(s.power);
+      term = cstr + varpart;
+    }
+    if (i === 0) out += (c < 0 ? '−' : '') + term;
+    else         out += (c < 0 ? ' − ' : ' + ') + term;
+  });
+  return out;
+}
+
+const A_LBL = 'font-size:0.95rem;font-weight:800;color:var(--muted);margin-bottom:8px;';
+
+/* 1 — Identifying parts of an expression (numeric answer) */
+function genAlgParts(el) {
+  el.style.fontSize = '2.0rem';
+  let terms, askConst, namedBase, ans;
+  if (level === 1) {
+    const v = ['x','y','a','m','n'][ri(5)];
+    const c = rr(2,9), k = rr(1,12);
+    terms = [{coeff:c, base:v}, {coeff:k, base:''}];
+    askConst = Math.random() < 0.5; namedBase = v;
+    ans = askConst ? k : c;
+  } else if (level === 2) {
+    const pairs = [['x','y'],['a','b'],['m','n'],['p','q']];
+    const [v1, v2] = pairs[ri(pairs.length)];
+    const a = rr(2,9), b = rr(2,9), k = rr(1,12);
+    terms = [{coeff:a, base:v1}, {coeff:b, base:v2}, {coeff:k, base:''}];
+    const pick = ri(3);
+    if (pick === 0)      { askConst = false; namedBase = v1; ans = a; }
+    else if (pick === 1) { askConst = false; namedBase = v2; ans = b; }
+    else                 { askConst = true;  namedBase = v1; ans = k; }
+  } else {
+    const v = ['x','y','a','m'][ri(4)];
+    let c;
+    const roll = Math.random();
+    if (roll < 0.45)      c = rr(-9,-1);
+    else if (roll < 0.65) c = -1;
+    else if (roll < 0.80) c = 1;
+    else                  c = rr(2,9);
+    const k = nzrand(-12,12);
+    terms = (Math.random() < 0.5) ? [{coeff:k, base:''},{coeff:c, base:v}]
+                                  : [{coeff:c, base:v},{coeff:k, base:''}];
+    askConst = Math.random() < 0.4; namedBase = v;
+    ans = askConst ? k : c;
+  }
+  qData.ans = ans;
+  const q = askConst ? 'the constant term' : `the coefficient of ${aVar(namedBase)}`;
+  el.innerHTML = `<div style="${A_LBL}">In this expression, what is ${q}?</div>${aExpr(terms)}`;
+}
+
+/* 2 — Substitute values into an expression (numeric answer) */
+function genAlgSub(el) {
+  el.style.fontSize = '2.0rem';
+  if (level === 1) {
+    const v = ['x','a','m','y'][ri(4)];
+    const a = rr(2,6), b = rr(1,12), xv = rr(2,6);
+    qData.ans = a*xv + b;
+    el.innerHTML = `<div style="${A_LBL}">If ${aVar(v)} = ${xv}, find</div>${aExpr([{coeff:a,base:v},{coeff:b,base:''}])}`;
+  } else if (level === 2) {
+    const pairs = [['a','b'],['x','y'],['m','n'],['p','q']];
+    const [v1, v2] = pairs[ri(pairs.length)];
+    const a = rr(2,6), b = rr(2,6), xv = rr(1,6), yv = rr(1,6);
+    qData.ans = a*xv + b*yv;
+    el.innerHTML = `<div style="${A_LBL}">If ${aVar(v1)} = ${xv} and ${aVar(v2)} = ${yv}, find</div>${aExpr([{coeff:a,base:v1},{coeff:b,base:v2}])}`;
+  } else {
+    const v = ['x','a','m'][ri(3)];
+    const xv = -rr(1,5);
+    const type = ri(3);
+    if (type === 0) {
+      const c = rr(2,6);
+      qData.ans = xv*xv + c*xv;
+      el.innerHTML = `<div style="${A_LBL}">If ${aVar(v)} = ${aNum(xv)}, find</div>${aPow(v,2)} + ${c}${aVar(v)}`;
+    } else if (type === 1) {
+      const a = rr(2,6), b = rr(1,9);
+      qData.ans = a*xv + b;
+      el.innerHTML = `<div style="${A_LBL}">If ${aVar(v)} = ${aNum(xv)}, find</div>${a}${aVar(v)} + ${b}`;
+    } else {
+      const k = rr(1,9);
+      qData.ans = xv*xv - k;
+      el.innerHTML = `<div style="${A_LBL}">If ${aVar(v)} = ${aNum(xv)}, find</div>${aPow(v,2)} − ${k}`;
+    }
+  }
+}
+
+/* 3 — Add & subtract like terms (algebra slots) */
+function genAlgLikeTerms(el) {
+  el.style.fontSize = '2.4rem';
+  if (level === 1) {
+    const v = ['x','y','a','m','n'][ri(5)];
+    const c1 = rr(1,9), c2 = rr(1,9);
+    qData.alg = { slots: [{coeff:c1+c2, varLabel:v, askPower:false}] };
+    el.innerHTML = aExpr([{coeff:c1,base:v},{coeff:c2,base:v}]);
+  } else if (level === 2) {
+    const v = ['x','y','a','m'][ri(4)];
+    let c1, c2, c3, total, tries = 0;
+    do {
+      c1 = rr(2,9);
+      c2 = (Math.random() < 0.5 ? 1 : -1) * rr(1,7);
+      c3 = (Math.random() < 0.4) ? (Math.random() < 0.5 ? 1 : -1) * rr(1,5) : 0;
+      total = c1 + c2 + c3; tries++;
+    } while (total < 1 && tries < 30);
+    if (total < 1) { c1 = 9; c2 = -2; c3 = 0; total = 7; }
+    const terms = [{coeff:c1,base:v},{coeff:c2,base:v}];
+    if (c3 !== 0) terms.push({coeff:c3,base:v});
+    qData.alg = { slots: [{coeff:total, varLabel:v, askPower:false}] };
+    el.innerHTML = aExpr(terms);
+  } else {
+    const pairs = [['x','y'],['a','b'],['m','n'],['p','q']];
+    const [v1, v2] = pairs[ri(pairs.length)];
+    let a1, a2, b1, b2, sx, sy, tries = 0;
+    do {
+      a1 = (Math.random()<0.5?1:-1)*rr(1,7); a2 = (Math.random()<0.5?1:-1)*rr(1,7);
+      b1 = (Math.random()<0.5?1:-1)*rr(1,6); b2 = (Math.random()<0.5?1:-1)*rr(1,6);
+      sx = a1 + a2; sy = b1 + b2; tries++;
+    } while ((sx === 0 || sy === 0) && tries < 40);
+    if (sx === 0 || sy === 0) { a1=3; a2=2; b1=4; b2=-1; sx=5; sy=3; }
+    qData.alg = { slots: [{coeff:sx, varLabel:v1, askPower:false},
+                          {coeff:sy, varLabel:v2, askPower:false}] };
+    el.innerHTML = aExpr([{coeff:a1,base:v1},{coeff:b1,base:v2},{coeff:a2,base:v1},{coeff:b2,base:v2}]);
+  }
+}
+
+/* 4 — Multiply terms (algebra slots, power box on single-variable levels) */
+function genAlgMultiply(el) {
+  el.style.fontSize = '2.4rem';
+  if (level === 1) {
+    const v = ['a','x','m','y','p'][ri(5)];
+    const c1 = rr(2,9), c2 = rr(2,9);
+    qData.alg = { slots: [{coeff:c1*c2, varLabel:v, askPower:true, power:2}] };
+    el.innerHTML = `${c1}${aVar(v)} × ${c2}${aVar(v)}`;
+  } else if (level === 2) {
+    const pairs = [['x','y'],['a','b'],['m','n'],['p','q']];
+    const [v1, v2] = pairs[ri(pairs.length)];
+    const c1 = rr(2,9), c2 = rr(2,9);
+    qData.alg = { slots: [{coeff:c1*c2, varLabel:v1+v2, askPower:false}] };
+    el.innerHTML = `${c1}${aVar(v1)} × ${c2}${aVar(v2)}`;
+  } else {
+    const v = ['x','a','m','y'][ri(4)];
+    const sign = (Math.random() < 0.6) ? -1 : 1;
+    const c1 = rr(2,6), c2 = rr(2,6);
+    let p1, p2, pa;
+    if (Math.random() < 0.5) { p1 = 1; p2 = 1; pa = 2; }
+    else                     { p1 = 2; p2 = 1; pa = 3; }
+    qData.alg = { slots: [{coeff:sign*c1*c2, varLabel:v, askPower:true, power:pa}] };
+    el.innerHTML = `${aNum(sign*c1)}${aPow(v,p1)} × ${c2}${aPow(v,p2)}`;
+  }
+}
+
+/* 5 — Divide terms (algebra slots, power box on single-variable levels) */
+function genAlgDivide(el) {
+  el.style.fontSize = '2.4rem';
+  if (level === 1) {
+    const v = ['a','x','m','y'][ri(4)];
+    const q = rr(2,6), c2 = rr(2,6), c1 = q*c2;
+    qData.alg = { slots: [{coeff:q, varLabel:v, askPower:true, power:1}] };
+    el.innerHTML = `${c1}${aPow(v,2)} ÷ (${c2}${aVar(v)})`;
+  } else if (level === 2) {
+    const pairs = [['x','y'],['a','b'],['m','n'],['p','q']];
+    const [v1, v2] = pairs[ri(pairs.length)];
+    const q = rr(2,6), c2 = rr(2,6), c1 = q*c2;
+    qData.alg = { slots: [{coeff:q, varLabel:v2, askPower:false}] };
+    el.innerHTML = `${c1}${aVar(v1)}${aVar(v2)} ÷ (${c2}${aVar(v1)})`;
+  } else {
+    const v = ['x','a','m','y'][ri(4)];
+    const sign = (Math.random() < 0.6) ? -1 : 1;
+    const q = rr(2,6), c2 = rr(2,6), c1 = q*c2;
+    qData.alg = { slots: [{coeff:sign*q, varLabel:v, askPower:true, power:2}] };
+    el.innerHTML = `${aNum(sign*c1)}${aPow(v,3)} ÷ (${c2}${aVar(v)})`;
+  }
+}
+
+/* 6 — Expand single brackets (algebra slots, coefficients only) */
+function genAlgExpand(el) {
+  el.style.fontSize = '2.2rem';
+  if (level === 1) {
+    const v = ['x','y','a','m'][ri(4)];
+    const k = rr(2,6), a = rr(1,9);
+    qData.alg = { slots: [{coeff:k, varLabel:v, askPower:false},
+                          {coeff:k*a, varLabel:'', askPower:false}] };
+    el.innerHTML = `${k}(${aVar(v)} + ${a})`;
+  } else if (level === 2) {
+    const v = ['x','y','a','m'][ri(4)];
+    const k = rr(2,5), a = rr(2,5), b = rr(1,9);
+    const minus = Math.random() < 0.6;
+    qData.alg = { slots: [{coeff:k*a, varLabel:v, askPower:false},
+                          {coeff:(minus?-1:1)*k*b, varLabel:'', askPower:false}] };
+    el.innerHTML = `${k}(${a}${aVar(v)} ${minus?'−':'+'} ${b})`;
+  } else {
+    const v = ['x','a','m'][ri(3)];
+    const c = rr(2,5), a = rr(1,6);
+    const minus = Math.random() < 0.6;
+    qData.alg = { slots: [{coeff:c, varLabel:v+'²', askPower:false},
+                          {coeff:(minus?-1:1)*c*a, varLabel:v, askPower:false}] };
+    el.innerHTML = `${c}${aVar(v)}(${aVar(v)} ${minus?'−':'+'} ${a})`;
+  }
+}
+
+/* 7 — Expand & simplify two brackets, one pronumeral (algebra slots) */
+function genAlgExpandTwo(el) {
+  el.style.fontSize = '2.0rem';
+  if (level === 1) {
+    const p = rr(2,5), q = rr(1,5), a = rr(1,6), b = rr(1,6);
+    qData.alg = { slots: [{coeff:p+q, varLabel:'x', askPower:false},
+                          {coeff:p*a+q*b, varLabel:'', askPower:false}] };
+    const qstr = (q === 1) ? '' : q;
+    el.innerHTML = `${p}(${aVar('x')} + ${a}) + ${qstr}(${aVar('x')} + ${b})`;
+  } else if (level === 2) {
+    let p, q, a, b, xc, kc, tries = 0;
+    do { p = rr(2,6); q = rr(2,5); a = rr(1,6); b = rr(1,6); xc = p-q; kc = p*a-q*b; tries++; }
+    while ((xc === 0 || kc === 0) && tries < 40);
+    if (xc === 0 || kc === 0) { p=5; q=3; a=2; b=1; xc=2; kc=7; }
+    qData.alg = { slots: [{coeff:xc, varLabel:'x', askPower:false},
+                          {coeff:kc, varLabel:'', askPower:false}] };
+    const qstr = (q === 1) ? '' : q;
+    el.innerHTML = `${p}(${aVar('x')} + ${a}) − ${qstr}(${aVar('x')} + ${b})`;
+  } else {
+    let c, d, e, g, s, xc, kc, tries = 0;
+    do {
+      c = rr(2,3); d = nzrand(-5,5); e = rr(2,5); g = nzrand(-5,5);
+      s = (Math.random() < 0.5) ? 1 : -1;
+      xc = d + s*e; kc = s*e*g; tries++;
+    } while ((xc === 0 || kc === 0) && tries < 60);
+    if (xc === 0 || kc === 0) { c=2; d=-3; e=4; g=-1; s=-1; xc=-7; kc=4; }
+    qData.alg = { slots: [{coeff:c,  varLabel:'x²', askPower:false},
+                          {coeff:xc, varLabel:'x',  askPower:false},
+                          {coeff:kc, varLabel:'',   askPower:false}] };
+    const b1 = `${aVar('x')}(${c}${aVar('x')} ${d<0?'−':'+'} ${Math.abs(d)})`;
+    const b2 = `${e}(${aVar('x')} ${g<0?'−':'+'} ${Math.abs(g)})`;
+    el.innerHTML = `${b1} ${s<0?'−':'+'} ${b2}`;
+  }
+}
 
 function checkAns() {
   const mode = getInputMode();
@@ -3290,6 +3762,29 @@ function checkAns() {
     id('ratioAnsWrap').classList.remove('ok','bad');
     id('ratioAnsWrap').classList.add(correct ? 'ok' : 'bad');
   }
+  else if (mode === 'algebra') {
+    const slots = (qData.alg && qData.alg.slots) || [];
+    let allOk = true;
+    for (let i = 0; i < slots.length; i++) {
+      const s  = slots[i];
+      const ci = id('algC' + i);
+      const uc = parseInt(ci.value, 10);
+      if (isNaN(uc)) { attempts--; ci.focus(); return; }
+      let slotOk = (uc === s.coeff);
+      let pi = null;
+      if (s.askPower) {
+        pi = id('algP' + i);
+        const up = parseInt(pi.value, 10);
+        if (isNaN(up)) { attempts--; pi.focus(); return; }
+        slotOk = slotOk && (up === s.power);
+      }
+      ci.classList.remove('ok','bad'); ci.classList.add(slotOk ? 'ok' : 'bad');
+      if (pi) { pi.classList.remove('ok','bad'); pi.classList.add(slotOk ? 'ok' : 'bad'); }
+      if (!slotOk) allOk = false;
+    }
+    correct = allOk;
+    if (!correct) feedbackStr = `Answer: ${algAnswerStr(slots)}`;
+  }
 
   if (correct) {
     score++;
@@ -3342,7 +3837,7 @@ function endSession() {
   if (gameOver) return;
   gameOver = true;
   clearInterval(timer);
-  ['ansInput','fracNum','fracDen','mixedWhole','mixedNum','mixedDen','idxCoeff','idxExp','sciCoeff','sciExp','ratioA','ratioB'].forEach(i => {
+  ['ansInput','fracNum','fracDen','mixedWhole','mixedNum','mixedDen','idxCoeff','idxExp','sciCoeff','sciExp','ratioA','ratioB','algC0','algC1','algC2','algP0','algP1','algP2'].forEach(i => {
     const el = document.getElementById(i);
     if (el) el.disabled = true;
   });
@@ -4185,7 +4680,8 @@ let kbMode   = 'num';  // 'num' | 'numNeg' | 'numNegDot' | 'frac' | 'idx' | 'sci
 /* All game input IDs — we attach keypad logic to these */
 const KB_INPUTS = ['ansInput','fracNum','fracDen','mixedWhole','mixedNum','mixedDen',
                    'idxCoeff','idxExp','idxExpB','idxExpC','sciCoeff','sciExp',
-                   'ratioA','ratioB'];
+                   'ratioA','ratioB',
+                   'algC0','algC1','algC2','algP0','algP1','algP2'];
 
 /* ── Setup: called once on load ── */
 function kbSetup() {
@@ -4293,6 +4789,15 @@ function getKbInputOrder() {
   }
   if (mode === 'sci') return ['sciCoeff','sciExp'];
   if (mode === 'ratio') return ['ratioA','ratioB'];
+  if (mode === 'algebra') {
+    const slots = (typeof qData !== 'undefined' && qData.alg && qData.alg.slots) || [];
+    const order = [];
+    for (let i = 0; i < slots.length; i++) {
+      order.push('algC' + i);
+      if (slots[i].askPower) order.push('algP' + i);
+    }
+    return order.length ? order : ['algC0'];
+  }
   return ['ansInput'];
 }
 
@@ -4308,11 +4813,11 @@ function kbShow() {
 
   /* Decide which optional keys to show */
   const showNeg = ['intAddSub','intMultDiv','indexDiv','indexMult','indexPow','indexNeg','sciTo','sciFrom'].includes(skillId)
-                  || mode === 'index' || mode === 'sci';
+                  || mode === 'index' || mode === 'sci' || mode === 'algebra';
   const decSkillsWithDot = ['sciTo','sciFrom','decAddSub','decMultiply','decDivide','decSquareCube','decOrderOps','decRound','sigFigs',
                             'rateSimplify','rateConvert'];
   const showDot  = (mode === 'sci' || decSkillsWithDot.includes(skillId));
-  const showNext = (mode === 'fraction' || mode === 'mixed' || mode === 'index' || mode === 'sci' || mode === 'ratio');
+  const showNext = (mode === 'fraction' || mode === 'mixed' || mode === 'index' || mode === 'sci' || mode === 'ratio' || mode === 'algebra');
 
   const negBtn  = document.getElementById('kbNegBtn');
   const dotBtn  = document.getElementById('kbDotBtn');
