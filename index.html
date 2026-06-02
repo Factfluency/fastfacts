@@ -2003,20 +2003,31 @@ const RECALL_SKILLS = [
 function getSkillKind(id) { return RECALL_SKILLS.includes(id) ? 'recall' : 'method'; }
 
 /* Fluency targets (correct answers per minute) for recall skills. A session is
-   "Fluent" when CPM ≥ target AND accuracy ≥ 90%. Targets scale down a little at
-   higher levels (harder questions are slower). Edit freely. */
+   "Fluent" when CPM ≥ target AND accuracy ≥ 90%.
+   - An ARRAY gives an explicit target per level: [L1, L2, L3]. Use this when the
+     levels aren't a simple difficulty ramp (e.g. add/sub L1 is fact recall but
+     L2/L3 are multi-digit mental computation).
+   - A NUMBER is treated as the Level-1 target and scaled down for higher levels.
+   Anchored on Brian Poncy's ~30/min basic-fact fluency benchmark:
+     • times tables / division → 30/min on Level 2 (the standard 2–12 set)
+     • addition / subtraction  → 30/min on Level 1 (single-digit recall)
+   Edit freely. */
 const FLUENCY_TARGET = {
-  timesTables:30, division:25, addition:30, subtraction:28,
+  timesTables:[35, 30, 25],   // L1 easy subset → L2 full set (standard 30) → L3 extended ×20
+  division:   [35, 30, 25],
+  addition:   [30, 18, 10],   // L1 single-digit recall (30) → L2 two-digit → L3 three-digit mental
+  subtraction:[30, 18, 10],
   squares:25, roots:22, cubes:20, cubeRoots:18,
   intAddSub:25, intMultDiv:22, intSquareCube:18,
   decAddSub:18, decMultiply:15, decDivide:14, decSquareCube:14
 };
 const FLUENT_ACC = 0.90;   // accuracy floor to count as fluent
 function getFluencyTarget(s, lv) {
-  const base = FLUENCY_TARGET[s];
-  if (!base) return 0;
+  const t = FLUENCY_TARGET[s];
+  if (t == null) return 0;
+  if (Array.isArray(t)) return t[(lv || 1) - 1] || t[t.length - 1];
   const scale = [1, 0.85, 0.7][(lv || 1) - 1] || 0.7;
-  return Math.max(5, Math.round(base * scale));
+  return Math.max(5, Math.round(t * scale));
 }
 
 /* Method tips — the "show me how" fallback for method skills that don't build a
