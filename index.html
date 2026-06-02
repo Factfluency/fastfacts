@@ -4305,7 +4305,9 @@ function checkAns() {
       const un = parseInt(id('mixedNum').value, 10);
       const ud = parseInt(id('mixedDen').value, 10);
       if (isNaN(un) || isNaN(ud) || ud === 0) { attempts--; id('mixedDen').focus(); return; }
-      correct = w === qData.ansWhole && un === qData.ansNum && ud === qData.ansDen;
+      // The fractional part must be in lowest terms (e.g. 5 1/2, not 5 2/4).
+      const fracSimplified = gcd(Math.abs(un), Math.abs(ud)) === 1;
+      correct = w === qData.ansWhole && fracSimplified && un === qData.ansNum && ud === qData.ansDen;
       if (!correct) feedbackStr = `Answer: ${qData.ansWhole} and ${qData.ansNum}/${qData.ansDen}`;
       id('mixedAnsWrap').classList.remove('ok','bad');
       id('mixedAnsWrap').classList.add(correct ? 'ok' : 'bad');
@@ -4857,9 +4859,17 @@ function genMixedToImp() {
   const wholeMax = [5, 9, 15][level - 1];
   const den = rr(2, denMax);
   const whole = rr(1, wholeMax);
-  const num = rr(1, den - 1);
-  qData.ansNum = whole * den + num;
-  qData.ansDen = den;
+  // Keep the fractional part of the displayed mixed number in lowest terms so
+  // the question never shows a sloppy form like "5 2/4", and so the resulting
+  // improper fraction is already fully simplified (gcd(num,den)=1 implies
+  // gcd(whole*den+num, den)=1). This stops a correct simplified improper
+  // answer from being rejected in the fraction checker.
+  let num = rr(1, den - 1);
+  let guard = 0;
+  while (gcd(num, den) !== 1 && guard++ < 50) num = rr(1, den - 1);
+  const [impN, impD] = simplify(whole * den + num, den);
+  qData.ansNum = impN;
+  qData.ansDen = impD;
   // Display as mixed number
   id('qBox').innerHTML = `<div class="idx-q-display" style="font-size:2rem;gap:8px;align-items:center">
     <span>${whole}</span>${fracHTML(num, den)}
@@ -4875,9 +4885,15 @@ function genImpToMixed() {
   const whole = rr(1, wholeMax);
   const num = rr(1, den - 1);
   const impNum = whole * den + num;
-  qData.ansWhole = whole;
-  qData.ansNum = num;
-  qData.ansDen = den;
+  // Store the answer as a FULLY SIMPLIFIED mixed number. The displayed improper
+  // fraction may be unreduced (e.g. 22/4), so the fractional part of the mixed
+  // number must be reduced too (2/4 -> 1/2). Otherwise a correct simplified
+  // answer like "5 1/2" is wrongly rejected in favour of "5 2/4".
+  const wholeAns = Math.floor(impNum / den);
+  const [remN, remD] = simplify(impNum % den, den);
+  qData.ansWhole = wholeAns;
+  qData.ansNum = remN;
+  qData.ansDen = remD;
   // Display improper fraction
   id('qBox').innerHTML = `<div class="idx-q-display" style="font-size:2rem;gap:8px;align-items:center">
     ${fracHTML(impNum, den)}
