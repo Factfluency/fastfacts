@@ -1274,7 +1274,7 @@ body {
 <div id="s-welcome" class="screen active">
   <div class="hero">
     <div class="logo">⚡ Sandy<span>FastFacts</span></div>
-    <div class="tagline">Secondary Maths Fluency &amp; Challenge Trainer</div>
+    <div class="tagline">Secondary Maths — practise, master, improve</div>
   </div>
   <div class="slabel">Choose Your Profile</div>
   <div class="profile-grid" id="profileGrid"></div>
@@ -1305,12 +1305,8 @@ body {
   <!-- Slide content area -->
   <div class="ob-card" id="obCard"></div>
 
-  <!-- Dot progress indicator -->
-  <div style="display:flex;justify-content:center;gap:8px;margin:20px 0 24px;">
-    <div class="ob-dot active" id="obDot0"></div>
-    <div class="ob-dot" id="obDot1"></div>
-    <div class="ob-dot" id="obDot2"></div>
-  </div>
+  <!-- Dot progress indicator (built dynamically per slide count) -->
+  <div id="obDots" style="display:flex;justify-content:center;gap:8px;margin:20px 0 24px;"></div>
 
   <button class="btn-primary" id="obNextBtn" onclick="obNext()">Next →</button>
   <div style="height:10px"></div>
@@ -1805,7 +1801,6 @@ const CATS = {
       { id:'indexMult',  name:'Index Law (Multiplication Law)',  inputMode:'index',  lvKey:'imul' },
       { id:'indexDiv',   name:'Index Law (Division Law)',        inputMode:'index',  lvKey:'idiv' },
       { id:'indexPow',   name:'Index Law (Power of a Power)',    inputMode:'index',  lvKey:'ipow' },
-      { id:'indexNeg',   name:'Negative Indices',               inputMode:'index',  lvKey:'ineg' },
       { id:'sciTo',      name:'Number → Scientific Notation', inputMode:'sci', lvKey:'sci' },
       { id:'sciFrom',    name:'Scientific Notation → Number', inputMode:'number', lvKey:'sci' },
     ]
@@ -2001,11 +1996,6 @@ const LEVEL_DEFS = {
     { title:'Level 3 — Two Variables',   desc:'Raise expressions with two variables to a power. Enter the coefficient and power of x (power of y shown in hint).', examples:['(xy²)³ = ?'] },
   ],
 
-  ineg: [
-    { title:'Level 1 — Reciprocal Form', desc:'A negative power means one over the positive power: a⁻ⁿ = 1/aⁿ. Enter the positive power that goes underneath.', examples:['2⁻³ = 1/2?', 'x⁻⁴ = 1/x?'] },
-    { title:'Level 2 — Negative Result', desc:'Divide powers of the same base where the bottom power is bigger — the result is a negative power. Enter it (e.g. −2).', examples:['5² ÷ 5⁵ = 5?', '3 ÷ 3⁴ = 3?'] },
-  ],
-
   sci: [
     { title:'Level 1 — Powers of 10 (1–6)',   desc:'Convert between standard form and scientific notation using powers of 10 from 10¹ to 10⁶. Positive powers only.', examples:['3 200 000', '4.5 × 10⁴', '72 000'] },
     { title:'Level 2 — All Positive Powers',   desc:'Any positive power of 10. Includes decimals like 3.75 × 10⁵. Builds fluency with the standard form.', examples:['0.000 045', '6.02 × 10⁵', '3.14 × 10⁸'] },
@@ -2140,7 +2130,6 @@ const METHOD_TIP = {
   indexMult:'Same base: add the powers. Multiply the numbers in front separately.',
   indexDiv:'Same base: subtract the powers. Divide the numbers in front separately.',
   indexPow:'Power of a power: multiply the powers. Raise the number in front to the outer power.',
-  indexNeg:'A negative power means 1 over the positive power: a⁻ⁿ = 1/aⁿ.',
   sciTo:'Move the decimal so there is one non-zero digit in front. The number of places moved is the power of 10.',
   sciFrom:'A positive power moves the decimal right (bigger); a negative power moves it left (smaller).',
   fracSimplify:'Divide the top and bottom by the highest number that goes into both (the HCF).',
@@ -2249,7 +2238,7 @@ function recordActivity(s, lv, accPct, secs) {
 }
 
 /* Daily goal: 3 sessions OR 5 minutes of practice today (either counts). */
-const GOAL_SESSIONS = 3, GOAL_SECS = 300;
+const GOAL_SESSIONS = 5, GOAL_SECS = 300;
 function goalProgress() {
   const d = getDay();
   return { sessions: d.sessions, secs: d.secs, done: d.sessions >= GOAL_SESSIONS || d.secs >= GOAL_SECS };
@@ -2520,7 +2509,7 @@ function renderHabitCard() {
   el.innerHTML = `
     <div class="hb-top">
       <span class="hb-streak">${fire}</span>
-      <span class="hb-goal ${g.done ? 'done' : ''}">${g.done ? '🎯 Goal done!' : `Goal: 3 sessions or 5 min`}</span>
+      <span class="hb-goal ${g.done ? 'done' : ''}">${g.done ? '🎯 Goal done!' : `Goal: 5 sessions or 5 min`}</span>
     </div>
     <div class="hb-bar"><div class="hb-fill" style="width:${pct}%"></div></div>
     <div class="hb-sub">Today: ${g.sessions} session${g.sessions === 1 ? '' : 's'} · ${timeStr} min</div>
@@ -2749,7 +2738,7 @@ function getInputMode() {
   return skillMeta.inputMode;
 }
 function isFractionSkill() { return ['fracSimplify','fracAddSub','fracMultiply','fracDivide','fracOrderOps','mixedToImp','impToMixed'].includes(skill); }
-function isIndexSkill()    { return ['indexMult','indexDiv','indexPow','indexNeg'].includes(skill); }
+function isIndexSkill()    { return ['indexMult','indexDiv','indexPow'].includes(skill); }
 function isSciSkill()      { return skill === 'sciTo'; }
 
 function prepGameScreen() {
@@ -3155,7 +3144,6 @@ function nextQ() {
   else if (skill === 'indexMult')    { genIndexMult(); }
   else if (skill === 'indexDiv')     { genIndexDiv(); }
   else if (skill === 'indexPow')     { genIndexPow(); }
-  else if (skill === 'indexNeg')     { genIndexNeg(); }
   else if (skill === 'sciTo')        { genSciTo(); }
   else if (skill === 'sciFrom')      { genSciFrom(); }
   else if (skill === 'fracSimplify') { genFracSimplify(); }
@@ -3431,48 +3419,6 @@ function genIndexPow() {
     qData.idxHint  = '';
     const am = a===1?'':a;
     id('qBox').innerHTML = `<div class="idx-q-display">(${am}${sup(vr('x'),m)}${sup(vr('y'),p)})<sup class="idx-sup">${n}</sup></div>`;
-  }
-}
-
-/* ── NEGATIVE INDICES ── */
-function genIndexNeg() {
-  if (level === 1) {
-    // a^(-n) = 1/a^n  — student enters the positive power n that goes in the denominator
-    const negExp = rr(1,6);
-    const useNum = Math.random() < 0.5;
-    const base = useNum ? rr(2,9) : 'x';
-    qData.idxMode = 'expOnly';
-    qData.ansExp  = negExp;
-    qData.idxHint = `Write as 1 ÷ ${base}^? — enter the positive power`;
-    setText('idxBaseLabel', String(base));
-    const baseDisp = (base === 'x') ? vr('x') : base;
-    // Display: base^-n = 1/base^? (show a small fraction structure)
-    id('qBox').innerHTML = `<div class="idx-q-display" style="flex-direction:column;gap:4px">
-      <div>${sup(baseDisp,'−'+negExp)} =</div>
-      <div style="display:inline-flex;flex-direction:column;align-items:center;font-size:1.4rem">
-        <span>1</span>
-        <span style="display:block;width:100%;height:3px;background:var(--text);border-radius:2px;margin:2px 0"></span>
-        <span>${sup(baseDisp,'?')}</span>
-      </div>
-    </div>`;
-  } else if (level === 2) {
-    // numbers: base^m ÷ base^n where n>m → result is base^(m-n) negative
-    const base=rr(2,7), m=rr(1,4), extra=rr(1,3), n=m+extra;
-    qData.idxMode = 'expOnly';
-    qData.ansExp  = m-n;
-    qData.idxHint = `The resulting power is negative — enter it (e.g. −2)`;
-    setText('idxBaseLabel', base + '');
-    id('qBox').innerHTML = `<div class="idx-q-display">${sup(base,m)} ÷ ${sup(base,n)} = ${sup(base,'?')}</div>`;
-  } else {
-    // variables: x^m ÷ x^n where n>m
-    const m=rr(1,4), extra=rr(1,3), n=m+extra;
-    const a=rr(1,5), b=rr(1,a);
-    qData.idxMode  = 'coeffXExp';
-    qData.ansCoeff = a/b;
-    qData.ansExp   = m-n; // negative
-    qData.var1     = 'x';
-    qData.idxHint  = '';
-    renderIdxQ(`${a}${sup(vr('x'),m)} ÷ ${b}${sup(vr('x'),n)} =`);
   }
 }
 
@@ -5581,7 +5527,7 @@ function kbShow() {
   const skillId = (typeof skill !== 'undefined') ? skill : '';
 
   /* Decide which optional keys to show */
-  const showNeg = ['intAddSub','intMultDiv','indexDiv','indexMult','indexPow','indexNeg','sciTo','sciFrom'].includes(skillId)
+  const showNeg = ['intAddSub','intMultDiv','indexDiv','indexMult','indexPow','sciTo','sciFrom'].includes(skillId)
                   || mode === 'index' || mode === 'sci' || mode === 'algebra';
   const decSkillsWithDot = ['sciTo','sciFrom','decAddSub','decMultiply','decDivide','decSquareCube','decOrderOps','decRound','sigFigs',
                             'rateSimplify','rateConvert'];
@@ -5657,69 +5603,130 @@ window.addEventListener('resize', () => {
 ═══════════════════════════════════════════════ */
 const OB_SLIDES = [
   {
+    icon: '⚡',
+    title: 'Welcome to Sandy FastFacts',
+    body: 'Practise and master the maths skills you meet in class — from times tables to algebra.',
+    card: `
+      <div class="ob-row">
+        <div class="ob-badge pb">🎯</div>
+        <div class="ob-row-text">
+          <div class="ob-row-title">Get faster where speed counts</div>
+          <div class="ob-row-desc">Number facts like times tables, squares and roots — build quick, automatic recall.</div>
+        </div>
+      </div>
+      <div class="ob-row">
+        <div class="ob-badge practice">🧠</div>
+        <div class="ob-row-text">
+          <div class="ob-row-title">Understand the methods</div>
+          <div class="ob-row-desc">Skills like expanding brackets, fractions and ratios — take your time and get the steps right.</div>
+        </div>
+      </div>
+      <div class="ob-row">
+        <div class="ob-badge spark">📚</div>
+        <div class="ob-row-text">
+          <div class="ob-row-title">Seven topics, three levels each</div>
+          <div class="ob-row-desc">Number, Integers, Exponents, Fractions, Decimals, Ratio &amp; Rates, and Algebra.</div>
+        </div>
+      </div>`
+  },
+  {
     icon: '⏱',
     title: 'Three ways to train',
-    body: 'Choose how you want to practise before you start.',
+    body: 'Pick a mode before you choose a skill.',
     card: `
       <div class="ob-row">
         <div class="ob-badge fluency">⏱</div>
         <div class="ob-row-text">
           <div class="ob-row-title">Fluency — 60 seconds</div>
-          <div class="ob-row-desc">A quick daily sprint. Answer as many as you can. Your score is recorded and shared with your teacher.</div>
+          <div class="ob-row-desc">A quick sprint for facts you want to make automatic. Scored and shared with your teacher.</div>
         </div>
       </div>
       <div class="ob-row">
         <div class="ob-badge challenge">⚡</div>
         <div class="ob-row-text">
           <div class="ob-row-title">Challenge — 3 minutes</div>
-          <div class="ob-row-desc">More time to warm up and get into the zone. Great for harder skills. Also scored and shared with your teacher.</div>
+          <div class="ob-row-desc">More time for trickier, multi-step skills. Also scored and shared.</div>
         </div>
       </div>
       <div class="ob-row">
         <div class="ob-badge practice">∞</div>
         <div class="ob-row-text">
-          <div class="ob-row-title">Practice — unlimited time</div>
-          <div class="ob-row-desc">No timer. Build confidence at your own pace before going for a scored session. Not shared.</div>
+          <div class="ob-row-title">Practice — no timer</div>
+          <div class="ob-row-desc">Learn a new method at your own pace. Not scored, not shared.</div>
         </div>
       </div>`
   },
   {
-    icon: '⭐',
-    title: 'How your score works',
-    body: 'Speed matters — but accuracy matters more.',
+    icon: '🎯',
+    title: 'Speed vs understanding',
+    body: 'The app coaches each skill the right way.',
     card: `
       <div class="ob-row">
-        <div class="ob-badge challenge">⭐</div>
+        <div class="ob-badge pb">🎯</div>
         <div class="ob-row-text">
-          <div class="ob-row-title">Score = CPM × Accuracy²</div>
-          <div class="ob-row-desc">If you get 30 correct in 60 seconds but only 50% accurate, your score is 30 × 0.25 = 7. Getting 20 correct at 100% scores 20. Slow down and think — accuracy matters more than speed.</div>
+          <div class="ob-row-title">Fluency targets</div>
+          <div class="ob-row-desc">Recall skills show a target like 30/min. Hit it at 90%+ accuracy to earn a 🎯 Fluent badge.</div>
+        </div>
+      </div>
+      <div class="ob-row">
+        <div class="ob-badge score">⭐</div>
+        <div class="ob-row-text">
+          <div class="ob-row-title">Score = correct per min × accuracy²</div>
+          <div class="ob-row-desc">Accuracy matters more than raw speed — 20 right at 100% beats 30 right at 50%.</div>
+        </div>
+      </div>
+      <div class="ob-row">
+        <div class="ob-badge practice">🧠</div>
+        <div class="ob-row-text">
+          <div class="ob-row-title">Method skills put accuracy first</div>
+          <div class="ob-row-desc">For these there's no speed target — just work carefully and get the steps right.</div>
+        </div>
+      </div>`
+  },
+  {
+    icon: '🔎',
+    title: 'Learn from your mistakes',
+    body: 'Every wrong answer is a chance to improve.',
+    card: `
+      <div class="ob-row">
+        <div class="ob-badge score">🔁</div>
+        <div class="ob-row-text">
+          <div class="ob-row-title">End-of-session review</div>
+          <div class="ob-row-desc">After each session, see every question you missed with your answer and the correct one.</div>
+        </div>
+      </div>
+      <div class="ob-row">
+        <div class="ob-badge pb">💡</div>
+        <div class="ob-row-text">
+          <div class="ob-row-title">Show me how</div>
+          <div class="ob-row-desc">Tap to reveal a worked example or method tip for the ones you got wrong.</div>
+        </div>
+      </div>`
+  },
+  {
+    icon: '🔥',
+    title: 'Build the habit, track progress',
+    body: 'A little practice each day adds up fast.',
+    card: `
+      <div class="ob-row">
+        <div class="ob-badge challenge">🎲</div>
+        <div class="ob-row-text">
+          <div class="ob-row-title">Daily Mix</div>
+          <div class="ob-row-desc">One tap gives you four skills picked for you, weighted to what you've been working on.</div>
         </div>
       </div>
       <div class="ob-row">
         <div class="ob-badge score">🔥</div>
         <div class="ob-row-text">
-          <div class="ob-row-title">Streak bonus</div>
-          <div class="ob-row-desc">A streak counter tracks your consecutive correct answers. Try to keep it going — it resets to zero on any wrong answer.</div>
-        </div>
-      </div>`
-  },
-  {
-    icon: '📈',
-    title: 'Tracking your progress',
-    body: 'Every score is saved so you can see how you improve over time.',
-    card: `
-      <div class="ob-row">
-        <div class="ob-badge pb">🏆</div>
-        <div class="ob-row-text">
-          <div class="ob-row-title">Personal Best</div>
-          <div class="ob-row-desc">Your highest ever Challenge Score for each skill and level is saved. The app tells you when you beat it — aim for a new PB every session.</div>
+          <div class="ob-row-title">Daily goal &amp; streak</div>
+          <div class="ob-row-desc">Do 5 sessions or 5 minutes a day to hit your goal and keep your day-streak alive.</div>
         </div>
       </div>
       <div class="ob-row">
-        <div class="ob-badge spark">📊</div>
+        <div class="ob-badge pb">🏆</div>
         <div class="ob-row-text">
-          <div class="ob-row-title">Score history sparkline</div>
-          <div class="ob-row-desc">After each session you'll see a small bar chart of your recent scores. The tallest bar is your best — try to keep them growing.</div>
+          <div class="ob-row-title">Bests, history &amp; backup</div>
+          <div class="ob-row-desc">Personal Bests are saved on this device. Use 💾 Backup to move them to another device, and 🌙 in the corner for dark mode.</div>
         </div>
       </div>`
   }
@@ -5740,11 +5747,9 @@ function obRender() {
   setText('obBody', s.body);
   document.getElementById('obCard').innerHTML = s.card;
   document.getElementById('obNextBtn').textContent = obSlide === OB_SLIDES.length - 1 ? "Let's go! →" : 'Next →';
-  // Update dots
-  OB_SLIDES.forEach((_, i) => {
-    const dot = document.getElementById('obDot' + i);
-    if (dot) dot.classList.toggle('active', i === obSlide);
-  });
+  // Build dots for the current slide count
+  const dotsWrap = document.getElementById('obDots');
+  if (dotsWrap) dotsWrap.innerHTML = OB_SLIDES.map((_, i) => `<div class="ob-dot${i === obSlide ? ' active' : ''}"></div>`).join('');
 }
 
 function obNext() {
