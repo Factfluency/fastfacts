@@ -3065,6 +3065,10 @@ function stopPractice() {
   // v27: stamp session history for practice sessions too
   recordActivity(skill, level, Math.round(acc * 100), startTime ? (Date.now() - startTime) / 1000 : 0);
 
+  // v30: queue practice sessions for the teacher share too, flagged as Practice
+  // (the dashboard Mode column will read "Practice"). Practice never sets a PB.
+  recordSession(skill, level, practiceScore, score, Math.round(acc * 100), cpm, false);
+
   showResults(practiceScore, score, acc, cpm, 'practice', 0, trend);
 }
 
@@ -5821,8 +5825,10 @@ function recordSession(skillId, lv, fluencyScore, correct, accPct, cpmVal, isPB)
     skill: skillId,
     skillName: getSkillDisplayName(skillId),
     level: lv,
-    mode: sessionMode,   // 'fluency' | 'challenge'
-    modeLabel: sessionMode === 'fluency' ? '⏱ Fluency' : '⚡ Challenge',
+    mode: sessionMode,   // 'fluency' | 'challenge' | 'practice'
+    modeLabel: sessionMode === 'fluency' ? '⏱ Fluency'
+             : sessionMode === 'challenge' ? '⚡ Challenge'
+             : '📝 Practice',
     score: fluencyScore,
     correct,
     accuracy: accPct,
