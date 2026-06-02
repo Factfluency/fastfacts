@@ -480,6 +480,21 @@ body {
 .ans-input.ok  { border-color: var(--green); background: var(--green-bg); }
 .ans-input.bad { border-color: var(--red);   background: var(--red-bg); }
 
+/* Desktop power buttons (v33) — insert correct superscript notation */
+.pow-btn {
+  background: var(--surface);
+  border: 2px solid var(--border);
+  border-radius: var(--r);
+  color: var(--text);
+  font-family: 'Nunito', sans-serif; font-weight: 900;
+  font-size: 1.1rem; line-height: 1;
+  padding: 8px 12px; min-width: 48px; cursor: pointer;
+  box-shadow: var(--shadow);
+  transition: border-color .15s, background .15s, transform .05s;
+}
+.pow-btn:hover  { border-color: var(--accent); }
+.pow-btn:active { transform: translateY(1px); }
+
 /* Stacked fraction input */
 .frac-input-wrap {
   display: none; /* toggled by JS */
@@ -1586,7 +1601,15 @@ body {
   <!-- Free-text algebra answer (v24) — student types the whole answer (e.g. 7x, 8x + 2y, 3x + 6) -->
   <div id="algTypeWrap" style="display:none; flex-direction:column; align-items:center; gap:10px; margin-bottom:14px;">
     <div id="algTypeHint" style="font-size:0.82rem;font-weight:800;color:var(--muted);text-align:center;padding:0 8px;">Type the whole answer — including the letter</div>
-    <input id="algTypeInput" class="ans-input" type="text" inputmode="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" disabled placeholder="?">
+    <div style="display:flex; align-items:center; justify-content:center; gap:10px;">
+      <input id="algTypeInput" class="ans-input" type="text" inputmode="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" disabled placeholder="?">
+      <!-- Desktop power buttons (v33) — insert correct superscript notation. Hidden on
+           mobile, where the on-screen keypad already provides ² / ³ keys. -->
+      <div id="algPowRow" style="display:none; flex-direction:column; gap:6px;">
+        <button type="button" class="pow-btn" id="algPow2" onclick="insertPower('²')" title="squared" aria-label="insert squared">x²</button>
+        <button type="button" class="pow-btn" id="algPow3" onclick="insertPower('³')" title="cubed" aria-label="insert cubed">x³</button>
+      </div>
+    </div>
   </div>
 
   <!-- Stacked fraction answer -->
@@ -1653,6 +1676,9 @@ body {
     <div class="kb-row" id="kbAlgRow" style="display:none">
       <button class="kb-key kb-sym" id="kbVar1" onclick="kbPress('x')">x</button>
       <button class="kb-key kb-sym" id="kbVar2" onclick="kbPress('y')" style="display:none">y</button>
+      <button class="kb-key kb-sym" id="kbVar3" onclick="kbPress('z')" style="display:none">z</button>
+      <button class="kb-key kb-sym" id="kbPow2" onclick="kbPress('²')" style="display:none">x²</button>
+      <button class="kb-key kb-sym" id="kbPow3" onclick="kbPress('³')" style="display:none">x³</button>
       <button class="kb-key kb-sym" id="kbPlusBtn" onclick="kbPress('+')">+</button>
       <button class="kb-key kb-sym" id="kbMinusBtn" onclick="kbPress('-')">−</button>
     </div>
@@ -1738,7 +1764,7 @@ body {
     <button class="back-btn" style="padding:0" onclick="goHome()">← Home</button>
   </div>
   <div id="todayEmpty" class="nothing-to-share" style="display:none">
-    No scored sessions yet today.<br>Complete a Fluency or Challenge session to see your results here.
+    No sessions yet today.<br>Complete any session — Fluency, Challenge or Practice — to see your results here.
   </div>
   <div class="session-list" id="todayList"></div>
   <div id="todayShareWrap">
@@ -2043,14 +2069,16 @@ const LEVEL_DEFS = {
     { title:'Level 3 — Two Variables',    desc:'Collect like terms across two variables, with negatives. Answer has two terms.', examples:['3x + 2y + 5x', '5a − 2b − 3a + 4b', '7p + q − 2p'] },
   ],
   amul: [
-    { title:'Level 1 — Same Variable',    desc:'Multiply terms in the same variable. Type the coefficient and the power.', examples:['3a × 4a', '2x × 5x', '6m × m'] },
-    { title:'Level 2 — Two Variables',    desc:'Multiply terms in two different variables. Type the coefficient; the variables are shown.', examples:['2x × 5y', '3a × 4b', '6p × 2q'] },
-    { title:'Level 3 — Higher Powers & Negatives', desc:'Negative coefficients and powers of three. Type the coefficient and the power.', examples:['−3x × 4x', '2x² × 3x', '−2a × 5a'] },
+    { title:'Level 1 — Number × Term',    desc:'Multiply a number by an algebraic term. Type the whole answer, e.g. 12x.', examples:['4 × 3x = 12x', '7 × 2x = 14x', '6 × m = 6m'] },
+    { title:'Level 2 — Two Terms',         desc:'Multiply two terms with different letters. Type the whole answer including every letter.', examples:['3xy × 4z = 12xyz', '7y × 4p = 28py', '2x × 5y = 10xy'] },
+    { title:'Level 3 — Answers with Powers', desc:'A letter appears in both terms, so the answer carries a power. Type the letters and powers (use the ² key).', examples:['5xy × 2yz = 10xy²z', '3x × 4x = 12x²', '2ab × 3b = 6ab²'] },
+    { title:'Level 4 — Negatives & Three Terms', desc:'Three terms multiplied, with negatives. Answers can reach a cube (use the ³ key). Best played in Practice or Challenge.', examples:['−3x × 2y × 4x = −24x²y', '2x × 3x × x = 6x³', '−2a × −3a × b = 6a²b'] },
   ],
   adiv: [
-    { title:'Level 1 — Same Variable',    desc:'Divide terms in the same variable. Type the coefficient and the power (subtract the indices).', examples:['12a² ÷ 3a', '20x² ÷ 4x', '15m² ÷ 5m'] },
-    { title:'Level 2 — Two Variables',    desc:'Divide a two-variable term so one variable cancels. Type the coefficient; the variable is shown.', examples:['12xy ÷ 3x', '20ab ÷ 5a', '18pq ÷ 6q'] },
-    { title:'Level 3 — Higher Powers & Negatives', desc:'Negative coefficients and powers of three. Type the coefficient and the power.', examples:['−20x³ ÷ 5x', '18a³ ÷ 3a', '−24m³ ÷ 6m'] },
+    { title:'Level 1 — Term ÷ Number',     desc:'Divide an algebraic term by a number that goes in evenly. Type the whole answer, e.g. 3x.', examples:['12x ÷ 4 = 3x', '20m ÷ 5 = 4m', '18y ÷ 3 = 6y'] },
+    { title:'Level 2 — A Letter Cancels',  desc:'Divide one term by another so a letter cancels. Type the whole answer.', examples:['28xy ÷ 7y = 4x', '20ab ÷ 5a = 4b', '18pq ÷ 6q = 3p'] },
+    { title:'Level 3 — Answers with Powers', desc:'The top carries a higher power, so the answer keeps one. Type the letters and powers (use the ² key).', examples:['10x³y ÷ 2x = 5x²y', '12a³ ÷ 3a = 4a²', '15m³n ÷ 5m = 3m²n'] },
+    { title:'Level 4 — Divide then Multiply', desc:'Work left to right: divide first, then multiply. Negatives allowed. Best played in Practice or Challenge.', examples:['24x²y ÷ 6x × 2y = 8xy²', '20a²b ÷ 5a × 3b = 12ab²', '18m²n ÷ 3m × 2n = 12mn²'] },
   ],
   aexp: [
     { title:'Level 1 — k(x + a)',         desc:'Expand a single bracket with a number outside. Fill the coefficient of each term in the template.', examples:['3(x + 2)', '5(y + 1)', '2(a + 6)'] },
@@ -2075,6 +2103,8 @@ const LEVEL_REC = {
   doo:   { 3: 'challenge' },   // Order of Operations (Decimals)
   aexp:  { 3: 'challenge' },   // Expand Single Brackets — variable multiplier (x²)
   aexp2: { 1: 'challenge', 2: 'challenge', 3: 'practice' }, // Expand & Simplify (Two Brackets)
+  amul:  { 4: 'practice' },    // Multiply Terms — three-term, negatives
+  adiv:  { 4: 'practice' },    // Divide Terms — divide-then-multiply
 };
 function getLevelRec(key, lv) {
   return (LEVEL_REC[key] && LEVEL_REC[key][lv]) || null;
@@ -2735,6 +2765,11 @@ function getInputMode() {
   // must produce the variable themselves — stops the "join the letters" error.
   if (skill === 'algLikeTerms') return 'algType';
   if (skill === 'algExpand' && (level === 1 || level === 2)) return 'algType';
+  // Multiply / Divide terms (all levels, v32): the student types the WHOLE
+  // product/quotient answer (e.g. 12x, 12xyz, 10xy²z, −24x²y) so they must
+  // build the coefficient, every letter, AND its power themselves. A digit-box
+  // panel can't test that, so these use the free-text 'algProd' parser.
+  if (skill === 'algMultiply' || skill === 'algDivide') return 'algProd';
   return skillMeta.inputMode;
 }
 function isFractionSkill() { return ['fracSimplify','fracAddSub','fracMultiply','fracDivide','fracOrderOps','mixedToImp','impToMixed'].includes(skill); }
@@ -2834,9 +2869,14 @@ function resetAnswerInputs() {
   } else if (mode === 'algebra') {
     id('algAnsWrap').style.display = 'flex';
     id('algTermRow').style.display = 'none';
-  } else if (mode === 'algType') {
+  } else if (mode === 'algType' || mode === 'algProd') {
     id('algTypeWrap').style.display = 'flex';
     id('algTypeInput').className = 'ans-input';
+    id('algTypeHint').textContent = (mode === 'algProd')
+      ? 'Type the whole answer, e.g. 12x or 10xy²z  ·  tip: use the x² / x³ buttons or type x2'
+      : 'Type the whole answer — including the letter';
+    // Power buttons: product answers on a computer (phone keypad has its own ² / ³).
+    id('algPowRow').style.display = (mode === 'algProd' && !IS_MOBILE()) ? 'flex' : 'none';
   } else {
     // 'number'
     id('stdAnsWrap').style.display = 'block';
@@ -2894,7 +2934,7 @@ function enableInputs() {
     id('ratioA').focus();
   } else if (mode === 'algebra') {
     setupAlgInput();
-  } else if (mode === 'algType') {
+  } else if (mode === 'algType' || mode === 'algProd') {
     const inp = id('algTypeInput');
     inp.disabled = false;
     inp.focus();
@@ -3226,7 +3266,7 @@ function clearInputState() {
       if (i > 0) id('algSep' + i).style.display = 'none';
     }
     setText('algInstruction', '');
-  } else if (mode === 'algType') {
+  } else if (mode === 'algType' || mode === 'algProd') {
     const inp = id('algTypeInput');
     inp.value = ''; inp.classList.remove('ok','bad','kb-focused');
   } else {
@@ -4072,52 +4112,262 @@ function genAlgLikeTerms(el) {
   }
 }
 
-/* 4 — Multiply terms (algebra slots, power box on single-variable levels) */
+/* ─── Multiply / Divide terms — typed whole-answer engine (v32) ───
+   A "factor" is a monomial { coeff, vars:{letter:power} }. Students multiply
+   or divide these and type the WHOLE simplified answer (e.g. 12x, 12xyz,
+   10xy²z, −24x²y). qData.prodAns holds the canonical answer; the algProd
+   branch in checkAns marks the typed string against it (order-insensitive). */
+
+/* Multiply a list of factors: coefficients multiply, like-letter powers add. */
+function multiplyFactors(factors) {
+  let coeff = 1; const vars = {};
+  factors.forEach(f => {
+    coeff *= f.coeff;
+    for (const k in f.vars) vars[k] = (vars[k] || 0) + f.vars[k];
+  });
+  for (const k in vars) if (vars[k] === 0) delete vars[k];
+  return { coeff, vars };
+}
+/* Divide num ÷ den: coefficients divide (must be exact), powers subtract. */
+function divideFactors(num, den) {
+  const coeff = num.coeff / den.coeff;
+  const vars = {};
+  for (const k in num.vars) vars[k] = num.vars[k];
+  for (const k in den.vars) vars[k] = (vars[k] || 0) - den.vars[k];
+  for (const k in vars) if (vars[k] === 0) delete vars[k];
+  return { coeff, vars };
+}
+/* Pick k distinct items from arr (no repeats). */
+function pickDistinct(arr, k) {
+  const c = arr.slice(), out = [];
+  for (let i = 0; i < k && c.length; i++) out.push(c.splice(ri(c.length), 1)[0]);
+  return out;
+}
+/* {sign, html} for one factor — coefficient magnitude + letters (sorted) with powers. */
+function factorParts(f) {
+  const mag = Math.abs(f.coeff);
+  const letters = Object.keys(f.vars).filter(k => f.vars[k] !== 0).sort();
+  const cstr = letters.length === 0 ? String(mag) : (mag === 1 ? '' : String(mag));
+  const body = letters.map(L => aPow(L, f.vars[L])).join('');
+  return { sign: f.coeff < 0 ? -1 : 1, html: cstr + body };
+}
+/* A factor as standalone HTML, with a leading − when negative. */
+function factorHtml(f) {
+  const p = factorParts(f);
+  return (p.sign < 0 ? '−' : '') + p.html;
+}
+/* Join factors into a question, e.g. "−3x × 2y × (−4x)" — negative non-first
+   factors are parenthesised so the operator stays readable. */
+function factorsToQ(factors, op) {
+  let html = '';
+  factors.forEach((f, i) => {
+    const p = factorParts(f);
+    if (i === 0) html += (p.sign < 0 ? '−' : '') + p.html;
+    else html += ` ${op} ` + (p.sign < 0 ? '(−' + p.html + ')' : p.html);
+  });
+  return html;
+}
+/* Canonical answer as plain text (feedback) — uses ² / ³ superscript chars. */
+function prodAnsStr(p) {
+  const mag = Math.abs(p.coeff);
+  const letters = Object.keys(p.vars).filter(k => p.vars[k] !== 0).sort();
+  const body = letters.map(L => p.vars[L] === 1 ? L : L + aSupChar(p.vars[L])).join('');
+  const cstr = letters.length === 0 ? String(mag) : (mag === 1 ? '' : String(mag));
+  return (p.coeff < 0 ? '−' : '') + cstr + body;
+}
+/* Canonical answer as HTML (worked steps) — proper rendered superscripts. */
+function prodAnsHtml(p) {
+  const mag = Math.abs(p.coeff);
+  const letters = Object.keys(p.vars).filter(k => p.vars[k] !== 0).sort();
+  const body = letters.map(L => aPow(L, p.vars[L])).join('');
+  const cstr = letters.length === 0 ? String(mag) : (mag === 1 ? '' : String(mag));
+  return (p.coeff < 0 ? '−' : '') + cstr + body;
+}
+/* Parse a typed monomial answer into { coeff, vars }.
+   Accepts: leading sign, leading coefficient, then letters each with an optional
+   power written as a superscript (²/³), a caret (x^2), or trailing digits (x2).
+   Repeated letters add powers (xy·x = x²y). Returns null on anything malformed
+   (e.g. a stray operator, a sign mid-string, a caret with no number). */
+function parseAlgProduct(str) {
+  let s = String(str).toLowerCase();
+  s = s.replace(/\s+/g, '').replace(/−/g, '-').replace(/[×*·]/g, '');
+  s = s.replace(/¹/g, '^1').replace(/²/g, '^2').replace(/³/g, '^3').replace(/⁴/g, '^4').replace(/⁵/g, '^5');
+  if (s === '') return null;
+  if (!/^[-0-9a-z\^]+$/.test(s)) return null;
+  const n = s.length;
+  let i = 0, sign = 1;
+  if (s[i] === '-') { sign = -1; i++; }
+  let numStr = '';
+  while (i < n && s[i] >= '0' && s[i] <= '9') { numStr += s[i]; i++; }
+  let coeff = (numStr === '' ? 1 : parseInt(numStr, 10)) * sign;
+  const vars = {};
+  while (i < n) {
+    const ch = s[i];
+    if (ch >= 'a' && ch <= 'z') {
+      i++;
+      let pw = 1;
+      if (i < n && s[i] === '^') {
+        i++;
+        let ps = '';
+        while (i < n && s[i] >= '0' && s[i] <= '9') { ps += s[i]; i++; }
+        if (ps === '') return null;
+        pw = parseInt(ps, 10);
+      } else {
+        let ps = '';
+        while (i < n && s[i] >= '0' && s[i] <= '9') { ps += s[i]; i++; }
+        if (ps !== '') pw = parseInt(ps, 10);
+      }
+      vars[ch] = (vars[ch] || 0) + pw;
+    } else {
+      return null; // stray sign / caret / digit not attached to a letter
+    }
+  }
+  for (const k in vars) if (vars[k] === 0) delete vars[k];
+  return { coeff, vars };
+}
+/* Two monomials equal? Same coefficient and same letter→power map. */
+function prodEqual(a, b) {
+  if (!a || !b) return false;
+  if (a.coeff !== b.coeff) return false;
+  const ka = Object.keys(a.vars).filter(k => a.vars[k] !== 0);
+  const kb = Object.keys(b.vars).filter(k => b.vars[k] !== 0);
+  if (ka.length !== kb.length) return false;
+  for (const k of ka) if ((a.vars[k] || 0) !== (b.vars[k] || 0)) return false;
+  return true;
+}
+function mulSteps(factors, ans) {
+  const nums = factors.map(f => sgnNum(f.coeff)).join(' × ');
+  const numProd = factors.reduce((a, f) => a * f.coeff, 1);
+  return `Multiply the numbers: ${nums} = ${sgnNum(numProd)}.<br>`
+       + `Multiply the letters — add the powers of any repeated letter.<br>`
+       + `Answer: <b>${prodAnsHtml(ans)}</b>.`;
+}
+function divSteps(num, den, ans) {
+  return `Divide the numbers: ${Math.abs(num.coeff)} ÷ ${Math.abs(den.coeff)} = ${Math.abs(num.coeff / den.coeff)}.<br>`
+       + `For each matching letter, subtract the powers.<br>`
+       + `Answer: <b>${prodAnsHtml(ans)}</b>.`;
+}
+
+/* 4 — Multiply terms (typed whole answer) */
 function genAlgMultiply(el) {
-  el.style.fontSize = '2.4rem';
+  el.style.fontSize = '2.2rem';
+  const L = ['x','y','z','a','b','m','n','p','q'];
+
   if (level === 1) {
-    const v = ['a','x','m','y','p'][ri(5)];
-    const c1 = rr(2,9), c2 = rr(2,9);
-    qData.alg = { slots: [{coeff:c1*c2, varLabel:v, askPower:true, power:2}] };
-    el.innerHTML = `${c1}${aVar(v)} × ${c2}${aVar(v)}`;
+    // number × term  →  e.g. 4 × 3x = 12x
+    const v = pickDistinct(L, 1)[0];
+    const fNum  = { coeff: rr(2,9), vars: {} };
+    const fTerm = { coeff: rr(2,9), vars: { [v]: 1 } };
+    const order = Math.random() < 0.5 ? [fNum, fTerm] : [fTerm, fNum];
+    const ans = multiplyFactors(order);
+    qData.prodAns = ans;
+    el.innerHTML = factorsToQ(order, '×');
+    qData.workSteps = mulSteps(order, ans);
+
   } else if (level === 2) {
-    const pairs = [['x','y'],['a','b'],['m','n'],['p','q']];
-    const [v1, v2] = pairs[ri(pairs.length)];
-    const c1 = rr(2,9), c2 = rr(2,9);
-    qData.alg = { slots: [{coeff:c1*c2, varLabel:v1+v2, askPower:false}] };
-    el.innerHTML = `${c1}${aVar(v1)} × ${c2}${aVar(v2)}`;
+    // term × term, all-distinct letters → no powers  →  e.g. 3xy × 4z = 12xyz
+    const k = Math.random() < 0.5 ? 2 : 3;          // total distinct letters
+    const letters = pickDistinct(L, k);
+    const split = (k === 2) ? 1 : (Math.random() < 0.5 ? 1 : 2);
+    const v1 = {}, v2 = {};
+    letters.slice(0, split).forEach(x => v1[x] = 1);
+    letters.slice(split).forEach(x => v2[x] = 1);
+    const f1 = { coeff: rr(2,9), vars: v1 }, f2 = { coeff: rr(2,9), vars: v2 };
+    const ans = multiplyFactors([f1, f2]);
+    qData.prodAns = ans;
+    el.innerHTML = factorsToQ([f1, f2], '×');
+    qData.workSteps = mulSteps([f1, f2], ans);
+
+  } else if (level === 3) {
+    // a shared letter → a power in the answer (capped at ²)  →  5xy × 2yz = 10xy²z
+    const [s, o1, o2] = pickDistinct(L, 3);
+    const v1 = { [s]: 1 }; if (Math.random() < 0.7) v1[o1] = 1;
+    const v2 = { [s]: 1 }; if (Math.random() < 0.7) v2[o2] = 1;
+    const f1 = { coeff: rr(2,6), vars: v1 }, f2 = { coeff: rr(2,6), vars: v2 };
+    const ans = multiplyFactors([f1, f2]);
+    qData.prodAns = ans;
+    el.innerHTML = factorsToQ([f1, f2], '×');
+    qData.workSteps = mulSteps([f1, f2], ans);
+
   } else {
-    const v = ['x','a','m','y'][ri(4)];
-    const sign = (Math.random() < 0.6) ? -1 : 1;
-    const c1 = rr(2,6), c2 = rr(2,6);
-    let p1, p2, pa;
-    if (Math.random() < 0.5) { p1 = 1; p2 = 1; pa = 2; }
-    else                     { p1 = 2; p2 = 1; pa = 3; }
-    qData.alg = { slots: [{coeff:sign*c1*c2, varLabel:v, askPower:true, power:pa}] };
-    el.innerHTML = `${aNum(sign*c1)}${aPow(v,p1)} × ${c2}${aPow(v,p2)}`;
+    // L4: three terms, negatives, powers up to ³  →  −3x × 2y × 4x = −24x²y
+    const [v, w, u] = pickDistinct(L, 3);
+    const patt = ri(3);
+    let v1, v2, v3;
+    if (patt === 0)      { v1 = { [v]: 1 }; v2 = { [v]: 1 }; v3 = { [v]: 1 }; }       // → v³
+    else if (patt === 1) { v1 = { [v]: 1 }; v2 = { [w]: 1 }; v3 = { [v]: 1 }; }       // → v² w
+    else                 { v1 = { [v]: 1 }; v2 = { [w]: 1 }; v3 = { [u]: 1 }; }       // → vwu
+    const sgn = () => (Math.random() < 0.45 ? -1 : 1);
+    const f1 = { coeff: sgn() * rr(2,5), vars: v1 };
+    const f2 = { coeff: sgn() * rr(2,5), vars: v2 };
+    const f3 = { coeff: sgn() * rr(2,5), vars: v3 };
+    if (f1.coeff > 0 && f2.coeff > 0 && f3.coeff > 0) f1.coeff = -f1.coeff; // guarantee a negative
+    const ans = multiplyFactors([f1, f2, f3]);
+    qData.prodAns = ans;
+    el.innerHTML = factorsToQ([f1, f2, f3], '×');
+    qData.workSteps = mulSteps([f1, f2, f3], ans);
   }
 }
 
-/* 5 — Divide terms (algebra slots, power box on single-variable levels) */
+/* 5 — Divide terms (typed whole answer) */
 function genAlgDivide(el) {
-  el.style.fontSize = '2.4rem';
+  el.style.fontSize = '2.2rem';
+  const L = ['x','y','z','a','b','m','n','p','q'];
+
   if (level === 1) {
-    const v = ['a','x','m','y'][ri(4)];
-    const q = rr(2,6), c2 = rr(2,6), c1 = q*c2;
-    qData.alg = { slots: [{coeff:q, varLabel:v, askPower:true, power:1}] };
-    el.innerHTML = `${c1}${aPow(v,2)} ÷ (${c2}${aVar(v)})`;
+    // term ÷ number, chosen so it divides cleanly  →  12x ÷ 4 = 3x
+    const v = pickDistinct(L, 1)[0];
+    const q = rr(2,9), d = rr(2,9);
+    const num = { coeff: q * d, vars: { [v]: 1 } }, den = { coeff: d, vars: {} };
+    const ans = divideFactors(num, den);
+    qData.prodAns = ans;
+    el.innerHTML = `${factorHtml(num)} ÷ ${d}`;
+    qData.workSteps = divSteps(num, den, ans);
+
   } else if (level === 2) {
-    const pairs = [['x','y'],['a','b'],['m','n'],['p','q']];
-    const [v1, v2] = pairs[ri(pairs.length)];
-    const q = rr(2,6), c2 = rr(2,6), c1 = q*c2;
-    qData.alg = { slots: [{coeff:q, varLabel:v2, askPower:false}] };
-    el.innerHTML = `${c1}${aVar(v1)}${aVar(v2)} ÷ (${c2}${aVar(v1)})`;
+    // term ÷ term, a letter cancels  →  28xy ÷ 7y = 4x
+    const [keep, cancel] = pickDistinct(L, 2);
+    const q = rr(2,6), d = rr(2,6);
+    const num = { coeff: q * d, vars: { [keep]: 1, [cancel]: 1 } };
+    const den = { coeff: d, vars: { [cancel]: 1 } };
+    const ans = divideFactors(num, den);
+    qData.prodAns = ans;
+    el.innerHTML = `${factorHtml(num)} ÷ (${factorHtml(den)})`;
+    qData.workSteps = divSteps(num, den, ans);
+
+  } else if (level === 3) {
+    // numerator carries a higher power so the answer keeps one  →  10x³y ÷ 2x = 5x²y
+    const [v, w] = pickDistinct(L, 2);
+    const q = rr(2,6), d = rr(2,6);
+    const numVars = { [v]: 3 };
+    if (Math.random() < 0.6) numVars[w] = 1;
+    const num = { coeff: q * d, vars: numVars };
+    const den = { coeff: d, vars: { [v]: 1 } };
+    const ans = divideFactors(num, den);   // → q·v²·(w)
+    qData.prodAns = ans;
+    el.innerHTML = `${factorHtml(num)} ÷ (${factorHtml(den)})`;
+    qData.workSteps = divSteps(num, den, ans);
+
   } else {
-    const v = ['x','a','m','y'][ri(4)];
-    const sign = (Math.random() < 0.6) ? -1 : 1;
-    const q = rr(2,6), c2 = rr(2,6), c1 = q*c2;
-    qData.alg = { slots: [{coeff:sign*q, varLabel:v, askPower:true, power:2}] };
-    el.innerHTML = `${aNum(sign*c1)}${aPow(v,3)} ÷ (${c2}${aVar(v)})`;
+    // L4: divide then multiply, left to right, may be negative
+    //     24x²y ÷ 6x × 2y = 8xy²    (built so the division is always exact)
+    const [v, w] = pickDistinct(L, 2);
+    const m = rr(2,5), b = rr(2,5), c = rr(2,5);
+    const A = { coeff: m * b, vars: { [v]: 2, [w]: 1 } };  // numerator
+    const B = { coeff: b,     vars: { [v]: 1 } };          // divisor
+    const C = { coeff: c,     vars: { [w]: 1 } };          // multiplier
+    if (Math.random() < 0.4) A.coeff = -A.coeff;
+    if (Math.random() < 0.3) C.coeff = -C.coeff;
+    const M = divideFactors(A, B);
+    const R = multiplyFactors([M, C]);
+    qData.prodAns = R;
+    const cHtml = (C.coeff < 0)
+      ? '(−' + factorParts({ coeff: Math.abs(C.coeff), vars: C.vars }).html + ')'
+      : factorHtml(C);
+    el.innerHTML = `${factorHtml(A)} ÷ (${factorHtml(B)}) × ${cHtml}`;
+    qData.workSteps = `Work left to right.<br>`
+      + `Divide: ${factorHtml(A)} ÷ ${factorHtml(B)} = ${prodAnsHtml(M)}.<br>`
+      + `Then multiply by ${factorHtml(C)}: <b>${prodAnsHtml(R)}</b>.`;
   }
 }
 
@@ -4226,7 +4476,7 @@ function readUserAnswer(mode) {
       });
       return parts.length ? parts.join(' + ') : '—';
     }
-    if (mode === 'algType') return g('algTypeInput') || '—';
+    if (mode === 'algType' || mode === 'algProd') return g('algTypeInput') || '—';
   } catch (e) {}
   return '—';
 }
@@ -4417,6 +4667,17 @@ function checkAns() {
     inp.classList.remove('ok','bad');
     inp.classList.add(correct ? 'ok' : 'bad');
   }
+  else if (mode === 'algProd') {
+    const inp = id('algTypeInput');
+    const raw = inp.value.trim();
+    // Don't burn an attempt on an empty / lone-sign entry
+    if (raw === '' || raw === '-' || raw === '−') { attempts--; inp.focus(); return; }
+    const got = parseAlgProduct(raw);
+    correct = prodEqual(got, qData.prodAns);
+    if (!correct) feedbackStr = `Answer: ${prodAnsStr(qData.prodAns)}`;
+    inp.classList.remove('ok','bad');
+    inp.classList.add(correct ? 'ok' : 'bad');
+  }
 
   if (correct) {
     score++;
@@ -4531,9 +4792,10 @@ function showResults(fluency, correct, acc, cpm, pbResult, pb, trend) {
   setText('rSparkSkill', skillMeta ? skillMeta.name.replace(/&amp;/g,'&') + ' · L' + level : '');
 
   const banner = id('rPbBanner');
-  // Hide share button for practice (not recorded) — show for fluency/challenge
+  // v30: practice sessions are now queued for sharing too, so show the share
+  // button on every results screen (fluency, challenge AND practice).
   const shareBtn = id('resultsShareBtn');
-  if (shareBtn) shareBtn.style.display = sessionMode === 'practice' ? 'none' : 'block';
+  if (shareBtn) shareBtn.style.display = 'block';
 
   if (pbResult === 'practice') {
     banner.className = 'pb-banner pb-below';
@@ -5466,6 +5728,17 @@ function kbNextIfActive() {
   kbNext();
 }
 
+/* Desktop power buttons (v33): append a superscript to the typed algebra answer
+   so students see and use correct notation (e.g. 10xy²z). The product parser
+   reads ² / ³ as the power of the letter just typed. */
+function insertPower(ch) {
+  const inp = document.getElementById('algTypeInput');
+  if (!inp || inp.disabled) return;
+  inp.value += ch;
+  inp.classList.remove('ok', 'bad');
+  inp.focus();
+}
+
 function kbPress(char) {
   if (!kbTarget || kbTarget.disabled) return;
 
@@ -5532,7 +5805,7 @@ function getKbInputOrder() {
     }
     return order.length ? order : ['algC0'];
   }
-  if (mode === 'algType') return ['algTypeInput'];
+  if (mode === 'algType' || mode === 'algProd') return ['algTypeInput'];
   return ['ansInput'];
 }
 
@@ -5566,16 +5839,32 @@ function kbShow() {
   /* Algebra free-text row: show variable + operator keys for the current answer */
   const algRow = document.getElementById('kbAlgRow');
   if (algRow) {
-    if (mode === 'algType') {
+    const isAlgText = (mode === 'algType' || mode === 'algProd');
+    if (isAlgText) {
       algRow.style.display = 'flex';
-      const slots = (typeof qData !== 'undefined' && qData.alg && qData.alg.slots) || [];
-      const vars = algVarsInSlots(slots);
-      const v1 = document.getElementById('kbVar1');
-      const v2 = document.getElementById('kbVar2');
-      if (vars[0]) { v1.style.display = ''; v1.textContent = vars[0]; v1.onclick = () => kbPress(vars[0]); }
-      else { v1.style.display = 'none'; }
-      if (vars[1]) { v2.style.display = ''; v2.textContent = vars[1]; v2.onclick = () => kbPress(vars[1]); }
-      else { v2.style.display = 'none'; }
+      let vars;
+      if (mode === 'algProd') {
+        const p = (typeof qData !== 'undefined' && qData.prodAns) || { vars: {} };
+        vars = Object.keys(p.vars || {}).filter(k => p.vars[k] !== 0).sort();
+      } else {
+        const slots = (typeof qData !== 'undefined' && qData.alg && qData.alg.slots) || [];
+        vars = algVarsInSlots(slots);
+      }
+      // Up to three variable keys, labelled from the current answer's letters.
+      [['kbVar1', 0], ['kbVar2', 1], ['kbVar3', 2]].forEach(([bid, vi]) => {
+        const b = document.getElementById(bid);
+        if (!b) return;
+        if (vars[vi]) { const ch = vars[vi]; b.style.display = ''; b.textContent = ch; b.onclick = () => kbPress(ch); }
+        else { b.style.display = 'none'; }
+      });
+      // '+' only for algType (multi-term answers); product/quotient answers are one term.
+      const plus = document.getElementById('kbPlusBtn');
+      if (plus) plus.style.display = (mode === 'algType') ? '' : 'none';
+      // Power keys (² ³) only for algProd typed answers.
+      const p2 = document.getElementById('kbPow2');
+      const p3 = document.getElementById('kbPow3');
+      if (p2) p2.style.display = (mode === 'algProd') ? '' : 'none';
+      if (p3) p3.style.display = (mode === 'algProd') ? '' : 'none';
     } else {
       algRow.style.display = 'none';
     }
@@ -5672,7 +5961,7 @@ const OB_SLIDES = [
         <div class="ob-badge practice">∞</div>
         <div class="ob-row-text">
           <div class="ob-row-title">Practice — no timer</div>
-          <div class="ob-row-desc">Learn a new method at your own pace. Not scored, not shared.</div>
+          <div class="ob-row-desc">Learn a new method at your own pace. No speed pressure — your work still shows up for your teacher, marked as Practice.</div>
         </div>
       </div>`
   },
