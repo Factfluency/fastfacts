@@ -698,6 +698,43 @@ body {
 .wk-note { display: block; margin-top: 5px; font-size: 0.82rem; font-style: italic; color: var(--muted); }
 .lv-target { display: block; font-size: 0.78rem; font-weight: 800; color: var(--muted); margin-top: 8px; }
 
+/* ── v27: habit card ── */
+.habit-card { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--r); box-shadow: var(--shadow); padding: 14px 16px; margin-bottom: 14px; }
+.hb-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+.hb-streak { font-weight: 800; font-size: 0.95rem; color: var(--text); }
+.hb-streak b { color: var(--amber); }
+.hb-goal { font-size: 0.78rem; font-weight: 800; color: var(--muted); }
+.hb-goal.done { color: var(--green); }
+.hb-bar { height: 8px; background: var(--surface2); border-radius: 99px; margin: 10px 0 6px; overflow: hidden; }
+.hb-fill { height: 100%; background: var(--accent); border-radius: 99px; transition: width .3s; }
+.hb-sub { font-size: 0.78rem; color: var(--muted); font-weight: 700; }
+.hb-dots { display: flex; gap: 6px; margin-top: 10px; }
+.hb-dot { width: 14px; height: 14px; border-radius: 50%; background: var(--surface2); border: 1.5px solid var(--border); }
+.hb-dot.on { background: var(--green); border-color: var(--green); }
+.hb-dot.today { box-shadow: 0 0 0 2px var(--accent); }
+
+/* ── v27: Daily Mix ── */
+.mix-btn { width: 100%; background: var(--accent-bg); color: var(--accent); border: 2px solid var(--accent); border-radius: var(--r); font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 1.05rem; padding: 14px; cursor: pointer; margin-bottom: 18px; transition: transform .15s; }
+.mix-btn span { font-weight: 700; font-size: 0.85rem; opacity: 0.85; }
+.mix-btn:hover { transform: scale(0.99); }
+.mix-intro { font-size: 0.85rem; color: var(--muted); font-weight: 600; margin-bottom: 14px; line-height: 1.45; }
+.mix-prog { display: inline-block; font-weight: 800; color: var(--accent); margin-left: 4px; }
+.mix-card { display: flex; align-items: center; justify-content: space-between; gap: 12px; background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--r); box-shadow: var(--shadow); padding: 14px 16px; margin-bottom: 10px; }
+.mix-card.done { opacity: 0.7; border-color: var(--green); }
+.mix-name { font-weight: 800; font-size: 0.98rem; color: var(--text); }
+.mix-meta { font-size: 0.76rem; color: var(--muted); font-weight: 700; margin-top: 2px; }
+.mix-go { background: var(--accent); color: #fff; border: none; border-radius: var(--r-sm); font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 0.9rem; padding: 9px 18px; cursor: pointer; flex-shrink: 0; }
+.mix-card.done .mix-go { background: var(--surface2); color: var(--muted); }
+
+/* ── v27: backup / restore ── */
+.backup-note { font-size: 0.88rem; color: var(--muted); font-weight: 600; line-height: 1.5; margin-bottom: 16px; }
+.backup-block { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--r); padding: 14px; margin-bottom: 14px; }
+.backup-label { font-weight: 800; font-size: 0.85rem; margin-bottom: 8px; color: var(--text); }
+.backup-area { width: 100%; font-family: monospace; font-size: 0.78rem; border: 1.5px solid var(--border); border-radius: var(--r-sm); padding: 8px; background: var(--surface2); color: var(--text); resize: vertical; }
+.backup-msg { font-size: 0.85rem; font-weight: 800; min-height: 18px; text-align: center; }
+.backup-msg.ok { color: var(--green); }
+.backup-msg.bad { color: var(--red); }
+
 /* ── LEADERBOARD ── */
 .lb-hdr { padding: 16px 0 20px; display: flex; align-items: center; gap: 12px; }
 .lb-hdr h2 { font-size: 1.3rem; font-weight: 900; }
@@ -1294,7 +1331,12 @@ body {
     <div class="class-code-chip" id="homeClassChip">🏫 <span id="homeClassCode">No class code set</span></div>
     <span class="ob-replay-btn" onclick="editCurrentProfile()" style="font-size:0.75rem">✏️ Edit profile</span>
     <span class="ob-replay-btn" id="themeToggleBtn" onclick="toggleTheme()" style="font-size:0.75rem">🌙 Dark</span>
+    <span class="ob-replay-btn" onclick="openBackup()" style="font-size:0.75rem">💾 Backup</span>
   </div>
+
+  <div class="habit-card" id="habitCard"></div>
+
+  <button class="mix-btn" onclick="openDailyMix()">🎲 Daily Mix <span>— 4 skills picked for you</span></button>
 
   <div class="sess-toggle">
     <button id="btn-fluency"   onclick="setMode('fluency')">⏱ Fluency<br>60s</button>
@@ -1348,6 +1390,34 @@ body {
   <button class="btn-ghost" onclick="goToday()" id="todayBtn" style="border-color:var(--accent);color:var(--accent)">📋  Today's Sessions &amp; Share</button>
   <div style="height:8px"></div>
   <button class="btn-ghost" onclick="replayTutorial()" style="font-size:0.85rem;padding:10px">📖  Replay Tutorial</button>
+</div>
+
+<!-- ══════════════ DAILY MIX ══════════════ -->
+<div id="s-mix" class="screen">
+  <button class="back-btn" onclick="goHome()">← Back home</button>
+  <div class="slabel">🎲 Daily Mix</div>
+  <p class="mix-intro">Four skills picked for you today — weighted toward what you've been working on, with a couple of others to keep it fresh. <span id="mixProgress" class="mix-prog"></span></p>
+  <div id="mixList"></div>
+  <div style="height:10px"></div>
+  <button class="btn-ghost" onclick="reshuffleMix()" style="font-size:0.85rem;padding:10px">🔄 Shuffle the mix</button>
+</div>
+
+<!-- ══════════════ BACKUP / RESTORE ══════════════ -->
+<div id="s-backup" class="screen">
+  <button class="back-btn" onclick="goHome()">← Back home</button>
+  <div class="slabel">💾 Backup &amp; Restore</div>
+  <p class="backup-note">Your progress is saved <b>on this device only</b>. To move it to another device — or to keep it safe before clearing your browser — copy your backup code below and paste it on the other device.</p>
+  <div class="backup-block">
+    <div class="backup-label">Your backup code</div>
+    <textarea id="backupOut" class="backup-area" readonly rows="4"></textarea>
+    <button class="btn-primary" onclick="copyBackup()" style="margin-top:8px">📋 Copy backup code</button>
+  </div>
+  <div class="backup-block">
+    <div class="backup-label">Restore from a code</div>
+    <textarea id="backupIn" class="backup-area" rows="4" placeholder="Paste a backup code here…"></textarea>
+    <button class="btn-ghost" onclick="restoreBackup()" style="margin-top:8px;border-color:var(--accent);color:var(--accent)">↩️ Restore into this profile</button>
+  </div>
+  <div id="backupMsg" class="backup-msg"></div>
 </div>
 
 <!-- ══════════════ SKILL SELECT ══════════════ -->
@@ -2151,6 +2221,103 @@ function bestForSkill(sid) {
   let b = 0; [1,2,3,4].forEach(lv => { const v = getPB(sid, lv); if (v > b) b = v; }); return b;
 }
 
+/* ── v27: session-history layer (powers the streak, daily goal, Daily Mix).
+   All keys are new and per-profile — nothing existing is touched. ── */
+function ymd(d) { d = d || new Date(); return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`; }
+function lastKey(s, lv)    { return `ff_last_${pidx}_${s}_L${lv}`; }
+function getLast(s, lv)    { const v = localStorage.getItem(lastKey(s, lv)); return v ? +v : 0; }
+function lastAccKey(s, lv) { return `ff_acc_${pidx}_${s}_L${lv}`; }
+function getLastAcc(s, lv) { const v = localStorage.getItem(lastAccKey(s, lv)); return v == null ? -1 : +v; }
+function playedToday(s, lv){ const t = getLast(s, lv); return t > 0 && ymd(new Date(t)) === ymd(); }
+
+function dayKey(date)  { return `ff_day_${pidx}_${date || ymd()}`; }
+function getDay(date)  { try { return JSON.parse(localStorage.getItem(dayKey(date)) || '{"sessions":0,"secs":0}'); } catch { return {sessions:0,secs:0}; } }
+function daysKey()     { return `ff_days_${pidx}`; }
+function getDays()     { try { return JSON.parse(localStorage.getItem(daysKey()) || '[]'); } catch { return []; } }
+
+/* Called at the end of EVERY session (fluency, challenge, practice). */
+function recordActivity(s, lv, accPct, secs) {
+  const today = ymd();
+  localStorage.setItem(lastKey(s, lv), String(Date.now()));
+  if (accPct != null && !isNaN(accPct)) localStorage.setItem(lastAccKey(s, lv), String(Math.round(accPct)));
+  const d = getDay(today);
+  d.sessions += 1;
+  d.secs += Math.max(0, Math.round(secs || 0));
+  localStorage.setItem(dayKey(today), JSON.stringify(d));
+  const days = getDays();
+  if (!days.includes(today)) { days.push(today); if (days.length > 400) days.shift(); localStorage.setItem(daysKey(), JSON.stringify(days)); }
+}
+
+/* Daily goal: 3 sessions OR 5 minutes of practice today (either counts). */
+const GOAL_SESSIONS = 3, GOAL_SECS = 300;
+function goalProgress() {
+  const d = getDay();
+  return { sessions: d.sessions, secs: d.secs, done: d.sessions >= GOAL_SESSIONS || d.secs >= GOAL_SECS };
+}
+
+/* Streak: consecutive calendar days with activity, ending today or yesterday. */
+function getStreak() {
+  const set = new Set(getDays());
+  if (set.size === 0) return 0;
+  let d = new Date();
+  if (!set.has(ymd(d))) { d.setDate(d.getDate() - 1); if (!set.has(ymd(d))) return 0; }
+  let streak = 0;
+  while (set.has(ymd(d))) { streak++; d.setDate(d.getDate() - 1); }
+  return streak;
+}
+
+/* ── Daily Mix: 4 skills picked for the student, weighting recent work but
+   allowing others. Stable for the whole day (cached per date). ── */
+function findSkillMeta(id) {
+  for (const c of Object.values(CATS)) for (const s of c.skills) if (s.id === id) return s;
+  return null;
+}
+function mixKey() { return `ff_mix_${pidx}_${ymd()}`; }
+function allCandidates() {
+  const out = [];
+  Object.entries(CATS).forEach(([catKey, c]) => c.skills.forEach(s => {
+    const defs = LEVEL_DEFS[s.lvKey] || [];
+    defs.forEach((_, i) => out.push({ skill: s.id, level: i + 1, cat: catKey }));
+  }));
+  return out;
+}
+function buildDailyMix() {
+  const cand = allCandidates();
+  const now = Date.now();
+  const recentCats = new Set();
+  cand.forEach(c => { const t = getLast(c.skill, c.level); if (t && (now - t) < 14 * 864e5) recentCats.add(c.cat); });
+
+  function weight(c) {
+    const last = getLast(c.skill, c.level);
+    const acc  = getLastAcc(c.skill, c.level);
+    let w = 1;
+    if (recentCats.has(c.cat)) w += 4;          // relevance: a topic they're working on
+    w += (last > 0) ? 2 : 0.5;                  // weight recent work; allow others at low weight
+    if (last > 0) w += Math.min(5, (now - last) / 864e5); // due: spaced practice
+    if (acc >= 0 && acc < 70) w += 4;           // weak: needs practice
+    else if (acc >= 0 && acc < 85) w += 2;
+    if (playedToday(c.skill, c.level)) w *= 0.15;            // avoid repeating today
+    if (c.level > 1 && last === 0 && getLast(c.skill, c.level - 1) === 0) w *= 0.05; // don't drop beginners into L3
+    return Math.max(0.01, w);
+  }
+  const pool = cand.map(c => ({ c, w: weight(c) }));
+  const picks = [], used = new Set();
+  while (picks.length < 4 && pool.some(p => !used.has(p.c.skill))) {
+    const avail = pool.filter(p => !used.has(p.c.skill));
+    const total = avail.reduce((a, p) => a + p.w, 0);
+    let r = Math.random() * total, chosen = avail[avail.length - 1];
+    for (const p of avail) { r -= p.w; if (r <= 0) { chosen = p; break; } }
+    picks.push({ skill: chosen.c.skill, level: chosen.c.level });
+    used.add(chosen.c.skill);
+  }
+  try { localStorage.setItem(mixKey(), JSON.stringify(picks)); } catch (e) {}
+  return picks;
+}
+function getDailyMix() {
+  try { const v = localStorage.getItem(mixKey()); if (v) { const m = JSON.parse(v); if (Array.isArray(m) && m.length) return m; } } catch (e) {}
+  return buildDailyMix();
+}
+
 /* ═══════════════════════════════════════════════
    SCREEN NAV
 ═══════════════════════════════════════════════ */
@@ -2322,12 +2489,126 @@ function goHome() {
   }
 
   syncModeUI();
+  renderHabitCard();
 }
 function setMode(m) { sessionMode = m; syncModeUI(); }
 function syncModeUI() {
   document.getElementById('btn-fluency').classList.toggle('active',   sessionMode === 'fluency');
   document.getElementById('btn-challenge').classList.toggle('active', sessionMode === 'challenge');
   document.getElementById('btn-practice').classList.toggle('active',  sessionMode === 'practice');
+}
+
+/* ── v27: habit card (streak + daily goal) on the home screen ── */
+function renderHabitCard() {
+  const el = document.getElementById('habitCard');
+  if (!el) return;
+  const g = goalProgress();
+  const streak = getStreak();
+  const mins = Math.floor(g.secs / 60), secs = g.secs % 60;
+  const timeStr = `${mins}:${String(secs).padStart(2,'0')}`;
+  const pct = Math.min(100, Math.max(g.sessions / GOAL_SESSIONS, g.secs / GOAL_SECS) * 100);
+  const fire = streak > 0 ? `🔥 <b>${streak}</b> day${streak === 1 ? '' : 's'} in a row` : 'Start a streak today!';
+  // last 7 days strip
+  const days = new Set(getDays());
+  let dots = '';
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(); d.setDate(d.getDate() - i);
+    const on = days.has(ymd(d));
+    const isToday = i === 0;
+    dots += `<span class="hb-dot${on ? ' on' : ''}${isToday ? ' today' : ''}" title="${ymd(d)}"></span>`;
+  }
+  el.innerHTML = `
+    <div class="hb-top">
+      <span class="hb-streak">${fire}</span>
+      <span class="hb-goal ${g.done ? 'done' : ''}">${g.done ? '🎯 Goal done!' : `Goal: 3 sessions or 5 min`}</span>
+    </div>
+    <div class="hb-bar"><div class="hb-fill" style="width:${pct}%"></div></div>
+    <div class="hb-sub">Today: ${g.sessions} session${g.sessions === 1 ? '' : 's'} · ${timeStr} min</div>
+    <div class="hb-dots">${dots}</div>`;
+}
+
+/* ── v27: Daily Mix ── */
+function openDailyMix() { show('s-mix'); renderMix(); }
+function reshuffleMix() { buildDailyMix(); renderMix(); }
+function renderMix() {
+  const mix = getDailyMix();
+  const done = mix.filter(m => playedToday(m.skill, m.level)).length;
+  const prog = document.getElementById('mixProgress');
+  if (prog) prog.textContent = `${done} of ${mix.length} done today`;
+  const list = document.getElementById('mixList');
+  if (!list) return;
+  list.innerHTML = '';
+  mix.forEach(m => {
+    const meta = findSkillMeta(m.skill);
+    if (!meta) return;
+    const isDone = playedToday(m.skill, m.level);
+    const kind = getSkillKind(m.skill);
+    const row = document.createElement('div');
+    row.className = 'mix-card' + (isDone ? ' done' : '');
+    row.innerHTML = `
+      <div class="mix-info">
+        <div class="mix-name">${meta.name.replace(/&amp;/g,'&')}</div>
+        <div class="mix-meta">Level ${m.level} · ${kind === 'recall' ? 'speed' : 'method'}${isDone ? ' · ✓ done today' : ''}</div>
+      </div>
+      <button class="mix-go">${isDone ? 'Again' : 'Start'}</button>`;
+    row.querySelector('.mix-go').onclick = () => startMixItem(m.skill, m.level);
+    list.appendChild(row);
+  });
+}
+function startMixItem(sid, lv) {
+  const meta = findSkillMeta(sid);
+  if (!meta) return;
+  skill = sid; skillMeta = meta; lvKey = meta.lvKey; level = lv;
+  if (!sessionMode) sessionMode = 'fluency';
+  beginGame();
+}
+
+/* ── v27: backup / restore progress (this device only) ── */
+function openBackup() {
+  show('s-backup');
+  const ta = document.getElementById('backupOut');
+  if (ta) ta.value = buildBackup();
+  const inp = document.getElementById('backupIn');
+  if (inp) inp.value = '';
+  const msg = document.getElementById('backupMsg');
+  if (msg) msg.textContent = '';
+}
+function buildBackup() {
+  const data = {};
+  const re = new RegExp('_' + pidx + '(?=_|$)');
+  for (let i = 0; i < localStorage.length; i++) {
+    const k = localStorage.key(i);
+    if (!k || !k.startsWith('ff_') || k === 'ff_profiles' || k === 'ff_theme') continue;
+    if (re.test(k)) data[k.replace(re, '_{P}')] = localStorage.getItem(k);
+  }
+  const payload = { v: 1, profile: ap(), keys: data };
+  try { return btoa(unescape(encodeURIComponent(JSON.stringify(payload)))); }
+  catch (e) { return JSON.stringify(payload); }
+}
+function copyBackup() {
+  const ta = document.getElementById('backupOut');
+  if (!ta) return;
+  ta.select();
+  try { document.execCommand('copy'); } catch (e) {}
+  const msg = document.getElementById('backupMsg');
+  if (msg) { msg.textContent = '✓ Backup code copied — paste it somewhere safe.'; msg.className = 'backup-msg ok'; }
+}
+function restoreBackup() {
+  const inp = document.getElementById('backupIn');
+  const msg = document.getElementById('backupMsg');
+  const setMsg = (t, ok) => { if (msg) { msg.textContent = t; msg.className = 'backup-msg ' + (ok ? 'ok' : 'bad'); } };
+  if (!inp || !inp.value.trim()) { setMsg('Paste a backup code first.', false); return; }
+  let payload;
+  try { payload = JSON.parse(decodeURIComponent(escape(atob(inp.value.trim())))); }
+  catch (e) { try { payload = JSON.parse(inp.value.trim()); } catch (e2) { setMsg('That code could not be read — paste the full code.', false); return; } }
+  if (!payload || payload.v !== 1 || !payload.keys) { setMsg('That doesn\'t look like a Sandy Fast Facts backup.', false); return; }
+  if (!confirm('Restore will overwrite THIS profile\'s current progress with the backup. Continue?')) return;
+  if (payload.profile) { profiles[pidx] = { ...profiles[pidx], ...payload.profile }; saveProfiles(); }
+  Object.entries(payload.keys).forEach(([rk, val]) => {
+    try { localStorage.setItem(rk.replace('_{P}', '_' + pidx), val); } catch (e) {}
+  });
+  setMsg('✓ Progress restored!', true);
+  goHome();
 }
 
 /* ═══════════════════════════════════════════════
@@ -2791,6 +3072,9 @@ function stopPractice() {
 
   pushTrend(skill, level, practiceScore);
   const trend = getTrend(skill, level);
+
+  // v27: stamp session history for practice sessions too
+  recordActivity(skill, level, Math.round(acc * 100), startTime ? (Date.now() - startTime) / 1000 : 0);
 
   showResults(practiceScore, score, acc, cpm, 'practice', 0, trend);
 }
@@ -4271,6 +4555,9 @@ function endSession() {
       if (tgt && cpm >= tgt && acc >= FLUENT_ACC) setFluent(skill, level);
     }
   }
+
+  // v27: stamp session history (last-played, accuracy, daily tally, streak)
+  recordActivity(skill, level, Math.round(acc * 100), (Date.now() - startTime) / 1000);
 
   showResults(fluency, score, acc, cpm, pbResult, newPB, trend);
 }
