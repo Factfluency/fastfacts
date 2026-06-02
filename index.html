@@ -51,6 +51,27 @@
   --shadow-md: 0 4px 12px rgba(0,0,0,0.10);
 }
 
+/* v26: dark mode for evening practice. Overrides the palette; --accent stays a
+   mid-indigo so white-on-accent buttons keep their contrast. */
+body.dark {
+  --bg:        #14161E;
+  --surface:   #1D2130;
+  --surface2:  #272C3E;
+  --border:    #383E52;
+  --text:      #EBEDF5;
+  --muted:     #9AA0B8;
+  --accent:    #6366F1;
+  --accent-bg: #2A2F4A;
+  --green:     #34D399;
+  --green-bg:  #143226;
+  --amber:     #FBBF24;
+  --amber-bg:  #39300F;
+  --red:       #F87171;
+  --red-bg:    #3A1B1B;
+  --shadow:    0 1px 3px rgba(0,0,0,0.5), 0 1px 2px rgba(0,0,0,0.4);
+  --shadow-md: 0 4px 14px rgba(0,0,0,0.55);
+}
+
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
@@ -1272,6 +1293,7 @@ body {
   <div style="margin-bottom:16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
     <div class="class-code-chip" id="homeClassChip">🏫 <span id="homeClassCode">No class code set</span></div>
     <span class="ob-replay-btn" onclick="editCurrentProfile()" style="font-size:0.75rem">✏️ Edit profile</span>
+    <span class="ob-replay-btn" id="themeToggleBtn" onclick="toggleTheme()" style="font-size:0.75rem">🌙 Dark</span>
   </div>
 
   <div class="sess-toggle">
@@ -1713,6 +1735,7 @@ const CATS = {
       { id:'indexMult',  name:'Index Law (Multiplication Law)',  inputMode:'index',  lvKey:'imul' },
       { id:'indexDiv',   name:'Index Law (Division Law)',        inputMode:'index',  lvKey:'idiv' },
       { id:'indexPow',   name:'Index Law (Power of a Power)',    inputMode:'index',  lvKey:'ipow' },
+      { id:'indexNeg',   name:'Negative Indices',               inputMode:'index',  lvKey:'ineg' },
       { id:'sciTo',      name:'Number → Scientific Notation', inputMode:'sci', lvKey:'sci' },
       { id:'sciFrom',    name:'Scientific Notation → Number', inputMode:'number', lvKey:'sci' },
     ]
@@ -1908,6 +1931,11 @@ const LEVEL_DEFS = {
     { title:'Level 3 — Two Variables',   desc:'Raise expressions with two variables to a power. Enter the coefficient and power of x (power of y shown in hint).', examples:['(xy²)³ = ?'] },
   ],
 
+  ineg: [
+    { title:'Level 1 — Reciprocal Form', desc:'A negative power means one over the positive power: a⁻ⁿ = 1/aⁿ. Enter the positive power that goes underneath.', examples:['2⁻³ = 1/2?', 'x⁻⁴ = 1/x?'] },
+    { title:'Level 2 — Negative Result', desc:'Divide powers of the same base where the bottom power is bigger — the result is a negative power. Enter it (e.g. −2).', examples:['5² ÷ 5⁵ = 5?', '3 ÷ 3⁴ = 3?'] },
+  ],
+
   sci: [
     { title:'Level 1 — Powers of 10 (1–6)',   desc:'Convert between standard form and scientific notation using powers of 10 from 10¹ to 10⁶. Positive powers only.', examples:['3 200 000', '4.5 × 10⁴', '72 000'] },
     { title:'Level 2 — All Positive Powers',   desc:'Any positive power of 10. Includes decimals like 3.75 × 10⁵. Builds fluency with the standard form.', examples:['0.000 045', '6.02 × 10⁵', '3.14 × 10⁸'] },
@@ -2042,6 +2070,7 @@ const METHOD_TIP = {
   indexMult:'Same base: add the powers. Multiply the numbers in front separately.',
   indexDiv:'Same base: subtract the powers. Divide the numbers in front separately.',
   indexPow:'Power of a power: multiply the powers. Raise the number in front to the outer power.',
+  indexNeg:'A negative power means 1 over the positive power: a⁻ⁿ = 1/aⁿ.',
   sciTo:'Move the decimal so there is one non-zero digit in front. The number of places moved is the power of 10.',
   sciFrom:'A positive power moves the decimal right (bigger); a negative power moves it left (smaller).',
   fracSimplify:'Divide the top and bottom by the highest number that goes into both (the HCF).',
@@ -2439,7 +2468,7 @@ function getInputMode() {
   return skillMeta.inputMode;
 }
 function isFractionSkill() { return ['fracSimplify','fracAddSub','fracMultiply','fracDivide','fracOrderOps','mixedToImp','impToMixed'].includes(skill); }
-function isIndexSkill()    { return ['indexMult','indexDiv','indexPow'].includes(skill); }
+function isIndexSkill()    { return ['indexMult','indexDiv','indexPow','indexNeg'].includes(skill); }
 function isSciSkill()      { return skill === 'sciTo'; }
 
 function prepGameScreen() {
@@ -2842,6 +2871,7 @@ function nextQ() {
   else if (skill === 'indexMult')    { genIndexMult(); }
   else if (skill === 'indexDiv')     { genIndexDiv(); }
   else if (skill === 'indexPow')     { genIndexPow(); }
+  else if (skill === 'indexNeg')     { genIndexNeg(); }
   else if (skill === 'sciTo')        { genSciTo(); }
   else if (skill === 'sciFrom')      { genSciFrom(); }
   else if (skill === 'fracSimplify') { genFracSimplify(); }
@@ -4195,9 +4225,11 @@ function checkAns() {
 
   tickCPM();
 
+  // Pause before the next question: short when correct, longer when wrong so the
+  // student actually reads the correct answer (v26).
   setTimeout(() => {
     if (!gameOver) { clearInputState(); nextQ(); }
-  }, 420);
+  }, correct ? 420 : 1300);
 }
 
 function tickCPM() {
@@ -4352,6 +4384,17 @@ function toggleHow(i) {
   w.style.display = open ? 'block' : 'none';
   const btn = w.previousElementSibling;
   if (btn && btn.classList.contains('rv-how')) btn.textContent = open ? 'Hide ▴' : 'Show me how ▾';
+}
+
+/* v26: dark mode */
+function toggleTheme() {
+  const dark = document.body.classList.toggle('dark');
+  try { localStorage.setItem('ff_theme', dark ? 'dark' : 'light'); } catch (e) {}
+  syncThemeButton();
+}
+function syncThemeButton() {
+  const b = document.getElementById('themeToggleBtn');
+  if (b) b.textContent = document.body.classList.contains('dark') ? '☀️ Light' : '🌙 Dark';
 }
 
 function tryAgain() { prepGameScreen(); }
@@ -5654,6 +5697,8 @@ function markAllSent() {
    BOOT
 ═══════════════════════════════════════════════ */
 loadProfiles();
+try { if (localStorage.getItem('ff_theme') === 'dark') document.body.classList.add('dark'); } catch (e) {}
+syncThemeButton();
 if (profiles.length === 0) { goWelcome(); }
 else { pidx = 0; goHome(); }
 </script>
