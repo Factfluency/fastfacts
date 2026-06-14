@@ -308,6 +308,13 @@ body {
   border-radius: 20px; font-weight: 800;
   white-space: nowrap; flex-shrink: 0;
 }
+/* Year-level guide chip (Victorian Curriculum 2.0) — neutral, informational */
+.year-chip {
+  font-size: 0.68rem; background: var(--border);
+  color: var(--muted); padding: 3px 9px;
+  border-radius: 20px; font-weight: 800;
+  white-space: nowrap; flex-shrink: 0; letter-spacing: 0.2px;
+}
 
 /* ── LEVEL SCREEN ── */
 .level-screen-header {
@@ -579,6 +586,45 @@ body {
   font-size: 0.78rem; font-weight: 800; color: var(--accent);
   margin-bottom: 6px; text-align: center;
 }
+
+/* ── EQUATIONS — inline "x =" prefix beside the active answer box ──
+   Only one box ever shows (whole-number box OR fraction box). The prefix
+   is hidden by default and revealed only when its wrap carries .eq-mode. */
+.eq-prefix {
+  display: none;
+  font-family: 'Times New Roman', Times, serif; font-style: italic;
+  font-weight: 700; font-size: 1.9rem; color: var(--text);
+}
+.ans-wrap.eq-mode { display: flex; align-items: center; justify-content: center; gap: 8px; }
+.frac-input-wrap.eq-mode { flex-direction: row; align-items: center; justify-content: center; gap: 8px; }
+.eq-mode .eq-prefix { display: inline; }
+.eq-mode .frac-alg-label { display: none; }
+
+/* ── MULTIPLE CHOICE (v37) — tap-to-answer, used by exact-value trig ── */
+.choice-wrap { display: none; margin-bottom: 14px; }
+.choice-wrap.visible { display: block; }
+.choice-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+  max-width: 340px; margin: 0 auto;
+}
+.choice-btn {
+  background: var(--surface); border: 3px solid var(--border); border-radius: var(--r-sm);
+  color: var(--text); font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 1.6rem;
+  padding: 14px 10px; min-height: 64px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: var(--shadow);
+  transition: border-color .15s, background .15s, transform .1s;
+}
+.choice-btn:hover:not(:disabled) { border-color: var(--accent); }
+.choice-btn:active:not(:disabled) { transform: scale(0.98); }
+.choice-btn.ok  { border-color: var(--green); background: var(--green-bg); }
+.choice-btn.bad { border-color: var(--red);   background: var(--red-bg); }
+.choice-btn:disabled { cursor: default; }
+/* compact stacked fraction for buttons / radian angles */
+.t-frac { display: inline-flex; flex-direction: column; align-items: center; line-height: 1; vertical-align: middle; }
+.t-frac .tn { font-size: 1.2rem; font-weight: 900; }
+.t-frac .tb { width: 100%; min-width: 20px; height: 3px; background: currentColor; margin: 2px 0; border-radius: 2px; }
+.t-frac .td { font-size: 1.2rem; font-weight: 900; }
 
 /* Mixed number input: whole + fraction */
 .mixed-input-wrap {
@@ -1393,6 +1439,16 @@ body {
       <div class="cat-name">Algebra</div>
       <div class="cat-desc">Parts, substitute, like terms &amp; expanding</div>
     </div>
+    <div class="cat-card" onclick="openCat('equations')">
+      <span class="cat-icon">⚖️</span>
+      <div class="cat-name">Equations</div>
+      <div class="cat-desc">Solve one-step &amp; two-step linear equations</div>
+    </div>
+    <div class="cat-card" onclick="openCat('trig')">
+      <span class="cat-icon">📐</span>
+      <div class="cat-name">Trig &amp; Pythagoras</div>
+      <div class="cat-desc">Pythagoras &amp; exact values of sin, cos, tan</div>
+    </div>
 
   </div>
 
@@ -1475,6 +1531,7 @@ body {
 
   <!-- Standard numeric answer -->
   <div class="ans-wrap" id="stdAnsWrap">
+    <span class="eq-prefix" id="eqStdPrefix"></span>
     <input id="ansInput" class="ans-input" type="text" inputmode="decimal" disabled placeholder="?" autocomplete="off">
   </div>
 
@@ -1615,6 +1672,7 @@ body {
   <!-- Stacked fraction answer -->
   <div class="frac-input-wrap" id="fracAnsWrap">
     <div id="fracAlgLabel" class="frac-alg-label hide"></div>
+    <span class="eq-prefix" id="eqFracPrefix"></span>
     <div class="frac-box">
       <input id="fracNum" class="frac-num-input" type="number" disabled placeholder="?">
       <div class="frac-line-bar"></div>
@@ -1640,6 +1698,11 @@ body {
     <input id="ratioA" class="ratio-input" type="number" disabled placeholder="?">
     <span class="ratio-colon">:</span>
     <input id="ratioB" class="ratio-input" type="number" disabled placeholder="?">
+  </div>
+
+  <!-- Multiple-choice answer: tap an option (v37) -->
+  <div class="choice-wrap" id="choiceAnsWrap">
+    <div class="choice-grid" id="choiceGrid"></div>
   </div>
 
   <div class="acc-row">
@@ -1876,7 +1939,55 @@ const CATS = {
       { id:'algExpand',      name:'Expand Single Brackets',               inputMode:'algebra', lvKey:'aexp'   },
       { id:'algExpandTwo',   name:'Expand &amp; Simplify (Two Brackets)', inputMode:'algebra', lvKey:'aexp2'  },
     ]
+  },
+  equations: {
+    label: '⚖️ Equations',
+    skills: [
+      { id:'eqOneStepAddSub', name:'One-Step Equations (+ / −)', inputMode:'fraction', lvKey:'eq1' },
+      { id:'eqOneStepMulDiv', name:'One-Step Equations (× / ÷)', inputMode:'fraction', lvKey:'eq2' },
+      { id:'eqTwoStep',       name:'Two-Step Linear Equations',  inputMode:'fraction', lvKey:'eq3' },
+    ]
+  },
+  trig: {
+    label: '📐 Trigonometry &amp; Pythagoras',
+    skills: [
+      { id:'pythagoras',   name:'Pythagoras\u2019 Theorem',            inputMode:'number', lvKey:'pyth' },
+      { id:'trigExactDeg', name:'Sin / Cos / Tan Exact Values (Degrees)', inputMode:'choice', lvKey:'tdeg' },
+      { id:'trigExactRad', name:'Sin / Cos / Tan Exact Values (Radians)', inputMode:'choice', lvKey:'trad' },
+    ]
   }
+};
+
+/* ── Year-level guide (Victorian Curriculum 2.0) ──
+   Informational chip shown beside each skill name. Purely a display hint —
+   it is NOT a stored key and never gates anything. To add a skill, add its
+   year here too. Primary-rooted number facts are floored at 'Yr 7' (the app's
+   entry year); ranges are used where a skill's levels span two years. */
+const SKILL_YEAR = {
+  // Number
+  timesTables:'Yr 7', division:'Yr 7', addition:'Yr 7', subtraction:'Yr 7',
+  orderOps:'Yr 7', sigFigs:'Yr 9',
+  // Integers
+  intAddSub:'Yr 7', intMultDiv:'Yr 7', intSquareCube:'Yr 7–8', intOrderOps:'Yr 7',
+  // Exponents
+  squares:'Yr 7', roots:'Yr 7', cubes:'Yr 8', cubeRoots:'Yr 8',
+  indexMult:'Yr 8', indexDiv:'Yr 8', indexPow:'Yr 8', sciTo:'Yr 9', sciFrom:'Yr 9',
+  // Fractions
+  fracSimplify:'Yr 7', fracAddSub:'Yr 7', fracMultiply:'Yr 7', fracDivide:'Yr 7',
+  mixedToImp:'Yr 7', impToMixed:'Yr 7', fracOrderOps:'Yr 7',
+  // Decimals
+  decAddSub:'Yr 7', decMultiply:'Yr 7', decDivide:'Yr 7', decSquareCube:'Yr 7–8',
+  decOrderOps:'Yr 7', decRound:'Yr 7',
+  // Ratios & Rates
+  ratioSimplify:'Yr 7–8', ratioEquiv:'Yr 7–8', ratioShare:'Yr 7–8',
+  rateSimplify:'Yr 7–8', rateConvert:'Yr 8',
+  // Algebra
+  algParts:'Yr 7', algSub:'Yr 7', algLikeTerms:'Yr 7–8', algMultiply:'Yr 8–9',
+  algDivide:'Yr 8–9', algExpand:'Yr 8', algExpandTwo:'Yr 9–10',
+  // Equations
+  eqOneStepAddSub:'Yr 7', eqOneStepMulDiv:'Yr 7–8', eqTwoStep:'Yr 8',
+  // Trigonometry & Pythagoras
+  pythagoras:'Yr 8', trigExactDeg:'Yr 10A', trigExactRad:'VCE'
 };
 
 /* Each level: title, description, examples shown on card */
@@ -2090,6 +2201,36 @@ const LEVEL_DEFS = {
     { title:'Level 2 — Subtract a Bracket', desc:'Expand two brackets where the second is subtracted — distribute the minus carefully.', examples:['5(x+2) − 3(x+1)', '4(x+3) − 2(x+1)', '6(x+1) − 4(x+2)'] },
     { title:'Level 3 — Quadratic Result', desc:'A pronumeral outside the first bracket gives an x² term, so the simplified answer has three terms.', examples:['x(2x−3) − 4(x−1)', 'x(x+5) − 3(x−2)', '2x(x−1) + 3(x+4)'] },
   ],
+  eq1: [
+    { title:'Level 1 — Whole-Number Answers', desc:'Undo one addition or subtraction. Every solution is a positive whole number.', examples:['x + 7 = 12', '15 + x = 23', 'x − 4 = 9'] },
+    { title:'Level 2 — Negative Answers', desc:'The same one step, but the solution can be a negative number now.', examples:['x + 9 = 4', 'x − 3 = −8', '6 + x = 1'] },
+    { title:'Level 3 — Bigger Numbers', desc:'Larger numbers, positive or negative solutions. Take care with the signs.', examples:['28 + x = 12', 'x − 15 = −23', 'x + 31 = 17'] },
+  ],
+  eq2: [
+    { title:'Level 1 — Whole-Number Answers', desc:'Undo one multiplication or division. Every solution is a positive whole number.', examples:['4x = 20', 'x ÷ 3 = 6', '7x = 56'] },
+    { title:'Level 2 — Negative Answers', desc:'The same one step with negatives — the coefficient or the solution can be negative.', examples:['−3x = 18', '−5x = −35', 'x ÷ 4 = −6'] },
+    { title:'Level 3 — Fraction Answers', desc:'The number does not divide evenly, so the solution is a fraction in simplest form.', examples:['2x = 7  (x = 7/2)', '5x = −12', '4x = 9'] },
+  ],
+  eq3: [
+    { title:'Level 1 — Whole-Number Answers', desc:'Two steps: undo the + or − first, then the × or ÷. Positive whole-number solutions.', examples:['2x + 3 = 11', '5x − 4 = 21', '3x + 7 = 19'] },
+    { title:'Level 2 — Negative Answers', desc:'Two-step equations with negative coefficients or negative solutions.', examples:['3x − 7 = −1', '4 − 3x = 19', '6x + 14 = 2'] },
+    { title:'Level 3 — Fraction Answers', desc:'Two steps where the solution is a fraction in simplest form.', examples:['4x + 1 = 8  (x = 7/4)', '6x + 5 = 1', '3x − 2 = 6'] },
+  ],
+  pyth: [
+    { title:'Level 1 — Find the Hypotenuse', desc:'Use a² + b² = c². The two shorter sides are given; find the longest side. Answers are whole numbers.', examples:['legs 3, 4 → 5', 'legs 5, 12 → 13', 'legs 8, 15 → 17'] },
+    { title:'Level 2 — Find a Shorter Side', desc:'The hypotenuse and one short side are given; find the missing short side. Answers are whole numbers.', examples:['c 13, leg 5 → 12', 'c 25, leg 7 → 24', 'c 17, leg 8 → 15'] },
+    { title:'Level 3 — Round to 1 Decimal Place', desc:'The answer is not a whole number. Work it out and round to one decimal place.', examples:['legs 5, 7 → 8.6', 'legs 4, 9 → 9.8', 'c 10, leg 6.5 → 7.6'] },
+  ],
+  tdeg: [
+    { title:'Level 1 — First Quadrant', desc:'Exact values of sin, cos and tan for the special angles 0°, 30°, 45°, 60°, 90°. Tap the correct value.', examples:['sin 30°', 'cos 60°', 'tan 45°'] },
+    { title:'Level 2 — Up to 180°', desc:'Adds the second-quadrant angles 120°, 135°, 150°, 180°, where some values become negative.', examples:['cos 120°', 'sin 135°', 'tan 150°'] },
+    { title:'Level 3 — Full Circle', desc:'Special angles all the way around to 360°, including negative values and tan being undefined.', examples:['sin 210°', 'tan 270°', 'cos 300°'] },
+  ],
+  trad: [
+    { title:'Level 1 — First Quadrant', desc:'Exact values for 0, π/6, π/4, π/3, π/2 (radians). Tap the correct value.', examples:['sin(π/6)', 'cos(π/3)', 'tan(π/4)'] },
+    { title:'Level 2 — Up to π', desc:'Adds 2π/3, 3π/4, 5π/6, π, where some values become negative.', examples:['cos(2π/3)', 'sin(3π/4)', 'tan(5π/6)'] },
+    { title:'Level 3 — Full Circle', desc:'All special angles to 2π, including negative values and tan being undefined.', examples:['sin(7π/6)', 'tan(3π/2)', 'cos(5π/3)'] },
+  ],
 };
 
 /* ── Per-level "best played in" recommendations (v23) ──
@@ -2116,7 +2257,8 @@ const RECALL_SKILLS = [
   'timesTables','division','addition','subtraction',
   'squares','roots','cubes','cubeRoots',
   'intAddSub','intMultDiv','intSquareCube',
-  'decAddSub','decMultiply','decDivide','decSquareCube'
+  'decAddSub','decMultiply','decDivide','decSquareCube',
+  'trigExactDeg','trigExactRad'
 ];
 function getSkillKind(id) { return RECALL_SKILLS.includes(id) ? 'recall' : 'method'; }
 
@@ -2137,7 +2279,11 @@ const FLUENCY_TARGET = {
   subtraction:[30, 18, 10],
   squares:25, roots:22, cubes:20, cubeRoots:18,
   intAddSub:25, intMultDiv:22, intSquareCube:18,
-  decAddSub:18, decMultiply:15, decDivide:14, decSquareCube:14
+  decAddSub:18, decMultiply:15, decDivide:14, decSquareCube:14,
+  // Exact trig values — tap-to-answer, so recall speed is the bottleneck.
+  // Per level: first quadrant (core drill) → +quadrant 2 → full circle w/ signs & undefined.
+  trigExactDeg:[22, 18, 14],
+  trigExactRad:[20, 16, 12]
 };
 const FLUENT_ACC = 0.90;   // accuracy floor to count as fluent
 function getFluencyTarget(s, lv) {
@@ -2176,7 +2322,13 @@ const METHOD_TIP = {
   algParts:'The coefficient is the number multiplying the letter. The constant is the term with no letter at all.',
   algSub:'Replace each letter with its value, then work it out — do any powers and × before + and −.',
   algMultiply:'Multiply the numbers in front, then the letters: a × a = a² (add the powers of the same letter).',
-  algDivide:'Divide the numbers in front, then subtract the powers of the matching letter: a² ÷ a = a.'
+  algDivide:'Divide the numbers in front, then subtract the powers of the matching letter: a² ÷ a = a.',
+  eqOneStepAddSub:'Do the opposite operation to both sides: if the equation adds, subtract; if it subtracts, add.',
+  eqOneStepMulDiv:'Do the opposite to both sides: if it multiplies, divide both sides; if it divides, multiply both sides.',
+  eqTwoStep:'Undo the + or − first, then undo the × or ÷. Always do the same thing to both sides.',
+  pythagoras:'a² + b² = c², where c is the hypotenuse (the longest side, opposite the right angle). To find a shorter side, rearrange: a² = c² − b².',
+  trigExactDeg:'Use the special triangles (30-60-90 and 45-45-90) or the unit circle. Watch the sign: sin is positive above the x-axis, cos is positive to the right.',
+  trigExactRad:'Same special angles in radians: π/6 = 30°, π/4 = 45°, π/3 = 60°, π/2 = 90°. Use the unit circle and watch the quadrant for the sign.'
 };
 
 /* Per-(profile,skill,level) "fluent achieved" flag — additive storage, never
@@ -2646,7 +2798,8 @@ function openCat(cat) {
     const pb = bestForSkill(s.id);
     const fl = skillIsFluent(s.id);
     // Render name safely (some have & entities)
-    const chips = `${fl ? '<span class="fluent-badge">🎯</span>' : ''}${pb ? `<span class="pb-chip">PB: ${pb}</span>` : ''}`;
+    const yr = SKILL_YEAR[s.id];
+    const chips = `${yr ? `<span class="year-chip">${yr}</span>` : ''}${fl ? '<span class="fluent-badge">🎯</span>' : ''}${pb ? `<span class="pb-chip">PB: ${pb}</span>` : ''}`;
     btn.innerHTML = `<span>${s.name}</span><span style="display:flex;gap:6px;align-items:center;flex-shrink:0">${chips}</span>`;
     btn.onclick = () => selectSkill(s);
     list.appendChild(btn);
@@ -2773,6 +2926,7 @@ function getInputMode() {
   return skillMeta.inputMode;
 }
 function isFractionSkill() { return ['fracSimplify','fracAddSub','fracMultiply','fracDivide','fracOrderOps','mixedToImp','impToMixed'].includes(skill); }
+function isEquationSkill() { return ['eqOneStepAddSub','eqOneStepMulDiv','eqTwoStep'].includes(skill); }
 function isIndexSkill()    { return ['indexMult','indexDiv','indexPow'].includes(skill); }
 function isSciSkill()      { return skill === 'sciTo'; }
 
@@ -2830,11 +2984,16 @@ function resetAnswerInputs() {
   // ── Always hide ALL panels first ──
   id('stdAnsWrap').style.display  = 'none';
   id('fracAnsWrap').style.display = 'none';
+  // Clear any equation-mode layout left over from a previous skill.
+  id('stdAnsWrap').classList.remove('eq-mode');
+  id('fracAnsWrap').classList.remove('eq-mode');
   id('mixedAnsWrap').style.display= 'none';
   id('idxAnsWrap').style.display  = 'none';
   id('ratioAnsWrap').style.display= 'none';
   id('algAnsWrap').style.display  = 'none';
   id('algTypeWrap').style.display = 'none';
+  id('choiceAnsWrap').style.display = 'none';
+  id('choiceAnsWrap').classList.remove('visible');
   id('fracAlgLabel').classList.add('hide');
   id('stdAnsWrap').dataset.wholeFromFrac = '';
 
@@ -2877,6 +3036,10 @@ function resetAnswerInputs() {
       : 'Type the whole answer — including the letter';
     // Power buttons: product answers on a computer (phone keypad has its own ² / ³).
     id('algPowRow').style.display = (mode === 'algProd' && !IS_MOBILE()) ? 'flex' : 'none';
+  } else if (mode === 'choice') {
+    id('choiceAnsWrap').style.display = 'block';
+    id('choiceAnsWrap').classList.add('visible');
+    id('choiceGrid').innerHTML = '';
   } else {
     // 'number'
     id('stdAnsWrap').style.display = 'block';
@@ -2890,20 +3053,36 @@ function enableInputs() {
   // Fraction skill but answer is a whole number (ansDen === 1):
   // hide the stacked fraction input and use the standard number box instead.
   if (mode === 'fraction' && qData.ansDen === 1) {
-    id('fracAnsWrap').classList.remove('visible');
-    id('stdAnsWrap').style.display = 'block';
     id('stdAnsWrap').dataset.wholeFromFrac = 'true';
     const inp = id('ansInput');
     inp.value = ''; inp.disabled = false; inp.placeholder = '?';
+    if (isEquationSkill()) {
+      // Single box only: fully hide the fraction wrap, show "x =" inline.
+      id('fracAnsWrap').classList.remove('visible');
+      id('fracAnsWrap').style.display = 'none';
+      id('stdAnsWrap').style.display = 'flex';
+      id('stdAnsWrap').classList.add('eq-mode');
+      id('eqStdPrefix').innerHTML = `<span class="idx-var">${qData.solveVar}</span> =`;
+    } else {
+      id('fracAnsWrap').classList.remove('visible');
+      id('stdAnsWrap').style.display = 'block';
+      id('fracAlgLabel').textContent = 'Answer is a whole number — type it in the box';
+      id('fracAlgLabel').classList.remove('hide');
+    }
     inp.focus();
-    id('fracAlgLabel').textContent = 'Answer is a whole number — type it in the box';
-    id('fracAlgLabel').classList.remove('hide');
     kbActivateInputs(); kbShow();
     return;
   }
 
   if (mode === 'fraction') {
     id('stdAnsWrap').dataset.wholeFromFrac = '';
+    if (isEquationSkill()) {
+      // Fraction box REPLACES the whole-number box; "x =" sits inline to its left.
+      id('stdAnsWrap').style.display = 'none';
+      id('stdAnsWrap').classList.remove('eq-mode');
+      id('fracAnsWrap').classList.add('eq-mode');
+      id('eqFracPrefix').innerHTML = `<span class="idx-var">${qData.solveVar}</span> =`;
+    }
     id('fracNum').disabled = false;
     id('fracDen').disabled = false;
     id('fracNum').focus();
@@ -2938,6 +3117,8 @@ function enableInputs() {
     const inp = id('algTypeInput');
     inp.disabled = false;
     inp.focus();
+  } else if (mode === 'choice') {
+    buildChoiceGrid();
   } else {
     id('stdAnsWrap').dataset.wholeFromFrac = '';
     const inp = id('ansInput');
@@ -2947,6 +3128,30 @@ function enableInputs() {
   // Show keypad on mobile after inputs are enabled
   kbActivateInputs();
   kbShow();
+}
+
+/* ── Multiple-choice (trig exact values): build the option buttons ── */
+function buildChoiceGrid() {
+  const grid = id('choiceGrid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  (qData.choices || []).forEach(opt => {
+    const b = document.createElement('button');
+    b.className = 'choice-btn';
+    b.dataset.code = opt.code;
+    b.innerHTML = opt.html;
+    b.onclick = () => chooseTrig(opt.code);
+    grid.appendChild(b);
+  });
+}
+
+/* A choice tap IS the answer submission. Lock the buttons, then mark. */
+function chooseTrig(code) {
+  if (gameOver) return;
+  if (qData.chosen != null) return;          // already answered this question
+  qData.chosen = code;
+  document.querySelectorAll('#choiceGrid .choice-btn').forEach(b => { b.disabled = true; });
+  checkAns();
 }
 
 /* ── setupIndexInput: shows the right sub-row and enables the right inputs ── */
@@ -3119,6 +3324,259 @@ function abortGame() {
 }
 
 /* ═══════════════════════════════════════════════
+   EQUATIONS — solve one-step & two-step linear equations
+   Method skills. Reuse the 'fraction' input mode: integer solutions go in the
+   whole-number box (ansDen === 1), fraction solutions in the num/den boxes.
+   Generators build BACKWARDS from a chosen solution so the equation is always
+   valid, store the solution as a reduced fraction (qData.ansNum/ansDen, den>0),
+   and build a worked example into qData.workSteps for the miss review.
+═══════════════════════════════════════════════ */
+const EQ_VAR = 'x';   // the unknown students solve for (kept as x for clarity)
+
+/* Store solution p/q reduced, with a positive denominator. */
+function eqStore(p, q) {
+  if (q < 0) { p = -p; q = -q; }
+  const g = gcd(Math.abs(p), Math.abs(q)) || 1;
+  qData.ansNum = p / g;
+  qData.ansDen = q / g;
+}
+/* Bare solution string, e.g. "5", "−7/4". */
+function eqAnsBare() {
+  return qData.ansDen === 1 ? aNum(qData.ansNum) : `${aNum(qData.ansNum)}/${qData.ansDen}`;
+}
+function eqShell(el, html, fs) {
+  el.style.fontSize = fs || '2.4rem';
+  el.innerHTML = `<div style="${A_LBL}">Solve for ${aVar(EQ_VAR)}</div>${html}`;
+}
+
+/* One-step + / −  (lvKey eq1) */
+function genEqOneStepAddSub(el) {
+  qData.solveVar = EQ_VAR;
+  let x, a;
+  if (level === 1)      { x = rr(1, 15);       a = rr(1, 15); }
+  else if (level === 2) { x = nzrand(-12, 12); a = rr(1, 15); }
+  else                  { x = nzrand(-30, 30); a = rr(2, 40); }
+  // Forms: 0: x + a = b ; 1: x − a = b ; 2: a + x = b
+  // Level 1 stays all-positive (forms 0 & 2 only) so nothing negative appears.
+  const form = (level === 1) ? (Math.random() < 0.5 ? 0 : 2) : ri(3);
+  let b, html, steps;
+  if (form === 0) {
+    b = x + a;
+    html  = `${aVar(EQ_VAR)} + ${a} = ${aNum(b)}`;
+    steps = `Subtract ${a} from both sides:<br>${aVar(EQ_VAR)} = ${aNum(b)} − ${a} = <b>${aNum(x)}</b>.`;
+  } else if (form === 1) {
+    b = x - a;
+    html  = `${aVar(EQ_VAR)} − ${a} = ${aNum(b)}`;
+    steps = `Add ${a} to both sides:<br>${aVar(EQ_VAR)} = ${aNum(b)} + ${a} = <b>${aNum(x)}</b>.`;
+  } else {
+    b = a + x;
+    html  = `${a} + ${aVar(EQ_VAR)} = ${aNum(b)}`;
+    steps = `Subtract ${a} from both sides:<br>${aVar(EQ_VAR)} = ${aNum(b)} − ${a} = <b>${aNum(x)}</b>.`;
+  }
+  eqStore(x, 1);
+  qData.workSteps = steps;
+  eqShell(el, html);
+}
+
+/* One-step × / ÷  (lvKey eq2) */
+function genEqOneStepMulDiv(el) {
+  qData.solveVar = EQ_VAR;
+  let html, steps;
+  if (level === 3) {
+    // Fraction solution: a·x = b with b/a not an integer and already reduced.
+    let q = rr(2, 6), p;
+    do { p = nzrand(-19, 19); } while (p % q === 0 || gcd(Math.abs(p), q) !== 1);
+    eqStore(p, q);                       // a = q, b = p  →  x = p/q
+    html  = `${q}${aVar(EQ_VAR)} = ${aNum(p)}`;
+    steps = `Divide both sides by ${q}:<br>${aVar(EQ_VAR)} = ${aNum(p)}/${q} <b>(already in simplest form)</b>.`;
+  } else if (Math.random() < 0.55) {
+    // Multiplication form a·x = b, integer x.
+    const a = (level === 1) ? rr(2, 9) : nz((Math.random() < 0.5 ? -1 : 1) * rr(2, 9));
+    const x = (level === 1) ? rr(2, 12) : nzrand(-12, 12);
+    const b = a * x;
+    eqStore(x, 1);
+    html  = `${aNum(a)}${aVar(EQ_VAR)} = ${aNum(b)}`;
+    steps = `Divide both sides by ${aNum(a)}:<br>${aVar(EQ_VAR)} = ${aNum(b)} ÷ ${aNum(a)} = <b>${aNum(x)}</b>.`;
+  } else {
+    // Division form, integer x = a·b. Divisor kept positive.
+    const a = rr(2, 9);
+    const b = (level === 1) ? rr(2, 12) : nzrand(-12, 12);
+    const x = a * b;
+    eqStore(x, 1);
+    // Show as a stacked fraction (x/5 = 10) about half the time, otherwise
+    // inline with ÷ (x ÷ 5 = 10), so students meet both ways of writing it.
+    html = (Math.random() < 0.5)
+      ? `<div class="q-expr" style="justify-content:center;gap:10px">${fracHTML(aVar(EQ_VAR), a)}<span>= ${aNum(b)}</span></div>`
+      : `${aVar(EQ_VAR)} ÷ ${a} = ${aNum(b)}`;
+    steps = `Multiply both sides by ${a}:<br>${aVar(EQ_VAR)} = ${aNum(b)} × ${a} = <b>${aNum(x)}</b>.`;
+  }
+  qData.workSteps = steps;
+  eqShell(el, html);
+}
+
+/* Two-step linear  (lvKey eq3)  —  a·x + c = b */
+function genEqTwoStep(el) {
+  qData.solveVar = EQ_VAR;
+  // Plain-English "undo the constant" step (avoids "subtract −3").
+  const undoC = c => c < 0 ? `Add ${Math.abs(c)} to both sides` : `Subtract ${c} from both sides`;
+  let html, steps;
+  if (level === 3) {
+    // Fraction solution. a = q so (b − c)/a = p/q, already reduced.
+    let q = rr(2, 6), p;
+    do { p = nzrand(-13, 13); } while (p % q === 0 || gcd(Math.abs(p), q) !== 1);
+    const a = q;
+    const c = (Math.random() < 0.5 ? -1 : 1) * rr(1, 9);
+    const b = p + c;
+    eqStore(p, a);
+    html  = `${a}${aVar(EQ_VAR)} ${c < 0 ? '− ' + Math.abs(c) : '+ ' + c} = ${aNum(b)}`;
+    steps = `${undoC(c)} → ${a}${aVar(EQ_VAR)} = ${aNum(p)}.<br>`
+          + `Divide both sides by ${a} → ${aVar(EQ_VAR)} = <b>${aNum(qData.ansNum)}/${qData.ansDen}</b>.`;
+  } else if (level === 1) {
+    const a = rr(2, 6), x = rr(1, 9), c = rr(1, 12);
+    const b = a * x + c;
+    eqStore(x, 1);
+    html  = `${a}${aVar(EQ_VAR)} + ${c} = ${aNum(b)}`;
+    steps = `${undoC(c)} → ${a}${aVar(EQ_VAR)} = ${aNum(b - c)}.<br>`
+          + `Divide both sides by ${a} → ${aVar(EQ_VAR)} = <b>${aNum(x)}</b>.`;
+  } else if (Math.random() < 0.5) {
+    // Negative coefficient, shown as "c − |a|x = b".
+    const a = -rr(2, 6), x = nzrand(-9, 9), c = rr(1, 12);
+    const b = a * x + c;
+    eqStore(x, 1);
+    html  = `${c} − ${Math.abs(a)}${aVar(EQ_VAR)} = ${aNum(b)}`;
+    steps = `${undoC(c)} → ${aNum(a)}${aVar(EQ_VAR)} = ${aNum(b - c)}.<br>`
+          + `Divide both sides by ${aNum(a)} → ${aVar(EQ_VAR)} = <b>${aNum(x)}</b>.`;
+  } else {
+    const a = rr(2, 6), x = nzrand(-9, 9), c = (Math.random() < 0.5 ? -1 : 1) * rr(1, 12);
+    const b = a * x + c;
+    eqStore(x, 1);
+    html  = `${a}${aVar(EQ_VAR)} ${c < 0 ? '− ' + Math.abs(c) : '+ ' + c} = ${aNum(b)}`;
+    steps = `${undoC(c)} → ${a}${aVar(EQ_VAR)} = ${aNum(b - c)}.<br>`
+          + `Divide both sides by ${a} → ${aVar(EQ_VAR)} = <b>${aNum(x)}</b>.`;
+  }
+  qData.workSteps = steps;
+  eqShell(el, html, '2.2rem');
+}
+
+/* ═══════════════════════════════════════════════
+   TRIGONOMETRY & PYTHAGORAS
+═══════════════════════════════════════════════ */
+
+/* tiny shuffle (Fisher–Yates) for option ordering */
+function shuffleArr(arr) { for (let i = arr.length - 1; i > 0; i--) { const j = ri(i + 1); [arr[i], arr[j]] = [arr[j], arr[i]]; } return arr; }
+
+/* compact stacked fraction for buttons / radian angles */
+function tfrac(n, d) { return `<span class="t-frac"><span class="tn">${n}</span><span class="tb"></span><span class="td">${d}</span></span>`; }
+
+/* The finite set of exact values. t = plain text (feedback/review),
+   h = HTML (option buttons). Keys are canonical, so equality of keys
+   means equality of value. */
+const TRIG_VALS = {
+  '0':    { t:'0',         h:'0' },
+  '1':    { t:'1',         h:'1' },
+  '-1':   { t:'−1',        h:'−1' },
+  'h':    { t:'1/2',       h:tfrac('1','2') },
+  '-h':   { t:'−1/2',      h:tfrac('−1','2') },
+  'r2':   { t:'√2/2',      h:tfrac('√2','2') },
+  '-r2':  { t:'−√2/2',     h:tfrac('−√2','2') },
+  'r3':   { t:'√3/2',      h:tfrac('√3','2') },
+  '-r3':  { t:'−√3/2',     h:tfrac('−√3','2') },
+  'r33':  { t:'√3/3',      h:tfrac('√3','3') },
+  '-r33': { t:'−√3/3',     h:tfrac('−√3','3') },
+  'R3':   { t:'√3',        h:'√3' },
+  '-R3':  { t:'−√3',       h:'−√3' },
+  'undef':{ t:'undefined', h:'undefined' },
+};
+
+/* Unit-circle exact values. Each row: degrees, radian label, and the
+   value KEY (into TRIG_VALS) for sin, cos, tan at that angle. */
+const TRIG_TABLE = [
+  { deg:0,   rad:'0',     sin:'0',   cos:'1',   tan:'0'    },
+  { deg:30,  rad:'π/6',   sin:'h',   cos:'r3',  tan:'r33'  },
+  { deg:45,  rad:'π/4',   sin:'r2',  cos:'r2',  tan:'1'    },
+  { deg:60,  rad:'π/3',   sin:'r3',  cos:'h',   tan:'R3'   },
+  { deg:90,  rad:'π/2',   sin:'1',   cos:'0',   tan:'undef'},
+  { deg:120, rad:'2π/3',  sin:'r3',  cos:'-h',  tan:'-R3'  },
+  { deg:135, rad:'3π/4',  sin:'r2',  cos:'-r2', tan:'-1'   },
+  { deg:150, rad:'5π/6',  sin:'h',   cos:'-r3', tan:'-r33' },
+  { deg:180, rad:'π',     sin:'0',   cos:'-1',  tan:'0'    },
+  { deg:210, rad:'7π/6',  sin:'-h',  cos:'-r3', tan:'r33'  },
+  { deg:225, rad:'5π/4',  sin:'-r2', cos:'-r2', tan:'1'    },
+  { deg:240, rad:'4π/3',  sin:'-r3', cos:'-h',  tan:'R3'   },
+  { deg:270, rad:'3π/2',  sin:'-1',  cos:'0',   tan:'undef'},
+  { deg:300, rad:'5π/3',  sin:'-r3', cos:'h',   tan:'-R3'  },
+  { deg:315, rad:'7π/4',  sin:'-r2', cos:'r2',  tan:'-1'   },
+  { deg:330, rad:'11π/6', sin:'-h',  cos:'r3',  tan:'-r33' },
+  { deg:360, rad:'2π',    sin:'0',   cos:'1',   tan:'0'    },
+];
+
+/* Render a radian angle label as HTML (stacked fraction when it has /). */
+function radHtml(rad) {
+  if (rad.indexOf('/') === -1) return rad;
+  const p = rad.split('/');
+  return tfrac(p[0], p[1]);
+}
+
+/* Exact-value multiple choice. useRad → radians question, else degrees. */
+function genTrigExact(el, useRad) {
+  const fns = ['sin', 'cos', 'tan'];
+  const rows = TRIG_TABLE.filter(r => level === 1 ? r.deg <= 90 : level === 2 ? r.deg <= 180 : true);
+  const row = rows[ri(rows.length)];
+  const fn  = fns[ri(3)];
+  const ans = row[fn];
+  qData.choiceAns = ans;
+  qData.chosen = null;
+
+  // Distractors: other real exact values. Keep 'undefined' out of the pool
+  // unless the question is tan or the answer itself is undefined.
+  let pool = Object.keys(TRIG_VALS).filter(k => k !== ans
+              && (k !== 'undef' || fn === 'tan' || ans === 'undef'));
+  const picks = [];
+  while (picks.length < 3 && pool.length) picks.push(pool.splice(ri(pool.length), 1)[0]);
+  const opts = shuffleArr([ans, ...picks]);
+  qData.choices = opts.map(c => ({ code: c, html: TRIG_VALS[c].h }));
+
+  qData.workSteps = METHOD_TIP[skill] || '';
+  const angle = useRad ? `(${radHtml(row.rad)})` : `${row.deg}°`;
+  el.innerHTML = `<div style="${A_LBL}">Tap the exact value</div>` +
+                 `<span style="font-size:2.4rem;font-weight:900">${fn} ${angle}</span>`;
+}
+
+/* Pythagoras' theorem (plain number box). */
+const PYTH_TRIPLES = [[3,4,5],[5,12,13],[8,15,17],[7,24,25],[20,21,29],[9,40,41],[12,35,37],[6,8,10],[9,12,15],[10,24,26]];
+function genPythagoras(el) {
+  el.style.fontSize = '1.5rem';
+  if (level === 3) {
+    // Non-integer answer → round to 1 dp. Find the hypotenuse from two legs.
+    let a, b;
+    do { a = rr(2, 12); b = rr(2, 12); } while (a === b || Number.isInteger(Math.sqrt(a * a + b * b)));
+    const exact = Math.sqrt(a * a + b * b);
+    const ans = Math.round(exact * 10) / 10;
+    qData.ans = ans;
+    qData.workSteps = `c = √(${a}² + ${b}²) = √${a * a + b * b} ≈ <b>${ans}</b>.`;
+    el.innerHTML = `<div style="${A_LBL}">Right-angled triangle — find the hypotenuse</div>` +
+      `The two shorter sides are <b>${a}</b> and <b>${b}</b>.<br>` +
+      `<span style="font-size:0.95rem;color:var(--muted)">Round your answer to 1 decimal place.</span>`;
+  } else {
+    let [a, b, c] = PYTH_TRIPLES[ri(PYTH_TRIPLES.length)];
+    const k = (level === 1) ? (Math.random() < 0.5 ? 1 : rr(2, 3)) : 1;
+    a *= k; b *= k; c *= k;
+    if (level === 1) {
+      qData.ans = c;
+      qData.workSteps = `c² = ${a}² + ${b}² = ${a * a} + ${b * b} = ${c * c}, so c = √${c * c} = <b>${c}</b>.`;
+      el.innerHTML = `<div style="${A_LBL}">Right-angled triangle — find the hypotenuse</div>` +
+        `The two shorter sides are <b>${a}</b> and <b>${b}</b>. Find the hypotenuse <b>c</b>.`;
+    } else {
+      // Find a shorter side: give hypotenuse c and one leg a, find b.
+      qData.ans = b;
+      qData.workSteps = `b² = ${c}² − ${a}² = ${c * c} − ${a * a} = ${b * b}, so b = √${b * b} = <b>${b}</b>.`;
+      el.innerHTML = `<div style="${A_LBL}">Right-angled triangle — find the missing side</div>` +
+        `The hypotenuse is <b>${c}</b> and one shorter side is <b>${a}</b>. Find the other shorter side.`;
+    }
+  }
+}
+
+/* ═══════════════════════════════════════════════
    QUESTION ENGINE
 ═══════════════════════════════════════════════ */
 function nextQ() {
@@ -3218,6 +3676,12 @@ function nextQ() {
   else if (skill === 'algDivide')     { genAlgDivide(el); }
   else if (skill === 'algExpand')     { genAlgExpand(el); }
   else if (skill === 'algExpandTwo')  { genAlgExpandTwo(el); }
+  else if (skill === 'eqOneStepAddSub') { genEqOneStepAddSub(el); }
+  else if (skill === 'eqOneStepMulDiv') { genEqOneStepMulDiv(el); }
+  else if (skill === 'eqTwoStep')       { genEqTwoStep(el); }
+  else if (skill === 'pythagoras')      { genPythagoras(el); }
+  else if (skill === 'trigExactDeg')    { genTrigExact(el, false); }
+  else if (skill === 'trigExactRad')    { genTrigExact(el, true); }
 
   enableInputs();
 }
@@ -3269,6 +3733,8 @@ function clearInputState() {
   } else if (mode === 'algType' || mode === 'algProd') {
     const inp = id('algTypeInput');
     inp.value = ''; inp.classList.remove('ok','bad','kb-focused');
+  } else if (mode === 'choice') {
+    id('choiceGrid').innerHTML = '';
   } else {
     id('ansInput').value = '';
     id('ansInput').classList.remove('ok','bad','kb-focused');
@@ -4477,6 +4943,7 @@ function readUserAnswer(mode) {
       return parts.length ? parts.join(' + ') : '—';
     }
     if (mode === 'algType' || mode === 'algProd') return g('algTypeInput') || '—';
+    if (mode === 'choice') return (qData.chosen != null && TRIG_VALS[qData.chosen]) ? TRIG_VALS[qData.chosen].t : '—';
   } catch (e) {}
   return '—';
 }
@@ -4507,7 +4974,9 @@ function checkAns() {
     if (id('stdAnsWrap').dataset.wholeFromFrac === 'true') {
       const val = parseFloat(id('ansInput').value.trim());
       correct = !isNaN(val) && Math.abs(val - qData.ansNum) < 0.0001; // ansDen is 1
-      if (!correct) feedbackStr = `Answer: ${qData.ansNum}`;
+      if (!correct) feedbackStr = isEquationSkill()
+        ? `Answer: ${qData.solveVar} = ${aNum(qData.ansNum)}`
+        : `Answer: ${qData.ansNum}`;
       id('ansInput').classList.remove('ok','bad');
       id('ansInput').classList.add(correct ? 'ok' : 'bad');
     } else {
@@ -4516,7 +4985,14 @@ function checkAns() {
     const ud = parseInt(id('fracDen').value, 10);
     if (isNaN(un) || isNaN(ud) || ud === 0) { attempts--; id('fracDen').focus(); return; }
 
-    if (skill === 'fracSimplify') {
+    if (isEquationSkill()) {
+      // Solution must equal the answer (sign placement tolerant) AND be in
+      // lowest terms — so −7/4 and 7/−4 both pass, but 14/8 is rejected.
+      const studentIsSimplified = gcd(Math.abs(un), Math.abs(ud)) === 1;
+      const equalValue = un * qData.ansDen === qData.ansNum * ud;
+      correct = studentIsSimplified && equalValue;
+      if (!correct) feedbackStr = `Answer: ${qData.solveVar} = ${aNum(qData.ansNum)}/${qData.ansDen}`;
+    } else if (skill === 'fracSimplify') {
       // Must be FULLY simplified — exact match only (simplify the student input
       // and check it equals the stored fully-simplified answer AND that the
       // student didn't just re-enter the original unsimplified fraction)
@@ -4677,6 +5153,16 @@ function checkAns() {
     if (!correct) feedbackStr = `Answer: ${prodAnsStr(qData.prodAns)}`;
     inp.classList.remove('ok','bad');
     inp.classList.add(correct ? 'ok' : 'bad');
+  }
+  else if (mode === 'choice') {
+    // The tapped option was stored in qData.chosen by chooseTrig().
+    if (qData.chosen == null) { attempts--; return; }
+    correct = qData.chosen === qData.choiceAns;
+    if (!correct) feedbackStr = `Answer: ${TRIG_VALS[qData.choiceAns] ? TRIG_VALS[qData.choiceAns].t : '?'}`;
+    document.querySelectorAll('#choiceGrid .choice-btn').forEach(b => {
+      if (b.dataset.code === qData.chosen) b.classList.add(correct ? 'ok' : 'bad');
+      else if (!correct && b.dataset.code === qData.choiceAns) b.classList.add('ok');
+    });
   }
 
   if (correct) {
@@ -5806,11 +6292,14 @@ function getKbInputOrder() {
     return order.length ? order : ['algC0'];
   }
   if (mode === 'algType' || mode === 'algProd') return ['algTypeInput'];
+  if (mode === 'choice') return [];
   return ['ansInput'];
 }
 
 /* ── Show/configure keypad based on current skill ── */
 function kbShow() {
+  // Multiple-choice answers are tapped directly — no keypad.
+  if (getInputMode() === 'choice') { kbHide(); return; }
   if (!IS_MOBILE()) return;
   const pad = document.getElementById('mobileKeypad');
   if (!pad) return;
@@ -5820,10 +6309,11 @@ function kbShow() {
   const skillId = (typeof skill !== 'undefined') ? skill : '';
 
   /* Decide which optional keys to show */
-  const showNeg = ['intAddSub','intMultDiv','indexDiv','indexMult','indexPow','sciTo','sciFrom'].includes(skillId)
+  const showNeg = ['intAddSub','intMultDiv','indexDiv','indexMult','indexPow','sciTo','sciFrom',
+                   'eqOneStepAddSub','eqOneStepMulDiv','eqTwoStep'].includes(skillId)
                   || mode === 'index' || mode === 'sci' || mode === 'algebra';
   const decSkillsWithDot = ['sciTo','sciFrom','decAddSub','decMultiply','decDivide','decSquareCube','decOrderOps','decRound','sigFigs',
-                            'rateSimplify','rateConvert'];
+                            'rateSimplify','rateConvert','pythagoras'];
   const showDot  = (mode === 'sci' || decSkillsWithDot.includes(skillId));
   const showNext = (mode === 'fraction' || mode === 'mixed' || mode === 'index' || mode === 'sci' || mode === 'ratio' || mode === 'algebra');
 
