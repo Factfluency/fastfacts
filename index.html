@@ -502,6 +502,19 @@ body {
 .pow-btn:hover  { border-color: var(--accent); }
 .pow-btn:active { transform: translateY(1px); }
 
+/* Factorising scaffold (v40) — rendered brackets around typed binomial boxes */
+.factor-row {
+  display: flex; align-items: center; justify-content: center;
+  gap: 4px; flex-wrap: nowrap;
+}
+.factor-br {
+  font-family: 'Nunito', sans-serif; font-weight: 900;
+  font-size: 2.4rem; color: var(--text); line-height: 1;
+}
+.factor-box {
+  width: 110px; font-size: 1.6rem; padding: 9px 10px;
+}
+
 /* Stacked fraction input */
 .frac-input-wrap {
   display: none; /* toggled by JS */
@@ -1705,6 +1718,19 @@ body {
     <div class="choice-grid" id="choiceGrid"></div>
   </div>
 
+  <!-- Factorising answer (v40) — student types each bracket's contents into a
+       fixed ( … )( … ) scaffold; brackets are rendered, never typed. -->
+  <div id="factorAnsWrap" style="display:none; flex-direction:column; align-items:center; gap:8px; margin-bottom:14px;">
+    <div id="factorHint" style="font-size:0.82rem;font-weight:800;color:var(--muted);text-align:center;padding:0 8px;">Type what goes inside each bracket, e.g. x − 2</div>
+    <div class="factor-row">
+      <span class="factor-br">(</span>
+      <input id="factorBox0" class="ans-input factor-box" type="text" inputmode="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" disabled placeholder="?">
+      <span class="factor-br">)(</span>
+      <input id="factorBox1" class="ans-input factor-box" type="text" inputmode="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" disabled placeholder="?">
+      <span class="factor-br">)</span>
+    </div>
+  </div>
+
   <div class="acc-row">
     <div class="acc-label">Accuracy</div>
     <div class="acc-track"><div class="acc-fill" id="accFill" style="width:0%"></div></div>
@@ -1938,6 +1964,7 @@ const CATS = {
       { id:'algDivide',      name:'Divide Terms',                         inputMode:'algebra', lvKey:'adiv'   },
       { id:'algExpand',      name:'Expand Single Brackets',               inputMode:'algebra', lvKey:'aexp'   },
       { id:'algExpandTwo',   name:'Expand &amp; Simplify (Two Brackets)', inputMode:'algebra', lvKey:'aexp2'  },
+      { id:'algFactorMonic', name:'Factorise Monic Quadratics',           inputMode:'factor',  lvKey:'afm'    },
     ]
   },
   equations: {
@@ -1946,6 +1973,9 @@ const CATS = {
       { id:'eqOneStepAddSub', name:'One-Step Equations (+ / −)', inputMode:'fraction', lvKey:'eq1' },
       { id:'eqOneStepMulDiv', name:'One-Step Equations (× / ÷)', inputMode:'fraction', lvKey:'eq2' },
       { id:'eqTwoStep',       name:'Two-Step Linear Equations',  inputMode:'fraction', lvKey:'eq3' },
+      { id:'eqTwoStepFrac',   name:'Two-Step Equations with Fractions',    inputMode:'fraction', lvKey:'eq4' },
+      { id:'eqVarDenom',      name:'Equations with x on the Denominator',  inputMode:'fraction', lvKey:'eq5' },
+      { id:'eqBothSides',     name:'Variables on Both Sides',              inputMode:'fraction', lvKey:'eq6' },
     ]
   },
   trig: {
@@ -1984,8 +2014,10 @@ const SKILL_YEAR = {
   // Algebra
   algParts:'Yr 7', algSub:'Yr 7', algLikeTerms:'Yr 7–8', algMultiply:'Yr 8–9',
   algDivide:'Yr 8–9', algExpand:'Yr 8', algExpandTwo:'Yr 9–10',
+  algFactorMonic:'Yr 10',
   // Equations
   eqOneStepAddSub:'Yr 7', eqOneStepMulDiv:'Yr 7–8', eqTwoStep:'Yr 8',
+  eqTwoStepFrac:'Yr 8–9', eqVarDenom:'Yr 9', eqBothSides:'Yr 8–9',
   // Trigonometry & Pythagoras
   pythagoras:'Yr 8', trigExactDeg:'Yr 10A', trigExactRad:'VCE'
 };
@@ -2216,6 +2248,26 @@ const LEVEL_DEFS = {
     { title:'Level 2 — Negative Answers', desc:'Two-step equations with negative coefficients or negative solutions.', examples:['3x − 7 = −1', '4 − 3x = 19', '6x + 14 = 2'] },
     { title:'Level 3 — Fraction Answers', desc:'Two steps where the solution is a fraction in simplest form.', examples:['4x + 1 = 8  (x = 7/4)', '6x + 5 = 1', '3x − 2 = 6'] },
   ],
+  eq4: [
+    { title:'Level 1 — Whole-Number Answers', desc:'The variable is inside a fraction. Undo the + or − first, then multiply both sides by the denominator. Positive whole-number solutions.', examples:['x/3 + 5 = 8', '(x − 2)/3 = 12', 'x/4 + 1 = 6'] },
+    { title:'Level 2 — Negative Answers', desc:'The same forms, but the solution can be negative now. Watch the signs.', examples:['x/5 − 4 = −2', '(x + 6)/2 = −1', 'x/3 + 7 = 4'] },
+    { title:'Level 3 — Fraction Answers', desc:'A coefficient on x means the solution is a fraction in simplest form. Multiply out, then divide.', examples:['(2x + 1)/3 = 2  (x = 5/2)', '(3x − 1)/2 = 4', '(2x + 3)/5 = 1'] },
+  ],
+  eq5: [
+    { title:'Level 1 — Whole-Number Answers', desc:'The variable is on the bottom of a fraction. Multiply both sides by x, then solve. Positive whole-number solutions.', examples:['8/x = 4', '12/x = 3', '20/x = 5'] },
+    { title:'Level 2 — Bracket on the Bottom', desc:'The denominator is x ± a number. Multiply out, then solve. Solutions can be negative.', examples:['8/(x + 1) = 1', '10/(x − 2) = 5', '6/(x + 4) = 2'] },
+    { title:'Level 3 — Fraction Answers', desc:'The numbers do not divide evenly, so the solution is a fraction in simplest form.', examples:['8/x = 3  (x = 8/3)', '5/(x − 1) = 2', '7/x = 4'] },
+  ],
+  eq6: [
+    { title:'Level 1 — Whole-Number Answers', desc:'The variable appears on both sides. Collect the x terms on one side and the numbers on the other. Positive whole-number solutions.', examples:['5x + 2 = 3x + 10', '7x + 1 = 4x + 13', '6x = 2x + 12'] },
+    { title:'Level 2 — Negative Answers', desc:'Variables on both sides where the solution can be negative. Take care moving terms across.', examples:['4x + 3 = 2x − 7', '2x + 10 = 5x + 1', '3x − 4 = 5x + 2'] },
+    { title:'Level 3 — Fraction Answers', desc:'Variables on both sides where the solution is a fraction in simplest form.', examples:['3x + 1 = x + 4  (x = 3/2)', '5x − 2 = 2x + 3', '4x + 1 = x + 6'] },
+  ],
+  afm: [
+    { title:'Level 1 — Positive Numbers', desc:'Factorise x² + bx + c where both numbers in the brackets are positive. Find two numbers that multiply to c and add to b.', examples:['x² + 5x + 6 = (x + 2)(x + 3)', 'x² + 7x + 12', 'x² + 8x + 15'] },
+    { title:'Level 2 — Mixed Signs', desc:'Factorise x² + bx + c where the constant is negative, so one bracket adds and the other subtracts.', examples:['x² + 2x − 15 = (x + 5)(x − 3)', 'x² − 3x − 10', 'x² + 4x − 12'] },
+    { title:'Level 3 — Negative Middle Term', desc:'Factorise x² − bx + c where both numbers in the brackets are negative, plus harder mixed-sign cases.', examples:['x² − 5x + 6 = (x − 2)(x − 3)', 'x² − 7x + 10', 'x² − x − 20'] },
+  ],
   pyth: [
     { title:'Level 1 — Find the Hypotenuse', desc:'Use a² + b² = c². The two shorter sides are given; find the longest side. Answers are whole numbers.', examples:['legs 3, 4 → 5', 'legs 5, 12 → 13', 'legs 8, 15 → 17'] },
     { title:'Level 2 — Find a Shorter Side', desc:'The hypotenuse and one short side are given; find the missing short side. Answers are whole numbers.', examples:['c 13, leg 5 → 12', 'c 25, leg 7 → 24', 'c 17, leg 8 → 15'] },
@@ -2326,6 +2378,10 @@ const METHOD_TIP = {
   eqOneStepAddSub:'Do the opposite operation to both sides: if the equation adds, subtract; if it subtracts, add.',
   eqOneStepMulDiv:'Do the opposite to both sides: if it multiplies, divide both sides; if it divides, multiply both sides.',
   eqTwoStep:'Undo the + or − first, then undo the × or ÷. Always do the same thing to both sides.',
+  eqTwoStepFrac:'Undo the + or − outside the fraction first, then multiply both sides by the denominator to free x.',
+  eqVarDenom:'Multiply both sides by the bottom (the denominator) to bring x up, then solve the simple equation that\'s left.',
+  eqBothSides:'Collect the x terms on one side and the numbers on the other, then divide. Always do the same thing to both sides.',
+  algFactorMonic:'Find two numbers that MULTIPLY to the last number and ADD to the middle number. Those two numbers go in the brackets with x.',
   pythagoras:'a² + b² = c², where c is the hypotenuse (the longest side, opposite the right angle). To find a shorter side, rearrange: a² = c² − b².',
   trigExactDeg:'Use the special triangles (30-60-90 and 45-45-90) or the unit circle. Watch the sign: sin is positive above the x-axis, cos is positive to the right.',
   trigExactRad:'Same special angles in radians: π/6 = 30°, π/4 = 45°, π/3 = 60°, π/2 = 90°. Use the unit circle and watch the quadrant for the sign.'
@@ -2926,7 +2982,7 @@ function getInputMode() {
   return skillMeta.inputMode;
 }
 function isFractionSkill() { return ['fracSimplify','fracAddSub','fracMultiply','fracDivide','fracOrderOps','mixedToImp','impToMixed'].includes(skill); }
-function isEquationSkill() { return ['eqOneStepAddSub','eqOneStepMulDiv','eqTwoStep'].includes(skill); }
+function isEquationSkill() { return ['eqOneStepAddSub','eqOneStepMulDiv','eqTwoStep','eqTwoStepFrac','eqVarDenom','eqBothSides'].includes(skill); }
 function isIndexSkill()    { return ['indexMult','indexDiv','indexPow'].includes(skill); }
 function isSciSkill()      { return skill === 'sciTo'; }
 
@@ -2994,6 +3050,7 @@ function resetAnswerInputs() {
   id('algTypeWrap').style.display = 'none';
   id('choiceAnsWrap').style.display = 'none';
   id('choiceAnsWrap').classList.remove('visible');
+  id('factorAnsWrap').style.display = 'none';
   id('fracAlgLabel').classList.add('hide');
   id('stdAnsWrap').dataset.wholeFromFrac = '';
 
@@ -3001,7 +3058,8 @@ function resetAnswerInputs() {
   ['ansInput','fracNum','fracDen','mixedWhole','mixedNum','mixedDen',
    'idxCoeff','idxExp','idxExpB','idxExpC','sciCoeff','sciExp',
    'ratioA','ratioB',
-   'algC0','algC1','algC2','algP0','algP1','algP2','algTypeInput'].forEach(i => {
+   'algC0','algC1','algC2','algP0','algP1','algP2','algTypeInput',
+   'factorBox0','factorBox1'].forEach(i => {
     const el = id(i);
     if (el) { el.value=''; el.disabled=true; el.classList.remove('ok','bad'); }
   });
@@ -3040,6 +3098,8 @@ function resetAnswerInputs() {
     id('choiceAnsWrap').style.display = 'block';
     id('choiceAnsWrap').classList.add('visible');
     id('choiceGrid').innerHTML = '';
+  } else if (mode === 'factor') {
+    id('factorAnsWrap').style.display = 'flex';
   } else {
     // 'number'
     id('stdAnsWrap').style.display = 'block';
@@ -3119,6 +3179,10 @@ function enableInputs() {
     inp.focus();
   } else if (mode === 'choice') {
     buildChoiceGrid();
+  } else if (mode === 'factor') {
+    const b0 = id('factorBox0'), b1 = id('factorBox1');
+    b0.disabled = false; b1.disabled = false;
+    b0.focus();
   } else {
     id('stdAnsWrap').dataset.wholeFromFrac = '';
     const inp = id('ansInput');
@@ -3458,6 +3522,152 @@ function genEqTwoStep(el) {
   eqShell(el, html, '2.2rem');
 }
 
+/* Two-step equations with fractions  (lvKey eq4)
+   L1/L2 forms:  x/a + c = b   ·   (x ± c)/a = b   (integer solutions)
+   L3 form:      (m·x ± c)/a = b   — a coefficient on x makes the solution a
+   genuine fraction in lowest terms (with integer coefficients the simple forms
+   always solve to an integer). Built backwards so the equation is always valid. */
+function genEqTwoStepFrac(el) {
+  qData.solveVar = EQ_VAR;
+  let html, steps;
+  const a = rr(2, 5);                       // denominator
+  if (level === 3) {
+    // (m·x + c)/a = b  →  m·x = a·b − c  →  x = (a·b − c)/m, reduced & non-integer.
+    let m, b, c, num, tries = 0;
+    do {
+      m = rr(2, 4);
+      b = nzrand(-6, 6);
+      c = nzrand(-9, 9);
+      num = a * b - c;                      // = m·x
+      tries++;
+    } while ((num === 0 || num % m === 0 || gcd(Math.abs(num), m) !== 1) && tries < 80);
+    if (num === 0 || num % m === 0) { m = 2; b = 3; c = 1; num = a * b - c; }
+    eqStore(num, m);                          // x = num/m reduced
+    const inner = `${m}${aVar(EQ_VAR)} ${c < 0 ? '− ' + Math.abs(c) : '+ ' + c}`;
+    html = `<div class="q-expr" style="justify-content:center;gap:10px">${fracHTML(inner, a)}<span>= ${aNum(b)}</span></div>`;
+    steps = `Multiply both sides by ${a}: ${inner} = ${aNum(a * b)}.<br>`
+          + `${c < 0 ? 'Add ' + Math.abs(c) : 'Subtract ' + c} → ${m}${aVar(EQ_VAR)} = ${aNum(num)}.<br>`
+          + `Divide both sides by ${m} → ${aVar(EQ_VAR)} = <b>${aNum(qData.ansNum)}/${qData.ansDen}</b> (simplest form).`;
+    qData.workSteps = steps;
+    eqShell(el, html, '2.2rem');
+    return;
+  }
+  // L1 / L2 — integer solutions
+  const neg = (level === 2);
+  if (Math.random() < 0.5) {
+    // x/a + c = b   →   x = a·k where k = x/a;  b = k + c.
+    const k = neg ? nzrand(-9, 9) : rr(1, 9);
+    const c = neg ? nzrand(-9, 9) : rr(1, 9);
+    const x = a * k;
+    const b = k + c;
+    eqStore(x, 1);
+    html = `<div class="q-expr" style="justify-content:center;gap:10px">${fracHTML(aVar(EQ_VAR), a)}<span>${c < 0 ? '− ' + Math.abs(c) : '+ ' + c} = ${aNum(b)}</span></div>`;
+    steps = `${c < 0 ? 'Add ' + Math.abs(c) : 'Subtract ' + c} from both sides: ${aVar(EQ_VAR)}/${a} = ${aNum(k)}.<br>`
+          + `Multiply both sides by ${a} → ${aVar(EQ_VAR)} = <b>${aNum(x)}</b>.`;
+  } else {
+    // (x − c)/a = b  (L1: subtract only, positive).  L2: allow + form & negatives.
+    const sub = neg ? (Math.random() < 0.5) : true;
+    const b = neg ? nzrand(-7, 7) : rr(1, 7);
+    const c = rr(1, 9);
+    const x = a * b + (sub ? c : -c);         // L1: x = a·b + c > 0
+    eqStore(x, 1);
+    const inner = `${aVar(EQ_VAR)} ${sub ? '− ' + c : '+ ' + c}`;
+    html = `<div class="q-expr" style="justify-content:center;gap:10px">${fracHTML(inner, a)}<span>= ${aNum(b)}</span></div>`;
+    steps = `Multiply both sides by ${a}: ${inner} = ${aNum(a * b)}.<br>`
+          + `${sub ? 'Add ' + c : 'Subtract ' + c} → ${aVar(EQ_VAR)} = <b>${aNum(x)}</b>.`;
+  }
+  qData.workSteps = steps;
+  eqShell(el, html, '2.2rem');
+}
+
+/* Equations with the variable on the denominator  (lvKey eq5)
+   Forms:  a/x = b   ·   a/(x + c) = b   ·   a/(x − c) = b
+   Built backwards from a chosen solution. L1 a/x with whole answers, L2 bracket
+   denominator, L3 fraction solution (b does not divide a). */
+function genEqVarDenom(el) {
+  qData.solveVar = EQ_VAR;
+  let html, steps;
+  if (level === 1) {
+    // a/x = b, whole-number x ≥ 2.  a = b·x.
+    const x = rr(2, 12);
+    const b = rr(2, 9);
+    const a = b * x;
+    eqStore(x, 1);
+    html = `<div class="q-expr" style="justify-content:center;gap:10px">${fracHTML(a, aVar(EQ_VAR))}<span>= ${b}</span></div>`;
+    steps = `Multiply both sides by ${aVar(EQ_VAR)}: ${a} = ${b}${aVar(EQ_VAR)}.<br>`
+          + `Divide both sides by ${b} → ${aVar(EQ_VAR)} = <b>${aNum(x)}</b>.`;
+  } else if (level === 2) {
+    // a/(x ± c) = b, whole-number solution (can be negative).  denom = a/b integer.
+    const b = rr(1, 6);
+    let denom = nzrand(-12, 12);          // value of (x ± c)
+    if (denom === 0) denom = 2;
+    const a = b * denom;
+    const c = rr(1, 9);
+    const sub = Math.random() < 0.5;      // (x − c) or (x + c)
+    const x = sub ? denom + c : denom - c;
+    eqStore(x, 1);
+    const inner = `${aVar(EQ_VAR)} ${sub ? '− ' + c : '+ ' + c}`;
+    html = `<div class="q-expr" style="justify-content:center;gap:10px">${fracHTML(a, inner)}<span>= ${aNum(b)}</span></div>`;
+    steps = `Multiply both sides by (${inner}): ${a} = ${aNum(b)}(${inner}).<br>`
+          + `Divide by ${aNum(b)} → ${inner} = ${aNum(denom)}, so ${aVar(EQ_VAR)} = <b>${aNum(x)}</b>.`;
+  } else {
+    // L3 fraction solution.  a/x = b with b ∤ a  →  x = a/b in lowest terms.
+    let a, b;
+    do { a = rr(3, 19); b = rr(2, 9); } while (a % b === 0 || gcd(a, b) !== 1);
+    eqStore(a, b);                        // x = a/b reduced
+    html = `<div class="q-expr" style="justify-content:center;gap:10px">${fracHTML(a, aVar(EQ_VAR))}<span>= ${b}</span></div>`;
+    steps = `Multiply both sides by ${aVar(EQ_VAR)}: ${a} = ${b}${aVar(EQ_VAR)}.<br>`
+          + `Divide both sides by ${b} → ${aVar(EQ_VAR)} = <b>${a}/${b}</b> (already in simplest form).`;
+  }
+  qData.workSteps = steps;
+  eqShell(el, html, '2.2rem');
+}
+
+/* Variables on both sides  (lvKey eq6)
+   Form:  a·x + c = d·x + e   with a ≠ d. Displayed coefficients (a, d) are always
+   positive whole numbers; only the constants and the solution can be negative.
+   x = (e − c)/(a − d). Built backwards from a chosen solution.
+   L1 positive whole, L2 negatives, L3 fraction solution. */
+function genEqBothSides(el) {
+  qData.solveVar = EQ_VAR;
+  // Render "<coef>x ± <const>". Handles coef of 1, −1, negative (for worked steps).
+  const side = (coef, k) => {
+    let s;
+    if (coef === 1) s = aVar(EQ_VAR);
+    else if (coef === -1) s = '−' + aVar(EQ_VAR);
+    else s = aNum(coef) + aVar(EQ_VAR);
+    if (k > 0) s += ` + ${k}`;
+    else if (k < 0) s += ` − ${Math.abs(k)}`;
+    return s;
+  };
+  let a, d, c, e, x, html, steps;
+  if (level === 3) {
+    // Fraction solution: a − d = q (denominator), e − c = p, gcd(p,q)=1, q ∤ p.
+    let q = rr(2, 5), p;
+    do { p = nzrand(-13, 13); } while (p % q === 0 || gcd(Math.abs(p), q) !== 1);
+    d = rr(1, 5); a = d + q;                 // a − d = q > 0
+    c = nzrand(-9, 9); e = c + p;            // e − c = p
+    eqStore(p, q);                            // x = p/q reduced
+  } else {
+    const neg = (level === 2);
+    x = neg ? nzrand(-7, 7) : rr(1, 7);
+    do { a = rr(2, 7); d = rr(1, 6); } while (a === d);
+    if (!neg && a < d) { const t = a; a = d; d = t; }   // L1: a > d → all-positive display
+    c = neg ? nzrand(-9, 9) : rr(1, 9);
+    e = (a - d) * x + c;                      // guarantees the equation solves to x
+    eqStore(x, 1);
+  }
+  html = `${side(a, c)} = ${side(d, e)}`;
+  // Worked steps — move the smaller x-term and the constant, then divide.
+  const dx = a - d, num = e - c;
+  const ans = (qData.ansDen === 1) ? `<b>${aNum(qData.ansNum)}</b>` : `<b>${aNum(qData.ansNum)}/${qData.ansDen}</b> (simplest form)`;
+  steps = `Subtract ${side(d, 0)} from both sides: ${side(dx, c)} = ${aNum(e)}.<br>`
+        + `${c < 0 ? 'Add ' + Math.abs(c) : 'Subtract ' + c} from both sides: ${side(dx, 0)} = ${aNum(num)}.<br>`
+        + `Divide both sides by ${aNum(dx)} → ${aVar(EQ_VAR)} = ${ans}.`;
+  qData.workSteps = steps;
+  eqShell(el, html, '2.2rem');
+}
+
 /* ═══════════════════════════════════════════════
    TRIGONOMETRY & PYTHAGORAS
 ═══════════════════════════════════════════════ */
@@ -3676,9 +3886,13 @@ function nextQ() {
   else if (skill === 'algDivide')     { genAlgDivide(el); }
   else if (skill === 'algExpand')     { genAlgExpand(el); }
   else if (skill === 'algExpandTwo')  { genAlgExpandTwo(el); }
+  else if (skill === 'algFactorMonic'){ genAlgFactorMonic(el); }
   else if (skill === 'eqOneStepAddSub') { genEqOneStepAddSub(el); }
   else if (skill === 'eqOneStepMulDiv') { genEqOneStepMulDiv(el); }
   else if (skill === 'eqTwoStep')       { genEqTwoStep(el); }
+  else if (skill === 'eqTwoStepFrac')   { genEqTwoStepFrac(el); }
+  else if (skill === 'eqVarDenom')      { genEqVarDenom(el); }
+  else if (skill === 'eqBothSides')     { genEqBothSides(el); }
   else if (skill === 'pythagoras')      { genPythagoras(el); }
   else if (skill === 'trigExactDeg')    { genTrigExact(el, false); }
   else if (skill === 'trigExactRad')    { genTrigExact(el, true); }
@@ -3735,6 +3949,10 @@ function clearInputState() {
     inp.value = ''; inp.classList.remove('ok','bad','kb-focused');
   } else if (mode === 'choice') {
     id('choiceGrid').innerHTML = '';
+  } else if (mode === 'factor') {
+    ['factorBox0','factorBox1'].forEach(i => {
+      const el = id(i); if (el) { el.value = ''; el.classList.remove('ok','bad','kb-focused'); }
+    });
   } else {
     id('ansInput').value = '';
     id('ansInput').classList.remove('ok','bad','kb-focused');
@@ -4350,6 +4568,23 @@ document.addEventListener('DOMContentLoaded', () => {
       if (e.key === 'Enter' && !algTypeInput.disabled) checkAns();
     });
   }
+  // Factorising boxes (v40): allow letters/digits/+/− on desktop; Enter advances
+  // box0 → box1, and submits from box1.
+  ['factorBox0','factorBox1'].forEach((idn, i) => {
+    const el = id(idn);
+    if (!el) return;
+    el.addEventListener('keydown', e => {
+      const allowed = ['Backspace','Delete','ArrowLeft','ArrowRight','Tab','Enter','+','-',' '];
+      if (allowed.includes(e.key) || (e.key >= '0' && e.key <= '9') || /^[a-zA-Z]$/.test(e.key)) return;
+      if (e.ctrlKey || e.metaKey) return;
+      e.preventDefault();
+    });
+    el.addEventListener('keyup', e => {
+      if (e.key !== 'Enter') return;
+      if (i === 0) { const nx = id('factorBox1'); if (nx && !nx.disabled) { nx.focus(); return; } }
+      if (!el.disabled) checkAns();
+    });
+  });
 });
 
 /* ═══════════════════════════════════════════════
@@ -4909,6 +5144,82 @@ function genAlgExpandTwo(el) {
   }
 }
 
+/* ─── FACTORISING — typed-into-brackets engine ('factor' input mode) ───
+   The student types each bracket's contents into a fixed ( … )( … ) scaffold,
+   never typing the brackets themselves (the keypad has no bracket key). Each box
+   is parsed as a LINEAR expression (reuse parseLinearExpr), the two are multiplied
+   out, and the product is compared to the original expression. This marks ANY
+   equivalent factorisation correct and is order-insensitive automatically:
+   (x−2)(x−3), (x−3)(x−2) and (−x+2)(−x+3) all expand to the same quadratic. */
+
+/* Multiply two linear maps ({'':const, x:coeff, …}) into a polynomial map keyed
+   by a canonical monomial signature ('' = constant, 'x', 'x^2', sorted letters). */
+function monoKey(ka, kb) {
+  const letters = [];
+  if (ka) letters.push(ka);
+  if (kb) letters.push(kb);
+  letters.sort();
+  if (letters.length === 0) return '';
+  if (letters.length === 2 && letters[0] === letters[1]) return letters[0] + '^2';
+  return letters.join('');
+}
+function multiplyLinear(a, b) {
+  const out = {};
+  for (const ka in a) {
+    for (const kb in b) {
+      const key = monoKey(ka, kb);
+      out[key] = (out[key] || 0) + a[ka] * b[kb];
+    }
+  }
+  for (const k in out) if (out[k] === 0) delete out[k];
+  return out;
+}
+/* Two polynomial maps equal? (ignores zero coefficients) */
+function polyEqual(a, b) {
+  if (!a || !b) return false;
+  const keys = new Set([...Object.keys(a), ...Object.keys(b)]);
+  for (const k of keys) if ((a[k] || 0) !== (b[k] || 0)) return false;
+  return true;
+}
+
+/* Factorise monic quadratics  (lvKey afm)  →  x² + bx + c = (x + p)(x + q)
+   p·q = c, p + q = b. L1 both positive, L2 mixed signs (c < 0),
+   L3 both negative (b < 0, c > 0) plus harder mixed cases. */
+function genAlgFactorMonic(el) {
+  el.style.fontSize = '2.2rem';
+  let p, q, tries = 0;
+  do {
+    if (level === 1) { p = rr(1, 9); q = rr(1, 9); }                 // both +
+    else if (level === 2) { p = rr(1, 9); q = -rr(1, 9); }           // mixed → c < 0
+    else {                                                            // L3
+      if (Math.random() < 0.6) { p = -rr(1, 9); q = -rr(1, 9); }     // both − → b<0, c>0
+      else { p = rr(1, 9); q = -rr(1, 9); }                          // harder mixed
+    }
+    tries++;
+  } while ((p + q === 0 || p === q) && tries < 40);   // skip difference-of-squares & perfect squares (out of scope)
+  if (p + q === 0 || p === q) { p = 2; q = 3; }
+  const b = p + q;     // middle coefficient
+  const c = p * q;     // constant
+  // Target = expanded quadratic, built through the SAME machinery students hit.
+  qData.factorTarget = multiplyLinear({ x: 1, '': p }, { x: 1, '': q });
+  qData.factorVars = ['x'];
+  qData.factorBoxes = 2;
+  qData.factorP = p; qData.factorQ = q;   // per-question only (not persisted)
+  // Worked answer string for feedback / review.
+  const facTxt  = (n) => `(x ${n < 0 ? '− ' + Math.abs(n) : '+ ' + n})`;
+  const facHtml = (n) => `(${aVar('x')} ${n < 0 ? '− ' + Math.abs(n) : '+ ' + n})`;
+  qData.factorAnsText = `${facTxt(p)}${facTxt(q)}`;
+  qData.factorAnsHtml = `${facHtml(p)}${facHtml(q)}`;
+  // Question display: x² + bx + c
+  let qhtml = aPow('x', 2);
+  if (b !== 0) qhtml += b < 0 ? ` − ${Math.abs(b)}${aVar('x')}` : ` + ${b}${aVar('x')}`;
+  if (c !== 0) qhtml += c < 0 ? ` − ${Math.abs(c)}` : ` + ${c}`;
+  el.innerHTML = `<div style="${A_LBL}">Factorise</div>${qhtml}`;
+  qData.workSteps =
+    `Find two numbers that multiply to ${aNum(c)} and add to ${aNum(b)}: <b>${aNum(p)}</b> and <b>${aNum(q)}</b>.<br>`
+    + `Put each number in its own bracket with x:<br>Answer: <b>${qData.factorAnsHtml}</b>.`;
+}
+
 /* v25: read back what the student actually entered, as a display string, for the
    end-of-session review. Reads inputs before they're cleared. */
 function readUserAnswer(mode) {
@@ -4944,6 +5255,7 @@ function readUserAnswer(mode) {
     }
     if (mode === 'algType' || mode === 'algProd') return g('algTypeInput') || '—';
     if (mode === 'choice') return (qData.chosen != null && TRIG_VALS[qData.chosen]) ? TRIG_VALS[qData.chosen].t : '—';
+    if (mode === 'factor') return `(${g('factorBox0') || '?'})(${g('factorBox1') || '?'})`;
   } catch (e) {}
   return '—';
 }
@@ -5163,6 +5475,18 @@ function checkAns() {
       if (b.dataset.code === qData.chosen) b.classList.add(correct ? 'ok' : 'bad');
       else if (!correct && b.dataset.code === qData.choiceAns) b.classList.add('ok');
     });
+  }
+  else if (mode === 'factor') {
+    const b0 = id('factorBox0'), b1 = id('factorBox1');
+    const r0 = b0.value.trim(), r1 = b1.value.trim();
+    // Don't burn an attempt on an empty box.
+    if (r0 === '' || r1 === '') { attempts--; (r0 === '' ? b0 : b1).focus(); return; }
+    const m0 = parseLinearExpr(r0), m1 = parseLinearExpr(r1);
+    // Each bracket must parse as a linear expression; their product must equal
+    // the original. parseLinearExpr returns null on powers/brackets/garbage.
+    correct = (m0 !== null && m1 !== null) && polyEqual(multiplyLinear(m0, m1), qData.factorTarget);
+    if (!correct) feedbackStr = `Answer: ${qData.factorAnsText}`;
+    [b0, b1].forEach(b => { b.classList.remove('ok','bad'); b.classList.add(correct ? 'ok' : 'bad'); });
   }
 
   if (correct) {
@@ -6162,7 +6486,8 @@ let kbMode   = 'num';  // 'num' | 'numNeg' | 'numNegDot' | 'frac' | 'idx' | 'sci
 const KB_INPUTS = ['ansInput','fracNum','fracDen','mixedWhole','mixedNum','mixedDen',
                    'idxCoeff','idxExp','idxExpB','idxExpC','sciCoeff','sciExp',
                    'ratioA','ratioB',
-                   'algC0','algC1','algC2','algP0','algP1','algP2','algTypeInput'];
+                   'algC0','algC1','algC2','algP0','algP1','algP2','algTypeInput',
+                   'factorBox0','factorBox1'];
 
 /* ── Setup: called once on load ── */
 function kbSetup() {
@@ -6228,14 +6553,15 @@ function insertPower(ch) {
 function kbPress(char) {
   if (!kbTarget || kbTarget.disabled) return;
 
-  const algType = (getInputMode() === 'algType');
+  const mode = getInputMode();
+  const algText = (mode === 'algType' || mode === 'factor');
   let cur = kbTarget.value;
 
   /* Dot: only allow one, only for sci coeff */
   if (char === '.' && cur.includes('.')) return; // only one dot allowed
 
-  /* Negative: in number modes only at start; in algType it's a term separator */
-  if (char === '-' && !algType) {
+  /* Negative: in number modes only at start; in algText it's a term separator */
+  if (char === '-' && !algText) {
     if (cur.startsWith('-')) { kbTarget.value = cur.slice(1); kbRefreshDisplay(); return; }
     if (cur !== '') return; // only at start
   }
@@ -6293,6 +6619,7 @@ function getKbInputOrder() {
   }
   if (mode === 'algType' || mode === 'algProd') return ['algTypeInput'];
   if (mode === 'choice') return [];
+  if (mode === 'factor') return ['factorBox0','factorBox1'];
   return ['ansInput'];
 }
 
@@ -6310,12 +6637,13 @@ function kbShow() {
 
   /* Decide which optional keys to show */
   const showNeg = ['intAddSub','intMultDiv','indexDiv','indexMult','indexPow','sciTo','sciFrom',
-                   'eqOneStepAddSub','eqOneStepMulDiv','eqTwoStep'].includes(skillId)
+                   'eqOneStepAddSub','eqOneStepMulDiv','eqTwoStep',
+                   'eqTwoStepFrac','eqVarDenom','eqBothSides'].includes(skillId)
                   || mode === 'index' || mode === 'sci' || mode === 'algebra';
   const decSkillsWithDot = ['sciTo','sciFrom','decAddSub','decMultiply','decDivide','decSquareCube','decOrderOps','decRound','sigFigs',
                             'rateSimplify','rateConvert','pythagoras'];
   const showDot  = (mode === 'sci' || decSkillsWithDot.includes(skillId));
-  const showNext = (mode === 'fraction' || mode === 'mixed' || mode === 'index' || mode === 'sci' || mode === 'ratio' || mode === 'algebra');
+  const showNext = (mode === 'fraction' || mode === 'mixed' || mode === 'index' || mode === 'sci' || mode === 'ratio' || mode === 'algebra' || mode === 'factor');
 
   const negBtn  = document.getElementById('kbNegBtn');
   const dotBtn  = document.getElementById('kbDotBtn');
@@ -6329,13 +6657,15 @@ function kbShow() {
   /* Algebra free-text row: show variable + operator keys for the current answer */
   const algRow = document.getElementById('kbAlgRow');
   if (algRow) {
-    const isAlgText = (mode === 'algType' || mode === 'algProd');
+    const isAlgText = (mode === 'algType' || mode === 'algProd' || mode === 'factor');
     if (isAlgText) {
       algRow.style.display = 'flex';
       let vars;
       if (mode === 'algProd') {
         const p = (typeof qData !== 'undefined' && qData.prodAns) || { vars: {} };
         vars = Object.keys(p.vars || {}).filter(k => p.vars[k] !== 0).sort();
+      } else if (mode === 'factor') {
+        vars = (typeof qData !== 'undefined' && qData.factorVars) || ['x'];
       } else {
         const slots = (typeof qData !== 'undefined' && qData.alg && qData.alg.slots) || [];
         vars = algVarsInSlots(slots);
@@ -6347,10 +6677,10 @@ function kbShow() {
         if (vars[vi]) { const ch = vars[vi]; b.style.display = ''; b.textContent = ch; b.onclick = () => kbPress(ch); }
         else { b.style.display = 'none'; }
       });
-      // '+' only for algType (multi-term answers); product/quotient answers are one term.
+      // '+' for multi-term answers: algType and factor (binomials) need it.
       const plus = document.getElementById('kbPlusBtn');
-      if (plus) plus.style.display = (mode === 'algType') ? '' : 'none';
-      // Power keys (² ³) only for algProd typed answers.
+      if (plus) plus.style.display = (mode === 'algType' || mode === 'factor') ? '' : 'none';
+      // Power keys (² ³) only for algProd typed answers (factor brackets are linear).
       const p2 = document.getElementById('kbPow2');
       const p3 = document.getElementById('kbPow3');
       if (p2) p2.style.display = (mode === 'algProd') ? '' : 'none';
