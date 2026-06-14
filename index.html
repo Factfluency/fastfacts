@@ -1419,28 +1419,28 @@ body {
     <div class="cat-card" onclick="openCat('number')">
       <span class="cat-icon">🔢</span>
       <div class="cat-name">Number</div>
-      <div class="cat-desc">Tables, division, add, subtract &amp; BODMAS</div>
+      <div class="cat-desc">Times tables, ×÷ +−, BODMAS &amp; significant figures</div>
     </div>
     <div class="cat-card" onclick="openCat('integers')">
       <span class="cat-icon">±</span>
       <div class="cat-name">Integers</div>
-      <div class="cat-desc">Positive &amp; negative numbers</div>
+      <div class="cat-desc">Add, subtract, multiply, squares, cubes &amp; BODMAS</div>
     </div>
     <div class="cat-card" onclick="openCat('exponents')">
       <span class="cat-icon">x²</span>
       <div class="cat-name">Exponents</div>
-      <div class="cat-desc">Squares, cubes &amp; index laws</div>
+      <div class="cat-desc">Squares, roots, cubes, index laws &amp; standard form</div>
     </div>
 
     <div class="cat-card" onclick="openCat('fractions')">
       <span class="cat-icon">½</span>
       <div class="cat-name">Fractions</div>
-      <div class="cat-desc">Simplify, add, multiply &amp; more</div>
+      <div class="cat-desc">Simplify, ×÷ +−, mixed numbers &amp; BODMAS</div>
     </div>
     <div class="cat-card" onclick="openCat('decimals')">
       <span class="cat-icon">0.1</span>
       <div class="cat-name">Decimals</div>
-      <div class="cat-desc">Add, multiply, round &amp; more</div>
+      <div class="cat-desc">×÷ +−, squares, cubes, rounding &amp; BODMAS</div>
     </div>
     <div class="cat-card" onclick="openCat('ratiosrates')">
       <span class="cat-icon">➡️</span>
@@ -1450,12 +1450,12 @@ body {
     <div class="cat-card" onclick="openCat('algebra')">
       <span class="cat-icon">𝑥</span>
       <div class="cat-name">Algebra</div>
-      <div class="cat-desc">Parts, substitute, like terms &amp; expanding</div>
+      <div class="cat-desc">Like terms, multiply, expand, factorise &amp; more</div>
     </div>
     <div class="cat-card" onclick="openCat('equations')">
       <span class="cat-icon">⚖️</span>
       <div class="cat-name">Equations</div>
-      <div class="cat-desc">Solve one-step &amp; two-step linear equations</div>
+      <div class="cat-desc">One &amp; two-step, fractions, denominators &amp; both sides</div>
     </div>
     <div class="cat-card" onclick="openCat('trig')">
       <span class="cat-icon">📐</span>
@@ -1723,11 +1723,11 @@ body {
   <div id="factorAnsWrap" style="display:none; flex-direction:column; align-items:center; gap:8px; margin-bottom:14px;">
     <div id="factorHint" style="font-size:0.82rem;font-weight:800;color:var(--muted);text-align:center;padding:0 8px;">Type what goes inside each bracket, e.g. x − 2</div>
     <div class="factor-row">
-      <span class="factor-br">(</span>
+      <span class="factor-br" id="factorBr0">(</span>
       <input id="factorBox0" class="ans-input factor-box" type="text" inputmode="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" disabled placeholder="?">
-      <span class="factor-br">)(</span>
+      <span class="factor-br" id="factorBr1">)(</span>
       <input id="factorBox1" class="ans-input factor-box" type="text" inputmode="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" disabled placeholder="?">
-      <span class="factor-br">)</span>
+      <span class="factor-br" id="factorBr2">)</span>
     </div>
   </div>
 
@@ -1770,6 +1770,8 @@ body {
       <button class="kb-key kb-sym" id="kbPow3" onclick="kbPress('³')" style="display:none">x³</button>
       <button class="kb-key kb-sym" id="kbPlusBtn" onclick="kbPress('+')">+</button>
       <button class="kb-key kb-sym" id="kbMinusBtn" onclick="kbPress('-')">−</button>
+      <button class="kb-key kb-sym" id="kbOpenBtn" onclick="kbPress('(')" style="display:none">(</button>
+      <button class="kb-key kb-sym" id="kbCloseBtn" onclick="kbPress(')')" style="display:none">)</button>
     </div>
 
     <!-- Row 1: 7 8 9 ⌫ -->
@@ -1963,8 +1965,11 @@ const CATS = {
       { id:'algMultiply',    name:'Multiply Terms',                       inputMode:'algebra', lvKey:'amul'   },
       { id:'algDivide',      name:'Divide Terms',                         inputMode:'algebra', lvKey:'adiv'   },
       { id:'algExpand',      name:'Expand Single Brackets',               inputMode:'algebra', lvKey:'aexp'   },
-      { id:'algExpandTwo',   name:'Expand &amp; Simplify (Two Brackets)', inputMode:'algebra', lvKey:'aexp2'  },
-      { id:'algFactorMonic', name:'Factorise Monic Quadratics',           inputMode:'factor',  lvKey:'afm'    },
+      { id:'algExpandTwo',   name:'Expand &amp; Simplify (Two Brackets)', inputMode:'algPoly', lvKey:'aexp2'  },
+      { id:'algExpandBinom', name:'Expanding Binomial Brackets',           inputMode:'algPoly', lvKey:'aeb'    },
+      { id:'algFactorMonic', name:'Factorise Monic Quadratics',           inputMode:'algFactored',  lvKey:'afm'    },
+      { id:'algFactorHCF',   name:'Factorise (Highest Common Factor)',    inputMode:'algFactored',  lvKey:'afh'    },
+      { id:'algFactorGroup', name:'Factorise by Grouping',                inputMode:'algFactored',  lvKey:'afg'    },
     ]
   },
   equations: {
@@ -1994,8 +1999,8 @@ const CATS = {
    year here too. Primary-rooted number facts are floored at 'Yr 7' (the app's
    entry year); ranges are used where a skill's levels span two years. */
 const SKILL_YEAR = {
-  // Number
-  timesTables:'Yr 7', division:'Yr 7', addition:'Yr 7', subtraction:'Yr 7',
+  // Number  (foundational skills below high-school level carry no year chip)
+  timesTables:'', division:'', addition:'', subtraction:'',
   orderOps:'Yr 7', sigFigs:'Yr 9',
   // Integers
   intAddSub:'Yr 7', intMultDiv:'Yr 7', intSquareCube:'Yr 7–8', intOrderOps:'Yr 7',
@@ -2004,20 +2009,21 @@ const SKILL_YEAR = {
   indexMult:'Yr 8', indexDiv:'Yr 8', indexPow:'Yr 8', sciTo:'Yr 9', sciFrom:'Yr 9',
   // Fractions
   fracSimplify:'Yr 7', fracAddSub:'Yr 7', fracMultiply:'Yr 7', fracDivide:'Yr 7',
-  mixedToImp:'Yr 7', impToMixed:'Yr 7', fracOrderOps:'Yr 7',
-  // Decimals
-  decAddSub:'Yr 7', decMultiply:'Yr 7', decDivide:'Yr 7', decSquareCube:'Yr 7–8',
+  mixedToImp:'Yr 7', impToMixed:'Yr 7', fracOrderOps:'Yr 8',
+  // Decimals  (decAddSub is foundational — no year chip)
+  decAddSub:'', decMultiply:'Yr 7', decDivide:'Yr 7', decSquareCube:'Yr 7–8',
   decOrderOps:'Yr 7', decRound:'Yr 7',
   // Ratios & Rates
   ratioSimplify:'Yr 7–8', ratioEquiv:'Yr 7–8', ratioShare:'Yr 7–8',
   rateSimplify:'Yr 7–8', rateConvert:'Yr 8',
   // Algebra
-  algParts:'Yr 7', algSub:'Yr 7', algLikeTerms:'Yr 7–8', algMultiply:'Yr 8–9',
-  algDivide:'Yr 8–9', algExpand:'Yr 8', algExpandTwo:'Yr 9–10',
+  algParts:'Yr 7', algSub:'Yr 7', algLikeTerms:'Yr 7–8', algMultiply:'Yr 7–9',
+  algDivide:'Yr 7–9', algExpand:'Yr 8', algExpandTwo:'Yr 8–9',
   algFactorMonic:'Yr 10',
+  algExpandBinom:'Yr 9–10', algFactorHCF:'Yr 8–9', algFactorGroup:'Yr 10',
   // Equations
-  eqOneStepAddSub:'Yr 7', eqOneStepMulDiv:'Yr 7–8', eqTwoStep:'Yr 8',
-  eqTwoStepFrac:'Yr 8–9', eqVarDenom:'Yr 9', eqBothSides:'Yr 8–9',
+  eqOneStepAddSub:'Yr 7', eqOneStepMulDiv:'Yr 7', eqTwoStep:'Yr 7–8',
+  eqTwoStepFrac:'Yr 7–9', eqVarDenom:'Yr 8–9', eqBothSides:'Yr 8–9',
   // Trigonometry & Pythagoras
   pythagoras:'Yr 8', trigExactDeg:'Yr 10A', trigExactRad:'VCE'
 };
@@ -2101,9 +2107,9 @@ const LEVEL_DEFS = {
   ],
   /* ── INTEGER SQUARES & CUBES ── */
   isc: [
-    { title:'Level 1 — Squares of Integers',   desc:'Square positive and negative integers. Remember: a negative × a negative = a positive.', examples:['(−3)²', '(−7)²', '(−5)²'] },
-    { title:'Level 2 — Cubes of Integers',     desc:'Cube positive and negative integers. A negative cubed stays negative.', examples:['(−2)³', '(−4)³', '(−3)³'] },
-    { title:'Level 3 — Mixed Squares & Cubes', desc:'A random mix of squaring and cubing negative integers. You must apply the correct power each time.', examples:['(−5)²', '(−3)³', '(−2)⁴'] },
+    { title:'Level 1 — Squares of Integers',   desc:'Square positive and negative integers. Watch the brackets: (−3)² = 9, but −(3)² = −9.', examples:['(−3)²', '7²', '−(5)²'] },
+    { title:'Level 2 — Cubes of Integers',     desc:'Cube positive and negative integers. A negative cubed stays negative.', examples:['(−2)³', '4³', '−(3)³'] },
+    { title:'Level 3 — Mixed Squares & Cubes', desc:'A random mix of squaring and cubing, with positive and negative integers — apply the correct power and watch the sign.', examples:['(−5)²', '6³', '−(2)²'] },
   ],
   /* ── OO WITH INTEGERS ── */
   ioo: [
@@ -2268,6 +2274,22 @@ const LEVEL_DEFS = {
     { title:'Level 2 — Mixed Signs', desc:'Factorise x² + bx + c where the constant is negative, so one bracket adds and the other subtracts.', examples:['x² + 2x − 15 = (x + 5)(x − 3)', 'x² − 3x − 10', 'x² + 4x − 12'] },
     { title:'Level 3 — Negative Middle Term', desc:'Factorise x² − bx + c where both numbers in the brackets are negative, plus harder mixed-sign cases.', examples:['x² − 5x + 6 = (x − 2)(x − 3)', 'x² − 7x + 10', 'x² − x − 20'] },
   ],
+  aeb: [
+    { title:'Level 1 — (x ± b)(x ± c)', desc:'Expand two brackets using FOIL, then collect like terms. Fill the coefficient of each term in the template.', examples:['(x + 2)(x + 3)', '(x − 4)(x + 5)', '(x − 3)(x − 6)'] },
+    { title:'Level 2 — (ax ± c)(bx ± d)', desc:'Both brackets have a coefficient on x, so the x² term has a coefficient too.', examples:['(2x + 3)(x − 4)', '(3x − 1)(2x + 5)', '(4x + 1)(x − 2)'] },
+    { title:'Level 3 — Perfect Squares', desc:'Square a bracket: (A + B)² = A² + 2AB + B². Includes a coefficient on x.', examples:['(x + 5)²', '(x − 3)²', '(2x + 1)²'] },
+    { title:'Level 4 — Coefficient in Front', desc:'Expand the brackets first, then multiply every term by the number in front (which may be negative).', examples:['2(x − 3)(x + 4)', '−3(x − 4)²', '5(2x − 7)(x − 3)'] },
+  ],
+  afh: [
+    { title:'Level 1 — Number Factor', desc:'Take out the highest common factor (a number) from two terms. Type the HCF, then the bracket contents.', examples:['4x + 8 = 4(x + 2)', '6x + 15 = 3(2x + 5)', '10x − 25'] },
+    { title:'Level 2 — Factor with a Variable', desc:'The highest common factor includes an x. Take out both the number and the x.', examples:['8x² − 20x = 4x(2x − 5)', '6x² + 9x = 3x(2x + 3)', '12x² − 8x'] },
+    { title:'Level 3 — Three Terms', desc:'Take the highest common factor out of three terms, including an x² term inside the bracket.', examples:['8x² − 4x + 12 = 4(2x² − x + 3)', '6x² + 9x − 15 = 3(2x² + 3x − 5)', '10x² − 15x + 20'] },
+  ],
+  afg: [
+    { title:'Level 1 — Common Bracket', desc:'The same bracket appears in both parts. Factor it out and collect what is left in the second bracket.', examples:['4(x + 3) + 2x(x + 3) = (x + 3)(4 + 2x)', '3(x − 2) + x(x − 2)', '5(2x + 1) + 3x(2x + 1)'] },
+    { title:'Level 2 — Grouping (Two Variables)', desc:'Four terms in two letters. Group them in pairs, factor each pair, then take out the common bracket.', examples:['3pq + 6p + q + 2 = (3p + 1)(q + 2)', '2ab + 8a + 3b + 12', 'xy − 4x + 5y − 20'] },
+    { title:'Level 3 — Grouping (Cubic)', desc:'Four terms in one letter, up to x³. Group in pairs and factor, leaving an x² term in a bracket.', examples:['x³ − 2x² + 5x − 10 = (x² + 5)(x − 2)', 'x³ + 3x² + 4x + 12', '2x³ − 6x² + x − 3'] },
+  ],
   pyth: [
     { title:'Level 1 — Find the Hypotenuse', desc:'Use a² + b² = c². The two shorter sides are given; find the longest side. Answers are whole numbers.', examples:['legs 3, 4 → 5', 'legs 5, 12 → 13', 'legs 8, 15 → 17'] },
     { title:'Level 2 — Find a Shorter Side', desc:'The hypotenuse and one short side are given; find the missing short side. Answers are whole numbers.', examples:['c 13, leg 5 → 12', 'c 25, leg 7 → 24', 'c 17, leg 8 → 15'] },
@@ -2382,6 +2404,9 @@ const METHOD_TIP = {
   eqVarDenom:'Multiply both sides by the bottom (the denominator) to bring x up, then solve the simple equation that\'s left.',
   eqBothSides:'Collect the x terms on one side and the numbers on the other, then divide. Always do the same thing to both sides.',
   algFactorMonic:'Find two numbers that MULTIPLY to the last number and ADD to the middle number. Those two numbers go in the brackets with x.',
+  algExpandBinom:'FOIL: multiply First, Outer, Inner, Last terms, then collect like terms. (A + B)² = A² + 2AB + B².',
+  algFactorHCF:'Find the HIGHEST common factor of every term (number and any common letter), take it out the front, and write what is left inside the bracket.',
+  algFactorGroup:'Group the terms in pairs, factor each pair, then take out the common bracket that appears in both.',
   pythagoras:'a² + b² = c², where c is the hypotenuse (the longest side, opposite the right angle). To find a shorter side, rearrange: a² = c² − b².',
   trigExactDeg:'Use the special triangles (30-60-90 and 45-45-90) or the unit circle. Watch the sign: sin is positive above the x-axis, cos is positive to the right.',
   trigExactRad:'Same special angles in radians: π/6 = 30°, π/4 = 45°, π/3 = 60°, π/2 = 90°. Use the unit circle and watch the quadrant for the sign.'
@@ -2974,6 +2999,11 @@ function getInputMode() {
   // must produce the variable themselves — stops the "join the letters" error.
   if (skill === 'algLikeTerms') return 'algType';
   if (skill === 'algExpand' && (level === 1 || level === 2)) return 'algType';
+  // Expanding to a quadratic — the student types the whole polynomial answer
+  // (e.g. x² + 5x + 6). algExpand L3 (single bracket × x) and both two-bracket
+  // skills all expand to a quadratic, marked by the polynomial parser.
+  if (skill === 'algExpand') return 'algPoly';                 // L3+
+  if (skill === 'algExpandTwo' || skill === 'algExpandBinom') return 'algPoly';
   // Multiply / Divide terms (all levels, v32): the student types the WHOLE
   // product/quotient answer (e.g. 12x, 12xyz, 10xy²z, −24x²y) so they must
   // build the coefficient, every letter, AND its power themselves. A digit-box
@@ -3086,14 +3116,18 @@ function resetAnswerInputs() {
   } else if (mode === 'algebra') {
     id('algAnsWrap').style.display = 'flex';
     id('algTermRow').style.display = 'none';
-  } else if (mode === 'algType' || mode === 'algProd') {
+  } else if (mode === 'algType' || mode === 'algProd' || mode === 'algPoly' || mode === 'algFactored') {
     id('algTypeWrap').style.display = 'flex';
     id('algTypeInput').className = 'ans-input';
-    id('algTypeHint').textContent = (mode === 'algProd')
-      ? 'Type the whole answer, e.g. 12x or 10xy²z  ·  tip: use the x² / x³ buttons or type x2'
-      : 'Type the whole answer — including the letter';
-    // Power buttons: product answers on a computer (phone keypad has its own ² / ³).
-    id('algPowRow').style.display = (mode === 'algProd' && !IS_MOBILE()) ? 'flex' : 'none';
+    let hint;
+    if (mode === 'algProd') hint = 'Type the whole answer, e.g. 12x or 10xy²z  ·  tip: use the x² / x³ buttons or type x2';
+    else if (mode === 'algPoly') hint = 'Type the whole expanded answer, e.g. x² + 5x + 6  ·  tip: use the x² button or type x2';
+    else if (mode === 'algFactored') hint = 'Type the factorised answer in brackets, e.g. (x + 2)(x + 3)';
+    else hint = 'Type the whole answer — including the letter';
+    id('algTypeHint').textContent = hint;
+    // Desktop power buttons help with superscripts for product / polynomial / factored answers.
+    const wantsPow = (mode === 'algProd' || mode === 'algPoly' || mode === 'algFactored');
+    id('algPowRow').style.display = (wantsPow && !IS_MOBILE()) ? 'flex' : 'none';
   } else if (mode === 'choice') {
     id('choiceAnsWrap').style.display = 'block';
     id('choiceAnsWrap').classList.add('visible');
@@ -3173,7 +3207,7 @@ function enableInputs() {
     id('ratioA').focus();
   } else if (mode === 'algebra') {
     setupAlgInput();
-  } else if (mode === 'algType' || mode === 'algProd') {
+  } else if (mode === 'algType' || mode === 'algProd' || mode === 'algPoly' || mode === 'algFactored') {
     const inp = id('algTypeInput');
     inp.disabled = false;
     inp.focus();
@@ -3181,6 +3215,19 @@ function enableInputs() {
     buildChoiceGrid();
   } else if (mode === 'factor') {
     const b0 = id('factorBox0'), b1 = id('factorBox1');
+    // Scaffold layout: two brackets ( … )( … ) or HCF box outside one bracket … ( … )
+    const layout = qData.factorLayout || 'twoBrackets';
+    if (layout === 'monoBracket') {
+      id('factorBr0').textContent = '';
+      id('factorBr1').textContent = '(';
+      id('factorBr2').textContent = ')';
+      id('factorHint').textContent = 'Type the HCF, then what goes inside the bracket';
+    } else {
+      id('factorBr0').textContent = '(';
+      id('factorBr1').textContent = ')(';
+      id('factorBr2').textContent = ')';
+      id('factorHint').textContent = 'Type what goes inside each bracket, e.g. x − 2';
+    }
     b0.disabled = false; b1.disabled = false;
     b0.focus();
   } else {
@@ -3886,7 +3933,10 @@ function nextQ() {
   else if (skill === 'algDivide')     { genAlgDivide(el); }
   else if (skill === 'algExpand')     { genAlgExpand(el); }
   else if (skill === 'algExpandTwo')  { genAlgExpandTwo(el); }
+  else if (skill === 'algExpandBinom'){ genAlgExpandBinom(el); }
   else if (skill === 'algFactorMonic'){ genAlgFactorMonic(el); }
+  else if (skill === 'algFactorHCF')  { genAlgFactorHCF(el); }
+  else if (skill === 'algFactorGroup'){ genAlgFactorGroup(el); }
   else if (skill === 'eqOneStepAddSub') { genEqOneStepAddSub(el); }
   else if (skill === 'eqOneStepMulDiv') { genEqOneStepMulDiv(el); }
   else if (skill === 'eqTwoStep')       { genEqTwoStep(el); }
@@ -3944,7 +3994,7 @@ function clearInputState() {
       if (i > 0) id('algSep' + i).style.display = 'none';
     }
     setText('algInstruction', '');
-  } else if (mode === 'algType' || mode === 'algProd') {
+  } else if (mode === 'algType' || mode === 'algProd' || mode === 'algPoly' || mode === 'algFactored') {
     const inp = id('algTypeInput');
     inp.value = ''; inp.classList.remove('ok','bad','kb-focused');
   } else if (mode === 'choice') {
@@ -4559,7 +4609,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const algTypeInput = id('algTypeInput');
   if (algTypeInput) {
     algTypeInput.addEventListener('keydown', e => {
-      const allowed = ['Backspace','Delete','ArrowLeft','ArrowRight','Tab','Enter','+','-',' '];
+      const allowed = ['Backspace','Delete','ArrowLeft','ArrowRight','Tab','Enter','+','-',' ','(',')'];
       if (allowed.includes(e.key) || (e.key >= '0' && e.key <= '9') || /^[a-zA-Z]$/.test(e.key)) return;
       if (e.ctrlKey || e.metaKey) return; // allow copy/paste
       e.preventDefault();
@@ -4684,6 +4734,16 @@ function slotsToMap(slots) {
   slots.forEach(s => { const k = s.varLabel || ''; m[k] = (m[k] || 0) + s.coeff; });
   return m;
 }
+/* Convert answer slots to a signature-keyed poly map ('x²'→'x^2') so a typed
+   polynomial answer (parsed by parsePoly) can be compared with polyEqual. */
+function slotsToPolySig(slots) {
+  const m = {};
+  slots.forEach(s => {
+    const sig = (s.varLabel || '').replace('²', '^2').replace('³', '^3');
+    m[sig] = (m[sig] || 0) + s.coeff;
+  });
+  return m;
+}
 function algMapsEqual(a, b) {
   const keys = new Set([...Object.keys(a), ...Object.keys(b)]);
   for (const k of keys) if ((a[k] || 0) !== (b[k] || 0)) return false;
@@ -4691,8 +4751,13 @@ function algMapsEqual(a, b) {
 }
 /* Distinct variable letters in the answer, in order — used to label keypad keys */
 function algVarsInSlots(slots) {
+  // Base variable letters only (strip ² / ³ and dedupe) — the keypad's ² key
+  // supplies the power, so a quadratic answer still offers just the 'x' key.
   const out = [];
-  slots.forEach(s => { if (s.varLabel && !out.includes(s.varLabel)) out.push(s.varLabel); });
+  slots.forEach(s => {
+    const v = (s.varLabel || '').replace('²', '').replace('³', '');
+    if (v && !out.includes(v)) out.push(v);
+  });
   return out;
 }
 
@@ -5182,6 +5247,111 @@ function polyEqual(a, b) {
   return true;
 }
 
+/* ─── General polynomial machinery (HCF & grouping factorisation) ───
+   A polynomial is a map { signature: coeff }, where a signature is the
+   canonical monomial string: '' (constant), 'x', 'x^2', 'pq', 'p^2q', …
+   (letters sorted; power written as ^n, omitted when 1). */
+function monoToSig(vars) {
+  const letters = Object.keys(vars).filter(k => vars[k] !== 0).sort();
+  if (letters.length === 0) return '';
+  return letters.map(L => vars[L] === 1 ? L : L + '^' + vars[L]).join('');
+}
+function sigToMono(sig) {
+  const m = {};
+  let i = 0;
+  while (i < sig.length) {
+    const L = sig[i]; i++;
+    let pw = 1;
+    if (sig[i] === '^') { i++; let ps = ''; while (i < sig.length && sig[i] >= '0' && sig[i] <= '9') { ps += sig[i]; i++; } pw = parseInt(ps, 10); }
+    m[L] = (m[L] || 0) + pw;
+  }
+  return m;
+}
+function mulSig(s1, s2) {
+  const m1 = sigToMono(s1), m2 = sigToMono(s2), out = {};
+  for (const k in m1) out[k] = (out[k] || 0) + m1[k];
+  for (const k in m2) out[k] = (out[k] || 0) + m2[k];
+  return monoToSig(out);
+}
+function multiplyPoly(a, b) {
+  const out = {};
+  for (const sa in a) for (const sb in b) {
+    const sig = mulSig(sa, sb);
+    out[sig] = (out[sig] || 0) + a[sa] * b[sb];
+  }
+  for (const k in out) if (out[k] === 0) delete out[k];
+  return out;
+}
+/* Parse a typed polynomial (sum of monomials, no brackets) into a poly map.
+   Each term is parsed by parseAlgProduct (coeff + letters + powers via ²/³/^/
+   trailing digits). Returns null on brackets, stray operators, or garbage. */
+function parsePoly(str) {
+  let s = String(str).toLowerCase().replace(/\s+/g, '').replace(/−/g, '-').replace(/[×*·]/g, '');
+  if (s === '') return null;
+  if (/[()]/.test(s)) return null;                  // a single box never contains brackets
+  // Split into signed terms, keeping the sign with each term.
+  const terms = [];
+  let cur = '';
+  for (let i = 0; i < s.length; i++) {
+    const ch = s[i];
+    if ((ch === '+' || ch === '-') && cur !== '') { terms.push(cur); cur = ch; }
+    else cur += ch;
+  }
+  if (cur !== '') terms.push(cur);
+  const poly = {};
+  for (let t of terms) {
+    if (t[0] === '+') t = t.slice(1);               // parseAlgProduct rejects a leading '+'
+    if (t === '' || t === '-' || t === '+') return null;
+    const mono = parseAlgProduct(t);                // reuses the monomial parser
+    if (!mono) return null;
+    const sig = monoToSig(mono.vars);
+    poly[sig] = (poly[sig] || 0) + mono.coeff;
+  }
+  for (const k in poly) if (poly[k] === 0) delete poly[k];
+  return Object.keys(poly).length ? poly : null;
+}
+/* Is a polynomial map a non-constant (contains at least one variable term)? */
+function polyHasVar(p) { return p && Object.keys(p).some(k => k !== ''); }
+
+/* Parse a typed FACTORISED expression — an optional leading monomial followed by
+   one or more bracketed factors, e.g. "8(x-5)", "4x(2x-5)", "(x+2)(x+3)",
+   "(3p+1)(q+2)". Returns { factors:[polyMap,…], product:polyMap } or null.
+   A plain polynomial with no brackets parses as a single factor (used to detect
+   "not actually factorised"). No nested brackets; nothing may follow a ')'
+   except another '('. */
+function parseFactored(str) {
+  let s = String(str).toLowerCase().replace(/\s+/g, '').replace(/−/g, '-').replace(/[×*·]/g, '');
+  if (s === '') return null;
+  const factors = [];
+  let i = 0, lead = '';
+  while (i < s.length && s[i] !== '(') { lead += s[i]; i++; }
+  if (lead !== '') {
+    if (i >= s.length) {                         // no brackets at all → one flat factor
+      const p = parsePoly(lead);
+      return p ? { factors: [p], product: p } : null;
+    }
+    const m = parseAlgProduct(lead);             // leading monomial only (e.g. 8, 4x, -2)
+    if (!m) return null;
+    const fm = {}; fm[monoToSig(m.vars)] = m.coeff;
+    factors.push(fm);
+  }
+  while (i < s.length) {
+    if (s[i] !== '(') return null;
+    i++;
+    let inner = '';
+    while (i < s.length && s[i] !== ')') { if (s[i] === '(') return null; inner += s[i]; i++; }
+    if (i >= s.length) return null;              // unbalanced
+    i++;                                         // consume ')'
+    const p = parsePoly(inner);
+    if (!p) return null;
+    factors.push(p);
+  }
+  if (factors.length === 0) return null;
+  let product = { '': 1 };
+  for (const f of factors) product = multiplyPoly(product, f);
+  return { factors, product };
+}
+
 /* Factorise monic quadratics  (lvKey afm)  →  x² + bx + c = (x + p)(x + q)
    p·q = c, p + q = b. L1 both positive, L2 mixed signs (c < 0),
    L3 both negative (b < 0, c > 0) plus harder mixed cases. */
@@ -5220,6 +5390,215 @@ function genAlgFactorMonic(el) {
     + `Put each number in its own bracket with x:<br>Answer: <b>${qData.factorAnsHtml}</b>.`;
 }
 
+/* ─── Expanding Binomial Brackets (algebra slot mode, quadratic answer) ───
+   Every level expands to a x² + b x + c, entered into three coefficient slots
+   (x², x, constant) — the same structured mode algExpandTwo uses. */
+function genAlgExpandBinom(el) {
+  el.style.fontSize = '2.0rem';
+  // Render a bracket "(px ± q)"; p is the x-coefficient (≥1), q the constant.
+  const bin = (p, q) => `(${p === 1 ? '' : p}${aVar('x')} ${q < 0 ? '− ' + Math.abs(q) : '+ ' + q})`;
+  let a2, bx, c, disp, expandNote;
+
+  if (level === 1) {
+    let b, d;
+    do { b = nzrand(-9, 9); d = nzrand(-9, 9); } while (b + d === 0);   // avoid a 0 middle term
+    a2 = 1; bx = b + d; c = b * d;
+    disp = `${bin(1, b)}${bin(1, d)}`;
+    expandNote = `Multiply each pair (FOIL): x·x = x², then the outer + inner x terms add to ${sgnNum(bx)}x, and ${aNum(b)}·${aNum(d)} = ${aNum(c)}.`;
+  } else if (level === 2) {
+    let a, b, q1, q2, tries = 0;
+    do { a = rr(2, 5); b = rr(2, 5); q1 = nzrand(-9, 9); q2 = nzrand(-9, 9); tries++; }
+    while ((a * q2 + b * q1 === 0) && tries < 50);
+    a2 = a * b; bx = a * q2 + b * q1; c = q1 * q2;
+    disp = `${bin(a, q1)}${bin(b, q2)}`;
+    expandNote = `FOIL: ${a}x·${b}x = ${a2}x², the outer + inner terms give ${sgnNum(bx)}x, and ${aNum(q1)}·${aNum(q2)} = ${aNum(c)}.`;
+  } else if (level === 3) {
+    if (Math.random() < 0.5) {
+      const b = nzrand(-9, 9);
+      a2 = 1; bx = 2 * b; c = b * b;
+      disp = `${bin(1, b)}²`;
+      expandNote = `Perfect square (A + B)² = A² + 2AB + B²: x² + 2·(${aNum(b)})·x + (${aNum(b)})² = x² ${bx < 0 ? '− ' + Math.abs(bx) : '+ ' + bx}x + ${c}.`;
+    } else {
+      const a = rr(2, 5), b = nzrand(-9, 9);
+      a2 = a * a; bx = 2 * a * b; c = b * b;
+      disp = `${bin(a, b)}²`;
+      expandNote = `Perfect square (A + B)² = A² + 2AB + B²: (${a}x)² + 2·${a}x·(${aNum(b)}) + (${aNum(b)})² = ${a2}x² ${bx < 0 ? '− ' + Math.abs(bx) : '+ ' + bx}x + ${c}.`;
+    }
+  } else {
+    // L4 — coefficient (possibly negative) in front of the brackets.
+    const k = nz((Math.random() < 0.5 ? -1 : 1) * rr(2, 5));
+    let ia2, ibx, ic, inner;
+    const roll = Math.random();
+    if (roll < 0.4) {                       // k(x ± b)(x ± d)
+      let b, d; do { b = nzrand(-6, 6); d = nzrand(-6, 6); } while (b + d === 0);
+      ia2 = 1; ibx = b + d; ic = b * d; inner = `${bin(1, b)}${bin(1, d)}`;
+    } else if (roll < 0.7) {                // k(x ± b)²
+      const b = nzrand(-6, 6); ia2 = 1; ibx = 2 * b; ic = b * b; inner = `${bin(1, b)}²`;
+    } else {                                // k(ax ± b)(cx ± d)
+      let a, cc, b, d, tries = 0;
+      do { a = rr(2, 3); cc = rr(2, 3); b = nzrand(-6, 6); d = nzrand(-6, 6); tries++; }
+      while ((a * d + cc * b === 0) && tries < 50);
+      ia2 = a * cc; ibx = a * d + cc * b; ic = b * d; inner = `${bin(a, b)}${bin(cc, d)}`;
+    }
+    a2 = k * ia2; bx = k * ibx; c = k * ic;
+    disp = `${aNum(k)}${inner}`;
+    expandNote = `Expand the brackets to ${algAnswerStr([{coeff:ia2,varLabel:'x²'},{coeff:ibx,varLabel:'x'},{coeff:ic,varLabel:''}])}, then multiply every term by ${aNum(k)}.`;
+  }
+
+  const slots = [
+    { coeff: a2, varLabel: 'x²', askPower: false },
+    { coeff: bx, varLabel: 'x',  askPower: false },
+    { coeff: c,  varLabel: '',   askPower: false },
+  ];
+  qData.alg = { slots };
+  qData.workSteps = `${expandNote}<br>Answer: <b>${algAnswerStr(slots)}</b>.`;
+  el.innerHTML = disp;
+}
+
+/* ─── Factorise: Highest Common Factor (factor mode, monoBracket layout) ───
+   Answer = HCF × ( polynomial ). The student types the HCF in box0 and the
+   remaining polynomial in box1. Marking requires box0 to equal the FULL HCF and
+   the product to equal the original expression. */
+function genAlgFactorHCF(el) {
+  el.style.fontSize = '2.0rem';
+  qData.factorLayout = 'monoBracket';
+  qData.factorKind = 'hcf';
+  qData.factorVars = ['x'];
+  qData.factorAllowPow = (level === 3);
+  let hcf, target, ansHcfTxt, ansInnerTxt;
+
+  if (level === 1) {
+    // Number HCF, two terms: k(ax ± b), gcd(a,|b|)=1 so k is the FULL HCF.
+    const k = rr(2, 9); let a, b;
+    do { a = rr(1, 4); b = nzrand(-9, 9); } while (gcd(a, Math.abs(b)) !== 1);
+    hcf = { '': k };
+    target = multiplyPoly({ '': k }, { 'x': a, '': b });
+    ansHcfTxt = `${k}`;
+    ansInnerTxt = `${a === 1 ? '' : a}x ${b < 0 ? '− ' + Math.abs(b) : '+ ' + b}`;
+    qData.factorAnsHtml = `${k}(${a === 1 ? '' : a}${aVar('x')} ${b < 0 ? '− ' + Math.abs(b) : '+ ' + b})`;
+  } else if (level === 2) {
+    // kx(ax ± b):  ka x² + kb x, HCF = kx
+    const k = rr(2, 6); let a, b;
+    do { a = rr(2, 5); b = nzrand(-9, 9); } while (gcd(a, Math.abs(b)) !== 1);
+    hcf = { 'x': k };
+    target = multiplyPoly({ 'x': k }, { 'x': a, '': b });
+    ansHcfTxt = `${k}x`;
+    ansInnerTxt = `${a}x ${b < 0 ? '− ' + Math.abs(b) : '+ ' + b}`;
+    qData.factorAnsHtml = `${k}${aVar('x')}(${a}${aVar('x')} ${b < 0 ? '− ' + Math.abs(b) : '+ ' + b})`;
+  } else {
+    // k(ax² ± bx ± c):  three terms, HCF = k (a number), inner is a quadratic
+    const k = rr(2, 6); let a, b, c;
+    do { a = rr(2, 4); b = nzrand(-6, 6); c = nzrand(-9, 9); }
+    while (gcd(gcd(a, Math.abs(b)), Math.abs(c)) !== 1 || b === 0 || c === 0);
+    hcf = { '': k };
+    target = multiplyPoly({ '': k }, { 'x^2': a, 'x': b, '': c });
+    ansHcfTxt = `${k}`;
+    ansInnerTxt = `${a}x² ${b < 0 ? '− ' + Math.abs(b) : '+ ' + b}x ${c < 0 ? '− ' + Math.abs(c) : '+ ' + c}`;
+    qData.factorAnsHtml = `${k}(${a}${aPow('x', 2)} ${b < 0 ? '− ' + Math.abs(b) : '+ ' + b}${aVar('x')} ${c < 0 ? '− ' + Math.abs(c) : '+ ' + c})`;
+  }
+  qData.hcf = hcf;
+  qData.factorTarget = target;
+  qData.factorB0 = ansHcfTxt;
+  qData.factorB1 = ansInnerTxt;
+  qData.factorAnsText = `${ansHcfTxt}(${ansInnerTxt})`;
+  el.innerHTML = `<div style="${A_LBL}">Factorise (take out the HCF)</div>${polyHtml(target)}`;
+  qData.workSteps = `Find the highest common factor of every term: <b>${ansHcfTxt}</b>.<br>`
+    + `Divide each term by it and write the result inside the bracket.<br>Answer: <b>${qData.factorAnsHtml}</b>.`;
+}
+
+/* ─── Factorise by Grouping (factor mode, twoBrackets layout) ───
+   Answer = ( … )( … ), two general binomials. Marking expands both boxes and
+   compares to the original, accepting ANY equivalent factorisation. Both boxes
+   must be non-constant (rules out the "(whole)(1)" non-answer). */
+function genAlgFactorGroup(el) {
+  el.style.fontSize = '1.9rem';
+  qData.factorLayout = 'twoBrackets';
+  qData.factorKind = 'group';
+  qData.factorAllowPow = true;
+
+  if (level === 1) {
+    // Common bracket visible:  a(x ± k) + b·x(x ± k)  →  (x ± k)(b x + a)
+    const k = nzrand(-6, 6); let a, b;
+    do { a = rr(2, 6); b = rr(2, 5); } while (gcd(a, b) !== 1);   // keep (bx+a) primitive
+    qData.factorVars = ['x'];
+    const f1 = { 'x': 1, '': k }, f2 = { 'x': b, '': a };
+    qData.factorTarget = multiplyPoly(f1, f2);
+    const br = `(${aVar('x')} ${k < 0 ? '− ' + Math.abs(k) : '+ ' + k})`;
+    el.innerHTML = `<div style="${A_LBL}">Factorise</div>${a}${br} + ${b}${aVar('x')}${br}`;
+    qData.factorAnsText = `(x ${k < 0 ? '− ' + Math.abs(k) : '+ ' + k})(${b}x + ${a})`;
+    qData.factorB0 = `x ${k < 0 ? '- ' + Math.abs(k) : '+ ' + k}`;
+    qData.factorB1 = `${b}x + ${a}`;
+    qData.factorAnsHtml = `${br}(${b}${aVar('x')} + ${a})`;
+    qData.workSteps = `The bracket ${br} is common to both parts.<br>Take it out: ${br}(${b}${aVar('x')} + ${a}).<br>Answer: <b>${qData.factorAnsHtml}</b>.`;
+  } else if (level === 2) {
+    // Two-variable grouping:  (a v1 ± b)(c v2 ± d)  →  ac·v1v2 + ad·v1 + bc·v2 + bd
+    const [v1, v2] = [['p', 'q'], ['a', 'b'], ['x', 'y'], ['m', 'n']][ri(4)];
+    let a, c, b, d;
+    do { a = rr(2, 4); c = rr(2, 4); b = nzrand(-5, 5); d = nzrand(-5, 5); }
+    while (gcd(a, Math.abs(b)) !== 1 || gcd(c, Math.abs(d)) !== 1);   // primitive brackets
+    qData.factorVars = [v1, v2];
+    const f1 = {}, f2 = {};
+    f1[v1] = a; f1[''] = b; f2[v2] = c; f2[''] = d;
+    qData.factorTarget = multiplyPoly(f1, f2);
+    const t = qData.factorTarget;
+    // Display in grouping order: (v1v2) (v1) (v2) (const). Leading term has no sign.
+    const sigV1V2 = monoToSig({ [v1]: 1, [v2]: 1 });
+    const lead = `${t[sigV1V2]}${v1}${v2}`;
+    const disp = `${lead} ${termHtml(t[v1], v1)} ${termHtml(t[v2], v2)} ${termHtml(t[''], '')}`;
+    el.innerHTML = `<div style="${A_LBL}">Factorise</div>${disp}`;
+    qData.factorAnsText = `(${a}${v1} ${b < 0 ? '− ' + Math.abs(b) : '+ ' + b})(${c}${v2} ${d < 0 ? '− ' + Math.abs(d) : '+ ' + d})`;
+    qData.factorB0 = `${a}${v1} ${b < 0 ? '- ' + Math.abs(b) : '+ ' + b}`;
+    qData.factorB1 = `${c}${v2} ${d < 0 ? '- ' + Math.abs(d) : '+ ' + d}`;
+    qData.factorAnsHtml = qData.factorAnsText;
+    qData.workSteps = `Group in pairs and factor each pair, then take out the common bracket.<br>Answer: <b>${qData.factorAnsText}</b>.`;
+  } else {
+    // Cubic grouping:  (x² ± b)(x ± c)  →  x³ ± c x² ± b x ± bc
+    const b = nzrand(-7, 7), c = nzrand(-6, 6);
+    qData.factorVars = ['x'];
+    const f1 = { 'x^2': 1, '': b }, f2 = { 'x': 1, '': c };
+    qData.factorTarget = multiplyPoly(f1, f2);
+    const t = qData.factorTarget;
+    const disp = `${aPow('x', 3)} ${termHtml(t['x^2'], 'x', false, 2)} ${termHtml(t['x'], 'x')} ${termHtml(t[''], '')}`;
+    el.innerHTML = `<div style="${A_LBL}">Factorise</div>${disp}`;
+    qData.factorAnsText = `(x² ${b < 0 ? '− ' + Math.abs(b) : '+ ' + b})(x ${c < 0 ? '− ' + Math.abs(c) : '+ ' + c})`;
+    qData.factorB0 = `x2 ${b < 0 ? '- ' + Math.abs(b) : '+ ' + b}`;
+    qData.factorB1 = `x ${c < 0 ? '- ' + Math.abs(c) : '+ ' + c}`;
+    qData.factorAnsHtml = `(${aPow('x', 2)} ${b < 0 ? '− ' + Math.abs(b) : '+ ' + b})(${aVar('x')} ${c < 0 ? '− ' + Math.abs(c) : '+ ' + c})`;
+    qData.workSteps = `Group the first two and last two terms, factor each pair, then take out the common bracket.<br>Answer: <b>${qData.factorAnsHtml}</b>.`;
+  }
+}
+
+/* Render a single signed term "± k<var><pow>" for a question display (not the
+   leading term — always shows its sign). pow defaults to 1; var '' = constant. */
+function termHtml(coeff, varName, isProduct, pow) {
+  if (!coeff) coeff = 0;
+  const sign = coeff < 0 ? '−' : '+';
+  const mag = Math.abs(coeff);
+  let body;
+  if (varName === '') body = String(mag);
+  else if (isProduct) body = (mag === 1 ? '' : mag) + varName;     // e.g. "3pq"
+  else body = (mag === 1 ? '' : mag) + (pow === 2 ? aPow(varName, 2) : aVar(varName));
+  return `${sign} ${body}`;
+}
+/* Render a whole polynomial map as a question expression (descending-ish). */
+function polyHtml(poly) {
+  const order = ['x^2', 'x', ''];
+  const parts = [];
+  order.forEach(sig => {
+    if (poly[sig]) {
+      const coeff = poly[sig];
+      if (parts.length === 0) {
+        const mag = Math.abs(coeff);
+        const body = sig === '' ? String(mag) : (mag === 1 ? '' : mag) + (sig === 'x^2' ? aPow('x', 2) : aVar('x'));
+        parts.push((coeff < 0 ? '−' : '') + body);
+      } else {
+        parts.push(termHtml(coeff, sig === '' ? '' : 'x', false, sig === 'x^2' ? 2 : 1));
+      }
+    }
+  });
+  return parts.join(' ');
+}
+
 /* v25: read back what the student actually entered, as a display string, for the
    end-of-session review. Reads inputs before they're cleared. */
 function readUserAnswer(mode) {
@@ -5253,9 +5632,12 @@ function readUserAnswer(mode) {
       });
       return parts.length ? parts.join(' + ') : '—';
     }
-    if (mode === 'algType' || mode === 'algProd') return g('algTypeInput') || '—';
+    if (mode === 'algType' || mode === 'algProd' || mode === 'algPoly' || mode === 'algFactored') return g('algTypeInput') || '—';
     if (mode === 'choice') return (qData.chosen != null && TRIG_VALS[qData.chosen]) ? TRIG_VALS[qData.chosen].t : '—';
-    if (mode === 'factor') return `(${g('factorBox0') || '?'})(${g('factorBox1') || '?'})`;
+    if (mode === 'factor') {
+      const x0 = g('factorBox0') || '?', x1 = g('factorBox1') || '?';
+      return (qData.factorLayout === 'monoBracket') ? `${x0}(${x1})` : `(${x0})(${x1})`;
+    }
   } catch (e) {}
   return '—';
 }
@@ -5466,6 +5848,47 @@ function checkAns() {
     inp.classList.remove('ok','bad');
     inp.classList.add(correct ? 'ok' : 'bad');
   }
+  else if (mode === 'algPoly') {
+    // Typed expanded answer (e.g. x² + 5x + 6). Marked order-insensitively
+    // against the answer slots the generator already built.
+    const inp = id('algTypeInput');
+    const raw = inp.value.trim();
+    if (raw === '' || raw === '-' || raw === '−') { attempts--; inp.focus(); return; }
+    const slots = (qData.alg && qData.alg.slots) || [];
+    const got = parsePoly(raw);
+    correct = got !== null && polyEqual(got, slotsToPolySig(slots));
+    if (!correct) feedbackStr = `Answer: ${algAnswerStr(slots)}`;
+    inp.classList.remove('ok','bad');
+    inp.classList.add(correct ? 'ok' : 'bad');
+  }
+  else if (mode === 'algFactored') {
+    // Typed factorised answer, e.g. (x+2)(x+3), 8(x-5), (3p+1)(q+2).
+    const inp = id('algTypeInput');
+    const raw = inp.value.trim();
+    if (raw === '' || raw === '-' || raw === '−') { attempts--; inp.focus(); return; }
+    const parsed = parseFactored(raw);
+    if (!parsed) {
+      correct = false;
+    } else {
+      const kind = qData.factorKind || 'monic';
+      const prodOk = polyEqual(parsed.product, qData.factorTarget);
+      if (kind === 'hcf') {
+        // The monomial pulled out the front must be the FULL HCF, and there must
+        // be a genuine bracket left over.
+        const mono = parsed.factors.filter(f => Object.keys(f).length === 1);
+        const multi = parsed.factors.filter(f => Object.keys(f).length > 1);
+        let outFactor = { '': 1 };
+        mono.forEach(f => { outFactor = multiplyPoly(outFactor, f); });
+        correct = prodOk && multi.length >= 1 && polyEqual(outFactor, qData.hcf);
+      } else {
+        // monic / group: must be broken into ≥2 genuine factors (not left flat).
+        correct = prodOk && parsed.factors.length >= 2 && parsed.factors.every(f => polyHasVar(f));
+      }
+    }
+    if (!correct) feedbackStr = `Answer: ${qData.factorAnsText}`;
+    inp.classList.remove('ok','bad');
+    inp.classList.add(correct ? 'ok' : 'bad');
+  }
   else if (mode === 'choice') {
     // The tapped option was stored in qData.chosen by chooseTrig().
     if (qData.chosen == null) { attempts--; return; }
@@ -5481,10 +5904,22 @@ function checkAns() {
     const r0 = b0.value.trim(), r1 = b1.value.trim();
     // Don't burn an attempt on an empty box.
     if (r0 === '' || r1 === '') { attempts--; (r0 === '' ? b0 : b1).focus(); return; }
-    const m0 = parseLinearExpr(r0), m1 = parseLinearExpr(r1);
-    // Each bracket must parse as a linear expression; their product must equal
-    // the original. parseLinearExpr returns null on powers/brackets/garbage.
-    correct = (m0 !== null && m1 !== null) && polyEqual(multiplyLinear(m0, m1), qData.factorTarget);
+    const kind = qData.factorKind || 'monic';
+    if (kind === 'monic') {
+      // Each bracket is a linear binomial; product must equal the original.
+      const m0 = parseLinearExpr(r0), m1 = parseLinearExpr(r1);
+      correct = (m0 !== null && m1 !== null) && polyEqual(multiplyLinear(m0, m1), qData.factorTarget);
+    } else if (kind === 'group') {
+      // Two general binomials; both must be non-constant; product equals original.
+      const m0 = parsePoly(r0), m1 = parsePoly(r1);
+      correct = (m0 !== null && m1 !== null) && polyHasVar(m0) && polyHasVar(m1)
+                && polyEqual(multiplyPoly(m0, m1), qData.factorTarget);
+    } else { // 'hcf'
+      // box0 must be the FULL HCF; box1 a non-constant polynomial; product equals original.
+      const m0 = parsePoly(r0), m1 = parsePoly(r1);
+      correct = (m0 !== null && m1 !== null) && polyEqual(m0, qData.hcf) && polyHasVar(m1)
+                && polyEqual(multiplyPoly(m0, m1), qData.factorTarget);
+    }
     if (!correct) feedbackStr = `Answer: ${qData.factorAnsText}`;
     [b0, b1].forEach(b => { b.classList.remove('ok','bad'); b.classList.add(correct ? 'ok' : 'bad'); });
   }
@@ -5815,20 +6250,26 @@ function fracHTML(n, d, col) {
 ════════════════════════════════════════════ */
 function genIntSquareCube() {
   const el = id('qText');
-  // L1: squares of neg integers, L2: cubes, L3: mix
+  // Levels unchanged: L1 squares, L2 cubes, L3 mix. Each question randomly uses a
+  // positive base (n²), a bracketed negative base ((−n)²), or a negative OUTSIDE
+  // the bracket (−(n)²) — so students learn (−2)² = 4 but −(2)² = −4.
   const mx = [8, 6, 8][level - 1];
-  const n = -rr(1, mx);  // always negative base
-  let doSquare;
-  if (level === 1) doSquare = true;
-  else if (level === 2) doSquare = false;
-  else doSquare = Math.random() < 0.5;
-
-  if (doSquare) {
-    qData.ans = n * n;
-    el.textContent = `(${n})²`;
+  const n  = rr(1, mx);
+  const p  = (level === 1) ? 2 : (level === 2) ? 3 : (Math.random() < 0.5 ? 2 : 3);
+  const pw = p === 2 ? '²' : '³';
+  const np = Math.pow(n, p);                       // n^p (positive)
+  const form = ['pos', 'negIn', 'negOut'][ri(3)];
+  if (form === 'pos') {
+    qData.ans = np;
+    el.textContent = `${n}${pw}`;
+  } else if (form === 'negIn') {
+    // (−n)^p  →  + for even powers, − for odd
+    qData.ans = (p % 2 === 0) ? np : -np;
+    el.textContent = `(−${n})${pw}`;
   } else {
-    qData.ans = n * n * n;
-    el.textContent = `(${n})³`;
+    // −(n)^p  →  always negative (the power applies before the leading minus)
+    qData.ans = -np;
+    el.textContent = `−(${n})${pw}`;
   }
 }
 
@@ -6554,7 +6995,7 @@ function kbPress(char) {
   if (!kbTarget || kbTarget.disabled) return;
 
   const mode = getInputMode();
-  const algText = (mode === 'algType' || mode === 'factor');
+  const algText = ['algType', 'algPoly', 'algFactored'].includes(mode);
   let cur = kbTarget.value;
 
   /* Dot: only allow one, only for sci coeff */
@@ -6617,7 +7058,7 @@ function getKbInputOrder() {
     }
     return order.length ? order : ['algC0'];
   }
-  if (mode === 'algType' || mode === 'algProd') return ['algTypeInput'];
+  if (mode === 'algType' || mode === 'algProd' || mode === 'algPoly' || mode === 'algFactored') return ['algTypeInput'];
   if (mode === 'choice') return [];
   if (mode === 'factor') return ['factorBox0','factorBox1'];
   return ['ansInput'];
@@ -6636,7 +7077,7 @@ function kbShow() {
   const skillId = (typeof skill !== 'undefined') ? skill : '';
 
   /* Decide which optional keys to show */
-  const showNeg = ['intAddSub','intMultDiv','indexDiv','indexMult','indexPow','sciTo','sciFrom',
+  const showNeg = ['intAddSub','intMultDiv','intSquareCube','indexDiv','indexMult','indexPow','sciTo','sciFrom',
                    'eqOneStepAddSub','eqOneStepMulDiv','eqTwoStep',
                    'eqTwoStepFrac','eqVarDenom','eqBothSides'].includes(skillId)
                   || mode === 'index' || mode === 'sci' || mode === 'algebra';
@@ -6657,14 +7098,14 @@ function kbShow() {
   /* Algebra free-text row: show variable + operator keys for the current answer */
   const algRow = document.getElementById('kbAlgRow');
   if (algRow) {
-    const isAlgText = (mode === 'algType' || mode === 'algProd' || mode === 'factor');
+    const isAlgText = ['algType', 'algProd', 'algPoly', 'algFactored'].includes(mode);
     if (isAlgText) {
       algRow.style.display = 'flex';
       let vars;
       if (mode === 'algProd') {
         const p = (typeof qData !== 'undefined' && qData.prodAns) || { vars: {} };
         vars = Object.keys(p.vars || {}).filter(k => p.vars[k] !== 0).sort();
-      } else if (mode === 'factor') {
+      } else if (mode === 'algFactored') {
         vars = (typeof qData !== 'undefined' && qData.factorVars) || ['x'];
       } else {
         const slots = (typeof qData !== 'undefined' && qData.alg && qData.alg.slots) || [];
@@ -6677,14 +7118,20 @@ function kbShow() {
         if (vars[vi]) { const ch = vars[vi]; b.style.display = ''; b.textContent = ch; b.onclick = () => kbPress(ch); }
         else { b.style.display = 'none'; }
       });
-      // '+' for multi-term answers: algType and factor (binomials) need it.
+      // '+' for multi-term answers (everything except a single monomial product).
       const plus = document.getElementById('kbPlusBtn');
-      if (plus) plus.style.display = (mode === 'algType' || mode === 'factor') ? '' : 'none';
-      // Power keys (² ³) only for algProd typed answers (factor brackets are linear).
+      if (plus) plus.style.display = (mode === 'algProd') ? 'none' : '';
+      // ² needed by product, polynomial, and factored answers; ³ only by products.
+      const allowSq = (mode === 'algProd' || mode === 'algPoly' || mode === 'algFactored');
       const p2 = document.getElementById('kbPow2');
       const p3 = document.getElementById('kbPow3');
-      if (p2) p2.style.display = (mode === 'algProd') ? '' : 'none';
+      if (p2) p2.style.display = allowSq ? '' : 'none';
       if (p3) p3.style.display = (mode === 'algProd') ? '' : 'none';
+      // Bracket keys only for typed factorisation answers.
+      const ob = document.getElementById('kbOpenBtn');
+      const cb = document.getElementById('kbCloseBtn');
+      if (ob) ob.style.display = (mode === 'algFactored') ? '' : 'none';
+      if (cb) cb.style.display = (mode === 'algFactored') ? '' : 'none';
     } else {
       algRow.style.display = 'none';
     }
