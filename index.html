@@ -4,9 +4,42 @@
 <meta charset="UTF-8">
 <title>Sandy Fast Facts</title>
 <!--
-  Sandy Fast Facts — v47
+  Sandy Fast Facts — v49
   Current skills-platform build: 9 categories, 57 skills, 171 levels. Full version
-  history (v22 → v46) lives in SandyFastFacts_HandoffGuide.
+  history (v22 → v48) lives in SandyFastFacts_HandoffGuide.
+
+  Changes in v49 (results-screen layout + mobile input; DISPLAY-ONLY, storage-safe —
+  NO skill ids, lvKeys, inputMode plumbing, ff_ localStorage keys, scoring formula,
+  band THRESHOLDS, or share-line changed):
+    + Results screen (scored sessions) now LEADS with the animal band as a big
+      coloured chip, with the next-level target underneath ("Next: 🐕 Greyhound
+      at a score of N", derived from the EXISTING band cutoffs — no new numbers).
+      The Fluency/Challenge Score moves into a 4th stat box beside Correct /
+      Accuracy / Per min (2×2 on narrow phones). The 🎯 Fluent badge and the PB
+      banner are unchanged. Practice sessions keep the big score number + formula
+      (no band applies to practice). New helper: nextBandInfo (display-only).
+    + Fixed long typed-algebra answers being clipped to their end. The field now
+      fills the row at a legible size, and the keypad display strip left-aligns +
+      wraps in algebra modes so the whole answer is always visible; the keypad's
+      height reserve re-syncs as the strip grows.
+
+  Changes in v48 (mobile UX / layout only; NO skill ids, lvKeys, inputMode
+  plumbing, ff_ localStorage keys, scoring formula, bands, or share-line changed):
+    + Fixed iOS double-tap-to-zoom on the on-screen keypad. Cause: fast repeated
+      taps on a control (e.g. times-tables / squares drills) were read by iOS as
+      a double-tap-zoom gesture. Fix: `touch-action: manipulation` on every
+      interactive control kills double-tap zoom while KEEPING deliberate
+      pinch-zoom (accessibility). Removed `maximum-scale=1.0, user-scalable=no`
+      from the viewport — iOS ignored it (pinch worked anyway) but Android obeyed
+      it and blocked pinch-zoom entirely; pinch now works on every platform.
+    + Fixed the algebra keypad covering the question/answer. The algebra modes
+      add a 5th (symbol) keypad row, making the fixed keypad taller than the
+      reserved space. Fixes: (A) the question box is now sticky to the top on
+      mobile, so it's always visible above the keypad; (B) a short-screen media
+      query trims the keypad on small phones; and the body's bottom reserve is
+      now set to the keypad's measured height (syncKeypadClearance), so neither
+      the 4-row nor the 5-row keypad overlaps content. The focused field eases
+      into view (matters for fraction/index/ratio "Next →").
 
   Changes in v47 (display/content only; storage-safe):
     + "Show me how" tips added for the recall facts that have a teachable rule:
@@ -39,7 +72,8 @@
                   All PBs, profiles, today queue, sent flags remain intact.
                   VBA dashboard requires NO changes — share-line format unchanged.
 -->
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, interactive-widget=resizes-content">
+<!-- v48: dropped `maximum-scale=1.0, user-scalable=no`. iOS ignored it (so pinch worked there anyway) but Android obeyed it, blocking accessibility pinch-zoom. Accidental double-tap-to-zoom is now killed per-control via `touch-action: manipulation` instead, which leaves deliberate pinch-zoom intact on every platform. -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
 <style>
@@ -91,6 +125,17 @@ body.dark {
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ── v48: kill ACCIDENTAL double-tap-to-zoom on every interactive control.
+   iOS reads two fast taps on a control (e.g. rapid times-tables keypad taps)
+   as a double-tap-zoom gesture and zooms the page in mid-drill. `manipulation`
+   disables double-tap zoom + the legacy 300ms tap delay on these elements while
+   KEEPING deliberate pinch-zoom available (an accessibility requirement). The
+   app wires interactions via inline onclick, so `[onclick]` covers the cards,
+   mode/level buttons and links; the rest are explicit. ── */
+button, a, input, textarea, select, label, [onclick], .kb-key {
+  touch-action: manipulation;
+}
 
 body {
   font-family: 'Nunito', sans-serif;
@@ -721,6 +766,28 @@ body {
   display: grid; grid-template-columns: repeat(3, 1fr);
   gap: 10px; margin-bottom: 16px;
 }
+/* v49: scored sessions show a 4th box (Score). Drop to 2×2 on narrow phones. */
+.res-stats.four { grid-template-columns: repeat(4, 1fr); }
+
+/* v49: prominent animal-band hero (scored sessions lead with this) */
+.res-band-hero { margin: 4px 0 18px; }
+.res-band-chip {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-weight: 900; font-size: 1.9rem; line-height: 1;
+  padding: 12px 24px; border-radius: 999px;
+  box-shadow: var(--shadow);
+}
+.res-band-chip .ac-emoji { font-size: 1.8rem; }
+.res-band-hero .fluent-badge,
+.res-band-hero .res-newband { font-size: 0.8rem; vertical-align: middle; margin-left: 8px; }
+.res-newband {
+  display: inline-block; font-weight: 800;
+  color: var(--green); background: var(--green-bg);
+  border: 1px solid #86efac; border-radius: 999px; padding: 2px 9px;
+}
+.rbh-next { font-size: 0.98rem; font-weight: 800; color: var(--muted); margin-top: 14px; }
+.rbh-next b { color: var(--text); }
+.res-formula { font-size: 0.72rem; color: var(--muted); font-weight: 700; margin: -6px 0 14px; }
 .res-stat {
   background: var(--surface2); border-radius: var(--r-sm);
   border: 1px solid var(--border);
@@ -1206,6 +1273,28 @@ body {
   .cat-grid { grid-template-columns: 1fr; }
 }
 
+/* v49: 4-box scored stats wrap to 2×2 on narrow phones; band hero scales down */
+@media (max-width: 480px) {
+  .res-stats.four { grid-template-columns: repeat(2, 1fr); }
+  .res-band-chip { font-size: 1.6rem; padding: 10px 20px; }
+  .res-band-chip .ac-emoji { font-size: 1.5rem; }
+}
+
+/* v49: typed algebra answers can be long (e.g. (x + 3)(x − 5)). Let the field
+   fill the available width and use a smaller font so the whole answer shows
+   instead of scrolling to the end. The keypad display strip (below) also
+   left-aligns and wraps in these modes, so the full answer is always visible. */
+#algTypeWrap > div { width: 100%; }
+#algTypeInput {
+  flex: 1 1 auto; width: auto; min-width: 0; max-width: 100%;
+  text-align: center; font-size: 1.5rem;
+}
+/* Keypad display strip: wrap + left-align the whole typed answer for algebra. */
+#kbDisplay.kb-disp-wrap { text-align: left; }
+#kbDisplay.kb-disp-wrap #kbDisplayText {
+  overflow-wrap: anywhere; word-break: break-word; letter-spacing: 0;
+}
+
 /* ── iOS ZOOM FIX: iOS Safari zooms in when any input has font-size < 16px.
    Force all interactive inputs to 16px minimum on mobile so the viewport
    never zooms when a student taps a field. ── */
@@ -1324,13 +1413,21 @@ body {
   /* ── PB nudge: smaller ── */
   .pb-nudge { font-size: 0.75rem; margin-bottom: 6px; min-height: 16px; }
 
-  /* ── Question box: less padding, smaller font ── */
+  /* ── Question box: compact AND pinned to the top of the viewport (v48) so the
+     question is ALWAYS visible above the fixed keypad, however tall the keypad
+     gets in algebra. z-index sits below the keypad (z-index 100). It's sized to
+     content (no max-height) so a long algebra question wraps instead of clipping,
+     and its surface background is opaque so content scrolls cleanly underneath. ── */
   .q-box {
-    padding: 16px 12px;
-    min-height: 90px;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    padding: 12px 12px;
+    min-height: 64px;
     margin-bottom: 10px;
+    background: var(--surface);
   }
-  .q-text { font-size: 2.2rem; }
+  .q-text { font-size: 2rem; }
 
   /* ── Fraction input: smaller boxes ── */
   .frac-num-input,
@@ -1347,6 +1444,10 @@ body {
     padding: 8px 12px;
   }
   .ans-wrap { margin-bottom: 8px; }
+  /* v49: typed-algebra field fills the row and uses a legible size that still
+     fits long answers. It's readonly on mobile (custom keypad), so the >16px
+     size carries no focus-zoom risk; the !important beats the global 16px rule. */
+  #algTypeInput { font-size: 1.35rem !important; width: 100% !important; padding: 8px 10px !important; }
 
   /* ── Index inputs ── */
   .idx-input { font-size: 1.2rem !important; width: 70px !important; padding: 6px 4px !important; }
@@ -1374,6 +1475,32 @@ body {
 
   /* ── idx-q-display: smaller on mobile ── */
   .idx-q-display { font-size: 1.6rem; }
+}
+
+/* ══════════════════════════════════════════════════
+   SHORT PHONES (v48) — the algebra keypad gains a 5th (symbol) row, so on
+   shorter screens it needs to shed height to leave room for the pinned
+   question + answer. These overrides only bite when vertical space is tight,
+   so taller phones keep the comfortable sizing above. The JS clearance sync
+   (syncKeypadClearance) still reserves exactly the keypad's measured height,
+   so nothing overlaps regardless; this just keeps keys reachable on small
+   devices. ══════════════════════════════════════════════════ */
+@media (max-width: 767px) and (max-height: 760px) {
+  #kbDisplay {
+    padding: 4px 12px !important;
+    font-size: 1.1rem !important;
+    min-height: 30px !important;
+    margin-bottom: 6px !important;
+  }
+  .kb-key {
+    padding: 9px 4px !important;
+    font-size: 1.05rem !important;
+  }
+  .kb-row { gap: 5px !important; margin-bottom: 5px !important; }
+  .q-box { min-height: 52px; padding: 10px 12px; }
+  .q-text { font-size: 1.8rem; }
+  .game-stats { padding: 5px 0 4px; }
+  .stat-pill { padding: 4px 9px; font-size: 0.8rem; }
 }
 </style>
 </head>
@@ -1846,13 +1973,22 @@ body {
 <div id="s-results" class="screen">
   <div style="padding-top:8px"></div>
   <div class="res-card">
+    <!-- v49: scored sessions LEAD with the animal band (prominent) + the next-level
+         target; the score moves into a 4th stat box below. Practice keeps the big
+         score number + formula (no band applies to practice). -->
+    <div class="res-band-hero" id="rBandHero" style="display:none">
+      <div id="rBandChip"></div>
+      <div class="rbh-next" id="rBandNext"></div>
+    </div>
     <div class="res-score" id="rScore">0</div>
     <div class="res-label" id="rLabel">Challenge Score</div>
-    <div class="res-stats">
+    <div class="res-stats" id="rStats">
       <div class="res-stat"><div class="val" id="rCorrect">–</div><div class="key">Correct</div></div>
       <div class="res-stat"><div class="val" id="rAcc">–</div><div class="key">Accuracy</div></div>
       <div class="res-stat"><div class="val" id="rCpm">–</div><div class="key">Per min</div></div>
+      <div class="res-stat" id="rScoreBox" style="display:none"><div class="val" id="rScoreVal">–</div><div class="key">Score</div></div>
     </div>
+    <div class="res-formula" id="rFormula" style="display:none"></div>
     <div class="res-verdict" id="rVerdict"></div>
     <div class="pb-banner" id="rPbBanner"></div>
     <div id="rSparkWrap">
@@ -2582,6 +2718,17 @@ function animalIndexFor(score, s, lv) {
   return 0;                       // Kangaroo
 }
 function animalForScore(score, s, lv) { return ANIMALS[animalIndexFor(score, s, lv)]; }
+
+/* v49 (DISPLAY-ONLY): the next band up from a score and the lowest Fluency Score
+   that reaches it. Reads the SAME cutoffs the bands already use — it introduces
+   no new thresholds. Returns { next: ANIMALS entry, at: score } or null at top. */
+function nextBandInfo(score, s, lv) {
+  const bi = animalIndexFor(score, s, lv);
+  if (bi >= 4) return null;                  // already Cheetah (top band)
+  const { k, g, l, a } = bandCutoffs(s, lv);
+  const ats = [k + 1, g + 1, l + 1, a + 1];  // → Greyhound, Lion, Antelope, Cheetah
+  return { next: ANIMALS[bi + 1], at: ats[bi] };
+}
 
 /* ── FLUENT (re-added v45) ──
    "Fluent" is reaching the start of Antelope (band index ≥ 3) and only applies
@@ -6243,16 +6390,39 @@ function endSession() {
 ═══════════════════════════════════════════════ */
 function showResults(fluency, correct, acc, cpm, pbResult, pb, trend) {
   show('s-results');
-  setText('rScore', fluency);
-  setText('rLabel', sessionMode === 'fluency'
+  const scoredTop = sessionMode === 'fluency' || sessionMode === 'challenge';
+  const formula = sessionMode === 'fluency'
     ? 'Fluency Score = correct per minute × accuracy²'
     : sessionMode === 'challenge'
     ? 'Challenge Score = correct per minute × accuracy²'
-    : 'Practice Score = correct answers × accuracy');
+    : 'Practice Score = correct answers × accuracy';
+
   setText('rCorrect', correct);
   setText('rAcc', Math.round(acc*100) + '%');
   setText('rCpm', cpm);
+  setText('rScoreVal', fluency);
   setText('rSparkSkill', skillMeta ? skillMeta.name.replace(/&amp;/g,'&') + ' · L' + level : '');
+
+  // v49: scored sessions LEAD with the band hero and move the score into a 4th
+  // stat box; practice keeps the big score number + formula (no band applies).
+  if (scoredTop) {
+    id('rBandHero').style.display = 'block';
+    id('rScore').style.display = 'none';
+    id('rLabel').style.display = 'none';
+    id('rScoreBox').style.display = '';
+    id('rStats').classList.add('four');
+    id('rFormula').style.display = 'block';
+    setText('rFormula', formula);
+  } else {
+    id('rBandHero').style.display = 'none';
+    id('rScore').style.display = 'block';
+    id('rLabel').style.display = 'block';
+    setText('rScore', fluency);
+    setText('rLabel', formula);
+    id('rScoreBox').style.display = 'none';
+    id('rStats').classList.remove('four');
+    id('rFormula').style.display = 'none';
+  }
 
   const banner = id('rPbBanner');
   // v30: practice sessions are now queued for sharing too, so show the share
@@ -6300,24 +6470,28 @@ function showResults(fluency, correct, acc, cpm, pbResult, pb, trend) {
   if (scored) {
     const accPctR = Math.round(acc * 100);
     const a = animalForScore(fluency, skill, level);
-    const cheetah = cheetahThreshold(skill, level);
     const bi = animalIndexFor(fluency, skill, level);
     const atTop = a.key === 'cheetah';
     // v45: Fluent (recall skills only) = reaching Antelope (band index ≥ 3).
     const recallFluentNow = kind === 'recall' && bi >= FLUENT_BAND_INDEX;
     const fluentTag = recallFluentNow ? ' <span class="fluent-badge">🎯 Fluent</span>' : '';
-    const lead = sessionBandUp
-      ? `<span class="vt">${a.emoji} New band — ${a.name}!</span>${fluentTag}`
-      : `<span class="vt">${a.emoji} ${a.name}</span>${fluentTag}`;
-    let tail;
-    if (atTop) tail = ` Top band — ${cpm}/min at ${accPctR}%. 🐆`;
-    else if (kind === 'recall' && bi < FLUENT_BAND_INDEX) {
-      // not yet fluent — point at the Antelope (fluent) threshold
-      const fluentAt = bandCutoffs(skill, level).l + 1;
-      tail = ` Score ${fluency} at ${accPctR}% — reach 🦌 Antelope (${fluentAt}) to be Fluent.`;
-    } else tail = ` Score ${fluency} at ${accPctR}% — 🐆 Cheetah is ${cheetah}.`;
-    v.className = 'res-verdict ' + (atTop || sessionBandUp || recallFluentNow ? 'fluent' : 'near');
-    v.innerHTML = lead + tail;
+    const newTag = sessionBandUp ? ' <span class="res-newband">⬆ New band!</span>' : '';
+
+    // v49: the band is now the prominent hero (big coloured chip), with the
+    // next-level target underneath. Folds the old single verdict line in here.
+    id('rBandChip').innerHTML = animalChipHTML(a, 'res-band-chip') + fluentTag + newTag;
+    let nextHtml;
+    if (atTop) {
+      nextHtml = `Top band — you've maxed this level! 🐆`;
+    } else {
+      const nb = nextBandInfo(fluency, skill, level);
+      nextHtml = `Next: ${nb.next.emoji} <b>${nb.next.name}</b> at a score of <b>${nb.at}</b>`;
+      // For recall skills, reaching Antelope is also where you become Fluent.
+      if (kind === 'recall' && nb.next.key === 'antelope') nextHtml += ` — become Fluent 🎯`;
+    }
+    id('rBandNext').innerHTML = nextHtml;
+    v.className = 'res-verdict';
+    v.innerHTML = '';   // verdict text folded into the band hero above
   } else if (kind === 'recall') {
     const tgt = getFluencyTarget(skill, level);
     v.className = 'res-verdict';
@@ -7189,6 +7363,12 @@ function kbFocus(el) {
   kbTarget = el;
   el.classList.add('kb-focused');
   kbRefreshDisplay();
+  /* v48: ease the active field into the visible band (below the pinned
+     question, above the fixed keypad) — matters most for multi-box modes
+     (fraction/index/ratio) when "Next →" moves focus down the page. */
+  if (typeof el.scrollIntoView === 'function') {
+    el.scrollIntoView({ block: 'center', behavior: 'smooth' });
+  }
 }
 
 /* Update the display strip to show current field value */
@@ -7198,6 +7378,9 @@ function kbRefreshDisplay() {
   const val = kbTarget.value;
   disp.textContent = val === '' ? '–' : val;
   disp.style.color = val === '' ? 'var(--muted)' : 'var(--text)';
+  /* v49: a long algebra answer can wrap the display strip onto extra lines,
+     making the fixed keypad taller — re-reserve so nothing is hidden behind it. */
+  if (typeof syncKeypadClearance === 'function') syncKeypadClearance();
 }
 
 /* ── Key press handlers ── */
@@ -7309,6 +7492,13 @@ function kbShow() {
   const mode = getInputMode();
   const skillId = (typeof skill !== 'undefined') ? skill : '';
 
+  /* v49: in typed-algebra modes the answer can be long, so left-align + wrap
+     the display strip — the whole answer stays visible even if the field
+     itself scrolls. Numeric modes keep the right-aligned single-line readout. */
+  const disp = document.getElementById('kbDisplay');
+  if (disp) disp.classList.toggle('kb-disp-wrap',
+    ['algType', 'algProd', 'algPoly', 'algFactored'].includes(mode));
+
   /* Decide which optional keys to show */
   const showNeg = ['intAddSub','intMultDiv','intSquareCube','indexDiv','indexMult','indexPow','sciTo','sciFrom',
                    'eqOneStepAddSub','eqOneStepMulDiv','eqTwoStep',
@@ -7379,12 +7569,35 @@ function kbShow() {
 
   /* Scroll game screen to top so stats + question are visible */
   window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  /* v48: reserve exactly the keypad's real height. Done last, after the
+     algebra symbol row's visibility is decided above, so the measurement
+     includes (or excludes) the 5th row correctly. */
+  syncKeypadClearance();
+}
+
+/* v48: keep the body's bottom padding equal to the fixed keypad's ACTUAL
+   height so the answer field and the Next/✓ row can always scroll clear of
+   it. A number-mode keypad is ~4 rows and an algebra keypad ~5, so a single
+   fixed reserve can't fit both — this measures the live height each time the
+   keypad is shown. Inline style wins over the CSS fallback (280px); clearing
+   it lets other (non-game) screens fall back to that value. */
+function syncKeypadClearance() {
+  const pad = document.getElementById('mobileKeypad');
+  if (!IS_MOBILE() || !pad || pad.style.display === 'none') {
+    document.body.style.paddingBottom = '';
+    return;
+  }
+  const h = pad.offsetHeight || 0;
+  if (h > 0) document.body.style.paddingBottom = (h + 24) + 'px';
 }
 
 function kbHide() {
   const pad = document.getElementById('mobileKeypad');
   if (pad) pad.style.display = 'none';
   kbTarget = null;
+  /* v48: drop the measured reserve so non-game screens don't keep a tall pad. */
+  document.body.style.paddingBottom = '';
 }
 
 /* ── Re-apply readonly on enabled inputs so native keyboard stays away ── */
@@ -7404,6 +7617,8 @@ window.addEventListener('resize', () => {
   const pad = document.getElementById('mobileKeypad');
   if (!pad) return;
   if (!IS_MOBILE() && pad.style.display !== 'none') kbHide();
+  /* v48: keypad height changes with width/orientation — re-reserve. */
+  syncKeypadClearance();
 });
 
 
