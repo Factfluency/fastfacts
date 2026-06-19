@@ -4,23 +4,19 @@
 <meta charset="UTF-8">
 <title>Sandy Fast Facts</title>
 <!--
-  Sandy Fast Facts — v46
+  Sandy Fast Facts — v47
   Current skills-platform build: 9 categories, 57 skills, 171 levels. Full version
-  history (v22 → v45) lives in SandyFastFacts_HandoffGuide.
+  history (v22 → v46) lives in SandyFastFacts_HandoffGuide.
 
-  Changes in v46 (display + tutorial only; storage-safe — NO skill ids, ff_ keys,
-  scoring formula, or share-line changed):
-    + Level cards now show the FLUENT score (start of Antelope) for recall skills
-      instead of the Cheetah score, plus the animal the student currently is, then
-      recent scores. Method skills keep the Cheetah stretch target. The target
-      line now sits in the content column (was wrapping in the badge column).
-    + Onboarding now presents the animals as a top-down speed pyramid (🐆 Cheetah
-      highest → 🦘 Kangaroo lowest) with the classroom descriptors, and states the
-      pyramid ordering explicitly.
+  Changes in v47 (display/content only; storage-safe):
+    + "Show me how" tips added for the recall facts that have a teachable rule:
+      Integers (Add/Subtract, Multiply/Divide, Squares & Cubes) and Decimals
+      (Add/Subtract, Multiply, Divide, Squares & Cubes) — via METHOD_TIP.
+      Genuinely step-free facts (times tables, division, plain add/subtract,
+      squares, roots, cubes, cube roots) intentionally still have no tip.
 
-  Changes in v45: Fluent re-added (Antelope+, recall only); Personal Bests animal
-  column; intro animal grid; band recalibrations; Multiply/Divide Integers example
-  bug fixed (own 'intmd' levels).
+  Changes in v46: level cards show the Fluent score (recall) + current animal;
+  onboarding is a top-down speed pyramid with classroom descriptors.
 
   Changes in v43 (additive, DISPLAY-ONLY, storage-safe — NO skill ids, lvKeys,
   inputMode plumbing, ff_ localStorage keys, scoring formula, or share-line changed):
@@ -2458,7 +2454,17 @@ const METHOD_TIP = {
   algFactorGroup:'Group the terms in pairs, factor each pair, then take out the common bracket that appears in both.',
   pythagoras:'a² + b² = c², where c is the hypotenuse (the longest side, opposite the right angle). To find a shorter side, rearrange: a² = c² − b².',
   trigExactDeg:'Use the special triangles (30-60-90 and 45-45-90) or the unit circle. Watch the sign: sin is positive above the x-axis, cos is positive to the right.',
-  trigExactRad:'Same special angles in radians: π/6 = 30°, π/4 = 45°, π/3 = 60°, π/2 = 90°. Use the unit circle and watch the quadrant for the sign.'
+  trigExactRad:'Same special angles in radians: π/6 = 30°, π/4 = 45°, π/3 = 60°, π/2 = 90°. Use the unit circle and watch the quadrant for the sign.',
+  // v47: recall facts that DO have a teachable rule get a short "Show me how" tip.
+  // (The genuinely step-free facts — times tables, division, plain add/subtract,
+  // squares, roots, cubes, cube roots — are intentionally left with no tip.)
+  intAddSub:'Subtracting a negative is the same as adding: − (−2) becomes + 2. Adding a negative is the same as subtracting.',
+  intMultDiv:'Work out the numbers as normal, then fix the sign: same signs make a positive, different signs make a negative (− × − = +, − × + = −).',
+  intSquareCube:'Squaring always gives a positive: (−3)² = 9. But −(3)² means square first, then make it negative: −9. Cubing keeps the sign: (−2)³ = −8.',
+  decAddSub:'Line up the decimal points (and the place columns) before adding or subtracting — fill any gaps with zeros.',
+  decMultiply:'Ignore the points and multiply as whole numbers, then count the total decimal places in the question and put that many in the answer.',
+  decDivide:'Shift the decimal point in BOTH numbers until you are dividing by a whole number, then divide as normal.',
+  decSquareCube:'Work it out ignoring the point, then place the decimal: squaring doubles the decimal places, cubing triples them. e.g. 0.2² = 0.04.'
 };
 
 /* Per-(profile,skill,level) "fluent achieved" flag — additive storage, never
