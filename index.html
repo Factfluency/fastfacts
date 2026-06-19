@@ -4,22 +4,44 @@
 <meta charset="UTF-8">
 <title>Sandy Fast Facts</title>
 <!--
-  Sandy Fast Facts — v22
-  Changes since v21:
-    + New category: Ratios & Rates (➡️) with 5 skills:
-        • Simplifying Ratios (L1 whole, L2 decimals, L3 fractions) — new 'ratio' input mode
-        • Equivalent Ratios (L1 2-part, L2 3-part, L3 decimal multiplier) — number input
-        • Sharing in a Ratio (L1 2-part, L2 3-part, L3 larger nums) — single-number forward share
-            · L1 constrained to within 12× tables (parts ≤ 9, multiplier ≤ 12)
-              so the focus is on the sharing method, not big-number multiplication
-        • Simplifying Rates (L1 whole, L2 decimal) — number input
-        • Converting Rates (L1 whole, L2 decimal, includes $/L → c/mL) — number input
-    + New input mode 'ratio' (two number boxes with colon)
-    + New keypad inputs ratioA, ratioB; Next button works in ratio mode
-    + Decimal key activates for rateSimplify/rateConvert
+  Sandy Fast Facts — v46
+  Current skills-platform build: 9 categories, 57 skills, 171 levels. Full version
+  history (v22 → v45) lives in SandyFastFacts_HandoffGuide.
+
+  Changes in v46 (display + tutorial only; storage-safe — NO skill ids, ff_ keys,
+  scoring formula, or share-line changed):
+    + Level cards now show the FLUENT score (start of Antelope) for recall skills
+      instead of the Cheetah score, plus the animal the student currently is, then
+      recent scores. Method skills keep the Cheetah stretch target. The target
+      line now sits in the content column (was wrapping in the badge column).
+    + Onboarding now presents the animals as a top-down speed pyramid (🐆 Cheetah
+      highest → 🦘 Kangaroo lowest) with the classroom descriptors, and states the
+      pyramid ordering explicitly.
+
+  Changes in v45: Fluent re-added (Antelope+, recall only); Personal Bests animal
+  column; intro animal grid; band recalibrations; Multiply/Divide Integers example
+  bug fixed (own 'intmd' levels).
+
+  Changes in v43 (additive, DISPLAY-ONLY, storage-safe — NO skill ids, lvKeys,
+  inputMode plumbing, ff_ localStorage keys, scoring formula, or share-line changed):
+    + Sandy Fast Facts ANIMAL BANDS added as a display layer (🦘 Kangaroo →
+      🐕 Greyhound → 🦁 Lion → 🦌 Antelope → 🐆 Cheetah), brand pyramid colours.
+      The band is read from the existing Fluency Score (CPM × accuracy²) against
+      per-skill-per-level thresholds. The Lion ceiling T is the automaticity
+      target; lower bands are thirds of T; Cheetah = 1.5·T. RECALL skills take T
+      from FLUENCY_TARGET (shared skills reproduce the classroom pyramid exactly);
+      METHOD skills take a low T from METHOD_BAND_CEIL (groups 8 / 5 / 4).
+    + The old 🎯 "Fluent" badge is REPLACED by the animal band on skill buttons,
+      level cards, and the results verdict. "Best animal" is derived from the
+      stored PB — NO new storage key. No animal is shown in Practice mode.
+      (The ff_fl_ fluent flag is still written but no longer surfaced — dormant,
+      storage-safe.)
+    + Onboarding slide 3 copy updated (Fluent badge → animal bands).
+
+  v42: onboarding slide 1 copy fix (nine topics) + header brought up to date.
   Storage safety: NO existing skill IDs, lvKeys, or storage keys changed.
-                  All v21 PBs, profiles, today queue, sent flags remain intact.
-                  VBA dashboard requires NO changes — skill names resolve from CATS at runtime.
+                  All PBs, profiles, today queue, sent flags remain intact.
+                  VBA dashboard requires NO changes — share-line format unchanged.
 -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, interactive-widget=resizes-content">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -747,6 +769,24 @@ body {
   border: 1px solid #86efac; border-radius: 999px;
   padding: 1px 8px; margin-left: 5px; vertical-align: middle;
 }
+/* ── Sandy Fast Facts animal band chips (brand pyramid colours) ──
+   Display-only. The band is read from the stored Fluency Score (CPM × acc²)
+   against per-skill-per-level thresholds — see ANIMALS / animalForScore in JS. */
+.animal-chip {
+  display: inline-flex; align-items: center; gap: 3px;
+  font-size: 0.68rem; font-weight: 800; white-space: nowrap;
+  border-radius: 999px; padding: 2px 9px; vertical-align: middle;
+  border: 1px solid rgba(0,0,0,0.12);
+}
+.animal-chip .ac-emoji { font-size: 0.8rem; line-height: 1; }
+/* Results-screen larger band pill */
+.animal-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-weight: 900; font-size: 1.05rem;
+  border-radius: 999px; padding: 4px 14px;
+  border: 1px solid rgba(0,0,0,0.12);
+}
+.animal-pill .ac-emoji { font-size: 1.25rem; line-height: 1; }
 .review-hdr { font-weight: 900; font-size: 1.05rem; margin: 18px 4px 10px; text-align: left; }
 .rv-item {
   background: var(--surface); border: 1.5px solid var(--border);
@@ -770,7 +810,7 @@ body {
 }
 .rv-work b { color: var(--accent); }
 .wk-note { display: block; margin-top: 5px; font-size: 0.82rem; font-style: italic; color: var(--muted); }
-.lv-target { display: block; font-size: 0.78rem; font-weight: 800; color: var(--muted); margin-top: 8px; }
+.lv-target { display: block; grid-column: 2; font-size: 0.78rem; font-weight: 800; color: var(--muted); margin-top: 8px; }
 
 /* ── v27: habit card ── */
 .habit-card { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--r); box-shadow: var(--shadow); padding: 14px 16px; margin-bottom: 14px; }
@@ -1903,7 +1943,7 @@ const CATS = {
     label: '± Integers',
     skills: [
       { id:'intAddSub',    name:'Add / Subtract Integers',         inputMode:'number', lvKey:'int'  },
-      { id:'intMultDiv',   name:'Multiply / Divide Integers',      inputMode:'number', lvKey:'int'  },
+      { id:'intMultDiv',   name:'Multiply / Divide Integers',      inputMode:'number', lvKey:'intmd'  },
       { id:'intSquareCube',name:'Squares &amp; Cubes of Integers', inputMode:'number', lvKey:'isc'  },
       { id:'intOrderOps',  name:'Order of Operations (Integers)',   inputMode:'number', lvKey:'ioo'  },
     ]
@@ -2049,6 +2089,14 @@ const LEVEL_DEFS = {
     { title:'Level 1 — Range ±10',   desc:'Integers from −10 to +10. Covers basic negative number operations.', examples:['−6 + 4', '3 − (−2)', '−5 + 8'] },
     { title:'Level 2 — Range ±20',   desc:'Integers from −20 to +20 for a more demanding range.', examples:['−14 + 9', '7 − (−11)', '−18 + 5'] },
     { title:'Level 3 — Range ±50',   desc:'Integers from −50 to +50. Builds strong mental number line skills.', examples:['−37 + 24', '−45 − (−18)', '29 − 41'] },
+  ],
+  /* v45: dedicated levels for Multiply / Divide Integers (was sharing the
+     add/sub 'int' levels, which showed the wrong examples). Ranges match the
+     generator's factors of 6 / 10 / 15. */
+  intmd: [
+    { title:'Level 1 — Factors to 6',  desc:'Multiply and divide integers with factors up to 6. Watch the signs: − × − = +.', examples:['(−4) × 3', '(−18) ÷ 6', '5 × (−2)'] },
+    { title:'Level 2 — Factors to 10', desc:'Factors up to 10. Apply the sign rule first, then the times-table fact.', examples:['(−7) × 8', '(−54) ÷ 9', '6 × (−5)'] },
+    { title:'Level 3 — Factors to 15', desc:'Factors up to 15 for a tougher challenge. Mind the signs throughout.', examples:['(−13) × 4', '(−120) ÷ 12', '11 × (−9)'] },
   ],
   sq: [
     { title:'Level 1 — Squares 1–10',  desc:'Square numbers and roots from 1² to 10². The essential set.', examples:['3²', '√64', '7²'] },
@@ -2347,11 +2395,12 @@ function getSkillKind(id) { return RECALL_SKILLS.includes(id) ? 'recall' : 'meth
      • addition / subtraction  → 30/min on Level 1 (single-digit recall)
    Edit freely. */
 const FLUENCY_TARGET = {
-  timesTables:[35, 30, 25],   // L1 easy subset → L2 full set (standard 30) → L3 extended ×20
-  division:   [35, 30, 25],
+  timesTables:[30, 30, 25],   // v45: L1 now matches L2 (full-set band, 30)
+  division:   [30, 30, 25],   // v45: L1 = L2 = 30
   addition:   [30, 18, 10],   // L1 single-digit recall (30) → L2 two-digit → L3 three-digit mental
-  subtraction:[30, 18, 10],
-  squares:25, roots:22, cubes:20, cubeRoots:18,
+  subtraction:[30, 18, 10],   // (L3 bands are custom-overridden — see BAND_OVERRIDE)
+  // v45: squares/roots/cubes/cubeRoots L1 & L2 now match L2 times-tables (30); L3 unchanged.
+  squares:[30, 30, 18], roots:[30, 30, 15], cubes:[30, 30, 14], cubeRoots:[30, 30, 13],
   intAddSub:25, intMultDiv:22, intSquareCube:18,
   decAddSub:18, decMultiply:15, decDivide:14, decSquareCube:14,
   // Exact trig values — tap-to-answer, so recall speed is the bottleneck.
@@ -2418,6 +2467,150 @@ function fluentKey(s, lv) { return `ff_fl_${pidx}_${s}_L${lv}`; }
 function getFluent(s, lv)  { return localStorage.getItem(fluentKey(s, lv)) === '1'; }
 function setFluent(s, lv)  { localStorage.setItem(fluentKey(s, lv), '1'); }
 function skillIsFluent(sid) { return [1,2,3].some(lv => getFluent(sid, lv)); }
+
+/* ═══════════════════════════════════════════════
+   SANDY FAST FACTS ANIMAL BANDS (v43) — display layer
+   ------------------------------------------------------------------
+   The band is derived from the Fluency Score (CPM × accuracy², the SAME
+   number the app already computes in endSession and stores as the PB), so
+   "best animal" is just the band of the stored PB — NO new storage key.
+   It is PURELY a display layer: changes no stored score, no share line.
+
+   Calibration follows the classroom CPM method: the per-skill-per-level
+   "Lion ceiling" T is the automaticity target; the lower three bands are
+   even thirds of T and Cheetah stretches to 1.5·T. For RECALL skills T is
+   the existing FLUENCY_TARGET (so the shared skills reproduce the classroom
+   pyramid exactly, e.g. times tables T=30 → 0–10/11–20/21–30/31–44/45+).
+   METHOD skills have no speed target, so they take a low ceiling from
+   METHOD_BAND_CEIL below (grouped by complexity; edit freely — one-line
+   tweaks, display-only, storage-safe). No animal is shown in Practice mode.
+═══════════════════════════════════════════════ */
+const ANIMALS = [
+  { key:'kangaroo',  emoji:'🦘', name:'Kangaroo',  bg:'#A8C8E8', fg:'#0B2A45' },
+  { key:'greyhound', emoji:'🐕', name:'Greyhound', bg:'#50BFD8', fg:'#06303A' },
+  { key:'lion',      emoji:'🦁', name:'Lion',      bg:'#F5A623', fg:'#3D2600' },
+  { key:'antelope',  emoji:'🦌', name:'Antelope',  bg:'#F06040', fg:'#FFFFFF' },
+  { key:'cheetah',   emoji:'🐆', name:'Cheetah',   bg:'#E03020', fg:'#FFFFFF' },
+];
+
+/* Method-skill Lion-ceiling targets. Recall skills are NOT listed here — they
+   use FLUENCY_TARGET. A value may be a NUMBER (same for all levels) or an ARRAY
+   [L1, L2, L3, …] for per-level ceilings. Lower bands are thirds of the Lion
+   ceiling; Cheetah is round(1.5·ceiling) unless overridden in METHOD_BAND_CHEETAH.
+   Display-only, storage-safe — edit freely. */
+const METHOD_BAND_CEIL = {
+  // very quick single-step method — Lion 20, Cheetah 30
+  algLikeTerms:20, algParts:20, sigFigs:20, decRound:20,
+  // quick single-step — Lion 15, Cheetah 23
+  eqOneStepAddSub:15, eqOneStepMulDiv:15, fracSimplify:15,
+  // remaining single-step method — Lion 8, Cheetah 12  (PENDING Laura's "rest of row 1")
+  algSub:8, mixedToImp:8, impToMixed:8, rateConvert:8,
+  // index laws — v45: L1 matches L2 times-tables (30); L2/L3 stay at 8
+  indexMult:[30, 8, 8], indexDiv:[30, 8, 8], indexPow:[30, 8, 8],
+  // scientific notation — v45: all levels match L2 Add/Subtract Integers (21)
+  sciTo:21, sciFrom:21,
+  // ratios/rates — v45: simplify & equivalent ratios + simplify-rates L1 match
+  // Simplify Fractions (15); simplify-rates L2 stays at 8
+  ratioSimplify:15, ratioEquiv:15, rateSimplify:[15, 8],
+  // fraction arithmetic — Lion 9, Cheetah 13 (overridden below)
+  fracAddSub:9, fracMultiply:9, fracDivide:9,
+  // multiply / divide terms — Lion 10, Cheetah 15
+  algMultiply:10, algDivide:10,
+  // two-step / multi-step computation, BODMAS & Pythagoras — Lion 5, Cheetah 8
+  eqTwoStep:5, eqTwoStepFrac:5, eqVarDenom:5, eqBothSides:5,
+  fracOrderOps:5, orderOps:5, intOrderOps:5, decOrderOps:5, ratioShare:5,
+  pythagoras:5,
+  // expand single brackets & factorise HCF — Lion 7, Cheetah 10 (overridden below)
+  algExpand:7, algFactorHCF:7,
+  // heavy multi-step expand / factorise — Lion 4, Cheetah 6
+  algExpandTwo:4, algExpandBinom:4, algFactorMonic:4, algFactorGroup:4,
+};
+/* Explicit Cheetah thresholds where Laura's value differs from round(1.5·Lion). */
+const METHOD_BAND_CHEETAH = {
+  fracAddSub:13, fracMultiply:13, fracDivide:13,   // Lion 9 (rule → 14, set 13)
+  algExpand:10, algFactorHCF:10,                   // Lion 7 (rule → 11, set 10)
+};
+/* Full custom band sets for skill+level combos that don't fit the thirds rule.
+   Keyed "skillId_Llv" → [Kangaroo max, Greyhound max, Lion max, Antelope max];
+   Cheetah = Antelope max + 1. v45: L3 add/sub per Laura. */
+const BAND_OVERRIDE = {
+  addition_L3:    [3, 6, 10, 15],   // K 0-3, G 4-6, L 7-10, A 11-15, C 16+
+  subtraction_L3: [3, 6, 10, 15],
+};
+const DEFAULT_METHOD_CEIL = 5;
+
+/* The Lion ceiling T for a skill+level. Recall → FLUENCY_TARGET; method → map
+   (number or per-level array). */
+function bandCeil(s, lv) {
+  const t = getFluencyTarget(s, lv);          // 0 for method skills
+  if (t > 0) return t;
+  const m = METHOD_BAND_CEIL[s];
+  if (Array.isArray(m)) return m[lv - 1] || m[m.length - 1];
+  return m || DEFAULT_METHOD_CEIL;
+}
+/* The four band cutoffs {k,g,l,a} for a skill+level. Custom override if present,
+   else thirds of the Lion ceiling with Antelope filling up to Cheetah-1. */
+function bandCutoffs(s, lv) {
+  const ov = BAND_OVERRIDE[`${s}_L${lv}`];
+  if (ov) return { k: ov[0], g: ov[1], l: ov[2], a: ov[3] };
+  const T = bandCeil(s, lv);
+  const C = cheetahThreshold(s, lv);
+  return { k: Math.round(T / 3), g: Math.round(2 * T / 3), l: T, a: C - 1 };
+}
+/* The Cheetah threshold (lowest Fluency Score that earns Cheetah). Override →
+   Antelope max + 1; explicit METHOD_BAND_CHEETAH; else round(1.5·Lion ceiling). */
+function cheetahThreshold(s, lv) {
+  const ov = BAND_OVERRIDE[`${s}_L${lv}`];
+  if (ov) return ov[3] + 1;
+  const m = METHOD_BAND_CHEETAH[s];
+  if (m) return m;
+  return Math.round(1.5 * bandCeil(s, lv));
+}
+/* Band index 0–4 (Kangaroo…Cheetah) for a Fluency Score at this skill+level. */
+function animalIndexFor(score, s, lv) {
+  const { k, g, l, a } = bandCutoffs(s, lv);
+  if (score >= a + 1) return 4;   // Cheetah
+  if (score >= l + 1) return 3;   // Antelope
+  if (score >= g + 1) return 2;   // Lion
+  if (score >= k + 1) return 1;   // Greyhound
+  return 0;                       // Kangaroo
+}
+function animalForScore(score, s, lv) { return ANIMALS[animalIndexFor(score, s, lv)]; }
+
+/* ── FLUENT (re-added v45) ──
+   "Fluent" is reaching the start of Antelope (band index ≥ 3) and only applies
+   to RECALL ("skill") types, not method types. Derived from the stored PB (so
+   it's sticky and needs no extra storage), exactly like the animal. */
+const FLUENT_BAND_INDEX = 3;   // Antelope
+function isRecallFluent(s, lv) {
+  if (getSkillKind(s) !== 'recall') return false;
+  const pb = getPB(s, lv);
+  return pb > 0 && animalIndexFor(pb, s, lv) >= FLUENT_BAND_INDEX;
+}
+function skillHasFluentLevel(s) {
+  if (getSkillKind(s) !== 'recall') return false;
+  return [1, 2, 3, 4].some(lv => isRecallFluent(s, lv));
+}
+
+/* Best animal index across a skill's levels, from each level's stored PB.
+   Returns -1 if the skill has no PB yet. Band depends on level (T differs),
+   so we band each level's PB and take the highest — not the max PB. */
+function bestAnimalIndexForSkill(sid) {
+  let best = -1;
+  [1, 2, 3, 4].forEach(lv => {
+    const pb = getPB(sid, lv);
+    if (pb > 0) { const i = animalIndexFor(pb, sid, lv); if (i > best) best = i; }
+  });
+  return best;
+}
+/* Small inline chip / larger pill HTML for an animal. */
+function animalChipHTML(a, cls) {
+  if (!a) return '';
+  return `<span class="${cls || 'animal-chip'}" style="background:${a.bg};color:${a.fg}">`
+       + `<span class="ac-emoji">${a.emoji}</span>${a.name}</span>`;
+}
+/* Set in endSession when a scored session lifts the stored PB into a higher band. */
+let sessionBandUp = false;
 
 /* ═══════════════════════════════════════════════
    APP STATE
@@ -2877,10 +3070,14 @@ function openCat(cat) {
     const btn = document.createElement('button');
     btn.className = 'skill-btn';
     const pb = bestForSkill(s.id);
-    const fl = skillIsFluent(s.id);
     // Render name safely (some have & entities)
     const yr = SKILL_YEAR[s.id];
-    const chips = `${yr ? `<span class="year-chip">${yr}</span>` : ''}${fl ? '<span class="fluent-badge">🎯</span>' : ''}${pb ? `<span class="pb-chip">PB: ${pb}</span>` : ''}`;
+    // v43: best animal band reached (from stored PB). v45: re-add a Fluent badge
+    // for RECALL skills that have reached Antelope+ at any level.
+    const aIdx = bestAnimalIndexForSkill(s.id);
+    const animalChip = aIdx >= 0 ? animalChipHTML(ANIMALS[aIdx]) : '';
+    const fluentChip = skillHasFluentLevel(s.id) ? '<span class="fluent-badge">🎯 Fluent</span>' : '';
+    const chips = `${yr ? `<span class="year-chip">${yr}</span>` : ''}${animalChip}${fluentChip}${pb ? `<span class="pb-chip">PB: ${pb}</span>` : ''}`;
     btn.innerHTML = `<span>${s.name}</span><span style="display:flex;gap:6px;align-items:center;flex-shrink:0">${chips}</span>`;
     btn.onclick = () => selectSkill(s);
     list.appendChild(btn);
@@ -2930,16 +3127,26 @@ function selectSkill(smeta) {
       ? `<span class="lv-rec ${rec}">${rec === 'challenge' ? '⚡' : '∞'} Best played in ${rec === 'challenge' ? 'Challenge' : 'Practice'}</span>`
       : '';
     const tgt = getFluencyTarget(skill, lv);
-    const tgtHTML = (getSkillKind(skill) === 'recall' && tgt)
-      ? `<span class="lv-target">🎯 Fluency target: ${tgt}/min${getFluent(skill, lv) ? ' <span class="fluent-badge">Fluent ✓</span>' : ''}</span>`
-      : '';
+    // v46: recall skills show the FLUENT score (start of Antelope) + the animal
+    // they currently are; method skills keep the Cheetah stretch target.
+    const lvlAnimal = pb > 0 ? animalChipHTML(animalForScore(pb, skill, lv)) : '';
+    let goalHTML;
+    if (getSkillKind(skill) === 'recall') {
+      const fluentAt = bandCutoffs(skill, lv).l + 1;   // start of Antelope
+      goalHTML = isRecallFluent(skill, lv)
+        ? `<span class="fluent-badge">🎯 Fluent ✓ (${fluentAt})</span>`
+        : `🎯 Fluent at ${fluentAt}`;
+    } else {
+      goalHTML = `🐆 Cheetah at ${cheetahThreshold(skill, lv)}`;
+    }
+    const tgtHTML = `<span class="lv-target">${goalHTML}${lvlAnimal ? ' · ' + lvlAnimal : ''}</span>`;
 
     card.innerHTML = `
       <div class="lv-badge">L${lv}</div>
       <div class="lv-title">${def.title}</div>
       <div class="lv-desc">${def.desc}</div>
       <div class="lv-examples">${exHTML}</div>
-      ${recHTML}${tgtHTML}${pbHTML}${sparkHTML}
+      ${recHTML}${pbHTML}${tgtHTML}${sparkHTML}
     `;
     card.onclick = () => {
       level = lv;
@@ -3425,6 +3632,7 @@ function stopPractice() {
   // (the dashboard Mode column will read "Practice"). Practice never sets a PB.
   recordSession(skill, level, practiceScore, score, Math.round(acc * 100), cpm, false);
 
+  sessionBandUp = false;   // v43: practice never shows an animal band
   showResults(practiceScore, score, acc, cpm, 'practice', 0, trend);
 }
 
@@ -5999,6 +6207,9 @@ function endSession() {
   const trend = getTrend(skill, level);
 
   const oldPB = getPB(skill, level);
+  // v43: did this scored session lift the stored PB into a higher animal band?
+  sessionBandUp = (fluency > oldPB) &&
+    (animalIndexFor(fluency, skill, level) > animalIndexFor(oldPB, skill, level));
   let pbResult = 'below';
   if (fluency > oldPB) { setPB(skill, level, fluency); pbResult = 'new'; }
   else if (fluency === oldPB && oldPB > 0) pbResult = 'equal';
@@ -6007,7 +6218,8 @@ function endSession() {
   // Record in today's queue (both fluency and challenge — practice is unscored)
   if (sessionMode === 'fluency' || sessionMode === 'challenge') {
     recordSession(skill, level, fluency, score, Math.round(acc * 100), cpm, pbResult === 'new');
-    // v25: award fluency badge when a recall skill hits target speed at high accuracy
+    // Dormant since v43: the fluent flag is no longer surfaced (replaced by the
+    // animal band), but we keep setting it so the ff_fl_ key stays storage-safe.
     if (getSkillKind(skill) === 'recall') {
       const tgt = getFluencyTarget(skill, level);
       if (tgt && cpm >= tgt && acc >= FLUENT_ACC) setFluent(skill, level);
@@ -6072,29 +6284,38 @@ function showResults(fluency, correct, acc, cpm, pbResult, pb, trend) {
     });
   } else { sw.style.display = 'none'; }
 
-  // ── v25: fluency verdict (recall) / accuracy message (method) ──
+  // ── Animal-band verdict (v43) ──
+  // Scored sessions (Fluency/Challenge) show the animal earned from this
+  // session's Fluency Score. Practice shows NO animal — recall keeps its
+  // "try Fluency mode" nudge, method keeps its accuracy message.
   const kind = getSkillKind(skill);
   const scored = sessionMode === 'fluency' || sessionMode === 'challenge';
   const v = id('rVerdict');
-  if (kind === 'recall' && scored) {
-    const tgt = getFluencyTarget(skill, level);
+  if (scored) {
     const accPctR = Math.round(acc * 100);
-    if (tgt && cpm >= tgt && acc >= FLUENT_ACC) {
-      v.className = 'res-verdict fluent';
-      v.innerHTML = `<span class="vt">🎯 Fluent!</span> ${cpm}/min at ${accPctR}% — target was ${tgt}/min.`;
-    } else if (tgt) {
-      v.className = 'res-verdict near';
-      const speedLow = cpm < tgt, accLow = acc < FLUENT_ACC;
-      let msg;
-      if (speedLow && accLow) msg = `Aim for ${tgt}/min at 90%+ to be fluent. You got ${cpm}/min, ${accPctR}%.`;
-      else if (speedLow)      msg = `Good accuracy! Speed up to ${tgt}/min to be fluent — you got ${cpm}/min.`;
-      else                    msg = `Fast! Lift accuracy to 90%+ to lock in fluent — you were at ${accPctR}%.`;
-      v.innerHTML = `🎯 ${msg}`;
-    } else { v.className = 'res-verdict'; v.textContent = ''; }
+    const a = animalForScore(fluency, skill, level);
+    const cheetah = cheetahThreshold(skill, level);
+    const bi = animalIndexFor(fluency, skill, level);
+    const atTop = a.key === 'cheetah';
+    // v45: Fluent (recall skills only) = reaching Antelope (band index ≥ 3).
+    const recallFluentNow = kind === 'recall' && bi >= FLUENT_BAND_INDEX;
+    const fluentTag = recallFluentNow ? ' <span class="fluent-badge">🎯 Fluent</span>' : '';
+    const lead = sessionBandUp
+      ? `<span class="vt">${a.emoji} New band — ${a.name}!</span>${fluentTag}`
+      : `<span class="vt">${a.emoji} ${a.name}</span>${fluentTag}`;
+    let tail;
+    if (atTop) tail = ` Top band — ${cpm}/min at ${accPctR}%. 🐆`;
+    else if (kind === 'recall' && bi < FLUENT_BAND_INDEX) {
+      // not yet fluent — point at the Antelope (fluent) threshold
+      const fluentAt = bandCutoffs(skill, level).l + 1;
+      tail = ` Score ${fluency} at ${accPctR}% — reach 🦌 Antelope (${fluentAt}) to be Fluent.`;
+    } else tail = ` Score ${fluency} at ${accPctR}% — 🐆 Cheetah is ${cheetah}.`;
+    v.className = 'res-verdict ' + (atTop || sessionBandUp || recallFluentNow ? 'fluent' : 'near');
+    v.innerHTML = lead + tail;
   } else if (kind === 'recall') {
     const tgt = getFluencyTarget(skill, level);
     v.className = 'res-verdict';
-    v.innerHTML = tgt ? `Practice run — try Fluency mode to chase the ${tgt}/min target. 🎯` : '';
+    v.innerHTML = tgt ? `Practice run — try Fluency or Challenge to earn an animal band. 🐆` : '';
   } else {
     const a = Math.round(acc * 100);
     v.className = 'res-verdict method';
@@ -6187,7 +6408,7 @@ function renderLB() {
       pidx = lbPidx;
       const trend = getTrend(s.id, lv).slice(-3); // last 3 scores
       pidx = savedPidx;
-      rows.push({ name: s.name.replace(/&amp;/g,'&'), lv, pb, trend });
+      rows.push({ id: s.id, name: s.name.replace(/&amp;/g,'&'), lv, pb, trend });
     }
   })));
   rows.sort((a,b) => b.pb - a.pb);
@@ -6197,12 +6418,18 @@ function renderLB() {
   }
   const tbl = document.createElement('table');
   tbl.className = 'lb-table';
-  tbl.innerHTML = '<thead><tr><th>Skill</th><th>Lvl</th><th>Last 3</th><th>Best</th></tr></thead>';
+  tbl.innerHTML = '<thead><tr><th>Skill</th><th>Lvl</th><th>Band</th><th>Last 3</th><th>Best</th></tr></thead>';
   const tbody = document.createElement('tbody');
   rows.forEach(r => {
     const tr = document.createElement('tr');
     const sparkHtml = buildLBSpark(r.trend, r.pb);
-    tr.innerHTML = `<td>${r.name}</td><td>L${r.lv}</td><td>${sparkHtml}</td><td>${r.pb}</td>`;
+    // v45: highest animal band for this skill+level (from its PB), plus a Fluent
+    // tick for recall skills that have reached Antelope+.
+    const animalChip = animalChipHTML(animalForScore(r.pb, r.id, r.lv));
+    const isRecall = getSkillKind(r.id) === 'recall';
+    const fluentTick = (isRecall && animalIndexFor(r.pb, r.id, r.lv) >= FLUENT_BAND_INDEX)
+      ? ' <span class="fluent-badge">🎯</span>' : '';
+    tr.innerHTML = `<td>${r.name}</td><td>L${r.lv}</td><td style="white-space:nowrap">${animalChip}${fluentTick}</td><td>${sparkHtml}</td><td>${r.pb}</td>`;
     tbody.appendChild(tr);
   });
   tbl.appendChild(tbody); div.appendChild(tbl);
@@ -7200,8 +7427,8 @@ const OB_SLIDES = [
       <div class="ob-row">
         <div class="ob-badge spark">📚</div>
         <div class="ob-row-text">
-          <div class="ob-row-title">Seven topics, three levels each</div>
-          <div class="ob-row-desc">Number, Integers, Exponents, Fractions, Decimals, Ratio &amp; Rates, and Algebra.</div>
+          <div class="ob-row-title">Nine topics, multiple levels each</div>
+          <div class="ob-row-desc">Number, Integers, Exponents, Fractions, Decimals, Ratios &amp; Rates, Algebra, Equations, and Trig &amp; Pythagoras.</div>
         </div>
       </div>`
   },
@@ -7238,10 +7465,25 @@ const OB_SLIDES = [
     body: 'The app coaches each skill the right way.',
     card: `
       <div class="ob-row">
-        <div class="ob-badge pb">🎯</div>
+        <div class="ob-badge pb">🏆</div>
         <div class="ob-row-text">
-          <div class="ob-row-title">Fluency targets</div>
-          <div class="ob-row-desc">Recall skills show a target like 30/min. Hit it at 90%+ accuracy to earn a 🎯 Fluent badge.</div>
+          <div class="ob-row-title">The fluency pyramid</div>
+          <div class="ob-row-desc">Timed sessions earn an animal. It's a pyramid — 🦘 Kangaroo at the bottom (just getting started) climbing up to 🐆 Cheetah at the top (fully fluent):
+            <div style="display:flex;flex-direction:column;gap:4px;margin-top:8px;font-size:0.8rem;font-weight:800">
+              <div style="background:#E03020;color:#fff;border-radius:8px;padding:7px 12px">🐆 Cheetah — Fluent &amp; Automatic</div>
+              <div style="background:#F06040;color:#fff;border-radius:8px;padding:7px 12px;margin:0 6px">🦌 Antelope — Fast &amp; Accurate</div>
+              <div style="background:#F5A623;color:#3D2600;border-radius:8px;padding:7px 12px;margin:0 12px">🦁 Lion — Strong &amp; Steady</div>
+              <div style="background:#50BFD8;color:#06303A;border-radius:8px;padding:7px 12px;margin:0 18px">🐕 Greyhound — Building Speed</div>
+              <div style="background:#A8C8E8;color:#0B2A45;border-radius:8px;padding:7px 12px;margin:0 24px">🦘 Kangaroo — Getting Started</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="ob-row">
+        <div class="ob-badge fluency">🎯</div>
+        <div class="ob-row-text">
+          <div class="ob-row-title">Get Fluent on your facts</div>
+          <div class="ob-row-desc">On recall skills (times tables, squares, integers…), reaching <strong>🦌 Antelope</strong> earns a 🎯 Fluent badge. Antelope and Cheetah are great — but aim to be at least Fluent on every fact.</div>
         </div>
       </div>
       <div class="ob-row">
@@ -7249,13 +7491,6 @@ const OB_SLIDES = [
         <div class="ob-row-text">
           <div class="ob-row-title">Score = correct per min × accuracy²</div>
           <div class="ob-row-desc">Accuracy matters more than raw speed — 20 right at 100% beats 30 right at 50%.</div>
-        </div>
-      </div>
-      <div class="ob-row">
-        <div class="ob-badge practice">🧠</div>
-        <div class="ob-row-text">
-          <div class="ob-row-title">Method skills put accuracy first</div>
-          <div class="ob-row-desc">For these there's no speed target — just work carefully and get the steps right.</div>
         </div>
       </div>`
   },
