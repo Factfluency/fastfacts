@@ -1,77 +1,44 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>Sandy Fast Facts</title>
 <!--
-  Sandy Fast Facts — v49
-  Current skills-platform build: 9 categories, 57 skills, 171 levels. Full version
-  history (v22 → v48) lives in SandyFastFacts_HandoffGuide.
+  Sandy Fast Facts — v56
+  Current skills-platform build: 10 categories, 63 skills, 193 levels. Full version
+  history (v22 → v49) lives in SandyFastFacts_HandoffGuide.
 
-  Changes in v49 (results-screen layout + mobile input; DISPLAY-ONLY, storage-safe —
-  NO skill ids, lvKeys, inputMode plumbing, ff_ localStorage keys, scoring formula,
-  band THRESHOLDS, or share-line changed):
-    + Results screen (scored sessions) now LEADS with the animal band as a big
-      coloured chip, with the next-level target underneath ("Next: 🐕 Greyhound
-      at a score of N", derived from the EXISTING band cutoffs — no new numbers).
-      The Fluency/Challenge Score moves into a 4th stat box beside Correct /
-      Accuracy / Per min (2×2 on narrow phones). The 🎯 Fluent badge and the PB
-      banner are unchanged. Practice sessions keep the big score number + formula
-      (no band applies to practice). New helper: nextBandInfo (display-only).
-    + Fixed long typed-algebra answers being clipped to their end. The field now
-      fills the row at a legible size, and the keypad display strip left-aligns +
-      wraps in algebra modes so the whole answer is always visible; the keypad's
-      height reserve re-syncs as the strip grows.
+  Changes in v56 (classroom-review round on the new skills; students are on ≤v49 so
+  none of the band changes below can disturb an existing score or PB):
 
-  Changes in v48 (mobile UX / layout only; NO skill ids, lvKeys, inputMode
-  plumbing, ff_ localStorage keys, scoring formula, bands, or share-line changed):
-    + Fixed iOS double-tap-to-zoom on the on-screen keypad. Cause: fast repeated
-      taps on a control (e.g. times-tables / squares drills) were read by iOS as
-      a double-tap-zoom gesture. Fix: `touch-action: manipulation` on every
-      interactive control kills double-tap zoom while KEEPING deliberate
-      pinch-zoom (accessibility). Removed `maximum-scale=1.0, user-scalable=no`
-      from the viewport — iOS ignored it (pinch worked anyway) but Android obeyed
-      it and blocked pinch-zoom entirely; pinch now works on every platform.
-    + Fixed the algebra keypad covering the question/answer. The algebra modes
-      add a 5th (symbol) keypad row, making the fixed keypad taller than the
-      reserved space. Fixes: (A) the question box is now sticky to the top on
-      mobile, so it's always visible above the keypad; (B) a short-screen media
-      query trims the keypad on small phones; and the body's bottom reserve is
-      now set to the keypad's measured height (syncKeypadClearance), so neither
-      the 4-row nor the 5-row keypad overlaps content. The focused field eases
-      into view (matters for fraction/index/ratio "Next →").
+  1. Band recalibration — Laura sign-off (Hard Rule 4). Four skills promoted from
+     method to RECALL, so they now earn the 🎯 Fluent badge, with signed-off targets:
+       • Naming 2D & 3D Shapes — all levels = Trig Exact Values L2  (T=18:
+         🦘0-6 🐕7-12 🦁13-18 🦌19-26 🐆27+)
+       • Angle Relationships / Angles on Parallel Lines — L1 = Trig Exact L2 (18);
+         L2 & L3 = Multiply Integers L3 (T=15: 🦘0-5 🐕6-10 🦁11-15 🦌16-22 🐆23+)
+       • Pythagoras — L1 = Multiply Integers L3 (15)
+     Levels Laura didn't name keep their previous band numbers, carried as recall
+     targets so nothing else moves: angle-skill L4 = 5, Pythagoras L2–L4 = 5. (These
+     two carry-over choices are flagged for confirmation — see handoff notes.)
+     Storage-safe & share-safe: bands are display-only, computed from the score; no
+     ff_ key, share-line, skill id or lvKey changed. test_bands updated + passing.
 
-  Changes in v47 (display/content only; storage-safe):
-    + "Show me how" tips added for the recall facts that have a teachable rule:
-      Integers (Add/Subtract, Multiply/Divide, Squares & Cubes) and Decimals
-      (Add/Subtract, Multiply, Divide, Squares & Cubes) — via METHOD_TIP.
-      Genuinely step-free facts (times tables, division, plain add/subtract,
-      squares, roots, cubes, cube roots) intentionally still have no tip.
+  2. Naming 2D & 3D Shapes — Level 1 now includes every quadrilateral, special ones
+     too (parallelogram, rhombus, trapezium, kite) alongside the original 2D shapes.
 
-  Changes in v46: level cards show the Fluent score (recall) + current animal;
-  onboarding is a top-down speed pyramid with classroom descriptors.
+  3. Angle-diagram variety, so students can't pattern-match one picture:
+       • Angle Relationships diagrams now render at a random orientation (the marked
+         angle is no longer always in the same spot). Complementary uses a clean
+         right-angle split; supplementary a steep ray; vertically-opposite the obtuse
+         pair; angles-at-a-point three rays.
+       • Angles on Parallel Lines — the transversal now leans either way at a varying
+         steepness each question.
+       • The algebra level (L4) of Angle Relationships now includes COMPLEMENTARY
+         angles again (Laura), with the two expressions staggered so they stay clear
+         of the right-angle rays and of each other.
+     Verified by the geometric checker: 0 line-overlaps, 0 label collisions and 0
+     off-canvas labels across 400 samples per level.
 
-  Changes in v43 (additive, DISPLAY-ONLY, storage-safe — NO skill ids, lvKeys,
-  inputMode plumbing, ff_ localStorage keys, scoring formula, or share-line changed):
-    + Sandy Fast Facts ANIMAL BANDS added as a display layer (🦘 Kangaroo →
-      🐕 Greyhound → 🦁 Lion → 🦌 Antelope → 🐆 Cheetah), brand pyramid colours.
-      The band is read from the existing Fluency Score (CPM × accuracy²) against
-      per-skill-per-level thresholds. The Lion ceiling T is the automaticity
-      target; lower bands are thirds of T; Cheetah = 1.5·T. RECALL skills take T
-      from FLUENCY_TARGET (shared skills reproduce the classroom pyramid exactly);
-      METHOD skills take a low T from METHOD_BAND_CEIL (groups 8 / 5 / 4).
-    + The old 🎯 "Fluent" badge is REPLACED by the animal band on skill buttons,
-      level cards, and the results verdict. "Best animal" is derived from the
-      stored PB — NO new storage key. No animal is shown in Practice mode.
-      (The ff_fl_ fluent flag is still written but no longer surfaced — dormant,
-      storage-safe.)
-    + Onboarding slide 3 copy updated (Fluent badge → animal bands).
+  Tests: ALL 15 SUITES PASSED. Storage-safety re-verified against v50.
 
-  v42: onboarding slide 1 copy fix (nine topics) + header brought up to date.
-  Storage safety: NO existing skill IDs, lvKeys, or storage keys changed.
-                  All PBs, profiles, today queue, sent flags remain intact.
-                  VBA dashboard requires NO changes — share-line format unchanged.
--->
+  --------------------------------------------------------------------------------
+
 <!-- v48: dropped `maximum-scale=1.0, user-scalable=no`. iOS ignored it (so pinch worked there anyway) but Android obeyed it, blocking accessibility pinch-zoom. Accidental double-tap-to-zoom is now killed per-control via `touch-action: manipulation` instead, which leaves deliberate pinch-zoom intact on every platform. -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1625,6 +1592,11 @@ body {
       <div class="cat-name">Trig &amp; Pythagoras</div>
       <div class="cat-desc">Pythagoras &amp; exact values of sin, cos, tan</div>
     </div>
+    <div class="cat-card" onclick="openCat('geometry')">
+      <span class="cat-icon">△</span>
+      <div class="cat-name">Geometry</div>
+      <div class="cat-desc">Angles &amp; diagram-based reasoning</div>
+    </div>
 
   </div>
 
@@ -1709,6 +1681,16 @@ body {
   <div class="ans-wrap" id="stdAnsWrap">
     <span class="eq-prefix" id="eqStdPrefix"></span>
     <input id="ansInput" class="ans-input" type="text" inputmode="decimal" disabled placeholder="?" autocomplete="off">
+  </div>
+  <!-- Desktop inequality-sign buttons (v52) — shown only for the inequalities
+       skill on a computer, where ≤ / ≥ aren't on the keyboard (and < / > aren't
+       obvious). Clicking inserts the true glyph. On mobile the on-screen keypad
+       already provides these keys. Typing < > <= >= still works too. -->
+  <div id="ineqDeskRow" style="display:none; justify-content:center; gap:8px; margin:-4px 0 12px;">
+    <button type="button" class="pow-btn" onclick="insertIneq('<')" aria-label="insert less than">&lt;</button>
+    <button type="button" class="pow-btn" onclick="insertIneq('>')" aria-label="insert greater than">&gt;</button>
+    <button type="button" class="pow-btn" onclick="insertIneq('≤')" aria-label="insert less than or equal">≤</button>
+    <button type="button" class="pow-btn" onclick="insertIneq('≥')" aria-label="insert greater than or equal">≥</button>
   </div>
 
   <!-- Index notation answer panel -->
@@ -1937,6 +1919,22 @@ body {
       <button class="kb-key kb-sym" id="kbCloseBtn" onclick="kbPress(')')" style="display:none">)</button>
     </div>
 
+    <!-- Surd symbol row (v50) — shown only for exact-value (Pythagoras) answers. -->
+    <div class="kb-row" id="kbSurdRow" style="display:none">
+      <button class="kb-key kb-sym" id="kbSqrtBtn" onclick="kbPress('√')">√</button>
+    </div>
+
+    <!-- Inequality symbol row (v51) — shown only for the inequalities skill.
+         The variable, the four comparison signs, and / for fractional answers. -->
+    <div class="kb-row" id="kbIneqRow" style="display:none">
+      <button class="kb-key kb-sym" onclick="kbPress('x')">x</button>
+      <button class="kb-key kb-sym" onclick="kbPress('&lt;')">&lt;</button>
+      <button class="kb-key kb-sym" onclick="kbPress('&gt;')">&gt;</button>
+      <button class="kb-key kb-sym" onclick="kbPress('≤')">≤</button>
+      <button class="kb-key kb-sym" onclick="kbPress('≥')">≥</button>
+      <button class="kb-key kb-sym" onclick="kbPress('/')">/</button>
+    </div>
+
     <!-- Row 1: 7 8 9 ⌫ -->
     <div class="kb-row">
       <button class="kb-key kb-num" onclick="kbPress('7')">7</button>
@@ -2153,14 +2151,25 @@ const CATS = {
       { id:'eqTwoStepFrac',   name:'Two-Step Equations with Fractions',    inputMode:'fraction', lvKey:'eq4' },
       { id:'eqVarDenom',      name:'Equations with x on the Denominator',  inputMode:'fraction', lvKey:'eq5' },
       { id:'eqBothSides',     name:'Variables on Both Sides',              inputMode:'fraction', lvKey:'eq6' },
+      { id:'ineqLinear',      name:'Two &amp; Three-Step Inequalities',   inputMode:'ineq', lvKey:'ineq' },
     ]
   },
   trig: {
     label: '📐 Trigonometry &amp; Pythagoras',
     skills: [
-      { id:'pythagoras',   name:'Pythagoras\u2019 Theorem',            inputMode:'number', lvKey:'pyth' },
+      { id:'pythagoras',   name:'Pythagoras\u2019 Theorem',            inputMode:'surd', lvKey:'pyth', noFluency:true },
       { id:'trigExactDeg', name:'Sin / Cos / Tan Exact Values (Degrees)', inputMode:'choice', lvKey:'tdeg' },
       { id:'trigExactRad', name:'Sin / Cos / Tan Exact Values (Radians)', inputMode:'choice', lvKey:'trad' },
+    ]
+  },
+  geometry: {
+    label: '△ Geometry',
+    skills: [
+      { id:'interiorAngles', name:'Interior Angles of a Triangle', inputMode:'number', lvKey:'iat', noFluency:true },
+      { id:'nameShapes', name:'Naming 2D &amp; 3D Shapes', inputMode:'choice', lvKey:'nsh' },
+      { id:'angleRel', name:'Angle Relationships', inputMode:'number', lvKey:'arl', noFluency:true, levelModes:{1:'choice'} },
+      { id:'angleParallel', name:'Angles on Parallel Lines', inputMode:'number', lvKey:'apl', noFluency:true, levelModes:{1:'choice'} },
+      { id:'angleQuad', name:'Angles in Quadrilaterals', inputMode:'number', lvKey:'aqd', noFluency:true },
     ]
   }
 };
@@ -2196,8 +2205,13 @@ const SKILL_YEAR = {
   // Equations
   eqOneStepAddSub:'Yr 7', eqOneStepMulDiv:'Yr 7', eqTwoStep:'Yr 7–8',
   eqTwoStepFrac:'Yr 7–9', eqVarDenom:'Yr 8–9', eqBothSides:'Yr 8–9',
+  ineqLinear:'Yr 8–9',
   // Trigonometry & Pythagoras
-  pythagoras:'Yr 8', trigExactDeg:'Yr 10A', trigExactRad:'VCE'
+  pythagoras:'Yr 8', trigExactDeg:'Yr 10A', trigExactRad:'VCE',
+  // Geometry
+  interiorAngles:'Yr 7',
+  nameShapes:'Yr 7',
+  angleRel:'Yr 7', angleParallel:'Yr 7', angleQuad:'Yr 8'
 };
 
 /* Each level: title, description, examples shown on card */
@@ -2449,6 +2463,11 @@ const LEVEL_DEFS = {
     { title:'Level 2 — Negative Answers', desc:'Variables on both sides where the solution can be negative. Take care moving terms across.', examples:['4x + 3 = 2x − 7', '2x + 10 = 5x + 1', '3x − 4 = 5x + 2'] },
     { title:'Level 3 — Fraction Answers', desc:'Variables on both sides where the solution is a fraction in simplest form.', examples:['3x + 1 = x + 4  (x = 3/2)', '5x − 2 = 2x + 3', '4x + 1 = x + 6'] },
   ],
+  ineq: [
+    { title:'Level 1 — Integer Answers', desc:'Solve two- and three-step inequalities. Rearrange just like an equation, then type your answer with an inequality sign — e.g. x &gt; 5. Positive or negative whole-number answers.', examples:['3x + 4 > 19  →  x > 5', 'x/2 − 3 ≤ 1  →  x ≤ 8', '(2x + 1)/3 ≥ 3  →  x ≥ 4'] },
+    { title:'Level 2 — Integers &amp; Fractions', desc:'A mix of the three forms, now with values that can be fractions in simplest form. Type the inequality sign and the value — e.g. x ≥ 3/2.', examples:['2x + 1 > 4  →  x > 3/2', 'x/3 + 2 < 3  →  x < 3', '(3x − 1)/4 ≤ 2  →  x ≤ 3'] },
+    { title:'Level 3 — Flip the Sign', desc:'Some inequalities have a negative coefficient on x. When you multiply or divide both sides by a negative, you must reverse the inequality sign. Watch the direction carefully.', examples:['−2x + 1 > 7  →  x < −3', '4 − x ≥ 1  →  x ≤ 3', '(5 − 2x)/3 < 1  →  x > 1'] },
+  ],
   afm: [
     { title:'Level 1 — Positive Numbers', desc:'Factorise x² + bx + c where both numbers in the brackets are positive. Find two numbers that multiply to c and add to b.', examples:['x² + 5x + 6 = (x + 2)(x + 3)', 'x² + 7x + 12', 'x² + 8x + 15'] },
     { title:'Level 2 — Mixed Signs', desc:'Factorise x² + bx + c where the constant is negative, so one bracket adds and the other subtracts.', examples:['x² + 2x − 15 = (x + 5)(x − 3)', 'x² − 3x − 10', 'x² + 4x − 12'] },
@@ -2471,9 +2490,38 @@ const LEVEL_DEFS = {
     { title:'Level 3 — Grouping (Cubic)', desc:'Four terms in one letter, up to x³. Group in pairs and factor, leaving an x² term in a bracket.', examples:['x³ − 2x² + 5x − 10 = (x² + 5)(x − 2)', 'x³ + 3x² + 4x + 12', '2x³ − 6x² + x − 3'] },
   ],
   pyth: [
-    { title:'Level 1 — Find the Hypotenuse', desc:'Use a² + b² = c². The two shorter sides are given; find the longest side. Answers are whole numbers.', examples:['legs 3, 4 → 5', 'legs 5, 12 → 13', 'legs 8, 15 → 17'] },
-    { title:'Level 2 — Find a Shorter Side', desc:'The hypotenuse and one short side are given; find the missing short side. Answers are whole numbers.', examples:['c 13, leg 5 → 12', 'c 25, leg 7 → 24', 'c 17, leg 8 → 15'] },
-    { title:'Level 3 — Round to 1 Decimal Place', desc:'The answer is not a whole number. Work it out and round to one decimal place.', examples:['legs 5, 7 → 8.6', 'legs 4, 9 → 9.8', 'c 10, leg 6.5 → 7.6'] },
+    { title:'Level 1 — Whole-Number Triples', desc:'Use a² + b² = c² on a labelled right-angled triangle. The unknown may be the hypotenuse or a shorter side. Answers are whole numbers.', examples:['legs 3, 4 → 5', 'c 13, leg 5 → 12', 'legs 8, 15 → 17'] },
+    { title:'Level 2 — Larger Triples', desc:'Same idea, larger whole-number triangles. The unknown is still mixed between the hypotenuse and a shorter side.', examples:['legs 7, 24 → 25', 'c 29, leg 20 → 21', 'legs 9, 12 → 15'] },
+    { title:'Level 3 — Exact Surds', desc:'Answers are exact surds. Type the exact value using √ (e.g. √13 or 2√5) — no rounded decimals. Any equivalent exact form is accepted.', examples:['legs 2, 3 → √13', 'legs 2, 4 → 2√5', 'c 6, leg 2 → 4√2'] },
+    { title:'Level 4 — Surds, Varied', desc:'Exact surds with larger numbers and varied orientations, plus the occasional clean triple. Type the exact value using √.', examples:['legs 5, 6 → √61', 'c 9, leg 3 → 6√2', 'legs 4, 7 → √65'] },
+  ],
+  iat: [
+    { title:'Level 1 — Acute Triangles', desc:'Two angles are given; find the third using angles in a triangle add to 180°. Round numbers, all angles acute.', examples:['60°, 70° → 50°', '45°, 55° → 80°', '30°, 90°… → uses acute only'] },
+    { title:'Level 2 — Includes Obtuse', desc:'One of the angles may be obtuse. Two angles are given; find the missing one. Answers are whole degrees.', examples:['110°, 40° → 30°', '35°, 25° → 120°', '100°, 45° → 35°'] },
+    { title:'Level 3 — Awkward Angles', desc:'Two angles given with awkward whole-degree values and varied orientations. Find the third.', examples:['37°, 84° → 59°', '52°, 61° → 67°', '113°, 28° → 39°'] },
+  ],
+  nsh: [
+    { title:'Level 1 — Common 2D Shapes', desc:'Name the flat (2D) shape shown in the diagram. Tap the correct name. Triangles, quadrilaterals and other polygons plus the circle.', examples:['triangle', 'rectangle', 'pentagon', 'hexagon'] },
+    { title:'Level 2 — 3D Solids', desc:'Name the solid (3D) shape shown in the diagram. Tap the correct name. Cubes, prisms, pyramids, cylinders, cones and spheres.', examples:['cube', 'cylinder', 'square pyramid', 'triangular prism'] },
+    { title:'Level 3 — Mixed &amp; Tricky', desc:'A mix of 2D and 3D shapes, including the easily-confused ones: parallelogram vs rhombus vs trapezium vs kite, and prism vs pyramid vs cuboid.', examples:['parallelogram vs rhombus', 'trapezium vs kite', 'cuboid vs triangular prism'] },
+  ],
+  arl: [
+    { title:'Level 1 — Identify the Relationship', desc:'Tap whether the marked angles are complementary, supplementary, vertically opposite, or angles at a point.', examples:['add to 90° → complementary', 'add to 180° → supplementary', 'equal → vertically opposite'] },
+    { title:'Level 2 — Find the Angle', desc:'One relationship, friendly numbers. Use it to find the unknown angle x.', examples:['complementary, 35° → 55°', 'supplementary, 130° → 50°', 'vertically opposite 70° → 70°'] },
+    { title:'Level 3 — Harder &amp; Angles at a Point', desc:'Mixed relationships with harder numbers, including several angles around a point (sum 360°).', examples:['at a point: 120°, 95° → 145°', 'supplementary 113° → 67°'] },
+    { title:'Level 4 — Solve for x', desc:'Angles given as algebraic expressions. Form an equation from the relationship and solve for x.', examples:['(2x+10)°+(x−4)° = 180° → x = 58', '(2x)°=(x+40)° → x = 40'] },
+  ],
+  apl: [
+    { title:'Level 1 — Identify the Relationship', desc:'Two parallel lines cut by a transversal. Tap whether the marked angles are corresponding, alternate, co-interior, or vertically opposite.', examples:['F-shape → corresponding', 'Z-shape → alternate', 'C-shape → co-interior'] },
+    { title:'Level 2 — Find the Angle', desc:'One step. Use the relationship (equal, or add to 180° for co-interior) to find x.', examples:['corresponding 70° → 70°', 'co-interior 110° → 70°'] },
+    { title:'Level 3 — Two-Step', desc:'The unknown is two hops away — combine two relationships to reach x.', examples:['co-interior then vertically opposite', 'alternate then vertically opposite'] },
+    { title:'Level 4 — Solve for x', desc:'Angles given as algebraic expressions. Use the relationship to form an equation and solve for x.', examples:['(3x+10)°=(x+50)° → x = 20', 'co-interior (2x+30)°+(x+30)° = 180° → x = 40'] },
+  ],
+  aqd: [
+    { title:'Level 1 — Missing Angle', desc:'Three angles of a quadrilateral are given (they add to 360°). Find the fourth. Friendly numbers.', examples:['90°, 100°, 80° → 90°', '120°, 60°, 100° → 80°'] },
+    { title:'Level 2 — Harder Numbers', desc:'Same 360° rule, with less friendly whole-number angles.', examples:['112°, 76°, 95° → 77°'] },
+    { title:'Level 3 — Use a Property', desc:'Parallelograms (opposite equal / adjacent add to 180°), isosceles trapeziums (equal base angles) and kites (one equal pair). Use the property to find x.', examples:['parallelogram opposite 70° → 70°', 'parallelogram adjacent 70° → 110°'] },
+    { title:'Level 4 — Solve for x', desc:'Some angles given as expressions in x. Use the 360° sum to form an equation and solve for x.', examples:['x°, 2x°, 85°, 95° → x = 60'] },
   ],
   tdeg: [
     { title:'Level 1 — First Quadrant', desc:'Exact values of sin, cos and tan for the special angles 0°, 30°, 45°, 60°, 90°. Tap the correct value.', examples:['sin 30°', 'cos 60°', 'tan 45°'] },
@@ -2500,6 +2548,9 @@ const LEVEL_REC = {
   aexp2: { 1: 'challenge', 2: 'challenge', 3: 'practice' }, // Expand & Simplify (Two Brackets)
   amul:  { 4: 'practice' },    // Multiply Terms — three-term, negatives
   adiv:  { 4: 'practice' },    // Divide Terms — divide-then-multiply
+  // v50: geometry skills are Fluency-off; Challenge is the banded, timed mode.
+  pyth:  { 1: 'challenge', 2: 'challenge', 3: 'challenge', 4: 'challenge' },
+  iat:   { 1: 'challenge', 2: 'challenge', 3: 'challenge' },
 };
 function getLevelRec(key, lv) {
   return (LEVEL_REC[key] && LEVEL_REC[key][lv]) || null;
@@ -2512,7 +2563,9 @@ const RECALL_SKILLS = [
   'squares','roots','cubes','cubeRoots',
   'intAddSub','intMultDiv','intSquareCube',
   'decAddSub','decMultiply','decDivide','decSquareCube',
-  'trigExactDeg','trigExactRad'
+  'trigExactDeg','trigExactRad',
+  // v56: promoted to recall (Fluent-eligible) with Laura's signed-off targets
+  'nameShapes','angleRel','angleParallel','pythagoras'
 ];
 function getSkillKind(id) { return RECALL_SKILLS.includes(id) ? 'recall' : 'method'; }
 
@@ -2538,7 +2591,16 @@ const FLUENCY_TARGET = {
   // Exact trig values — tap-to-answer, so recall speed is the bottleneck.
   // Per level: first quadrant (core drill) → +quadrant 2 → full circle w/ signs & undefined.
   trigExactDeg:[22, 18, 14],
-  trigExactRad:[20, 16, 12]
+  trigExactRad:[20, 16, 12],
+  // v56 (Laura sign-off; students on ≤v49 so no score disruption):
+  //   nameShapes all levels = Trig Exact Values L2 (18)
+  //   angle skills L1 = Trig Exact L2 (18); L2/L3 = Multiply Integers L3 (15);
+  //   L4 (algebra) left at 5 = its old method band (unspecified — confirm).
+  //   pythagoras L1 = Multiply Integers L3 (15); L2–L4 kept at 5 (old bands).
+  nameShapes:[18, 18, 18],
+  angleRel:[18, 15, 15, 5],
+  angleParallel:[18, 15, 15, 5],
+  pythagoras:[15, 5, 5, 5]
 };
 const FLUENT_ACC = 0.90;   // accuracy floor to count as fluent
 function getFluencyTarget(s, lv) {
@@ -2584,6 +2646,11 @@ const METHOD_TIP = {
   eqTwoStepFrac:'Undo the + or − outside the fraction first, then multiply both sides by the denominator to free x.',
   eqVarDenom:'Multiply both sides by the bottom (the denominator) to bring x up, then solve the simple equation that\'s left.',
   eqBothSides:'Collect the x terms on one side and the numbers on the other, then divide. Always do the same thing to both sides.',
+  ineqLinear:'Solve it just like an equation — but if you multiply or divide BOTH sides by a negative number, reverse the inequality sign (< becomes >, ≤ becomes ≥).',
+  nameShapes:'Count the sides and check the angles. Parallelogram: two pairs of parallel sides. Trapezium: just one pair. Rhombus: four equal sides. Kite: two pairs of adjacent equal sides. For solids: a prism has two identical ends joined by rectangles; a pyramid rises to a single apex.',
+  angleRel:'Complementary angles add to 90°, supplementary angles add to 180°, vertically opposite angles are equal, and angles at a point add to 360°.',
+  angleParallel:'On parallel lines cut by a transversal: corresponding angles are equal (F-shape), alternate angles are equal (Z-shape), and co-interior angles add to 180° (C-shape). Vertically opposite angles are always equal.',
+  angleQuad:'The four interior angles of any quadrilateral add to 360°. In a parallelogram opposite angles are equal and adjacent angles add to 180°; an isosceles trapezium has equal base angles; a kite has one pair of equal opposite angles.',
   algFactorMonic:'Find two numbers that MULTIPLY to the last number and ADD to the middle number. Those two numbers go in the brackets with x.',
   algExpandBinom:'FOIL: multiply First, Outer, Inner, Last terms, then collect like terms. (A + B)² = A² + 2AB + B².',
   algFactorHCF:'Find the HIGHEST common factor of every term (number and any common letter), take it out the front, and write what is left inside the bracket.',
@@ -2659,9 +2726,9 @@ const METHOD_BAND_CEIL = {
   // multiply / divide terms — Lion 10, Cheetah 15
   algMultiply:10, algDivide:10,
   // two-step / multi-step computation, BODMAS & Pythagoras — Lion 5, Cheetah 8
-  eqTwoStep:5, eqTwoStepFrac:5, eqVarDenom:5, eqBothSides:5,
+  eqTwoStep:5, eqTwoStepFrac:5, eqVarDenom:5, eqBothSides:5, ineqLinear:5,
   fracOrderOps:5, orderOps:5, intOrderOps:5, decOrderOps:5, ratioShare:5,
-  pythagoras:5,
+  interiorAngles:5, angleQuad:5,   // (nameShapes/angleRel/angleParallel/pythagoras are now recall — see FLUENCY_TARGET)
   // expand single brackets & factorise HCF — Lion 7, Cheetah 10 (overridden below)
   algExpand:7, algFactorHCF:7,
   // heavy multi-step expand / factorise — Lion 4, Cheetah 6
@@ -3246,6 +3313,11 @@ function selectSkill(smeta) {
   lvKey = smeta.lvKey;
   level = null;
 
+  // v50: Fluency-off skills (diagram geometry) can't be banded from a noisy 60s
+  // round — the band comes from Challenge. If we land here in Fluency, drop to
+  // Challenge before the level screen renders, so the mode label is honest.
+  if (smeta.noFluency && sessionMode === 'fluency') setMode('challenge');
+
   show('s-levels');
   document.getElementById('levelScreenTitle').textContent = smeta.name.replace(/&amp;/g,'&');
   document.getElementById('levelScreenSub').textContent =
@@ -3369,6 +3441,7 @@ function getInputMode() {
   // build the coefficient, every letter, AND its power themselves. A digit-box
   // panel can't test that, so these use the free-text 'algProd' parser.
   if (skill === 'algMultiply' || skill === 'algDivide') return 'algProd';
+  if (skillMeta.levelModes && skillMeta.levelModes[level]) return skillMeta.levelModes[level];
   return skillMeta.inputMode;
 }
 function isFractionSkill() { return ['fracSimplify','fracAddSub','fracMultiply','fracDivide','fracOrderOps','mixedToImp','impToMixed'].includes(skill); }
@@ -3499,6 +3572,8 @@ function resetAnswerInputs() {
     id('stdAnsWrap').style.display = 'block';
     id('ansInput').className = 'ans-input';
   }
+  // Desktop inequality-sign buttons: only for the inequalities mode on a computer.
+  { const idr = id('ineqDeskRow'); if (idr) idr.style.display = (mode === 'ineq' && !IS_MOBILE()) ? 'flex' : 'none'; }
 }
 
 function enableInputs() {
@@ -4160,38 +4235,804 @@ function genTrigExact(el, useRad) {
                  `<span style="font-size:2.4rem;font-weight:900">${fn} ${angle}</span>`;
 }
 
-/* Pythagoras' theorem (plain number box). */
-const PYTH_TRIPLES = [[3,4,5],[5,12,13],[8,15,17],[7,24,25],[20,21,29],[9,40,41],[12,35,37],[6,8,10],[9,12,15],[10,24,26]];
-function genPythagoras(el) {
-  el.style.fontSize = '1.5rem';
-  if (level === 3) {
-    // Non-integer answer → round to 1 dp. Find the hypotenuse from two legs.
-    let a, b;
-    do { a = rr(2, 12); b = rr(2, 12); } while (a === b || Number.isInteger(Math.sqrt(a * a + b * b)));
-    const exact = Math.sqrt(a * a + b * b);
-    const ans = Math.round(exact * 10) / 10;
-    qData.ans = ans;
-    qData.workSteps = `c = √(${a}² + ${b}²) = √${a * a + b * b} ≈ <b>${ans}</b>.`;
-    el.innerHTML = `<div style="${A_LBL}">Right-angled triangle — find the hypotenuse</div>` +
-      `The two shorter sides are <b>${a}</b> and <b>${b}</b>.<br>` +
-      `<span style="font-size:0.95rem;color:var(--muted)">Round your answer to 1 decimal place.</span>`;
-  } else {
-    let [a, b, c] = PYTH_TRIPLES[ri(PYTH_TRIPLES.length)];
-    const k = (level === 1) ? (Math.random() < 0.5 ? 1 : rr(2, 3)) : 1;
-    a *= k; b *= k; c *= k;
-    if (level === 1) {
-      qData.ans = c;
-      qData.workSteps = `c² = ${a}² + ${b}² = ${a * a} + ${b * b} = ${c * c}, so c = √${c * c} = <b>${c}</b>.`;
-      el.innerHTML = `<div style="${A_LBL}">Right-angled triangle — find the hypotenuse</div>` +
-        `The two shorter sides are <b>${a}</b> and <b>${b}</b>. Find the hypotenuse <b>c</b>.`;
+/* ═══════════════════════════════════════════════
+   TWO & THREE-STEP LINEAR INEQUALITIES  (v51, lvKey ineq)
+   Forms:  ax + b OP c   ·   x/a + b OP c   ·   (ax + b)/c OP d
+   Solved like an equation; the answer is typed as "x OP value" where OP is one
+   of < > ≤ ≥ and value is an integer or a fraction in simplest form.
+   • L1 — positive/negative INTEGER answers, positive leading coefficient (no flip)
+   • L2 — a mix, answers/coefficients can be FRACTIONS
+   • L3 — some questions have a NEGATIVE leading coefficient, so dividing by a
+          negative REVERSES the inequality sign.
+   Built backwards so the stated inequality is always valid. The answer is stored
+   as {ansOp, ansNum/ansDen reduced}; the checker (mode 'ineq') accepts either
+   orientation (x on the left or right) and any equivalent value.
+═══════════════════════════════════════════════ */
+const INEQ_OPS = ['<', '>', '≤', '≥'];
+function ineqFlip(op){ return op === '<' ? '>' : op === '>' ? '<' : op === '≤' ? '≥' : '≤'; }
+function ineqOpHTML(op){ return op === '<' ? '&lt;' : op === '>' ? '&gt;' : op; }
+/* Store the solved inequality: reduce the value, keep the denominator positive. */
+function ineqStore(op, num, den){
+  if (den < 0) { num = -num; den = -den; }
+  const g = gcd(Math.abs(num), Math.abs(den)) || 1;
+  num = num / g; den = den / g;
+  qData.ansOp = op; qData.ansNum = num; qData.ansDen = den;
+  const valStr = (den === 1) ? aNum(num) : `${aNum(num)}/${den}`;
+  qData.ansDisplay = `${EQ_VAR} ${op} ${valStr}`;                                   // plain text (feedback uses textContent)
+  qData.ansDisplayHTML = `${aVar(EQ_VAR)} ${ineqOpHTML(op)} ${valStr}`;             // HTML-safe (worked-steps innerHTML)
+}
+/* Plain-English "undo the constant" line. */
+function ineqUndoC(b){ return b < 0 ? `Add ${Math.abs(b)} to both sides` : `Subtract ${b} from both sides`; }
+/* Render an "ax + b" expression (a may be negative). Uses a leading-constant
+   style (b − |a|x) when that reads more naturally. Returns escaped HTML. */
+function ineqLinHTML(a, b){
+  const vx = aVar(EQ_VAR);
+  const lead = (a === 1) ? vx : (a === -1) ? ('−' + vx) : `${aNum(a)}${vx}`;
+  if (b === 0) return lead;
+  const bpart = (b > 0) ? ` + ${b}` : ` − ${Math.abs(b)}`;
+  return lead + bpart;
+}
+function genIneqLinear(el){
+  const op = INEQ_OPS[rr(0, 3)];
+  let html, steps, form;
+
+  if (level === 1){
+    // Integer answers, positive leading coefficient → no flip.
+    form = rr(0, 2);
+    if (form === 0){
+      // ax + b OP c, with c chosen so (c−b)/a is a whole number x0.
+      const a = rr(2, 6), x0 = nzrand(-9, 9), b = nzrand(-9, 9), c = a * x0 + b;
+      ineqStore(op, c - b, a);
+      html = `${ineqLinHTML(a, b)} ${ineqOpHTML(op)} ${aNum(c)}`;
+      steps = `${ineqUndoC(b)} → ${a}${aVar(EQ_VAR)} ${ineqOpHTML(op)} ${aNum(c - b)}.<br>`
+            + `Divide both sides by ${a} → <b>${qData.ansDisplayHTML}</b>.`;
+    } else if (form === 1){
+      // x/a + b OP c → x OP a(c−b). Integer answer by construction.
+      const a = rr(2, 6), m = nzrand(-6, 6), b = nzrand(-9, 9), c = b + m;
+      ineqStore(op, a * m, 1);
+      html = `${fracHTML(aVar(EQ_VAR), a)}<span>${b >= 0 ? ' + ' + b : ' − ' + Math.abs(b)} ${ineqOpHTML(op)} ${aNum(c)}</span>`;
+      html = `<div class="q-expr" style="justify-content:center;gap:8px;align-items:center">${html}</div>`;
+      steps = `${ineqUndoC(b)} → ${aVar(EQ_VAR)}/${a} ${ineqOpHTML(op)} ${aNum(c - b)}.<br>`
+            + `Multiply both sides by ${a} → <b>${qData.ansDisplayHTML}</b>.`;
     } else {
-      // Find a shorter side: give hypotenuse c and one leg a, find b.
-      qData.ans = b;
-      qData.workSteps = `b² = ${c}² − ${a}² = ${c * c} − ${a * a} = ${b * b}, so b = √${b * b} = <b>${b}</b>.`;
-      el.innerHTML = `<div style="${A_LBL}">Right-angled triangle — find the missing side</div>` +
-        `The hypotenuse is <b>${c}</b> and one shorter side is <b>${a}</b>. Find the other shorter side.`;
+      // (ax + b)/c OP d, with d chosen so the answer x0 is a whole number.
+      let a, x0, b, c, num, tries = 0;
+      do { a = rr(2, 5); x0 = nzrand(-6, 6); b = nzrand(-9, 9); c = rr(2, 5); num = a * x0 + b; tries++; }
+      while (num % c !== 0 && tries < 80);
+      if (num % c !== 0){ a = 2; x0 = 3; b = 0; c = 2; num = a * x0 + b; }
+      const d = num / c;
+      ineqStore(op, a * x0, a);
+      html = `<div class="q-expr" style="justify-content:center;gap:8px;align-items:center">${fracHTML(ineqLinHTML(a, b), c)}<span>${ineqOpHTML(op)} ${aNum(d)}</span></div>`;
+      steps = `Multiply both sides by ${c} → ${a}${aVar(EQ_VAR)} ${b >= 0 ? '+ ' + b : '− ' + Math.abs(b)} ${ineqOpHTML(op)} ${aNum(c * d)}.<br>`
+            + `${ineqUndoC(b)} → ${a}${aVar(EQ_VAR)} ${ineqOpHTML(op)} ${aNum(c * d - b)}.<br>`
+            + `Divide both sides by ${a} → <b>${qData.ansDisplayHTML}</b>.`;
+    }
+  } else if (level === 2){
+    // Answers/coefficients may be fractions. Positive leading coefficient (no flip).
+    form = (Math.random() < 0.45) ? 0 : (Math.random() < 0.5 ? 1 : 2);
+    if (form === 1){
+      const a = rr(2, 6), m = nzrand(-6, 6), b = nzrand(-9, 9), c = b + m;
+      ineqStore(op, a * m, 1);
+      html = `<div class="q-expr" style="justify-content:center;gap:8px;align-items:center">${fracHTML(aVar(EQ_VAR), a)}<span>${b >= 0 ? ' + ' + b : ' − ' + Math.abs(b)} ${ineqOpHTML(op)} ${aNum(c)}</span></div>`;
+      steps = `${ineqUndoC(b)}, then multiply both sides by ${a} → <b>${qData.ansDisplayHTML}</b>.`;
+    } else if (form === 2){
+      const a = rr(2, 4), b = nzrand(-9, 9), c = rr(2, 4), d = nzrand(-6, 6);
+      ineqStore(op, c * d - b, a);
+      html = `<div class="q-expr" style="justify-content:center;gap:8px;align-items:center">${fracHTML(ineqLinHTML(a, b), c)}<span>${ineqOpHTML(op)} ${aNum(d)}</span></div>`;
+      steps = `Multiply both sides by ${c} → ${a}${aVar(EQ_VAR)} ${b >= 0 ? '+ ' + b : '− ' + Math.abs(b)} ${ineqOpHTML(op)} ${aNum(c * d)}.<br>`
+            + `${ineqUndoC(b)}, then divide by ${a} → <b>${qData.ansDisplayHTML}</b>.`;
+    } else {
+      const a = rr(2, 6), b = nzrand(-9, 9), c = nzrand(-12, 12);
+      ineqStore(op, c - b, a);
+      html = `${ineqLinHTML(a, b)} ${ineqOpHTML(op)} ${aNum(c)}`;
+      steps = `${ineqUndoC(b)} → ${a}${aVar(EQ_VAR)} ${ineqOpHTML(op)} ${aNum(c - b)}.<br>`
+            + `Divide both sides by ${a} → <b>${qData.ansDisplayHTML}</b>.`;
+    }
+  } else {
+    // L3 — some questions have a NEGATIVE leading coefficient (→ flip the sign).
+    const negative = (Math.random() < 0.65);
+    form = (Math.random() < 0.6) ? 0 : 2;
+    if (form === 0){
+      const a = (negative ? -1 : 1) * rr(2, 6), b = nzrand(-9, 9), c = nzrand(-12, 12);
+      const solveOp = (a < 0) ? ineqFlip(op) : op;
+      ineqStore(solveOp, c - b, a);
+      const flipNote = (a < 0) ? `  (dividing by a negative reverses the sign)` : '';
+      html = `${ineqLinHTML(a, b)} ${ineqOpHTML(op)} ${aNum(c)}`;
+      steps = `${ineqUndoC(b)} → ${aNum(a)}${aVar(EQ_VAR)} ${ineqOpHTML(op)} ${aNum(c - b)}.<br>`
+            + `Divide both sides by ${aNum(a)}${flipNote} → <b>${qData.ansDisplayHTML}</b>.`;
+    } else {
+      const a = (negative ? -1 : 1) * rr(2, 4), b = nzrand(-6, 6), c = rr(2, 4), d = nzrand(-6, 6);
+      const solveOp = (a < 0) ? ineqFlip(op) : op;
+      ineqStore(solveOp, c * d - b, a);
+      const flipNote = (a < 0) ? `  (dividing by a negative reverses the sign)` : '';
+      html = `<div class="q-expr" style="justify-content:center;gap:8px;align-items:center">${fracHTML(ineqLinHTML(a, b), c)}<span>${ineqOpHTML(op)} ${aNum(d)}</span></div>`;
+      steps = `Multiply both sides by ${c} → ${aNum(a)}${aVar(EQ_VAR)} ${b >= 0 ? '+ ' + b : '− ' + Math.abs(b)} ${ineqOpHTML(op)} ${aNum(c * d)}.<br>`
+            + `${ineqUndoC(b)} → ${aNum(a)}${aVar(EQ_VAR)} ${ineqOpHTML(op)} ${aNum(c * d - b)}.<br>`
+            + `Divide both sides by ${aNum(a)}${flipNote} → <b>${qData.ansDisplayHTML}</b>.`;
     }
   }
+
+  qData.workSteps = steps;
+  el.style.fontSize = '2.1rem';
+  el.innerHTML = `<div style="${A_LBL}">Solve the inequality</div><div class="q-expr" style="justify-content:center">${html}</div>`;
+}
+/* Parse a signed integer / fraction / decimal token → {num, den, isDecimal, dec} or null. */
+function ineqParseVal(str){
+  let s = str.replace(/^\+/, '');
+  let m;
+  if ((m = s.match(/^(-?\d+)\/(-?\d+)$/))){
+    let num = parseInt(m[1], 10), den = parseInt(m[2], 10);
+    if (den === 0) return null;
+    if (den < 0) { num = -num; den = -den; }
+    return { num, den, isDecimal: false };
+  }
+  if (/^-?\d+$/.test(s)) return { num: parseInt(s, 10), den: 1, isDecimal: false };
+  if (/^-?\d*\.\d+$/.test(s)) return { num: 0, den: 1, isDecimal: true, dec: parseFloat(s) };
+  return null;
+}
+/* Parse a typed inequality "x OP value" (either orientation) → canonical
+   {op, num, den, isDecimal, dec} with x on the left, or {invalid:'form'}. */
+function ineqParse(raw){
+  if (!raw) return null;
+  let s = raw.replace(/\s+/g, '').replace(/X/g, 'x');
+  s = s.replace(/<=/g, '≤').replace(/>=/g, '≥').replace(/=</g, '≤').replace(/=>/g, '≥');
+  const opChars = (s.match(/[<>≤≥]/g) || []);
+  if (opChars.length !== 1) return { invalid: 'form' };
+  const op = opChars[0];
+  const idx = s.indexOf(op);
+  const left = s.slice(0, idx), right = s.slice(idx + 1);
+  let valStr, o = op;
+  if (left === 'x') valStr = right;
+  else if (right === 'x') { valStr = left; o = ineqFlip(op); }
+  else return { invalid: 'form' };
+  const v = ineqParseVal(valStr);
+  if (v === null) return { invalid: 'form' };
+  return { op: o, num: v.num, den: v.den, isDecimal: v.isDecimal, dec: v.dec };
+}
+
+/* ═══════════════════════════════════════════════
+   GEOMETRY DIAGRAM SKILLS (v50)
+   Pythagoras (revised in place) + Interior Angles of a Triangle.
+   Diagrams are parametric SVG rendered into qText, and are NOT to scale:
+   a fixed base shape carries the labels; only the labels and the orientation
+   change. Givens use the app text colour, the unknown uses the accent colour.
+═══════════════════════════════════════════════ */
+const PYTH_TRIPLES = [[3,4,5],[6,8,10],[5,12,13],[8,15,17],[9,12,15],[7,24,25],[20,21,29]];
+
+/* ── surd helpers ── */
+function isPerfSq(n){ const s = Math.round(Math.sqrt(n)); return s*s === n; }
+/* Canonicalise c·√r to {c,r} with r square-free (r === 1 means a whole number). */
+function surdSimplify(c, r){
+  let k = 1, rad = r;
+  for (let f = 2; f*f <= rad; f++){ while (rad % (f*f) === 0){ rad = rad/(f*f); k *= f; } }
+  return { c: c*k, r: rad, invalid: null };
+}
+function surdFmt(cr){
+  if (cr.r === 1) return '' + cr.c;
+  if (cr.c === 1) return '√' + cr.r;
+  return cr.c + '√' + cr.r;
+}
+/* Parse a typed answer to canonical {c,r}. Accepts 5, √12, 2√5, root12, sqrt12,
+   √(12). Equivalence is by canonical FORM, never by numeric value, so √12 and
+   2√3 both pass but a decimal like 3.46 is rejected. Returns null for empty,
+   {invalid:'decimal'|'form'} for rejected input. */
+function surdParse(raw){
+  raw = String(raw).trim().toLowerCase().replace(/\s+/g,'');
+  if (raw === '') return null;
+  raw = raw.replace(/sqrt/g,'√').replace(/root/g,'√');
+  if (raw.indexOf('.') !== -1) return { invalid: 'decimal' };
+  let m;
+  if ((m = raw.match(/^(\d+)$/))) return surdSimplify(parseInt(m[1],10), 1);
+  if ((m = raw.match(/^(\d*)√\(?(\d+)\)?$/))){
+    const c = m[1] === '' ? 1 : parseInt(m[1],10);
+    const r = parseInt(m[2],10);
+    if (!(c > 0) || !(r > 0)) return { invalid: 'form' };
+    return surdSimplify(c, r);
+  }
+  return { invalid: 'form' };
+}
+
+/* ── shared SVG geometry helpers (pg = pythagoras/geometry) ── */
+function pgU(A,B){ const dx=B[0]-A[0], dy=B[1]-A[1], l=Math.hypot(dx,dy)||1; return [dx/l, dy/l]; }
+function pgMid(A,B){ return [(A[0]+B[0])/2, (A[1]+B[1])/2]; }
+function pgCentroid(p){ return [(p[0][0]+p[1][0]+p[2][0])/3, (p[0][1]+p[1][1]+p[2][1])/3]; }
+function pgRot(pts, deg, flip){ const a=deg*Math.PI/180, c=Math.cos(a), s=Math.sin(a);
+  return pts.map(function(p){ const x=flip?-p[0]:p[0], y=p[1]; return [x*c - y*s, x*s + y*c]; }); }
+function pgFit(pts, x0, y0, x1, y1){
+  const xs=pts.map(function(p){return p[0];}), ys=pts.map(function(p){return p[1];});
+  const mnx=Math.min.apply(0,xs), mxx=Math.max.apply(0,xs), mny=Math.min.apply(0,ys), mxy=Math.max.apply(0,ys);
+  const w=(mxx-mnx)||1, h=(mxy-mny)||1, s=Math.min((x1-x0)/w, (y1-y0)/h);
+  const ox=x0+((x1-x0)-w*s)/2 - mnx*s, oy=y0+((y1-y0)-h*s)/2 - mny*s;
+  return pts.map(function(p){ return [p[0]*s+ox, p[1]*s+oy]; });
+}
+function pgPoly(pts){ return '<polygon points="'+pts.map(function(p){return p[0].toFixed(1)+','+p[1].toFixed(1);}).join(' ')+'" fill="none" stroke="var(--text)" stroke-width="2.5" stroke-linejoin="round"/>'; }
+function pgLbl(x,y,t,acc){ return '<text x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'" font-family="Nunito,sans-serif" font-weight="900" font-size="17" fill="'+(acc?'var(--accent)':'var(--text)')+'" text-anchor="middle" dominant-baseline="central">'+t+'</text>'; }
+function pgRA(R,P,Q){ const d1=pgU(R,P), d2=pgU(R,Q), s=12;
+  const a=[R[0]+d1[0]*s, R[1]+d1[1]*s], b=[a[0]+d2[0]*s, a[1]+d2[1]*s], c=[R[0]+d2[0]*s, R[1]+d2[1]*s];
+  return '<polyline points="'+a[0].toFixed(1)+','+a[1].toFixed(1)+' '+b[0].toFixed(1)+','+b[1].toFixed(1)+' '+c[0].toFixed(1)+','+c[1].toFixed(1)+'" fill="none" stroke="var(--text)" stroke-width="2"/>'; }
+function pgArc(V,N1,N2,acc){
+  const d1=pgU(V,N1), d2=pgU(V,N2); let a1=Math.atan2(d1[1],d1[0]), a2=Math.atan2(d2[1],d2[0]);
+  let d=a2-a1; while(d>Math.PI)d-=2*Math.PI; while(d<-Math.PI)d+=2*Math.PI;
+  const r=16, pts=[]; for(let i=0;i<=14;i++){ const a=a1+d*i/14; pts.push([V[0]+Math.cos(a)*r, V[1]+Math.sin(a)*r]); }
+  let bis=[d1[0]+d2[0], d1[1]+d2[1]]; const bl=Math.hypot(bis[0],bis[1])||1; bis=[bis[0]/bl, bis[1]/bl];
+  const lp=[V[0]+bis[0]*(r+13), V[1]+bis[1]*(r+13)];
+  return { arc:'<polyline points="'+pts.map(function(p){return p[0].toFixed(1)+','+p[1].toFixed(1);}).join(' ')+'" fill="none" stroke="'+(acc?'var(--accent)':'var(--text)')+'" stroke-width="2"/>', pos:lp };
+}
+function pgOut(A,B,cen,off){ const M=pgMid(A,B), d=pgU(cen,M); return [M[0]+d[0]*off, M[1]+d[1]*off]; }
+function pgSvgWrap(inner){ return '<svg width="300" height="240" viewBox="0 0 300 240" role="img" style="display:block;margin:6px auto 0;max-width:100%">'+inner+'<text x="150" y="230" font-family="Nunito,sans-serif" font-weight="700" font-size="12" fill="var(--muted)" text-anchor="middle">Not to scale</text></svg>'; }
+
+/* Right-angled triangle. sides = {l1, l2, h}; each a number or 'x'.
+   l1 = R–P leg, l2 = R–Q leg, h = P–Q hypotenuse (R = right-angle vertex). */
+function pythSvg(sides, varied){
+  const base=[[0,0],[142,0],[0,-102]];
+  const deg = varied ? [35,90,145,200,270,315][ri(6)] : 0;
+  const flip = varied && Math.random() < 0.5;
+  const pts = pgFit(pgRot(base, deg, flip), 78, 72, 222, 168);
+  const R=pts[0], P=pts[1], Q=pts[2], cen=pgCentroid(pts);
+  const L1=pgOut(R,P,cen,20), L2=pgOut(R,Q,cen,20), H=pgOut(P,Q,cen,20);
+  let s = pgPoly(pts) + pgRA(R,P,Q);
+  s += pgLbl(L1[0],L1[1], sides.l1, sides.l1==='x');
+  s += pgLbl(L2[0],L2[1], sides.l2, sides.l2==='x');
+  s += pgLbl(H[0],H[1],  sides.h,  sides.h==='x');
+  return pgSvgWrap(s);
+}
+
+/* Triangle with all three angle labels; the hidden one (hideIdx) shows x. */
+function iatSvg(vals, hideIdx, varied){
+  const base=[[0,0],[162,0],[52,-120]];
+  const deg = varied ? [35,90,145,200,270,315][ri(6)] : 0;
+  const flip = varied && Math.random() < 0.5;
+  const pts = pgFit(pgRot(base, deg, flip), 74, 74, 226, 166);
+  let s = pgPoly(pts);
+  for (let i=0;i<3;i++){
+    const n1=pts[(i+1)%3], n2=pts[(i+2)%3], acc=(i===hideIdx);
+    const A = pgArc(pts[i], n1, n2, acc);
+    s += A.arc + pgLbl(A.pos[0], A.pos[1], acc ? 'x' : (vals[i]+'°'), acc);
+  }
+  return pgSvgWrap(s);
+}
+
+/* Pythagoras' theorem (revised v50): diagram-based, unknown mixed between the
+   hypotenuse and a shorter side throughout. L1–L2 whole-number triples, fixed
+   orientation; L3–L4 exact surds, varied orientation, occasional triple. */
+function genPythagoras(el){
+  el.style.fontSize = '1.05rem';
+  const surds = (level >= 3);
+  const varied = surds;
+  const uk = Math.random() < 0.5 ? 'hyp' : 'leg';
+  let sides, ansCR, prompt, work;
+  if (!surds){
+    const pool = (level === 1) ? PYTH_TRIPLES.filter(function(t){ return t[2] <= 15; }) : PYTH_TRIPLES;
+    const t = pool[ri(pool.length)], p=t[0], q=t[1], r=t[2];
+    if (uk === 'hyp'){
+      sides = (Math.random()<0.5) ? {l1:p, l2:q, h:'x'} : {l1:q, l2:p, h:'x'};
+      ansCR = surdSimplify(r, 1);
+      work = 'c = √('+p+'² + '+q+'²) = √'+(p*p+q*q)+' = <b>'+r+'</b>';
+    } else {
+      const knownLeg = (Math.random()<0.5) ? p : q, ansLeg = (knownLeg===p) ? q : p;
+      sides = (Math.random()<0.5) ? {l1:'x', l2:knownLeg, h:r} : {l1:knownLeg, l2:'x', h:r};
+      ansCR = surdSimplify(ansLeg, 1);
+      work = '= √('+r+'² − '+knownLeg+'²) = √'+(r*r-knownLeg*knownLeg)+' = <b>'+ansLeg+'</b>';
+    }
+    prompt = (uk==='hyp') ? 'Right-angled triangle — find the hypotenuse' : 'Right-angled triangle — find the missing side';
+  } else {
+    const useTriple = Math.random() < 0.2;
+    if (uk === 'hyp'){
+      let a, b;
+      if (useTriple){ const t=PYTH_TRIPLES[ri(PYTH_TRIPLES.length)]; a=t[0]; b=t[1]; }
+      else { const cap=(level===3)?7:9; do{ a=rr(2,cap); b=rr(2,cap); } while (a===b || isPerfSq(a*a+b*b)); }
+      sides = (Math.random()<0.5) ? {l1:a, l2:b, h:'x'} : {l1:b, l2:a, h:'x'};
+      ansCR = surdSimplify(1, a*a+b*b);
+      work = 'c = √('+a+'² + '+b+'²) = √'+(a*a+b*b)+' = <b>'+surdFmt(ansCR)+'</b>';
+    } else {
+      let c, leg;
+      if (useTriple){ const t=PYTH_TRIPLES[ri(PYTH_TRIPLES.length)]; c=t[2]; leg=(Math.random()<0.5)?t[0]:t[1]; }
+      else { const cap=(level===3)?11:14; do{ c=rr(5,cap); leg=rr(2,c-1); } while (isPerfSq(c*c-leg*leg) || c*c-leg*leg <= 0); }
+      ansCR = surdSimplify(1, c*c-leg*leg);
+      sides = (Math.random()<0.5) ? {l1:'x', l2:leg, h:c} : {l1:leg, l2:'x', h:c};
+      work = '= √('+c+'² − '+leg+'²) = √'+(c*c-leg*leg)+' = <b>'+surdFmt(ansCR)+'</b>';
+    }
+    prompt = (uk==='hyp') ? 'Right-angled triangle — find the hypotenuse (exact value)' : 'Right-angled triangle — find the missing side (exact value)';
+  }
+  qData.ansSurd = { c: ansCR.c, r: ansCR.r };
+  qData.ans = ansCR.c * Math.sqrt(ansCR.r);
+  qData.ansDisplay = surdFmt(ansCR);
+  qData.workSteps = work;
+  qData.pgSides = sides; qData.pgUnknown = uk;   // runtime-only test hooks (not stored)
+  el.innerHTML = '<div style="'+A_LBL+'">'+prompt+'</div>' + pythSvg(sides, varied);
+}
+
+/* Interior Angles of a Triangle (v50): two known angles given, find the third
+   (x = 180 − a − b). L1 acute, round numbers, fixed; L2 may be obtuse, varied;
+   L3 awkward whole degrees, varied. */
+function genInteriorAngles(el){
+  el.style.fontSize = '1.05rem';
+  const varied = (level >= 2);
+  let a, b, c, g = 0;
+  do {
+    if (level === 1){ a = rr(5,17)*5; b = rr(5,17)*5; }
+    else if (level === 2){ a = rr(5,24)*5; b = rr(5,24)*5; }
+    else { a = rr(20,130); b = rr(20,130); }
+    c = 180 - a - b; g++;
+  } while ((c < 15 || a < 15 || b < 15 || (level === 1 && (a >= 90 || b >= 90 || c >= 90))) && g < 120);
+  if (c < 15 || a < 15 || b < 15){ a = 60; b = 70; c = 50; }
+  const vals = [a, b, c], hide = ri(3);
+  qData.ans = vals[hide];
+  qData.iatVals = vals; qData.iatHide = hide;   // runtime-only test hooks (not stored)
+  const shown = vals.filter(function(_, i){ return i !== hide; });
+  qData.workSteps = 'x = 180° − ' + shown[0] + '° − ' + shown[1] + '° = <b>' + vals[hide] + '°</b>';
+  el.innerHTML = '<div style="'+A_LBL+'">Triangle — find the unknown angle x</div>' + iatSvg(vals, hide, varied);
+}
+
+/* ═══════════════════════════════════════════════
+   NAMING 2D & 3D SHAPES FROM DIAGRAMS  (v52, expanded v53, lvKey nsh)
+   Multiple-choice (reuses 'choice' mode). A curated SVG library — the canonical
+   drawing of each shape, not fully parametric. Side-count polygons carry BOTH a
+   regular and an irregular variant (same name), picked at random, so students
+   learn that the name is about the number of sides, not regularity. 3D solids use
+   an offset-face / squashed-base wireframe with dashed hidden edges. Distractors
+   are level-aware: L1/L2 pull other level-appropriate shapes; L3 pulls from the
+   answer's own confusable family (parallelogram vs rhombus, prism vs pyramid, …).
+═══════════════════════════════════════════════ */
+function shPoly(pts, dash){ return '<polygon points="'+pts.map(function(p){return p[0]+','+p[1];}).join(' ')+'" fill="none" stroke="var(--text)" stroke-width="2.5" stroke-linejoin="round"'+(dash?' stroke-dasharray="5 4"':'')+'/>'; }
+function shLine(a, b, dash){ return '<line x1="'+a[0]+'" y1="'+a[1]+'" x2="'+b[0]+'" y2="'+b[1]+'" stroke="var(--text)" stroke-width="2.5" stroke-linecap="round"'+(dash?' stroke-dasharray="5 4"':'')+'/>'; }
+function shEll(cx, cy, rx, ry, dash){ return '<ellipse cx="'+cx+'" cy="'+cy+'" rx="'+rx+'" ry="'+ry+'" fill="none" stroke="var(--text)" stroke-width="2.5"'+(dash?' stroke-dasharray="5 4"':'')+'/>'; }
+function shCirc(cx, cy, r){ return '<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="none" stroke="var(--text)" stroke-width="2.5"/>'; }
+function shPath(d, dash){ return '<path d="'+d+'" fill="none" stroke="var(--text)" stroke-width="2.5" stroke-linecap="round"'+(dash?' stroke-dasharray="5 4"':'')+'/>'; }
+function shWrap(inner){ return '<svg width="300" height="220" viewBox="0 0 300 220" role="img" style="display:block;margin:6px auto 0;max-width:100%">'+inner+'</svg>'; }
+
+/* Regular n-gon vertices. rotDeg default -90 puts a vertex at the top. */
+function regPolyPts(n, cx, cy, r, rotDeg){
+  const rot = ((rotDeg == null ? -90 : rotDeg)) * Math.PI / 180, pts = [];
+  for (let i = 0; i < n; i++){ const a = rot + i * 2 * Math.PI / n;
+    pts.push([+(cx + r * Math.cos(a)).toFixed(1), +(cy + r * Math.sin(a)).toFixed(1)]); }
+  return pts;
+}
+/* Deterministic irregular n-gon (no RNG → fixed & testable). Same side count,
+   moderate radial + small angular jitter so it stays a clear, non-crossing n-gon. */
+function irregPolyPts(n, cx, cy, r, rotDeg){
+  const rot = ((rotDeg == null ? -90 : rotDeg)) * Math.PI / 180, pts = [];
+  for (let i = 0; i < n; i++){
+    const t = Math.sin((i + 1) * (n * 1.7 + 2.3));
+    const u = Math.cos((i + 1) * (n * 0.9 + 1.1));
+    const rr = r * (0.78 + 0.34 * (t * 0.5 + 0.5));
+    const a = rot + i * 2 * Math.PI / n + u * (Math.PI / n) * 0.32;
+    pts.push([+(cx + rr * Math.cos(a)).toFixed(1), +(cy + rr * Math.sin(a)).toFixed(1)]);
+  }
+  return pts;
+}
+/* n-gon prism: near face solid, far face (offset) dashed, connectors solid. */
+function prism3D(n, cx, cyF, r, rot, dx, dy){
+  const F = regPolyPts(n, cx, cyF, r, rot);
+  const B = F.map(function(p){ return [+(p[0] + dx).toFixed(1), +(p[1] + dy).toFixed(1)]; });
+  let s = shPoly(B, true);
+  for (let i = 0; i < n; i++) s += shLine(F[i], B[i]);
+  s += shPoly(F);
+  return s;
+}
+/* n-gon pyramid: base squashed for perspective, apex above centre; edges that sit
+   behind the base centre are dashed (hidden). */
+function pyramid3D(n, cx, cyBase, r, rot, apexY){
+  const base = regPolyPts(n, cx, cyBase, r, rot).map(function(p){ return [p[0], +(cyBase + (p[1] - cyBase) * 0.40).toFixed(1)]; });
+  const apex = [cx, apexY];
+  let s = '';
+  for (let i = 0; i < n; i++){ const A = base[i], B = base[(i + 1) % n];
+    s += shLine(A, B, (A[1] < cyBase - 0.5 && B[1] < cyBase - 0.5)); }
+  for (let i = 0; i < n; i++) s += shLine(apex, base[i], base[i][1] < cyBase - 0.5);
+  return s;
+}
+/* Dodecahedron — standard face-on projection: central pentagon, surrounding
+   decagon, five spokes forming the five near pentagonal faces. */
+function dodecaSvg(){
+  const cx = 150, cy = 112;
+  const P = regPolyPts(5, cx, cy, 44, -90);
+  const D = regPolyPts(10, cx, cy, 92, -90);
+  let s = shPoly(D);
+  s += shPoly(P);
+  for (let i = 0; i < 5; i++) s += shLine(P[i], D[(i * 2) % 10]);
+  return s;
+}
+
+/* Each entry: name, dim, and variants[] of SVG inner strings (regular first). */
+const SHAPE_LIB = {
+  // ── 2D: side-count polygons (regular + irregular) ──
+  triangle:  { name:'Triangle',  dim:'2D', variants:[ shPoly(regPolyPts(3,150,120,84,-90)), shPoly([[58,172],[242,150],[176,54]]), shPoly([[70,58],[70,176],[224,176]]) ] },
+  pentagon:  { name:'Pentagon',  dim:'2D', variants:[ shPoly(regPolyPts(5,150,112,80,-90)), shPoly(irregPolyPts(5,150,112,82,-90)) ] },
+  hexagon:   { name:'Hexagon',   dim:'2D', variants:[ shPoly(regPolyPts(6,150,110,82,-90)), shPoly(irregPolyPts(6,150,110,84,-60)) ] },
+  heptagon:  { name:'Heptagon',  dim:'2D', variants:[ shPoly(regPolyPts(7,150,110,82,-90)), shPoly(irregPolyPts(7,150,110,84,-90)) ] },
+  octagon:   { name:'Octagon',   dim:'2D', variants:[ shPoly(regPolyPts(8,150,110,82,-67.5)), shPoly(irregPolyPts(8,150,110,84,-67.5)) ] },
+  nonagon:   { name:'Nonagon',   dim:'2D', variants:[ shPoly(regPolyPts(9,150,110,82,-90)), shPoly(irregPolyPts(9,150,110,84,-90)) ] },
+  decagon:   { name:'Decagon',   dim:'2D', variants:[ shPoly(regPolyPts(10,150,110,82,-90)), shPoly(irregPolyPts(10,150,110,84,-90)) ] },
+  // ── 2D: shapes defined by properties (single canonical drawing) ──
+  square:        { name:'Square',        dim:'2D', variants:[ shPoly([[95,55],[205,55],[205,165],[95,165]]) ] },
+  rectangle:     { name:'Rectangle',     dim:'2D', variants:[ shPoly([[62,72],[238,72],[238,158],[62,158]]) ] },
+  circle:        { name:'Circle',        dim:'2D', variants:[ shCirc(150,110,72) ] },
+  parallelogram: { name:'Parallelogram', dim:'2D', variants:[ shPoly([[92,60],[240,60],[208,165],[60,165]]) ] },
+  rhombus:       { name:'Rhombus',       dim:'2D', variants:[ shPoly([[150,48],[230,110],[150,172],[70,110]]) ] },
+  trapezium:     { name:'Trapezium',     dim:'2D', variants:[ shPoly([[95,60],[205,60],[248,165],[52,165]]) ] },
+  kite:          { name:'Kite',          dim:'2D', variants:[ shPoly([[150,40],[216,102],[150,188],[84,102]]) ] },
+  // ── 3D ── (near/front solid, hidden edges dashed)
+  cube: { name:'Cube', dim:'3D', variants:[
+    shPoly([[80,90],[180,90],[180,190],[80,190]]) +
+    shLine([80,90],[125,52]) + shLine([180,90],[225,52]) + shLine([180,190],[225,152]) +
+    shLine([125,52],[225,52]) + shLine([225,52],[225,152]) +
+    shLine([80,190],[125,152],true) + shLine([125,52],[125,152],true) + shLine([125,152],[225,152],true) ] },
+  cuboid: { name:'Rectangular prism', dim:'3D', variants:[
+    shPoly([[62,95],[202,95],[202,180],[62,180]]) +
+    shLine([62,95],[107,60]) + shLine([202,95],[247,60]) + shLine([202,180],[247,145]) +
+    shLine([107,60],[247,60]) + shLine([247,60],[247,145]) +
+    shLine([62,180],[107,145],true) + shLine([107,60],[107,145],true) + shLine([107,145],[247,145],true) ] },
+  cylinder: { name:'Cylinder', dim:'3D', variants:[
+    shEll(150,58,58,17) + shLine([92,58],[92,168]) + shLine([208,58],[208,168]) +
+    shPath('M92,168 A58,17 0 0 0 208,168') + shPath('M92,168 A58,17 0 0 1 208,168', true) ] },
+  cone: { name:'Cone', dim:'3D', variants:[
+    shLine([150,45],[92,168]) + shLine([150,45],[208,168]) +
+    shPath('M92,168 A58,17 0 0 0 208,168') + shPath('M92,168 A58,17 0 0 1 208,168', true) ] },
+  sphere: { name:'Sphere', dim:'3D', variants:[ shCirc(150,110,72) + shEll(150,110,72,22,true) ] },
+  hemisphere: { name:'Hemisphere', dim:'3D', variants:[
+    shEll(150,100,74,20) + shPath('M76,100 A74,74 0 0 0 224,100') ] },
+  torus: { name:'Torus', dim:'3D', variants:[
+    shEll(150,110,84,42) +
+    shPath('M116,110 A34,13 0 0 1 184,110') + shPath('M116,110 A34,13 0 0 0 184,110', true) ] },
+  triangularPrism:  { name:'Triangular prism',  dim:'3D', variants:[ prism3D(3,120,158,56,-90,54,-36) ] },
+  pentagonalPrism:  { name:'Pentagonal prism',  dim:'3D', variants:[ prism3D(5,120,132,54,-90,58,-40) ] },
+  hexagonalPrism:   { name:'Hexagonal prism',   dim:'3D', variants:[ prism3D(6,118,130,54,-90,60,-40) ] },
+  triangularPyramid:{ name:'Triangular pyramid', dim:'3D', variants:[ pyramid3D(3,150,158,74,90,54) ] },
+  squarePyramid:    { name:'Square pyramid',     dim:'3D', variants:[ pyramid3D(4,150,158,82,45,52) ] },
+  pentagonalPyramid:{ name:'Pentagonal pyramid', dim:'3D', variants:[ pyramid3D(5,150,158,78,-90,50) ] },
+  hexagonalPyramid: { name:'Hexagonal pyramid',  dim:'3D', variants:[ pyramid3D(6,150,158,80,0,50) ] },
+  dodecahedron:     { name:'Dodecahedron',       dim:'3D', variants:[ dodecaSvg() ] },
+};
+
+/* Level pools (which shapes appear) + confusable families (L3 distractors). */
+const NSH_L1 = ['triangle','square','rectangle','circle','pentagon','hexagon',
+                'parallelogram','rhombus','trapezium','kite'];   // v56: all quads incl. special
+const NSH_L2 = ['cube','cuboid','cylinder','cone','sphere','hemisphere','torus',
+                'triangularPrism','pentagonalPrism','hexagonalPrism',
+                'triangularPyramid','squarePyramid','pentagonalPyramid','hexagonalPyramid','dodecahedron'];
+const NSH_L3 = ['heptagon','octagon','nonagon','decagon',
+                'parallelogram','rhombus','trapezium','kite',
+                'triangularPrism','pentagonalPrism','hexagonalPrism',
+                'squarePyramid','pentagonalPyramid','hexagonalPyramid','triangularPyramid','cube','cuboid'];
+const NSH_GROUPS = {
+  poly:     ['triangle','pentagon','hexagon','heptagon','octagon','nonagon','decagon'],
+  quad:     ['square','rectangle','parallelogram','rhombus','trapezium','kite'],
+  prismpyr: ['cube','cuboid','triangularPrism','pentagonalPrism','hexagonalPrism',
+             'triangularPyramid','squarePyramid','pentagonalPyramid','hexagonalPyramid'],
+  curved:   ['cylinder','cone','sphere','hemisphere','torus','dodecahedron'],
+};
+function nshFamily(key){
+  for (const g in NSH_GROUPS) if (NSH_GROUPS[g].includes(key)) return NSH_GROUPS[g];
+  return NSH_L1;
+}
+function genNameShapes(el){
+  const pool = level === 1 ? NSH_L1 : level === 2 ? NSH_L2 : NSH_L3;
+  const key = pool[ri(pool.length)];
+  const shape = SHAPE_LIB[key];
+
+  // L1/L2: distractors from the level pool (distinct, level-appropriate).
+  // L3: distractors from the answer's own confusable family (hard).
+  const src = (level === 3 ? nshFamily(key) : pool).filter(function(k){ return k !== key; });
+  const picks = [], bag = src.slice();
+  while (picks.length < 3 && bag.length) picks.push(bag.splice(ri(bag.length), 1)[0]);
+  if (picks.length < 3){ const extra = pool.filter(function(k){ return k !== key && picks.indexOf(k) < 0; });
+    while (picks.length < 3 && extra.length) picks.push(extra.splice(ri(extra.length), 1)[0]); }
+  const opts = shuffleArr([key].concat(picks));
+
+  qData.chosen = null;
+  qData.choiceAns = key;
+  qData.choices = opts.map(function(k){ return { code: k, html: SHAPE_LIB[k].name }; });
+  qData.choiceText = {};
+  opts.forEach(function(k){ qData.choiceText[k] = SHAPE_LIB[k].name; });
+  qData.nshDim = shape.dim;                          // runtime-only test hooks
+  qData.nshVariants = shape.variants.length;
+  qData.workSteps = METHOD_TIP['nameShapes'] || '';
+
+  el.style.fontSize = '1.1rem';
+  el.innerHTML = '<div style="'+A_LBL+'">Name this shape</div>' + shWrap(shape.variants[ri(shape.variants.length)]);
+}
+
+/* ═══════════════════════════════════════════════
+   ANGLE GEOMETRY — BATCH C  (v54)
+   Three method skills, flat T=5, Fluency OFF (noFluency), whole-number answers.
+   Per-level input mode: L1 is tap-to-identify ('choice', reusing the generalised
+   choice engine); L2+ are typed numbers ('number', exactly like the equation and
+   interior-angle skills). Quadrilaterals is numeric at every level. All diagrams
+   are quality SVG built on the shared pg* geometry helpers; angle positions are
+   schematic (the pgSvgWrap frame already prints "Not to scale").
+═══════════════════════════════════════════════ */
+function angRay(V, deg, len){ const a = deg * Math.PI / 180; return [V[0] + Math.cos(a) * len, V[1] + Math.sin(a) * len]; }
+/* Angle label sized + pushed out so it clears the rays. Long algebraic labels
+   ((2x + 14)°) get a smaller font and a larger offset than a short 70°. */
+function angLabel(x, y, t, acc){ const size = (t.length > 5) ? 13 : 16;
+  return '<text x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'" font-family="Nunito,sans-serif" font-weight="900" font-size="'+size+'" fill="'+(acc?'var(--accent)':'var(--text)')+'" text-anchor="middle" dominant-baseline="central">'+t+'</text>'; }
+function angLabelPos(V, P1, P2, txt, extra){
+  const u1 = pgU(V,P1), u2 = pgU(V,P2);
+  let bx = u1[0]+u2[0], by = u1[1]+u2[1]; const bl = Math.hypot(bx,by) || 1; bx/=bl; by/=bl;
+  const dot = Math.max(-1, Math.min(1, u1[0]*u2[0]+u1[1]*u2[1]));
+  const half = Math.max(0.18, Math.acos(dot)/2);
+  const size = (txt.length > 5) ? 13 : 16;
+  const wpx = txt.length*0.58*size, hpx = size, sn = Math.sin(half);
+  const off = Math.min(92, Math.max((hpx/2+5)/sn, wpx/(2*sn), wpx/2+8, 26) + 5) + (extra || 0);
+  return [V[0]+bx*off, V[1]+by*off];
+}
+function angArc(V, P1, P2, txt, acc){
+  const A = pgArc(V, P1, P2, acc);
+  if (txt == null) return A.arc;
+  const p = angLabelPos(V, P1, P2, txt, 0);
+  return A.arc + angLabel(p[0], p[1], txt, acc);
+}
+
+/* ---- Skill 3: Angle Relationships ---- */
+const ANG_REL = { comp:'Complementary', supp:'Supplementary', vert:'Vertically opposite', point:'Angles at a point' };
+/* Build the diagram for a relationship. vals = label strings for the marked
+   angles in the relationship's canonical order (null → schematic/identify), acc
+   = index of the unknown (or -1). */
+function angRelDiagram(key, vals, accIdx, rot){
+  rot = rot || 0;
+  const R2 = function(d){ return d + rot; };          // apply orientation
+  let s = '';
+  const AC = function(i){ return accIdx === i || accIdx === 'all'; };
+  if (key === 'comp'){
+    const V = [150,132], L = 106;                      // right angle split 45/45 (schematic)
+    const R = angRay(V,R2(0),L), T = angRay(V,R2(-90),L), S = angRay(V,R2(-45),L);
+    s += shLine(V,R) + shLine(V,T) + shLine(V,S) + pgRA(V, angRay(V,R2(0),20), angRay(V,R2(-90),20));
+    s += angArc(V, angRay(V,R2(0),34), angRay(V,R2(-45),34), null, AC(0));
+    s += angArc(V, angRay(V,R2(-45),34), angRay(V,R2(-90),34), null, AC(1));
+    // two long labels in a 90° corner: place on bisectors but stagger radially so boxes never touch
+    if (vals){
+      if (vals[0] != null){ const p = angLabelPos(V, angRay(V,R2(0),34), angRay(V,R2(-45),34), vals[0], 0);  s += angLabel(p[0],p[1],vals[0],AC(0)); }
+      if (vals[1] != null){ const p = angLabelPos(V, angRay(V,R2(-45),34), angRay(V,R2(-90),34), vals[1], 20); s += angLabel(p[0],p[1],vals[1],AC(1)); }
+    }
+  } else if (key === 'supp'){
+    const V = [150,140], L = 112;
+    const Lp = angRay(V,R2(180),L), Rp = angRay(V,R2(0),L), S = angRay(V,R2(-72),110);
+    s += shLine(Lp,Rp) + shLine(V,S);
+    s += angArc(V, angRay(V,R2(180),32), angRay(V,R2(-72),32), vals?vals[0]:null, AC(0));
+    s += angArc(V, angRay(V,R2(-72),32), angRay(V,R2(0),32), vals?vals[1]:null, AC(1));
+  } else if (key === 'vert'){
+    const V = [150,120], L = 112;
+    const a1=angRay(V,R2(152),L), a2=angRay(V,R2(-28),L), b1=angRay(V,R2(208),L), b2=angRay(V,R2(28),L);
+    s += shLine(a1,a2) + shLine(b1,b2);
+    s += angArc(V, angRay(V,R2(208),30), angRay(V,R2(-28),30), vals?vals[0]:null, AC(0));   // obtuse pair
+    s += angArc(V, angRay(V,R2(28),30),  angRay(V,R2(152),30), vals?vals[1]:null, AC(1));
+  } else { // point
+    const V = [150,120], L = 108;
+    const r1=angRay(V,R2(-90),L), r2=angRay(V,R2(145),L), r3=angRay(V,R2(35),L);
+    s += shLine(V,r1) + shLine(V,r2) + shLine(V,r3);
+    s += angArc(V, angRay(V,R2(-90),32), angRay(V,R2(35),32),  vals?vals[0]:null, AC(0));
+    s += angArc(V, angRay(V,R2(35),32),  angRay(V,R2(145),32), vals?vals[1]:null, AC(1));
+    s += angArc(V, angRay(V,R2(145),32), angRay(V,R2(-90),32), vals?vals[2]:null, AC(2));
+  }
+  return pgSvgWrap(s);
+}
+function genAngleRel(el){
+  el.style.fontSize = '1.05rem';
+  const rot = -55 + ri(111);   // orientation variety so the answer isn't always in the same spot
+  if (level === 1){
+    const keys = ['comp','supp','vert','point'], key = keys[ri(4)];
+    qData.chosen = null; qData.choiceAns = key;
+    const opts = shuffleArr(keys.slice());
+    qData.choices = opts.map(function(k){ return { code:k, html:ANG_REL[k] }; });
+    qData.choiceText = {}; opts.forEach(function(k){ qData.choiceText[k] = ANG_REL[k]; });
+    qData.workSteps = METHOD_TIP['angleRel'] || '';
+    el.innerHTML = '<div style="'+A_LBL+'">What is the relationship between the marked angles?</div>' + angRelDiagram(key, null, 'all', rot);
+    return;
+  }
+  const alg = (level === 4);
+  let key, vals, ans, work;
+  if (level === 2) key = ['comp','supp','vert'][ri(3)];
+  else if (level === 3) key = ['comp','supp','vert','point'][ri(4)];
+  else key = ['comp','supp','vert'][ri(3)];   // L4 algebra incl. complementary (Laura)
+
+  if (!alg){
+    if (key === 'comp'){ const a = (level===2)?rr(2,17)*5:rr(11,79); ans = 90-a; vals=[a+'°','x']; qData.ans=ans; qData.angCheck={mode:'sum',total:a+ans,expect:90};
+      work = 'Complementary → both add to 90°.<br>x = 90° − '+a+'° = <b>'+ans+'°</b>'; }
+    else if (key === 'supp'){ const a = (level===2)?rr(3,35)*5:rr(21,159); ans = 180-a; vals=[a+'°','x']; qData.ans=ans; qData.angCheck={mode:'sum',total:a+ans,expect:180};
+      work = 'Supplementary → both add to 180°.<br>x = 180° − '+a+'° = <b>'+ans+'°</b>'; }
+    else if (key === 'vert'){ const a = (level===2)?rr(4,34)*5:rr(25,155); ans = a; vals=[a+'°','x']; qData.ans=ans; qData.angCheck={mode:'eq',total:a,other:ans};
+      work = 'Vertically opposite angles are equal → x = <b>'+ans+'°</b>'; }
+    else { // point: two known + x
+      const p = angPointVals(level); ans = p.x; vals = [p.a+'°', p.b+'°', 'x']; qData.ans = ans; qData.angCheck={mode:'sum',total:p.a+p.b+ans,expect:360};
+      work = 'Angles at a point add to 360°.<br>x = 360° − '+p.a+'° − '+p.b+'° = <b>'+ans+'°</b>'; }
+    const accIdx = (key==='point') ? 2 : 1;
+    el.innerHTML = '<div style="'+A_LBL+'">Find the size of angle x (in degrees)</div>' + angRelDiagram(key, vals, accIdx, rot);
+  } else {
+    const eq = angAlgPair(key);   // {labels:[l0,l1], x, work}
+    qData.ans = eq.x; qData.angCheck=eq.chk;
+    el.innerHTML = '<div style="'+A_LBL+'">Solve for x</div>' + angRelDiagram(key, eq.labels, -1, rot);
+    work = eq.work;
+  }
+  qData.workSteps = work;
+}
+function angPointVals(level){
+  let a,b,x,g=0;
+  do { a = (level===2)?rr(4,20)*5 : rr(40,150); b = (level===2)?rr(4,20)*5 : rr(40,150); x = 360-a-b; g++; }
+  while ((x < 25 || x > 250) && g < 60);
+  if (x < 25 || x > 250){ a=120; b=100; x=140; }
+  return { a:a, b:b, x:x };
+}
+/* Algebraic pair for L4. Equal-type (comp/supp use a sum; vert uses equality). */
+function angAlgPair(key){
+  if (key === 'vert'){
+    // equal angles: (2x + b1) = (x + b2), so x = b2 − b1; both angles positive.
+    const x = rr(8,30), b1 = rr(5,40), b2 = x + b1;
+    const l0 = coefLbl(2,b1), l1 = coefLbl(1,b2);
+    return { labels:[l0, l1], x:x, chk:{mode:'eq',total:2*x+b1,other:x+b2},
+      work:'Vertically opposite → equal.<br>'+stripDeg(l0)+' = '+stripDeg(l1)+' → x = <b>'+x+'</b>' };
+  }
+  // sum type: two positive angles adding to S, each written (m x + b).
+  const S = (key==='comp') ? 90 : 180, T = rr(2,3);
+  let x = 6, cs = 0;
+  for (let t=0;t<60;t++){ x = rr(5, Math.floor((S-16)/T)); cs = S - T*x; if (cs>=12 && cs<=58) break; }
+  if (!(cs>=12 && cs<=58)){ x = Math.max(5, Math.floor((S-36)/T)); cs = S - T*x; }
+  const m1 = rr(1, T-1), m2 = T - m1;
+  let b1 = Math.max(4, Math.floor(cs/2)), b2 = cs - b1;
+  if (m1===m2 && b1===b2){ b1 -= 2; b2 += 2; }   // distinct expressions
+  const l0 = coefLbl(m1,b1), l1 = coefLbl(m2,b2);
+  const word = (key==='comp') ? 'Complementary → add to 90°.' : 'Supplementary → add to 180°.';
+  return { labels:[l0,l1], x:x, chk:{mode:'sum',total:(m1*x+b1)+(m2*x+b2),expect:S},
+    work:word+'<br>'+stripDeg(l0)+' + '+stripDeg(l1)+' = '+S+' → x = <b>'+x+'</b>' };
+}
+function coefLbl(m,b){ const vx = (m===1)?'x':(m+'x'); if (b===0) return vx+'°'; const bp = (b>0)?(' + '+b):(' − '+Math.abs(b)); return '('+vx+bp+')°'; }
+function stripDeg(l){ return l.replace(/°$/,''); }
+
+/* ---- Skill 4: Angles on Parallel Lines ---- */
+const ANG_PL = { corr:'Corresponding', alt:'Alternate', coint:'Co-interior', vert:'Vertically opposite' };
+function plChevron(C){ return shLine([C[0]-8,C[1]-6],[C[0],C[1]]) + shLine([C[0]-8,C[1]+6],[C[0],C[1]]); }
+function plAngle(I, hu, tu, quad, txt, acc){
+  const H=hu, Hn=[-hu[0],-hu[1]], T=tu, Tn=[-tu[0],-tu[1]], L=27;
+  const map = { BR:[H,T], BL:[T,Hn], TL:[Hn,Tn], TR:[Tn,H] };
+  const d = map[quad];
+  const P1=[I[0]+d[0][0]*L, I[1]+d[0][1]*L], P2=[I[0]+d[1][0]*L, I[1]+d[1][1]*L];
+  return angArc(I, P1, P2, txt, acc);
+}
+function plDiagram(marks, vals){
+  const topY=70, botY=182, x0=42, x1=260, C=[150,126];
+  // orientation variety: near-vertical transversal, leaning left or right, varying steepness
+  const lean = (Math.random() < 0.5) ? 1 : -1;
+  const ang = (66 + ri(16)) * Math.PI/180;                 // 66–81° from horizontal
+  const du = [Math.cos(ang)*lean, Math.sin(ang)];
+  const Ta=[C[0]-du[0]*120, C[1]-du[1]*120], Tb=[C[0]+du[0]*120, C[1]+du[1]*120];
+  const tu=pgU(Ta,Tb), hu=[1,0];
+  const ix = function(y){ return Ta[0] + (y-Ta[1])*(Tb[0]-Ta[0])/(Tb[1]-Ta[1]); };
+  const I1=[ix(topY),topY], I2=[ix(botY),botY];
+  let s = shLine([x0,topY],[x1,topY]) + shLine([x0,botY],[x1,botY]) + shLine(Ta,Tb);
+  s += plChevron([(x0+x1)/2, topY]) + plChevron([(x0+x1)/2, botY]);
+  marks.forEach(function(m,i){ const I = (m.at===1)?I1:I2;
+    s += plAngle(I, hu, tu, m.quad, vals?vals[i]:null, !!m.acc); });
+  return pgSvgWrap(s);
+}
+/* mark specs per relationship (given angle first, unknown second) */
+const PL_MARKS = {
+  corr:  [{at:1,quad:'BR'},{at:2,quad:'BR'}],
+  alt:   [{at:1,quad:'BL'},{at:2,quad:'TR'}],
+  coint: [{at:1,quad:'BR'},{at:2,quad:'TR'}],
+  vert:  [{at:1,quad:'BR'},{at:1,quad:'TL'}],
+};
+function genAngleParallel(el){
+  el.style.fontSize = '1.05rem';
+  if (level === 1){
+    const keys=['corr','alt','coint','vert'], key=keys[ri(4)];
+    qData.chosen=null; qData.choiceAns=key;
+    const opts=shuffleArr(keys.slice());
+    qData.choices=opts.map(function(k){ return {code:k, html:ANG_PL[k]}; });
+    qData.choiceText={}; opts.forEach(function(k){ qData.choiceText[k]=ANG_PL[k]; });
+    qData.workSteps=METHOD_TIP['angleParallel']||'';
+    const marks = PL_MARKS[key].map(function(m){ return {at:m.at, quad:m.quad, acc:true}; });
+    el.innerHTML='<div style="'+A_LBL+'">Two parallel lines are cut by a transversal. What is the relationship between the marked angles?</div>'+plDiagram(marks, null);
+    return;
+  }
+  if (level === 4){
+    const e = plAlgPair();     // {key, labels, x, work}
+    qData.ans = e.x; qData.angCheck = e.chk;
+    const marks = PL_MARKS[e.key].map(function(m,i){ return {at:m.at, quad:m.quad, acc:false}; });
+    el.innerHTML='<div style="'+A_LBL+'">Parallel lines — solve for x</div>'+plDiagram(marks, e.labels);
+    qData.workSteps = e.work; return;
+  }
+  // L2 single step, L3 two-step chain. L3 uses only the cross-line relationships
+  // (corr/alt/coint) — the unknown is flipped to the opposite corner, which for a
+  // single-intersection 'vert' base would land on the given angle itself.
+  const key = (level===2) ? ['corr','alt','coint','vert'][ri(4)] : ['corr','alt','coint'][ri(3)];
+  const given = rr(25,155);
+  let ans, work;
+  if (key==='coint'){ ans = 180-given; work = 'Co-interior angles add to 180°.<br>x = 180° − '+given+'° = <b>'+ans+'°</b>'; }
+  else { ans = given; const nm = ANG_PL[key].toLowerCase(); work = 'Angles '+(key==='vert'?'vertically opposite':nm)+' are equal.<br>x = <b>'+ans+'°</b>'; }
+  const marks = PL_MARKS[key].map(function(m,i){ return {at:m.at, quad:m.quad, acc:(i===1)}; });
+  if (level === 3){
+    // two-step: the unknown sits a further hop away (vertically opposite of the partner)
+    const key2 = key;
+    const step = (key2==='coint');
+    const second = step ? ('It is also vertically opposite that angle, so x keeps the same value.') : ('Then x is vertically opposite that angle, so it is equal.');
+    // move the unknown to the opposite corner at its intersection
+    const flip = { BR:'TL', TL:'BR', BL:'TR', TR:'BL' };
+    marks[1] = { at:marks[1].at, quad:flip[marks[1].quad], acc:true };
+    work = (key2==='coint')
+      ? 'Co-interior with the given angle → 180° − '+given+'° = '+(180-given)+'°.<br>Vertically opposite that → x = <b>'+(180-given)+'°</b>'
+      : ANG_PL[key2]+' angles are equal → '+given+'°.<br>Vertically opposite that → x = <b>'+given+'°</b>';
+    ans = (key2==='coint') ? 180-given : given;
+  }
+  qData.ans = ans;
+  qData.angCheck = (key==='coint') ? {mode:'sum',total:given+ans,expect:180} : {mode:'eq',total:given,other:ans};
+  el.innerHTML='<div style="'+A_LBL+'">Find the size of angle x (in degrees)</div>'+plDiagram(marks, markVals(marks, given, 1));
+  qData.workSteps = work;
+}
+function markVals(marks, given, unknownIdx){ return marks.map(function(m,i){ return i===unknownIdx ? 'x' : (given+'°'); }); }
+function plAlgPair(){
+  const keys=['corr','alt','vert','coint'], key=keys[ri(4)];
+  if (key==='coint'){
+    const T=rr(2,3); let x=6, cs=0;
+    for (let t=0;t<60;t++){ x = rr(5, Math.floor((180-16)/T)); cs = 180 - T*x; if (cs>=12 && cs<=58) break; }
+    if (!(cs>=12 && cs<=58)){ x = Math.max(5, Math.floor((180-36)/T)); cs = 180 - T*x; }
+    const m1=rr(1,T-1), m2=T-m1; let b1=Math.max(4,Math.floor(cs/2)), b2=cs-b1;
+    if (m1===m2 && b1===b2){ b1 -= 2; b2 += 2; }
+    return { key:key, labels:[coefLbl(m1,b1), coefLbl(m2,b2)], x:x, chk:{mode:'sum',total:(m1*x+b1)+(m2*x+b2),expect:180},
+      work:'Co-interior → add to 180°.<br>'+stripDeg(coefLbl(m1,b1))+' + '+stripDeg(coefLbl(m2,b2))+' = 180 → x = <b>'+x+'</b>' };
+  }
+  const x=rr(8,30), b1=rr(5,40), b2=x+b1;   // (2x+b1)=(x+b2) → equal
+  return { key:key, labels:[coefLbl(2,b1), coefLbl(1,b2)], x:x, chk:{mode:'eq',total:2*x+b1,other:x+b2},
+    work:ANG_PL[key]+' → equal.<br>'+stripDeg(coefLbl(2,b1))+' = '+stripDeg(coefLbl(1,b2))+' → x = <b>'+x+'</b>' };
+}
+
+/* ---- Skill 5: Angles in Quadrilaterals (numeric at every level) ---- */
+const QUAD_GEN  = [[68,66],[238,86],[212,182],[52,160]];      // schematic convex quad
+const QUAD_PARA = [[74,68],[236,68],[264,176],[102,176]];     // parallelogram
+const QUAD_TRAP = [[104,68],[204,68],[262,176],[46,176]];     // isosceles trapezium
+const QUAD_KITE = [[150,44],[236,120],[150,196],[64,120]];    // kite
+function quadDiagram(pts, vals, accIdx){
+  let s = pgPoly(pts);
+  for (let i=0;i<4;i++){ if (vals[i]==null) continue; const V=pts[i], n1=pts[(i+3)%4], n2=pts[(i+1)%4];
+    s += angArc(V, n1, n2, vals[i], i===accIdx); }
+  return pgSvgWrap(s);
+}
+function genAngleQuad(el){
+  el.style.fontSize = '1.05rem';
+  if (level === 1 || level === 2){
+    // three angles given, find the fourth (sum 360)
+    let a,b,c,d,g=0;
+    do {
+      if (level===1){ a=rr(11,33)*5; b=rr(11,33)*5; c=rr(11,33)*5; }
+      else { a=rr(40,160); b=rr(40,160); c=rr(40,160); }
+      d = 360-a-b-c; g++;
+    } while ((d<25 || d>200) && g<80);
+    if (d<25 || d>200){ a=80;b=100;c=90;d=90; }
+    const hide = ri(4), vals4=[a,b,c,d];
+    const labels = vals4.map(function(v,i){ return i===hide ? 'x' : v+'°'; });
+    qData.ans = vals4[hide];
+    qData.angCheck = {mode:'sum', total:a+b+c+d, expect:360};
+    qData.workSteps = 'Angles in a quadrilateral add to 360°.<br>x = 360° − '+vals4.filter(function(_,i){return i!==hide;}).join('° − ')+'° = <b>'+vals4[hide]+'°</b>';
+    el.innerHTML='<div style="'+A_LBL+'">Find the unknown angle x (in degrees)</div>'+quadDiagram(QUAD_GEN, labels, hide);
+    return;
+  }
+  if (level === 3){
+    // property-based
+    const which = ['para_opp','para_adj','trap','kite'][ri(4)];
+    let pts, labels=[null,null,null,null], ans, work, acc, given;
+    if (which==='para_opp'){ const a=rr(9,27)*5; given=a; pts=QUAD_PARA; labels[0]=a+'°'; labels[2]='x'; ans=a; acc=2;
+      work='In a parallelogram, opposite angles are equal → x = <b>'+a+'°</b>'; }
+    else if (which==='para_adj'){ const a=rr(9,27)*5; given=a; pts=QUAD_PARA; labels[0]=a+'°'; labels[1]='x'; ans=180-a; acc=1;
+      work='In a parallelogram, adjacent (co-interior) angles add to 180°.<br>x = 180° − '+a+'° = <b>'+ans+'°</b>'; }
+    else if (which==='trap'){ const a=rr(11,15)*5; given=a; pts=QUAD_TRAP; labels[0]=a+'°'; labels[1]='x'; ans=a; acc=1;
+      work='An isosceles trapezium has equal base angles → x = <b>'+a+'°</b>'; }
+    else { // kite: one pair of opposite angles equal (the pair between the unequal sides)
+      const a=rr(11,29)*5; given=a; pts=QUAD_KITE; labels[1]=a+'°'; labels[3]='x'; ans=a; acc=3;
+      work='A kite has one pair of equal opposite angles → x = <b>'+a+'°</b>'; }
+    qData.ans = ans;
+    qData.angCheck = (which==='para_adj') ? {mode:'sum',total:given+ans,expect:180} : {mode:'eq',total:given,other:ans};
+    qData.workSteps = work;
+    el.innerHTML='<div style="'+A_LBL+'">Use the shape\'s properties to find x (in degrees)</div>'+quadDiagram(pts, labels, acc);
+    return;
+  }
+  // level 4: algebra (sum 360). Bound x so mx, x, c and d all stay in (20,170).
+  const m = [1,2,2,3][ri(4)];
+  const xmax = m===3 ? 46 : m===2 ? 58 : 70;
+  const x = rr(20, xmax), R = 360 - (m+1)*x;      // R = c + d
+  const clo = Math.max(30, R-170), chi = Math.min(170, R-30);
+  const c = (clo<=chi) ? rr(clo,chi) : Math.floor(R/2), d = R - c;
+  const labels=[coefLbl(m,0), coefLbl(1,0), c+'°', d+'°'];
+  qData.ans = x; qData.angCheck = {mode:'sum', total:(m*x)+x+c+d, expect:360};
+  qData.workSteps = 'Angles in a quadrilateral add to 360°.<br>'+stripDeg(coefLbl(m,0))+' + '+stripDeg(coefLbl(1,0))+' + '+c+' + '+d+' = 360 → '+(m+1)+'x = '+(360-c-d)+' → x = <b>'+x+'</b>';
+  el.innerHTML='<div style="'+A_LBL+'">Solve for x</div>'+quadDiagram(QUAD_GEN, labels, -1);
 }
 
 /* ═══════════════════════════════════════════════
@@ -4304,7 +5145,13 @@ function nextQ() {
   else if (skill === 'eqTwoStepFrac')   { genEqTwoStepFrac(el); }
   else if (skill === 'eqVarDenom')      { genEqVarDenom(el); }
   else if (skill === 'eqBothSides')     { genEqBothSides(el); }
+  else if (skill === 'ineqLinear')      { genIneqLinear(el); }
   else if (skill === 'pythagoras')      { genPythagoras(el); }
+  else if (skill === 'interiorAngles')  { genInteriorAngles(el); }
+  else if (skill === 'nameShapes')      { genNameShapes(el); }
+  else if (skill === 'angleRel')        { genAngleRel(el); }
+  else if (skill === 'angleParallel')   { genAngleParallel(el); }
+  else if (skill === 'angleQuad')       { genAngleQuad(el); }
   else if (skill === 'trigExactDeg')    { genTrigExact(el, false); }
   else if (skill === 'trigExactRad')    { genTrigExact(el, true); }
 
@@ -4897,6 +5744,15 @@ document.addEventListener('DOMContentLoaded', () => {
   // Standard input — filter to numeric chars on desktop
   id('ansInput').addEventListener('keydown', e => {
     const allowed = ['Backspace','Delete','ArrowLeft','ArrowRight','Tab','Enter','-','.'];
+    if (getInputMode() === 'ineq') {
+      // Inequalities: also allow x, the comparison symbols, / for fractions, = (for <=),
+      // and spaces. ≤ / ≥ can't be typed on a physical keyboard — students type <= / >=.
+      const extra = ['x','X','<','>','=','/',' ','≤','≥'];
+      if (allowed.includes(e.key) || extra.includes(e.key) || (e.key >= '0' && e.key <= '9')) return;
+      if (e.ctrlKey || e.metaKey) return;
+      e.preventDefault();
+      return;
+    }
     if (allowed.includes(e.key) || (e.key >= '0' && e.key <= '9')) return;
     if (e.ctrlKey || e.metaKey) return; // allow copy/paste
     e.preventDefault();
@@ -5994,7 +6850,12 @@ function readUserAnswer(mode) {
       return parts.length ? parts.join(' + ') : '—';
     }
     if (mode === 'algType' || mode === 'algProd' || mode === 'algPoly' || mode === 'algFactored') return g('algTypeInput') || '—';
-    if (mode === 'choice') return (qData.chosen != null && TRIG_VALS[qData.chosen]) ? TRIG_VALS[qData.chosen].t : '—';
+    if (mode === 'surd' || mode === 'ineq') return g('ansInput') || '—';
+    if (mode === 'choice') {
+      if (qData.chosen == null) return '—';
+      if (qData.choiceText) return qData.choiceText[qData.chosen] || '—';
+      return TRIG_VALS[qData.chosen] ? TRIG_VALS[qData.chosen].t : '—';
+    }
     if (mode === 'factor') {
       const x0 = g('factorBox0') || '?', x1 = g('factorBox1') || '?';
       return (qData.factorLayout === 'monoBracket') ? `${x0}(${x1})` : `(${x0})(${x1})`;
@@ -6021,6 +6882,38 @@ function checkAns() {
     const tol = 0.0001;
     correct = Math.abs(val - qData.ans) <= tol;
     if (!correct) feedbackStr = `Answer: ${qData.ans}`;
+    id('ansInput').classList.remove('ok','bad');
+    id('ansInput').classList.add(correct ? 'ok' : 'bad');
+  }
+  else if (mode === 'surd') {
+    // Exact-value entry (Pythagoras). Accept any equivalent exact form via
+    // canonicalisation; a decimal is marked wrong (with the exact value shown);
+    // empty / unparseable entries don't count as an attempt.
+    const raw = id('ansInput').value.trim();
+    const parsed = surdParse(raw);
+    if (parsed === null || (parsed.invalid === 'form')) { attempts--; id('ansInput').focus(); return; }
+    if (parsed.invalid === 'decimal') {
+      correct = false;
+      feedbackStr = `Give the exact value: ${qData.ansDisplay}`;
+    } else {
+      correct = (parsed.c === qData.ansSurd.c && parsed.r === qData.ansSurd.r);
+      if (!correct) feedbackStr = `Answer: ${qData.ansDisplay}`;
+    }
+    id('ansInput').classList.remove('ok','bad');
+    id('ansInput').classList.add(correct ? 'ok' : 'bad');
+  }
+  else if (mode === 'ineq') {
+    // Inequality entry (e.g. x > 3/2). Accept either orientation and any
+    // equivalent value; incomplete / unparseable entries don't count as an
+    // attempt. The inequality SIGN must match (including after any flip).
+    const raw = id('ansInput').value.trim();
+    const p = ineqParse(raw);
+    if (p === null || p.invalid === 'form') { attempts--; id('ansInput').focus(); return; }
+    let valOK;
+    if (p.isDecimal) valOK = Math.abs(p.dec - qData.ansNum / qData.ansDen) < 1e-9;
+    else             valOK = (p.num * qData.ansDen === qData.ansNum * p.den);
+    correct = (p.op === qData.ansOp) && valOK;
+    if (!correct) feedbackStr = `Answer: ${qData.ansDisplay}`;
     id('ansInput').classList.remove('ok','bad');
     id('ansInput').classList.add(correct ? 'ok' : 'bad');
   }
@@ -6254,7 +7147,11 @@ function checkAns() {
     // The tapped option was stored in qData.chosen by chooseTrig().
     if (qData.chosen == null) { attempts--; return; }
     correct = qData.chosen === qData.choiceAns;
-    if (!correct) feedbackStr = `Answer: ${TRIG_VALS[qData.choiceAns] ? TRIG_VALS[qData.choiceAns].t : '?'}`;
+    if (!correct) {
+      const t = qData.choiceText ? qData.choiceText[qData.choiceAns]
+              : (TRIG_VALS[qData.choiceAns] ? TRIG_VALS[qData.choiceAns].t : '?');
+      feedbackStr = `Answer: ${t}`;
+    }
     document.querySelectorAll('#choiceGrid .choice-btn').forEach(b => {
       if (b.dataset.code === qData.chosen) b.classList.add(correct ? 'ok' : 'bad');
       else if (!correct && b.dataset.code === qData.choiceAns) b.classList.add('ok');
@@ -7407,18 +8304,29 @@ function insertPower(ch) {
   inp.focus();
 }
 
+/* Desktop inequality-sign buttons (v52): insert the true glyph into the answer
+   box. ≤ / ≥ have no keyboard key; < / > aren't obvious to every student. */
+function insertIneq(ch) {
+  const inp = document.getElementById('ansInput');
+  if (!inp || inp.disabled) return;
+  inp.value += ch;
+  inp.classList.remove('ok', 'bad');
+  inp.focus();
+}
+
 function kbPress(char) {
   if (!kbTarget || kbTarget.disabled) return;
 
   const mode = getInputMode();
   const algText = ['algType', 'algPoly', 'algFactored'].includes(mode);
+  const freeMinus = algText || mode === 'ineq';   // ineq allows "x > -3" — minus anywhere
   let cur = kbTarget.value;
 
   /* Dot: only allow one, only for sci coeff */
   if (char === '.' && cur.includes('.')) return; // only one dot allowed
 
-  /* Negative: in number modes only at start; in algText it's a term separator */
-  if (char === '-' && !algText) {
+  /* Negative: in number modes only at start; in algText / ineq it's placed freely */
+  if (char === '-' && !freeMinus) {
     if (cur.startsWith('-')) { kbTarget.value = cur.slice(1); kbRefreshDisplay(); return; }
     if (cur !== '') return; // only at start
   }
@@ -7503,9 +8411,9 @@ function kbShow() {
   const showNeg = ['intAddSub','intMultDiv','intSquareCube','indexDiv','indexMult','indexPow','sciTo','sciFrom',
                    'eqOneStepAddSub','eqOneStepMulDiv','eqTwoStep',
                    'eqTwoStepFrac','eqVarDenom','eqBothSides'].includes(skillId)
-                  || mode === 'index' || mode === 'sci' || mode === 'algebra';
+                  || mode === 'index' || mode === 'sci' || mode === 'algebra' || mode === 'ineq';
   const decSkillsWithDot = ['sciTo','sciFrom','decAddSub','decMultiply','decDivide','decSquareCube','decOrderOps','decRound','sigFigs',
-                            'rateSimplify','rateConvert','pythagoras'];
+                            'rateSimplify','rateConvert'];
   const showDot  = (mode === 'sci' || decSkillsWithDot.includes(skillId));
   const showNext = (mode === 'fraction' || mode === 'mixed' || mode === 'index' || mode === 'sci' || mode === 'ratio' || mode === 'algebra' || mode === 'factor');
 
@@ -7517,6 +8425,14 @@ function kbShow() {
   if (negBtn)  negBtn.classList.toggle('kb-sym-inactive',  !showNeg);
   if (dotBtn)  dotBtn.classList.toggle('kb-sym-inactive',  !showDot);
   if (nextBtn) nextBtn.classList.toggle('kb-next-inactive', !showNext);
+
+  // v50: surd (exact-value) row — a single √ key, shown only for surd mode.
+  const surdRow = document.getElementById('kbSurdRow');
+  if (surdRow) surdRow.style.display = (mode === 'surd') ? 'flex' : 'none';
+
+  // v51: inequality row — x and the four comparison signs + a fraction slash.
+  const ineqRow = document.getElementById('kbIneqRow');
+  if (ineqRow) ineqRow.style.display = (mode === 'ineq') ? 'flex' : 'none';
 
   /* Algebra free-text row: show variable + operator keys for the current answer */
   const algRow = document.getElementById('kbAlgRow');
