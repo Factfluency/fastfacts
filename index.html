@@ -1,9 +1,30 @@
 <!--
-  Sandy Fast Facts — v57
+  Sandy Fast Facts — v58
   Current skills-platform build: 10 categories, 63 skills, 193 levels. Full version
   history (v22 → v49) lives in SandyFastFacts_HandoffGuide.
 
-  Changes in v57 (multiple-choice UI polish — Laura classroom feedback). Purely
+  Changes in v58 (Fluency unlocked for geometry & Pythagoras — Laura). Students
+  were being force-switched into the 3-minute Challenge on these skills and, if
+  they'd wanted a quick go, exiting with no score at all. Fluency is now allowed;
+  L2+ shows a "Best played in Challenge" hint instead of blocking. NO ff_ key,
+  share-line, skill id, lvKey or band threshold changed → storage-safe & share-safe.
+
+  1. Removed noFluency from Pythagoras, Interior Angles, Angle Relationships,
+     Angles on Parallel Lines, and Angles in Quadrilaterals. They can now be
+     played in Fluency (60s) as well as Challenge (180s). Because the score is
+     rate-normalised (correct-per-minute × accuracy²), Fluency and Challenge sit
+     on the same scale — a 60s round yields a real, comparable band.
+
+  2. Per-level hint (LEVEL_REC): L1 of each is left un-flagged (fast enough to
+     band from 60s); L2 onwards recommends Challenge on the level-select screen,
+     with the existing one-tap "Switch to Challenge". Naming 2D & 3D Shapes is
+     unchanged (already Fluency, no hint).
+
+     Note: Interior Angles & Angles in Quadrilaterals remain 'method' skills —
+     they earn an animal band in Fluency but not the "Fluent" badge, and their
+     band ceiling is still the flat placeholder (Lion 5 / Cheetah 8).
+
+  ── Changes in v57 (multiple-choice UI polish — Laura classroom feedback). Purely
   presentational + render-order; NO ff_ key, share-line, skill id, lvKey or band
   threshold changed → storage-safe & share-safe. 14 suites still passing.
 
@@ -2199,7 +2220,7 @@ const CATS = {
   trig: {
     label: '📐 Trigonometry &amp; Pythagoras',
     skills: [
-      { id:'pythagoras',   name:'Pythagoras\u2019 Theorem',            inputMode:'surd', lvKey:'pyth', noFluency:true },
+      { id:'pythagoras',   name:'Pythagoras\u2019 Theorem',            inputMode:'surd', lvKey:'pyth' },
       { id:'trigExactDeg', name:'Sin / Cos / Tan Exact Values (Degrees)', inputMode:'choice', lvKey:'tdeg' },
       { id:'trigExactRad', name:'Sin / Cos / Tan Exact Values (Radians)', inputMode:'choice', lvKey:'trad' },
     ]
@@ -2207,11 +2228,11 @@ const CATS = {
   geometry: {
     label: '△ Geometry',
     skills: [
-      { id:'interiorAngles', name:'Interior Angles of a Triangle', inputMode:'number', lvKey:'iat', noFluency:true },
+      { id:'interiorAngles', name:'Interior Angles of a Triangle', inputMode:'number', lvKey:'iat' },
       { id:'nameShapes', name:'Naming 2D &amp; 3D Shapes', inputMode:'choice', lvKey:'nsh' },
-      { id:'angleRel', name:'Angle Relationships', inputMode:'number', lvKey:'arl', noFluency:true, levelModes:{1:'choice'} },
-      { id:'angleParallel', name:'Angles on Parallel Lines', inputMode:'number', lvKey:'apl', noFluency:true, levelModes:{1:'choice'} },
-      { id:'angleQuad', name:'Angles in Quadrilaterals', inputMode:'number', lvKey:'aqd', noFluency:true },
+      { id:'angleRel', name:'Angle Relationships', inputMode:'number', lvKey:'arl', levelModes:{1:'choice'} },
+      { id:'angleParallel', name:'Angles on Parallel Lines', inputMode:'number', lvKey:'apl', levelModes:{1:'choice'} },
+      { id:'angleQuad', name:'Angles in Quadrilaterals', inputMode:'number', lvKey:'aqd' },
     ]
   }
 };
@@ -2590,9 +2611,14 @@ const LEVEL_REC = {
   aexp2: { 1: 'challenge', 2: 'challenge', 3: 'practice' }, // Expand & Simplify (Two Brackets)
   amul:  { 4: 'practice' },    // Multiply Terms — three-term, negatives
   adiv:  { 4: 'practice' },    // Divide Terms — divide-then-multiply
-  // v50: geometry skills are Fluency-off; Challenge is the banded, timed mode.
-  pyth:  { 1: 'challenge', 2: 'challenge', 3: 'challenge', 4: 'challenge' },
-  iat:   { 1: 'challenge', 2: 'challenge', 3: 'challenge' },
+  // v58 (Laura): Pythagoras & angle skills now playable in Fluency. L1 is quick
+  // enough to band from 60s (left off this list, so no hint); L2 onwards nudges
+  // toward Challenge for a steadier band — label only, never blocks Fluency.
+  pyth:  { 2: 'challenge', 3: 'challenge', 4: 'challenge' },
+  iat:   { 2: 'challenge', 3: 'challenge' },
+  arl:   { 2: 'challenge', 3: 'challenge', 4: 'challenge' },
+  apl:   { 2: 'challenge', 3: 'challenge', 4: 'challenge' },
+  aqd:   { 2: 'challenge', 3: 'challenge', 4: 'challenge' },
 };
 function getLevelRec(key, lv) {
   return (LEVEL_REC[key] && LEVEL_REC[key][lv]) || null;
@@ -3355,10 +3381,10 @@ function selectSkill(smeta) {
   lvKey = smeta.lvKey;
   level = null;
 
-  // v50: Fluency-off skills (diagram geometry) can't be banded from a noisy 60s
-  // round — the band comes from Challenge. If we land here in Fluency, drop to
-  // Challenge before the level screen renders, so the mode label is honest.
-  if (smeta.noFluency && sessionMode === 'fluency') setMode('challenge');
+  // v58 (Laura): Pythagoras & the angle skills are no longer Fluency-locked.
+  // L1 of each is fast enough to band from a 60s round; L2+ carry a "Best played
+  // in Challenge" hint (see LEVEL_REC) but the student is free to stay in Fluency
+  // and still get a score rather than bailing out of the 3-minute round.
 
   show('s-levels');
   document.getElementById('levelScreenTitle').textContent = smeta.name.replace(/&amp;/g,'&');
@@ -4778,7 +4804,8 @@ function genNameShapes(el){
 
 /* ═══════════════════════════════════════════════
    ANGLE GEOMETRY — BATCH C  (v54)
-   Three method skills, flat T=5, Fluency OFF (noFluency), whole-number answers.
+   Three method skills, flat T=5, whole-number answers. (v58: Fluency unlocked —
+   L2+ carry a "Best played in Challenge" hint via LEVEL_REC; no longer forced.)
    Per-level input mode: L1 is tap-to-identify ('choice', reusing the generalised
    choice engine); L2+ are typed numbers ('number', exactly like the equation and
    interior-angle skills). Quadrilaterals is numeric at every level. All diagrams
