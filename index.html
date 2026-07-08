@@ -1,7 +1,30 @@
 <!--
-  Sandy Fast Facts — v56
+  Sandy Fast Facts — v57
   Current skills-platform build: 10 categories, 63 skills, 193 levels. Full version
   history (v22 → v49) lives in SandyFastFacts_HandoffGuide.
+
+  Changes in v57 (multiple-choice UI polish — Laura classroom feedback). Purely
+  presentational + render-order; NO ff_ key, share-line, skill id, lvKey or band
+  threshold changed → storage-safe & share-safe. 14 suites still passing.
+
+  1. Uniform buttons (all choice skills — trig, shapes, angle L1). Every option
+     button is now the SAME fixed size (74px, 2×2 grid) whatever the label length;
+     text shrinks to 1.15rem and wraps to two lines instead of the box growing.
+
+  2. Desktop fit (all choice-mode geometry). On a laptop the tall diagram card was
+     pushing the answer grid below the fold. Choice questions now cap the diagram
+     to 200px on ≥768px screens (scoped via #s-game.choice-active — number-input
+     geometry is untouched) so all four options stay on screen. 2×2 kept on every
+     device, so the spatial map is identical phone and desktop.
+
+  3. Fixed option positions for the two same-4-options skills:
+       • Angle Relationships L1 → Complementary, Supplementary, Vertically opposite,
+         Angles at a point (fixed).
+       • Angles on Parallel Lines L1 → Corresponding, Alternate, Co-interior,
+         Vertically opposite (fixed).
+     No longer shuffled, to cut cognitive load. Safe because the diagram still
+     rotates/varies and the relationship itself is random, so position never leaks
+     the answer. Trig & Naming Shapes stay shuffled (their options differ per Q).
 
   Changes in v56 (classroom-review round on the new skills; students are on ≤v49 so
   none of the band changes below can disturb an existing score or PB):
@@ -647,14 +670,19 @@ body {
 .choice-wrap { display: none; margin-bottom: 14px; }
 .choice-wrap.visible { display: block; }
 .choice-grid {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
-  max-width: 340px; margin: 0 auto;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+  max-width: 360px; margin: 0 auto;
 }
+/* v57 (Laura): every button is the SAME fixed size regardless of label length —
+   the text shrinks and wraps (max 2 lines) rather than the box growing. Kept 2×2
+   on every device so the spatial layout is identical phone and desktop. */
 .choice-btn {
   background: var(--surface); border: 3px solid var(--border); border-radius: var(--r-sm);
-  color: var(--text); font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 1.6rem;
-  padding: 14px 10px; min-height: 64px; cursor: pointer;
+  color: var(--text); font-family: 'Nunito', sans-serif; font-weight: 900;
+  font-size: 1.15rem; line-height: 1.15;
+  padding: 8px 8px; height: 74px; min-height: 74px; cursor: pointer;
   display: flex; align-items: center; justify-content: center;
+  text-align: center; overflow: hidden;
   box-shadow: var(--shadow);
   transition: border-color .15s, background .15s, transform .1s;
 }
@@ -1468,6 +1496,20 @@ body {
   .q-text { font-size: 1.8rem; }
   .game-stats { padding: 5px 0 4px; }
   .stat-pill { padding: 4px 9px; font-size: 0.8rem; }
+}
+
+/* ── v57 (Laura): DESKTOP FIT for multiple-choice geometry ──
+   On a laptop the viewport is wide but short, so a full-height diagram card
+   pushed the 2×2 answer grid below the fold. For choice questions only, keep
+   the diagram compact so all four options stay on screen without scrolling.
+   Scoped via #s-game.choice-active so number-input geometry is untouched. */
+@media (min-width: 768px) {
+  #s-game.choice-active #qBox svg {
+    width: auto; height: auto; max-height: 200px; max-width: 100%;
+  }
+  #s-game.choice-active .q-box {
+    padding-top: 16px; padding-bottom: 16px; min-height: 0;
+  }
 }
 </style>
 </head>
@@ -3513,6 +3555,7 @@ function resetAnswerInputs() {
   id('algTypeWrap').style.display = 'none';
   id('choiceAnsWrap').style.display = 'none';
   id('choiceAnsWrap').classList.remove('visible');
+  { const sg = id('s-game'); if (sg) sg.classList.remove('choice-active'); }  // v57: desktop diagram-shrink is choice-only
   id('factorAnsWrap').style.display = 'none';
   id('fracAlgLabel').classList.add('hide');
   id('stdAnsWrap').dataset.wholeFromFrac = '';
@@ -3564,6 +3607,7 @@ function resetAnswerInputs() {
   } else if (mode === 'choice') {
     id('choiceAnsWrap').style.display = 'block';
     id('choiceAnsWrap').classList.add('visible');
+    { const sg = id('s-game'); if (sg) sg.classList.add('choice-active'); }  // v57: enables desktop diagram cap
     id('choiceGrid').innerHTML = '';
   } else if (mode === 'factor') {
     id('factorAnsWrap').style.display = 'flex';
@@ -4812,7 +4856,11 @@ function genAngleRel(el){
   if (level === 1){
     const keys = ['comp','supp','vert','point'], key = keys[ri(4)];
     qData.chosen = null; qData.choiceAns = key;
-    const opts = shuffleArr(keys.slice());
+    // v57 (Laura): fixed canonical order — positions stay put every question to cut
+    // cognitive load. The diagram still rotates + the relationship is random, so the
+    // answer is NOT position-predictable. Order: Complementary, Supplementary,
+    // Vertically opposite, Angles at a point.
+    const opts = keys.slice();
     qData.choices = opts.map(function(k){ return { code:k, html:ANG_REL[k] }; });
     qData.choiceText = {}; opts.forEach(function(k){ qData.choiceText[k] = ANG_REL[k]; });
     qData.workSteps = METHOD_TIP['angleRel'] || '';
@@ -4915,7 +4963,10 @@ function genAngleParallel(el){
   if (level === 1){
     const keys=['corr','alt','coint','vert'], key=keys[ri(4)];
     qData.chosen=null; qData.choiceAns=key;
-    const opts=shuffleArr(keys.slice());
+    // v57 (Laura): fixed canonical order — Corresponding, Alternate, Co-interior,
+    // Vertically opposite. Diagram marks vary + relationship is random, so position
+    // never leaks the answer. See Angle Relationships L1 for rationale.
+    const opts=keys.slice();
     qData.choices=opts.map(function(k){ return {code:k, html:ANG_PL[k]}; });
     qData.choiceText={}; opts.forEach(function(k){ qData.choiceText[k]=ANG_PL[k]; });
     qData.workSteps=METHOD_TIP['angleParallel']||'';
