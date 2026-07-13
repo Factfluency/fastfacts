@@ -1,7 +1,21 @@
 <!--
-  Sandy Fast Facts — v59
+  Sandy Fast Facts — v60
   Current skills-platform build: 10 categories, 64 skills, 195 levels. Full version
   history (v22 → v49) lives in SandyFastFacts_HandoffGuide.
+
+  Changes in v60 (Euler's Rule worked-answer copy — Laura). Copy/format only —
+  NO band, skill, id/lvKey, ff_ key, or share-line change; no .bas regeneration.
+  The Level 2 "show working" for Euler's Rule now matches how it's taught:
+  the rule is stated as V + F = E + 2 (V first) and the solution is laid out one
+  step per line — state rule, substitute the two knowns, rearrange, solve — e.g.
+  for "15 faces, 39 edges, find vertices":
+       V + F = E + 2
+       V + 15 = 39 + 2
+       V = 41 − 15
+       V = 26
+  The same V + F = E + 2 ordering now appears in the method tip, the L1 check
+  hint, and the Level 2 description. Band cutoffs unchanged (still placeholder
+  Lion 8, pending calibration).
 
   Changes in v59 (new Geometry skill + a display fix — Laura). NO ff_ key or
   share-line FORMAT change → storage-safe & share-safe. New skill adds new band
@@ -15,7 +29,7 @@
          F/V/E is contested, so they're excluded. Dodecahedron omitted from L1
          (uncountable off the diagram).
        • L2 — no diagram, no name; two of F/V/E are given as numbers, the student
-         finds the third with F + V = E + 2. Values drawn from REAL solids (prisms
+         finds the third with V + F = E + 2. Values drawn from REAL solids (prisms
          and pyramids 3–15 sides, plus the dodecahedron), so every triple is a
          genuine polyhedron. Any of F/V/E can be the unknown.
      Method skill (banded, no 🎯 Fluent badge), placeholder ceiling Lion 8 /
@@ -2598,7 +2612,7 @@ const LEVEL_DEFS = {
   ],
   eul: [
     { title:'Level 1 — Count from the Solid', desc:'A 3D solid is shown. Count how many faces, edges or vertices it has. Prisms, pyramids, cubes and cuboids.', examples:['cube → 12 edges', 'square pyramid → 5 faces', 'triangular prism → 6 vertices'] },
-    { title:'Level 2 — Use Euler\'s Rule', desc:'Two of faces, vertices and edges are given. Find the third using F + V = E + 2.', examples:['F=6, V=8 → E=12', 'V=6, E=9 → F=5', 'F=7, E=15 → V=10'] },
+    { title:'Level 2 — Use Euler\'s Rule', desc:'Two of faces, vertices and edges are given. Find the third using V + F = E + 2.', examples:['F=6, V=8 → E=12', 'V=6, E=9 → F=5', 'F=7, E=15 → V=10'] },
   ],
   arl: [
     { title:'Level 1 — Identify the Relationship', desc:'Tap whether the marked angles are complementary, supplementary, vertically opposite, or angles at a point.', examples:['add to 90° → complementary', 'add to 180° → supplementary', 'equal → vertically opposite'] },
@@ -2652,7 +2666,7 @@ const LEVEL_REC = {
   apl:   { 2: 'challenge', 3: 'challenge', 4: 'challenge' },
   aqd:   { 2: 'challenge', 3: 'challenge', 4: 'challenge' },
   // v59 (Laura): Euler's Rule — L1 counts from a diagram (fast enough to band
-  // from 60s, no hint); L2 applies F+V=E+2, nudged toward Challenge. Label only.
+  // from 60s, no hint); L2 applies V+F=E+2, nudged toward Challenge. Label only.
   eul:   { 2: 'challenge' },
 };
 function getLevelRec(key, lv) {
@@ -2751,7 +2765,7 @@ const METHOD_TIP = {
   eqBothSides:'Collect the x terms on one side and the numbers on the other, then divide. Always do the same thing to both sides.',
   ineqLinear:'Solve it just like an equation — but if you multiply or divide BOTH sides by a negative number, reverse the inequality sign (< becomes >, ≤ becomes ≥).',
   nameShapes:'Count the sides and check the angles. Parallelogram: two pairs of parallel sides. Trapezium: just one pair. Rhombus: four equal sides. Kite: two pairs of adjacent equal sides. For solids: a prism has two identical ends joined by rectangles; a pyramid rises to a single apex.',
-  eulerRule:'Faces (F) are the flat surfaces, vertices (V) are the corners, edges (E) are where two faces meet. Euler\'s rule links them: F + V = E + 2. Rearrange to find a missing one — E = F + V − 2, F = E + 2 − V, V = E + 2 − F.',
+  eulerRule:'Faces (F) are the flat surfaces, vertices (V) are the corners, edges (E) are where two faces meet. Euler\'s rule links them: V + F = E + 2. Rearrange to find a missing one — V = E + 2 − F, F = E + 2 − V, E = V + F − 2.',
   angleRel:'Complementary angles add to 90°, supplementary angles add to 180°, vertically opposite angles are equal, and angles at a point add to 360°.',
   angleParallel:'On parallel lines cut by a transversal: corresponding angles are equal (F-shape), alternate angles are equal (Z-shape), and co-interior angles add to 180° (C-shape). Vertically opposite angles are always equal.',
   angleQuad:'The four interior angles of any quadrilateral add to 360°. In a parallelogram opposite angles are equal and adjacent angles add to 180°; an isosceles trapezium has equal base angles; a kite has one pair of equal opposite angles.',
@@ -4840,7 +4854,7 @@ function genNameShapes(el){
 }
 
 /* ═══════════════════════════════════════════════
-   EULER'S RULE — F + V = E + 2   (v59, lvKey eul)
+   EULER'S RULE — V + F = E + 2   (v59; working reformatted v60, lvKey eul)
    L1: a 3D solid is shown (reusing the SHAPE_LIB wireframes); the student counts
    one of faces / vertices / edges. POLYHEDRA ONLY — curved solids break Euler's
    rule and their F/V/E is curriculum-contested, so they are excluded here.
@@ -4874,9 +4888,24 @@ function eulerSolid(){
 }
 
 function eulerWorking(s, ask){
-  if (ask === 'E') return 'E = F + V − 2 = ' + s.F + ' + ' + s.V + ' − 2 = <b>' + s.E + '</b>';
-  if (ask === 'F') return 'F = E + 2 − V = ' + s.E + ' + 2 − ' + s.V + ' = <b>' + s.F + '</b>';
-  return 'V = E + 2 − F = ' + s.E + ' + 2 − ' + s.F + ' = <b>' + s.V + '</b>';
+  // Laid out the way we teach it: state the rule V + F = E + 2, substitute the
+  // two knowns, rearrange, then solve — one step per line.
+  var rule = 'V + F = E + 2';
+  if (ask === 'V')
+    return rule
+      + '<br>V + ' + s.F + ' = ' + s.E + ' + 2'
+      + '<br>V = ' + (s.E + 2) + ' − ' + s.F
+      + '<br>V = <b>' + s.V + '</b>';
+  if (ask === 'F')
+    return rule
+      + '<br>' + s.V + ' + F = ' + s.E + ' + 2'
+      + '<br>F = ' + (s.E + 2) + ' − ' + s.V
+      + '<br>F = <b>' + s.F + '</b>';
+  return rule
+    + '<br>' + s.V + ' + ' + s.F + ' = E + 2'
+    + '<br>' + (s.V + s.F) + ' = E + 2'
+    + '<br>E = ' + (s.V + s.F) + ' − 2'
+    + '<br>E = <b>' + s.E + '</b>';
 }
 
 function genEuler(el){
@@ -4890,7 +4919,7 @@ function genEuler(el){
     qData.eulFVE  = { F:s.F, V:s.V, E:s.E };   // runtime-only test hooks (not stored)
     qData.eulAsk  = ask;
     qData.eulKey  = s.key;
-    qData.workSteps = 'Count the ' + EULER_NAME[ask] + ' on the solid. (F + V = E + 2 is a handy check.)';
+    qData.workSteps = 'Count the ' + EULER_NAME[ask] + ' on the solid. (V + F = E + 2 is a handy check.)';
     el.innerHTML = '<div style="'+A_LBL+'">How many ' + EULER_NAME[ask] + ' does this solid have?</div>'
       + shWrap(SHAPE_LIB[s.key].variants[0]);
   } else {
