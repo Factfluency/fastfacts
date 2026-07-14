@@ -1,7 +1,28 @@
 <!--
-  Sandy Fast Facts — v60
-  Current skills-platform build: 10 categories, 64 skills, 195 levels. Full version
+  Sandy Fast Facts — v61
+  Current skills-platform build: 10 categories, 65 skills, 199 levels. Full version
   history (v22 → v49) lives in SandyFastFacts_HandoffGuide.
+
+  Changes in v61 (new Geometry skill + Geometry reorder — Laura). ADDITIVE +
+  reorder only. NO existing ff_ key / id / lvKey / share-line / band-threshold
+  change. Requires a .bas regeneration (4 new band rows appended; every prior
+  row byte-identical) because the new skill is Fluent-eligible.
+  1. NEW SKILL — 'Naming Angles, Lines & Triangles' (id nameAnglesLines, lvKey
+     nal, inputMode choice, recall / Fluent-eligible, Yr 7). Four levels, each a
+     tap-to-identify task drawn as SVG:
+       L1 point / ray / line segment / line       (4 options)
+       L2 parallel / perpendicular / neither        (3 options; no right-angle
+          square — perpendicular judged by eye, 'neither' drawn 40–54° off-square)
+       L3 acute / right / obtuse / straight / reflex / revolution  (correct + 3;
+          an orange arc + arrowhead marks the named angle → reflex reads major side)
+       L4 triangles, axis-split so every question has ONE answer: 'by its angles'
+          (acute/right/obtuse) or 'by its sides' (equilateral/isosceles/scalene,
+          isosceles = exactly two equal sides). 3 options.
+     Target 18 across all four levels (mirrors Naming 2D & 3D Shapes) → bands
+     6 / 12 / 18 / 26, Cheetah 27.
+  2. GEOMETRY REORDER (display only — order ≠ rename, storage-safe): Naming 2D &
+     3D Shapes, Naming Angles Lines & Triangles, Euler's Rule, Interior Angles,
+     Angle Relationships, Angles on Parallel Lines, Angles in Quadrilaterals.
 
   Changes in v60 (Euler's Rule worked-answer copy — Laura). Copy/format only —
   NO band, skill, id/lvKey, ff_ key, or share-line change; no .bas regeneration.
@@ -2269,9 +2290,10 @@ const CATS = {
   geometry: {
     label: '△ Geometry',
     skills: [
-      { id:'interiorAngles', name:'Interior Angles of a Triangle', inputMode:'number', lvKey:'iat' },
       { id:'nameShapes', name:'Naming 2D &amp; 3D Shapes', inputMode:'choice', lvKey:'nsh' },
+      { id:'nameAnglesLines', name:'Naming Angles, Lines &amp; Triangles', inputMode:'choice', lvKey:'nal' },
       { id:'eulerRule', name:"Euler's Rule — Edges, Faces &amp; Vertices", inputMode:'number', lvKey:'eul' },
+      { id:'interiorAngles', name:'Interior Angles of a Triangle', inputMode:'number', lvKey:'iat' },
       { id:'angleRel', name:'Angle Relationships', inputMode:'number', lvKey:'arl', levelModes:{1:'choice'} },
       { id:'angleParallel', name:'Angles on Parallel Lines', inputMode:'number', lvKey:'apl', levelModes:{1:'choice'} },
       { id:'angleQuad', name:'Angles in Quadrilaterals', inputMode:'number', lvKey:'aqd' },
@@ -2315,7 +2337,7 @@ const SKILL_YEAR = {
   pythagoras:'Yr 8', trigExactDeg:'Yr 10A', trigExactRad:'VCE',
   // Geometry
   interiorAngles:'Yr 7',
-  nameShapes:'Yr 7', eulerRule:'Yr 7',
+  nameShapes:'Yr 7', nameAnglesLines:'Yr 7', eulerRule:'Yr 7',
   angleRel:'Yr 7', angleParallel:'Yr 7', angleQuad:'Yr 8'
 };
 
@@ -2610,6 +2632,12 @@ const LEVEL_DEFS = {
     { title:'Level 2 — 3D Solids', desc:'Name the solid (3D) shape shown in the diagram. Tap the correct name. Cubes, prisms, pyramids, cylinders, cones and spheres.', examples:['cube', 'cylinder', 'square pyramid', 'triangular prism'] },
     { title:'Level 3 — Mixed &amp; Tricky', desc:'A mix of 2D and 3D shapes, including the easily-confused ones: parallelogram vs rhombus vs trapezium vs kite, and prism vs pyramid vs cuboid.', examples:['parallelogram vs rhombus', 'trapezium vs kite', 'cuboid vs triangular prism'] },
   ],
+  nal: [
+    { title:'Level 1 — Points, Rays &amp; Lines', desc:'Tap whether the figure is a point, a ray, a line segment or a line. A ray has one arrow; a segment has two endpoints; a line has arrows at both ends.', examples:['one dot → point', 'one arrow → ray', 'two arrows → line'] },
+    { title:'Level 2 — Parallel, Perpendicular or Neither', desc:'Tap whether the two lines are parallel, perpendicular, or neither. Perpendicular lines cross at a right angle; parallel lines never meet.', examples:['never meet → parallel', 'cross at 90° → perpendicular', 'cross at a slant → neither'] },
+    { title:'Level 3 — Types of Angle', desc:'Name the marked angle: acute (&lt;90°), right (90°), obtuse (90–180°), straight (180°), reflex (180–360°) or revolution (360°). The orange arc shows which angle is marked.', examples:['&lt;90° → acute', '90–180° → obtuse', '&gt;180° → reflex'] },
+    { title:'Level 4 — Types of Triangle', desc:'Name the triangle either by its angles (acute, right, obtuse) or by its sides (equilateral, isosceles, scalene) — the question tells you which. Isosceles means exactly two equal sides.', examples:['one 90° angle → right', '3 equal sides → equilateral', 'all different → scalene'] },
+  ],
   eul: [
     { title:'Level 1 — Count from the Solid', desc:'A 3D solid is shown. Count how many faces, edges or vertices it has. Prisms, pyramids, cubes and cuboids.', examples:['cube → 12 edges', 'square pyramid → 5 faces', 'triangular prism → 6 vertices'] },
     { title:'Level 2 — Use Euler\'s Rule', desc:'Two of faces, vertices and edges are given. Find the third using V + F = E + 2.', examples:['F=6, V=8 → E=12', 'V=6, E=9 → F=5', 'F=7, E=15 → V=10'] },
@@ -2682,7 +2710,7 @@ const RECALL_SKILLS = [
   'decAddSub','decMultiply','decDivide','decSquareCube',
   'trigExactDeg','trigExactRad',
   // v56: promoted to recall (Fluent-eligible) with Laura's signed-off targets
-  'nameShapes','angleRel','angleParallel','pythagoras'
+  'nameShapes','nameAnglesLines','angleRel','angleParallel','pythagoras'
 ];
 function getSkillKind(id) { return RECALL_SKILLS.includes(id) ? 'recall' : 'method'; }
 
@@ -2715,6 +2743,7 @@ const FLUENCY_TARGET = {
   //   L4 (algebra) left at 5 = its old method band (unspecified — confirm).
   //   pythagoras L1 = Multiply Integers L3 (15); L2–L4 kept at 5 (old bands).
   nameShapes:[18, 18, 18],
+  nameAnglesLines:[18, 18, 18, 18],
   angleRel:[18, 15, 15, 5],
   angleParallel:[18, 15, 15, 5],
   pythagoras:[15, 5, 5, 5]
@@ -2765,6 +2794,7 @@ const METHOD_TIP = {
   eqBothSides:'Collect the x terms on one side and the numbers on the other, then divide. Always do the same thing to both sides.',
   ineqLinear:'Solve it just like an equation — but if you multiply or divide BOTH sides by a negative number, reverse the inequality sign (< becomes >, ≤ becomes ≥).',
   nameShapes:'Count the sides and check the angles. Parallelogram: two pairs of parallel sides. Trapezium: just one pair. Rhombus: four equal sides. Kite: two pairs of adjacent equal sides. For solids: a prism has two identical ends joined by rectangles; a pyramid rises to a single apex.',
+  nameAnglesLines:'A ray has one arrow, a line segment has two endpoints, and a line has an arrow at each end. Parallel lines never meet; perpendicular lines cross at a right angle (90°). Angles: acute is under 90°, right is exactly 90°, obtuse is between 90° and 180°, straight is 180°, reflex is between 180° and 360°, and a revolution is a full turn (360°). Triangles by angles: acute (all under 90°), right (one 90°), obtuse (one over 90°). By sides: equilateral (3 equal), isosceles (exactly 2 equal), scalene (all different).',
   eulerRule:'Faces (F) are the flat surfaces, vertices (V) are the corners, edges (E) are where two faces meet. Euler\'s rule links them: V + F = E + 2. Rearrange to find a missing one — V = E + 2 − F, F = E + 2 − V, E = V + F − 2.',
   angleRel:'Complementary angles add to 90°, supplementary angles add to 180°, vertically opposite angles are equal, and angles at a point add to 360°.',
   angleParallel:'On parallel lines cut by a transversal: corresponding angles are equal (F-shape), alternate angles are equal (Z-shape), and co-interior angles add to 180° (C-shape). Vertically opposite angles are always equal.',
@@ -4853,6 +4883,179 @@ function genNameShapes(el){
   el.innerHTML = '<div style="'+A_LBL+'">Name this shape</div>' + shWrap(shape.variants[ri(shape.variants.length)]);
 }
 
+
+/* ═══════════════════════════════════════════════
+   NAMING ANGLES, LINES & TRIANGLES  (v61, lvKey nal)
+   Multiple-choice ('choice' mode), recall / Fluent-eligible. Four levels, each a
+   pure identification task drawn as SVG (own nal* primitives + shared pg* helpers):
+     L1  point / ray / line segment / line          (4 options — all four)
+     L2  parallel / perpendicular / neither          (3 options — all three)
+         NO right-angle square: perpendicular is judged by eye (drawn at a true
+         90°); 'neither' is drawn well off-square (40–54°) so it can't be misread.
+     L3  acute / right / obtuse / straight / reflex / revolution   (correct + 3)
+         A directional arc + arrowhead marks the NAMED angle, so reflex reads as
+         the major side, not its inner partner; revolution is a full turn.
+     L4  triangles, split by axis so every question has exactly ONE true answer:
+           'by its angles' → acute / right / obtuse       (mutually exclusive)
+           'by its sides'  → equilateral / isosceles / scalene   (3 options)
+         Isosceles = EXACTLY two equal sides (Sandringham convention), so the
+         side axis is mutually exclusive too — no co-truth exclusion map needed.
+         Angles-axis triangles are drawn to scale (angle judged by eye, no square,
+         no 'not to scale' note). Sides-axis triangles carry authoritative side-
+         length numbers (drawn shape only reinforces; 'Not to scale' shown).
+   Single-answer throughout; random orientation per question so position never
+   leaks the answer. Reuses the generic 'choice' render/mark path (qData.choice*).
+═══════════════════════════════════════════════ */
+function nalWrap(inner){ return '<svg width="300" height="220" viewBox="0 0 300 220" role="img" style="display:block;margin:6px auto 0;max-width:100%">'+inner+'</svg>'; }
+function nalLine(a,b){ return '<line x1="'+a[0].toFixed(1)+'" y1="'+a[1].toFixed(1)+'" x2="'+b[0].toFixed(1)+'" y2="'+b[1].toFixed(1)+'" stroke="var(--text)" stroke-width="2.5" stroke-linecap="round"/>'; }
+function nalDot(p,r){ return '<circle cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="'+(r||4.5)+'" fill="var(--text)"/>'; }
+function nalRot(p,deg,c){ const a=deg*Math.PI/180, co=Math.cos(a), s=Math.sin(a), dx=p[0]-c[0], dy=p[1]-c[1];
+  return [c[0]+dx*co-dy*s, c[1]+dx*s+dy*co]; }
+function nalRotV(v,ang){ const c=Math.cos(ang), s=Math.sin(ang); return [v[0]*c-v[1]*s, v[0]*s+v[1]*c]; }
+/* Arrowhead at tip T pointing along unit travel-dir d (barbs fold back). */
+function nalHead(T,d,col,len){ len=len||10; const ang=0.5;
+  const b1=nalRotV(d,Math.PI-ang), b2=nalRotV(d,Math.PI+ang);
+  const p1=[T[0]+b1[0]*len,T[1]+b1[1]*len], p2=[T[0]+b2[0]*len,T[1]+b2[1]*len];
+  return '<polyline points="'+p1[0].toFixed(1)+','+p1[1].toFixed(1)+' '+T[0].toFixed(1)+','+T[1].toFixed(1)+' '+p2[0].toFixed(1)+','+p2[1].toFixed(1)+'" fill="none" stroke="'+col+'" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>'; }
+/* Arc from a1→a2 (radians) around V, radius r; arrowhead at the a2 end in the
+   sweep direction. acc → orange (marks the named angle). */
+function nalArc(V,r,a1,a2,acc){
+  const col=acc?'var(--accent)':'var(--text)';
+  const steps=Math.max(24, Math.round(Math.abs(a2-a1)/(Math.PI/24)));
+  const pts=[];
+  for(let i=0;i<=steps;i++){ const a=a1+(a2-a1)*i/steps; pts.push([V[0]+Math.cos(a)*r, V[1]+Math.sin(a)*r]); }
+  const poly='<polyline points="'+pts.map(function(p){return p[0].toFixed(1)+','+p[1].toFixed(1);}).join(' ')+'" fill="none" stroke="'+col+'" stroke-width="2.5"/>';
+  const dir=(a2>=a1)?1:-1, tip=pts[pts.length-1], d=[dir*(-Math.sin(a2)), dir*(Math.cos(a2))];
+  return poly + nalHead(tip, d, col, 9);
+}
+function nalArcDeg(V,r,d1,d2,acc){ return nalArc(V,r,d1*Math.PI/180,d2*Math.PI/180,acc); }
+
+/* ── L1: point / ray / line segment / line ── */
+function nalL1(type){
+  const C=[150,110], deg=ri(360);
+  if(type==='point'){ return nalWrap(nalDot(C,5.5)+pgLbl(C[0],C[1]-16,'P',false)); }
+  let A=nalRot([60,110],deg,C), B=nalRot([240,110],deg,C);
+  const d=pgU(A,B), dR=[-d[0],-d[1]];
+  let s='';
+  if(type==='ray')          s=nalLine(A,B)+nalDot(A,5)+nalHead(B,d,'var(--text)',12);
+  else if(type==='segment') s=nalLine(A,B)+nalDot(A,5)+nalDot(B,5);
+  else                      s=nalLine(A,B)+nalHead(B,d,'var(--text)',12)+nalHead(A,dR,'var(--text)',12); // line
+  return nalWrap(s);
+}
+
+/* ── L2: parallel / perpendicular / neither (no right-angle square) ── */
+function nalL2(type){
+  const C=[150,110], deg=ri(360), h=95;
+  let seg=[];
+  if(type==='parallel'){ const off=32;
+    seg=[[[-h,-off],[h,-off]],[[-h,off],[h,off]]]; }
+  else if(type==='perpendicular'){
+    seg=[[[-h,0],[h,0]],[[0,-h],[0,h]]]; }
+  else { const sep=(40+ri(15))*Math.PI/180, a1=-sep/2, a2=sep/2;   // 40–54° between lines
+    const u1=[Math.cos(a1),Math.sin(a1)], u2=[Math.cos(a2),Math.sin(a2)];
+    seg=[[[-u1[0]*h,-u1[1]*h],[u1[0]*h,u1[1]*h]],[[-u2[0]*h,-u2[1]*h],[u2[0]*h,u2[1]*h]]]; }
+  let s='';
+  seg.forEach(function(L){ const A=nalRot([C[0]+L[0][0],C[1]+L[0][1]],deg,C), B=nalRot([C[0]+L[1][0],C[1]+L[1][1]],deg,C); s+=nalLine(A,B); });
+  return nalWrap(s);
+}
+
+/* ── L3: angle types; orange arc + arrow marks the named angle ── */
+const NAL_ANGLE = {
+  acute:      function(){ return 35+ri(36); },   // 35–70
+  right:      function(){ return 90; },
+  obtuse:     function(){ return 110+ri(51); },  // 110–160
+  straight:   function(){ return 180; },
+  reflex:     function(){ return 200+ri(141); }, // 200–340
+  revolution: function(){ return 360; },
+};
+function nalL3(type){
+  const V=[150,152], rayLen=80, arcR=30, M=NAL_ANGLE[type]();
+  const phi=-90+(ri(61)-30);                       // bisector up-ish, ±30° tilt
+  const ang=function(deg){ const a=deg*Math.PI/180; return [V[0]+Math.cos(a)*rayLen, V[1]+Math.sin(a)*rayLen]; };
+  let s='';
+  if(type==='revolution'){
+    s+=nalLine(V,ang(phi))+nalDot(V,4)+nalArcDeg(V,arcR,phi+12,phi+12-350,true);
+  } else if(M<=180){
+    const half=M/2, r1=phi-half, r2=phi+half;
+    s+=nalLine(V,ang(r1))+nalLine(V,ang(r2))+nalDot(V,4)+nalArcDeg(V,arcR,r1,r2,true);
+  } else {                                          // reflex: small gap up top, arc the long way
+    const g=360-M, half=g/2, r1=phi-half;
+    s+=nalLine(V,ang(phi-half))+nalLine(V,ang(phi+half))+nalDot(V,4)+nalArcDeg(V,arcR,r1,r1-M,true);
+  }
+  return nalWrap(s);
+}
+
+/* ── L4: triangles (axis-split) ── */
+/* Build a triangle (math y-up) from two interior angles; third = 180−A−B. */
+function nalTriFromAngles(Adeg,Bdeg){
+  const A=Adeg*Math.PI/180, B=Bdeg*Math.PI/180;
+  const t=1/(Math.cos(A)+Math.sin(A)*Math.cos(B)/Math.sin(B));
+  return [[0,0],[1,0],[t*Math.cos(A), t*Math.sin(A)]];
+}
+const NAL_SCALENE=[[4,5,6],[4,6,7],[5,6,8],[5,7,9],[6,7,8],[4,5,7],[5,6,7],[6,8,9]];
+const NAL_ISOS=[[4,5,5],[6,5,5],[4,6,6],[8,6,6],[5,7,7],[9,7,7],[6,8,8],[10,6,6]]; // [base, leg, leg]
+function nalTriangle(axis,type){
+  let pts, labels=null;
+  if(axis==='angles'){
+    let angs;
+    if(type==='acute')       angs=[[50,60],[55,65],[50,70],[65,55],[60,70],[58,62]][ri(6)];
+    else if(type==='right')  angs=[90,[30,35,40,50,55,60][ri(6)]];
+    else                     angs=[[110,120,125,130,140][ri(5)], 15+ri(20)];  // obtuse + small
+    pts=nalTriFromAngles(angs[0],angs[1]);
+  } else {
+    if(type==='equilateral'){ const n=5+ri(4); pts=[[0,0],[1,0],[0.5,-0.866]]; labels=[n,n,n]; }
+    else if(type==='isosceles'){ const t=NAL_ISOS[ri(NAL_ISOS.length)]; pts=[[0,0],[1,0],[0.5,-1.05]]; labels=[t[0],t[1],t[2]]; }
+    else { const t=NAL_SCALENE[ri(NAL_SCALENE.length)]; pts=[[0,0],[1.15,0],[0.34,-0.82]]; labels=[t[0],t[1],t[2]]; }
+  }
+  const deg=[0,30,60,-30,-60,90,120,180][ri(8)], flip=Math.random()<0.5;
+  const fit=pgFit(pgRot(pts,deg,flip), 92,58,208,172), cen=pgCentroid(fit);
+  let inner=pgPoly(fit);
+  if(labels){ for(let i=0;i<3;i++){ const L=pgOut(fit[i],fit[(i+1)%3],cen,18); inner+=pgLbl(L[0],L[1],labels[i],false); } }
+  return labels ? pgSvgWrap(inner) : nalWrap(inner);
+}
+
+/* ── generator ── */
+const NAL_LV = {
+  1: { pool:['point','ray','segment','line'], names:{point:'Point',ray:'Ray',segment:'Line segment',line:'Line'}, prompt:'Name this figure', opts:4, build:nalL1 },
+  2: { pool:['parallel','perpendicular','neither'], names:{parallel:'Parallel',perpendicular:'Perpendicular',neither:'Neither'}, prompt:'Are these two lines parallel, perpendicular or neither?', opts:3, build:nalL2 },
+  3: { pool:['acute','right','obtuse','straight','reflex','revolution'], names:{acute:'Acute',right:'Right',obtuse:'Obtuse',straight:'Straight',reflex:'Reflex',revolution:'Revolution'}, prompt:'Name this angle', opts:4, build:nalL3 },
+};
+const NAL_SIDE_NAMES = {equilateral:'Equilateral',isosceles:'Isosceles',scalene:'Scalene'};
+const NAL_ANG_NAMES  = {acute:'Acute',right:'Right',obtuse:'Obtuse'};
+function genNameAnglesLines(el){
+  const lv=level;
+  qData.chosen=null;
+  let names, prompt, svg, ans, opts;
+  if(lv===4){
+    const axis = Math.random()<0.5 ? 'angles' : 'sides';
+    const pool = axis==='angles' ? ['acute','right','obtuse'] : ['equilateral','isosceles','scalene'];
+    names = axis==='angles' ? NAL_ANG_NAMES : NAL_SIDE_NAMES;
+    ans   = pool[ri(pool.length)];
+    prompt= axis==='angles' ? 'Name this triangle by its angles' : 'Name this triangle by its sides';
+    svg   = nalTriangle(axis, ans);
+    opts  = shuffleArr(pool.slice());          // all three categories on the axis
+    qData.nalAxis = axis;
+  } else {
+    const cfg=NAL_LV[lv];
+    names=cfg.names; prompt=cfg.prompt;
+    ans = cfg.pool[ri(cfg.pool.length)];
+    svg = cfg.build(ans);
+    const bag=cfg.pool.filter(function(k){return k!==ans;}), picks=[];
+    while(picks.length < cfg.opts-1 && bag.length) picks.push(bag.splice(ri(bag.length),1)[0]);
+    opts = shuffleArr([ans].concat(picks));
+    qData.nalAxis = null;
+  }
+  qData.choiceAns = ans;
+  qData.choices   = opts.map(function(k){ return { code:k, html:names[k] }; });
+  qData.choiceText= {};
+  opts.forEach(function(k){ qData.choiceText[k]=names[k]; });
+  qData.nalType   = ans;                          // runtime-only test hooks
+  qData.nalLevel  = lv;
+  qData.workSteps = METHOD_TIP['nameAnglesLines'] || '';
+  el.style.fontSize='1.1rem';
+  el.innerHTML='<div style="'+A_LBL+'">'+prompt+'</div>'+svg;
+}
+
 /* ═══════════════════════════════════════════════
    EULER'S RULE — V + F = E + 2   (v59; working reformatted v60, lvKey eul)
    L1: a 3D solid is shown (reusing the SHAPE_LIB wireframes); the student counts
@@ -5362,6 +5565,7 @@ function nextQ() {
   else if (skill === 'pythagoras')      { genPythagoras(el); }
   else if (skill === 'interiorAngles')  { genInteriorAngles(el); }
   else if (skill === 'nameShapes')      { genNameShapes(el); }
+  else if (skill === 'nameAnglesLines') { genNameAnglesLines(el); }
   else if (skill === 'eulerRule')       { genEuler(el); }
   else if (skill === 'angleRel')        { genAngleRel(el); }
   else if (skill === 'angleParallel')   { genAngleParallel(el); }
