@@ -1,7 +1,26 @@
 <!--
-  Sandy Fast Facts — v63
-  Current skills-platform build: 10 categories, 65 skills, 199 levels. Full version
+  Sandy Fast Facts — v64
+  Current skills-platform build: 10 categories, 66 skills, 203 levels. Full version
   history (v22 → v49) lives in SandyFastFacts_HandoffGuide.
+
+  Changes in v64 (new Geometry skill: Congruence & Similarity — Laura sign-off).
+  ADDITIVE. New skill id 'congruSimilar' (lvKey 'cs'), 4 levels, recall / Fluent-
+  eligible. NO existing ff_ key / id / lvKey / share-line / band change. Requires a
+  .bas regeneration (4 new band rows appended; all prior rows byte-identical).
+    * L1 [choice]: identify Congruent / Similar / Neither from a labelled pair of
+      shapes (triangles, rectangles, regular polygons). Congruent trumps similar.
+    * L2 [choice, fixed order SSS / SAS / AAS / RHS / Not enough information]: name
+      the congruence test for the marked pair (tick marks = equal sides, arcs =
+      equal angles, square = right angle). 'Not enough information' catches AAA/SSA.
+    * L3 [choice, fixed order SSS / AAA / SAS / RHS / Not enough information]: name
+      the similarity test (numeric side labels on both = known ratio). 'Not enough
+      information' catches SSA-similar, lone facts, non-proportional sides.
+    * L4 [number, integers]: find a missing side (scale factor) or angle (matching
+      angles equal) in a congruent / similar pair. The method level.
+    Bands (Laura): L1-L3 target 18 (= Naming Angles/Lines) -> K6 G12 L18 A26, C27;
+    L4 target 15 (= Angle Relationships L2) -> K5 G10 L15 A22, C23. The correct
+    L2/L3 answer is re-derived by an independent verdict so exactly one option is
+    ever right.
 
   Changes in v63 (notation + picture variety on Naming Angles, Lines & Triangles —
   Laura). ADDITIVE to the question generators only. Answer set is UNCHANGED (same
@@ -2329,6 +2348,7 @@ const CATS = {
       { id:'angleRel', name:'Angle Relationships', inputMode:'number', lvKey:'arl', levelModes:{1:'choice'} },
       { id:'angleParallel', name:'Angles on Parallel Lines', inputMode:'number', lvKey:'apl', levelModes:{1:'choice'} },
       { id:'angleQuad', name:'Angles in Quadrilaterals', inputMode:'number', lvKey:'aqd' },
+      { id:'congruSimilar', name:'Congruence &amp; Similarity', inputMode:'number', lvKey:'cs', levelModes:{1:'choice',2:'choice',3:'choice'} },
     ]
   }
 };
@@ -2370,7 +2390,8 @@ const SKILL_YEAR = {
   // Geometry
   interiorAngles:'Yr 7',
   nameShapes:'Yr 7', nameAnglesLines:'Yr 7', eulerRule:'Yr 7',
-  angleRel:'Yr 7', angleParallel:'Yr 7', angleQuad:'Yr 8'
+  angleRel:'Yr 7', angleParallel:'Yr 7', angleQuad:'Yr 8',
+  congruSimilar:'Yr 8'
 };
 
 /* Each level: title, description, examples shown on card */
@@ -2692,6 +2713,12 @@ const LEVEL_DEFS = {
     { title:'Level 3 — Use a Property', desc:'Parallelograms (opposite equal / adjacent add to 180°), isosceles trapeziums (equal base angles) and kites (one equal pair). Use the property to find x.', examples:['parallelogram opposite 70° → 70°', 'parallelogram adjacent 70° → 110°'] },
     { title:'Level 4 — Solve for x', desc:'Some angles given as expressions in x. Use the 360° sum to form an equation and solve for x.', examples:['x°, 2x°, 85°, 95° → x = 60'] },
   ],
+  cs: [
+    { title:'Level 1 — Congruent, Similar or Neither', desc:'Tap whether the two shapes are congruent (identical size and shape), similar (same shape, scaled) or neither. Judge from the labelled measurements — congruent is the answer even though congruent shapes are also similar.', examples:['same side lengths → congruent', 'sides in a constant ratio → similar', 'ratios differ → neither'] },
+    { title:'Level 2 — Congruence Test', desc:'Two triangles are marked (tick marks = equal sides, arcs = equal angles, a square = a right angle). Tap the test that proves them congruent: SSS, SAS, AAS or RHS — or "Not enough information" (e.g. AAA or SSA).', examples:['3 equal sides → SSS', 'right angle + hyp + side → RHS', 'AAA → not enough'] },
+    { title:'Level 3 — Similarity Test', desc:'Two triangles carry equal-angle arcs and/or side lengths in a constant ratio. Tap the test that proves them similar: SSS, AAA, SAS or RHS — or "Not enough information" (e.g. two sides with a non-included angle).', examples:['two equal angles → AAA', 'sides in equal ratio → SSS', 'not proportional → not enough'] },
+    { title:'Level 4 — Find x', desc:'The two triangles are congruent or similar (the question tells you which). Find the missing side using the scale factor, or the missing angle from matching equal angles. Whole-number answers.', examples:['similar, factor 2, side 7 → 14', 'congruent, matching side 9 → 9', 'matching angle 58° → 58'] },
+  ],
   tdeg: [
     { title:'Level 1 — First Quadrant', desc:'Exact values of sin, cos and tan for the special angles 0°, 30°, 45°, 60°, 90°. Tap the correct value.', examples:['sin 30°', 'cos 60°', 'tan 45°'] },
     { title:'Level 2 — Up to 180°', desc:'Adds the second-quadrant angles 120°, 135°, 150°, 180°, where some values become negative.', examples:['cos 120°', 'sin 135°', 'tan 150°'] },
@@ -2742,7 +2769,8 @@ const RECALL_SKILLS = [
   'decAddSub','decMultiply','decDivide','decSquareCube',
   'trigExactDeg','trigExactRad',
   // v56: promoted to recall (Fluent-eligible) with Laura's signed-off targets
-  'nameShapes','nameAnglesLines','angleRel','angleParallel','pythagoras'
+  'nameShapes','nameAnglesLines','angleRel','angleParallel','pythagoras',
+  'congruSimilar'
 ];
 function getSkillKind(id) { return RECALL_SKILLS.includes(id) ? 'recall' : 'method'; }
 
@@ -2778,7 +2806,9 @@ const FLUENCY_TARGET = {
   nameAnglesLines:[18, 18, 18, 18],
   angleRel:[18, 15, 15, 5],
   angleParallel:[18, 15, 15, 5],
-  pythagoras:[15, 5, 5, 5]
+  pythagoras:[15, 5, 5, 5],
+  // v64 (Laura sign-off): L1-L3 = Naming Angles/Lines (18); L4 = Angle Relationships L2 (15, the method level).
+  congruSimilar:[18, 18, 18, 15]
 };
 const FLUENT_ACC = 0.90;   // accuracy floor to count as fluent
 function getFluencyTarget(s, lv) {
@@ -2838,6 +2868,7 @@ const METHOD_TIP = {
   pythagoras:'a² + b² = c², where c is the hypotenuse (the longest side, opposite the right angle). To find a shorter side, rearrange: a² = c² − b².',
   trigExactDeg:'Use the special triangles (30-60-90 and 45-45-90) or the unit circle. Watch the sign: sin is positive above the x-axis, cos is positive to the right.',
   trigExactRad:'Same special angles in radians: π/6 = 30°, π/4 = 45°, π/3 = 60°, π/2 = 90°. Use the unit circle and watch the quadrant for the sign.',
+  congruSimilar:'Congruent shapes are identical in size and shape (matching sides and angles equal); similar shapes are the same shape but scaled (angles equal, sides in a constant ratio). Congruence tests: SSS, SAS, AAS (incl. ASA), RHS. Similarity tests: SSS (sides in equal ratio), AAA (equal angles), SAS, RHS. To find a missing length in similar triangles, multiply by the scale factor; matching angles are always equal.',
   // v47: recall facts that DO have a teachable rule get a short "Show me how" tip.
   // (The genuinely step-free facts — times tables, division, plain add/subtract,
   // squares, roots, cubes, cube roots — are intentionally left with no tip.)
@@ -5164,6 +5195,281 @@ function genNameAnglesLines(el){
 }
 
 /* ═══════════════════════════════════════════════
+   CONGRUENCE & SIMILARITY  (v64, lvKey cs, Yr 8)
+   Recall / Fluent-eligible. Base inputMode 'number' with L1–L3 as
+   'choice' (levelModes); L4 is the typed method level (target 15).
+   ── Levels ──
+   L1 [choice]: identify Congruent / Similar / Neither from a pair of
+       shapes (triangles + rectangles + regular polygons), judged from
+       the labelled measurements. CONGRUENT TRUMPS SIMILAR.
+   L2 [choice, fixed 5-button order]: name the congruence test that
+       proves the marked pair congruent — SSS / SAS / AAS / RHS — or
+       "Not enough information" (catches AAA and SSA).
+   L3 [choice, fixed 5-button order]: name the similarity test —
+       SSS / AAA / SAS / RHS — or "Not enough information" (catches
+       SSA-similar, lone facts, and non-proportional sides).
+   L4 [number]: find a missing side or angle in a congruent / similar
+       pair. Integers only.
+   ── Conventions ──
+   Matching tick counts = equal sides; matching arc counts = equal
+   angles; small square = right angle; numeric side labels on BOTH
+   triangles = a known side ratio (similarity). Diagrams are schematic
+   ("Not to scale") — the marks and numbers are authoritative.
+   The correct answer for L2/L3 is re-derived independently by
+   csCongruenceVerdict / csSimilarityVerdict from the stored mark plan,
+   so EXACTLY ONE test (or "none") can ever be right. Asserted in
+   test_congrusimilar.js.
+═══════════════════════════════════════════════ */
+/* Edge i joins vertex i and (i+1)%3. Angle at vertex i lies between edges
+   i and (i+2)%3. Hypotenuse (right angle at r) is the opposite edge (r+1)%3. */
+function csEdgeVerts(i){ return [i, (i+1)%3]; }
+function csSharedVertex(i,j){ const a=csEdgeVerts(i), b=csEdgeVerts(j); for(const v of a){ if(b.indexOf(v)>=0) return v; } return -1; }
+
+/* ── independent verdicts (also called by the test suite) ── */
+function csCongruenceVerdict(sideTicks, angArcs, angRight){
+  const S=[],Aarc=[],R=[];
+  for(let i=0;i<3;i++){ if(sideTicks[i]) S.push(i); if(angArcs[i]) Aarc.push(i); if(angRight[i]) R.push(i); }
+  const nAng=Aarc.length+R.length;
+  if(S.length===3) return 'SSS';
+  if(R.length===1 && Aarc.length===0 && S.length===2){ const hyp=(R[0]+1)%3; if(S.indexOf(hyp)>=0) return 'RHS'; }
+  if(S.length===2 && Aarc.length===1 && R.length===0){ const sv=csSharedVertex(S[0],S[1]); if(sv===Aarc[0]) return 'SAS'; }
+  if(nAng>=2 && S.length>=1) return 'AAS';
+  return 'none';
+}
+function csSimilarityVerdict(A, B, eqAngles, rightV){
+  const ratioIdx=[]; for(let i=0;i<3;i++){ if(A[i]!=null && B[i]!=null) ratioIdx.push(i); }
+  let ratiosEqual=false;
+  if(ratioIdx.length>=1){ const ks=ratioIdx.map(function(i){return B[i]/A[i];}); ratiosEqual=ks.every(function(k){return Math.abs(k-ks[0])<1e-9;}); }
+  const eq=eqAngles.slice(); if(rightV>=0) eq.push(rightV);
+  if(eqAngles.length>=2) return 'AAA';
+  if(ratioIdx.length===3 && ratiosEqual) return 'SSS';
+  if(ratioIdx.length===2 && ratiosEqual){ const sv=csSharedVertex(ratioIdx[0],ratioIdx[1]); if(eq.indexOf(sv)>=0) return 'SAS'; }
+  if(rightV>=0 && ratioIdx.length===2 && ratiosEqual){ const hyp=(rightV+1)%3; if(ratioIdx.indexOf(hyp)>=0) return 'RHS'; }
+  return 'none';
+}
+
+/* ── SVG helpers ── */
+function csWrap(inner){ return pgSvgWrap(inner); }            // 300×240 + "Not to scale"
+const CS_BOX_L=[26,58,140,172], CS_BOX_R=[160,58,274,172];
+function csTicks(A,B,n){
+  const M=pgMid(A,B), d=pgU(A,B), perp=[-d[1],d[0]], gap=5, len=6; let s='';
+  for(let i=0;i<n;i++){ const off=(i-(n-1)/2)*gap, c=[M[0]+d[0]*off, M[1]+d[1]*off];
+    const p1=[c[0]+perp[0]*len,c[1]+perp[1]*len], p2=[c[0]-perp[0]*len,c[1]-perp[1]*len];
+    s+='<line x1="'+p1[0].toFixed(1)+'" y1="'+p1[1].toFixed(1)+'" x2="'+p2[0].toFixed(1)+'" y2="'+p2[1].toFixed(1)+'" stroke="var(--text)" stroke-width="2" stroke-linecap="round"/>'; }
+  return s;
+}
+function csAngArcs(V,P,Q,n,acc){
+  const d1=pgU(V,P), d2=pgU(V,Q); let a1=Math.atan2(d1[1],d1[0]), a2=Math.atan2(d2[1],d2[0]);
+  let dd=a2-a1; while(dd>Math.PI)dd-=2*Math.PI; while(dd<-Math.PI)dd+=2*Math.PI;
+  const col=acc?'var(--accent)':'var(--text)'; let s='';
+  for(let k=0;k<n;k++){ const r=12+k*4, pts=[];
+    for(let i=0;i<=14;i++){ const a=a1+dd*i/14; pts.push([V[0]+Math.cos(a)*r, V[1]+Math.sin(a)*r]); }
+    s+='<polyline points="'+pts.map(function(p){return p[0].toFixed(1)+','+p[1].toFixed(1);}).join(' ')+'" fill="none" stroke="'+col+'" stroke-width="2"/>'; }
+  return s;
+}
+function csAngLabel(V,P,Q,txt,acc){
+  const d1=pgU(V,P), d2=pgU(V,Q); let bis=[d1[0]+d2[0],d1[1]+d2[1]]; const bl=Math.hypot(bis[0],bis[1])||1; bis=[bis[0]/bl,bis[1]/bl];
+  const p=[V[0]+bis[0]*24, V[1]+bis[1]*24]; return pgLbl(p[0],p[1],txt,acc);
+}
+/* Render one triangle from fitted pts + a mark/label plan. */
+function csTriRender(pts, plan){
+  const cen=pgCentroid(pts); let s=pgPoly(pts);
+  const sT=plan.sideTicks||[], sL=plan.sideLbl||[], aA=plan.angArcs||[], aR=plan.angRight||[], aL=plan.angLbl||[];
+  for(let i=0;i<3;i++){ const A=pts[i], B=pts[(i+1)%3];
+    if(sT[i]) s+=csTicks(A,B,sT[i]);
+    if(sL[i]!=null){ const L=pgOut(A,B,cen,15); s+=pgLbl(L[0],L[1],String(sL[i]), plan.accSide===i); } }
+  for(let i=0;i<3;i++){ const V=pts[i], P=pts[(i+1)%3], Q=pts[(i+2)%3];
+    if(aR[i]) s+=pgRA(V,P,Q);
+    else if(aA[i]) s+=csAngArcs(V,P,Q,aA[i], plan.accAng===i);
+    if(aL[i]!=null) s+=csAngLabel(V,P,Q,String(aL[i]), plan.accAng===i); }
+  return s;
+}
+/* Base schematic triangle (unit-ish) from angles; right=true → right angle at V0. */
+function csBaseTri(right){
+  if(right){ const b=32+ri(27); return nalTriFromAngles(90,b); }         // right at V0
+  let a,b,c,g=0; do{ a=42+ri(29); b=42+ri(29); c=180-a-b; g++; }
+  while(g<60 && !(c>=36 && c<=94 && Math.abs(a-b)>7 && Math.abs(a-c)>7 && Math.abs(b-c)>7));
+  return nalTriFromAngles(a,b);
+}
+/* Draw a same-orientation pair (each fitted to fill its own box → equal on-screen size). */
+function csTriPairSVG(basePts, planA, planB, deg){
+  const rot=pgRot(basePts, deg, false);
+  const ptsA=pgFit(rot, CS_BOX_L[0],CS_BOX_L[1],CS_BOX_L[2],CS_BOX_L[3]);
+  const ptsB=pgFit(rot, CS_BOX_R[0],CS_BOX_R[1],CS_BOX_R[2],CS_BOX_R[3]);
+  return csWrap(csTriRender(ptsA,planA)+csTriRender(ptsB,planB));
+}
+
+/* ── L1 shapes: fit any point-set to a box and label edges ── */
+function csGCentroid(pts){ let x=0,y=0; pts.forEach(function(p){x+=p[0];y+=p[1];}); return [x/pts.length, y/pts.length]; }
+function csPolyLabelled(pts, edgeLbls){   // edgeLbls: {edgeIndex: text}
+  const cen=csGCentroid(pts); let s='<polygon points="'+pts.map(function(p){return p[0].toFixed(1)+','+p[1].toFixed(1);}).join(' ')+'" fill="none" stroke="var(--text)" stroke-width="2.5" stroke-linejoin="round"/>';
+  for(const k in edgeLbls){ const i=+k, A=pts[i], B=pts[(i+1)%pts.length], L=pgOut(A,B,cen,15); s+=pgLbl(L[0],L[1],String(edgeLbls[k]),false); }
+  return s;
+}
+function csRegPolyPts(n){ const pts=[]; for(let i=0;i<n;i++){ const a=(-90+i*360/n)*Math.PI/180; pts.push([Math.cos(a),Math.sin(a)]); } return pts; }
+function csRegPolyRender(pts, lenLabel, ticks){
+  const cen=csGCentroid(pts);
+  let s='<polygon points="'+pts.map(function(p){return p[0].toFixed(1)+','+p[1].toFixed(1);}).join(' ')+'" fill="none" stroke="var(--text)" stroke-width="2.5" stroke-linejoin="round"/>';
+  for(let i=0;i<pts.length;i++){ if(ticks) s+=csTicks(pts[i], pts[(i+1)%pts.length], ticks); }
+  const L=pgOut(pts[0], pts[1], cen, 15); s+=pgLbl(L[0],L[1],String(lenLabel),false);
+  return s;
+}
+function csRectPts(w,h){ return [[0,0],[w,0],[w,h],[0,h]]; }
+
+function csL1Verdict(fam, A, B){
+  if(fam==='triangle'){ const sa=A.slice().sort(function(p,q){return p-q;}), sb=B.slice().sort(function(p,q){return p-q;});
+    if(sa.every(function(v,i){return v===sb[i];})) return 'congruent';
+    const ks=sa.map(function(v,i){return sb[i]/v;}); if(ks.every(function(k){return Math.abs(k-ks[0])<1e-9;})) return 'similar'; return 'neither'; }
+  if(fam==='rectangle'){ const na=[Math.min(A[0],A[1]),Math.max(A[0],A[1])], nb=[Math.min(B[0],B[1]),Math.max(B[0],B[1])];
+    if(na[0]===nb[0] && na[1]===nb[1]) return 'congruent';
+    if(Math.abs(na[1]/na[0]-nb[1]/nb[0])<1e-9) return 'similar'; return 'neither'; }
+  // regpoly: A=[n,s] B=[n,s]
+  if(A[0]!==B[0]) return 'neither'; if(A[1]===B[1]) return 'congruent'; return 'similar';
+}
+
+function genCongruSimilar(el){
+  el.style.fontSize='1.05rem';
+  qData.chosen=null; qData.csPlan=null; qData.csL4=null;
+  const lv=level;
+
+  /* ───────── L1 ───────── */
+  if(lv===1){
+    const fam=['triangle','triangle','rectangle','regpoly'][ri(4)];
+    const rel=['congruent','similar','neither'][ri(3)];
+    const k=(Math.random()<0.5)?2:3;
+    let svgA,svgB, Anum, Bnum;
+    if(fam==='triangle'){
+      let T; do{ T=nalSideTriple('scalene'); }while(!(T[0]!==T[1]&&T[1]!==T[2]&&T[0]!==T[2]));
+      Anum=T.slice();
+      if(rel==='congruent'){ Bnum=shuffleArr(T.slice()); }
+      else if(rel==='similar'){ Bnum=T.map(function(v){return v*k;}); }
+      else { // neither: scale then bump one side, keep a valid triangle & non-proportional
+        let cand,g=0; do{ cand=T.map(function(v){return v*k;}); const j=ri(3); cand[j]+=(Math.random()<0.5?1:-1)*(1+ri(2)); g++; }
+        while(g<40 && !(cand[0]+cand[1]>cand[2] && cand[1]+cand[2]>cand[0] && cand[0]+cand[2]>cand[1] && !csProp(T,cand))); Bnum=cand; }
+      const pA=nalTriFromSides(Anum[0],Anum[1],Anum[2]), pB=nalTriFromSides(Bnum[0],Bnum[1],Bnum[2]);
+      const dA=-25+ri(51), dB=-25+ri(51);
+      const fA=pgFit(pgRot(pA,dA,Math.random()<0.5),CS_BOX_L[0],CS_BOX_L[1],CS_BOX_L[2],CS_BOX_L[3]);
+      const fB=pgFit(pgRot(pB,dB,Math.random()<0.5),CS_BOX_R[0],CS_BOX_R[1],CS_BOX_R[2],CS_BOX_R[3]);
+      svgA=csTriRender(fA,{sideLbl:Anum}); svgB=csTriRender(fB,{sideLbl:Bnum});
+    } else if(fam==='rectangle'){
+      const w=4+ri(7), h=3+ri(5); Anum=[w,h];
+      if(rel==='congruent'){ Bnum=(Math.random()<0.5)?[w,h]:[h,w]; }
+      else if(rel==='similar'){ Bnum=[w*k,h*k]; }
+      else { let w2,h2,g=0; do{ w2=4+ri(9); h2=3+ri(8); g++; }while(g<50 && (Math.abs(w2/h2-w/h)<1e-9 || Math.abs(h2/w2-w/h)<1e-9)); Bnum=[w2,h2]; }
+      const fA=pgFit(csRectPts(Anum[0],Anum[1]),CS_BOX_L[0],CS_BOX_L[1],CS_BOX_L[2],CS_BOX_L[3]);
+      const fB=pgFit(csRectPts(Bnum[0],Bnum[1]),CS_BOX_R[0],CS_BOX_R[1],CS_BOX_R[2],CS_BOX_R[3]);
+      svgA=csPolyLabelled(fA,{0:Anum[0],3:Anum[1]}); svgB=csPolyLabelled(fB,{0:Bnum[0],1:Bnum[1]});   // left: width on top, height on OUTER (left) edge so it never crowds the right shape
+    } else { // regpoly: n in {4,5,6}
+      const n=[4,5,6][ri(3)], s=4+ri(7); Anum=[n,s];
+      if(rel==='congruent'){ Bnum=[n,s]; }
+      else if(rel==='similar'){ Bnum=[n,s*k]; }
+      else { let n2; do{ n2=[4,5,6][ri(3)]; }while(n2===n); Bnum=[n2,4+ri(7)]; }
+      const fA=pgFit(csRegPolyPts(Anum[0]),CS_BOX_L[0],CS_BOX_L[1],CS_BOX_L[2],CS_BOX_L[3]);
+      const fB=pgFit(csRegPolyPts(Bnum[0]),CS_BOX_R[0],CS_BOX_R[1],CS_BOX_R[2],CS_BOX_R[3]);
+      const csCongr=(Anum[0]===Bnum[0] && Anum[1]===Bnum[1]);   // regular polygons: tick every side (regular);
+      svgA=csRegPolyRender(fA,Anum[1],1); svgB=csRegPolyRender(fB,Bnum[1], csCongr?1:2);   // same tick count = equal (congruent); different = not
+    }
+    const ans=csL1Verdict(fam,Anum,Bnum);
+    const order=['congruent','similar','neither'], names={congruent:'Congruent',similar:'Similar',neither:'Neither'};
+    qData.choiceAns=ans; qData.choices=order.map(function(c){return {code:c,html:names[c]};});
+    qData.choiceText={}; order.forEach(function(c){qData.choiceText[c]=names[c];});
+    qData.csLevel=1; qData.csFam=fam; qData.csRel=ans; qData.csA=Anum; qData.csB=Bnum;
+    qData.workSteps=METHOD_TIP['congruSimilar']||'';
+    el.innerHTML='<div style="'+A_LBL+'">Are these two shapes congruent, similar, or neither?</div>'+csWrap(svgA+svgB);
+    return;
+  }
+
+  /* ───────── L2 (congruence test) ───────── */
+  if(lv===2){
+    const scen=['SSS','SAS','AAS','RHS','SSA','AAA','AA','SS'][ri(8)];
+    const sideTicks=[0,0,0], angArcs=[0,0,0], angRight=[false,false,false];
+    let right=false;
+    if(scen==='SSS'){ sideTicks[0]=1; sideTicks[1]=2; sideTicks[2]=3; }
+    else if(scen==='SAS'){ const v=ri(3); const e1=v, e2=(v+2)%3; sideTicks[e1]=1; sideTicks[e2]=2; angArcs[v]=1; }
+    else if(scen==='AAS'){ const va=ri(3); let vb; do{ vb=ri(3); }while(vb===va); angArcs[va]=1; angArcs[vb]=2; const se=(Math.random()<0.5?va:vb+1)%3; sideTicks[se]=1; }
+    else if(scen==='RHS'){ right=true; angRight[0]=true; sideTicks[1]=1; sideTicks[0]=2; }   // hyp e1 + leg e0
+    else if(scen==='SSA'){ sideTicks[0]=1; sideTicks[1]=2; angArcs[(Math.random()<0.5?0:2)]=1; }  // non-included (share V1)
+    else if(scen==='AAA'){ angArcs[0]=1; angArcs[1]=2; angArcs[2]=3; }
+    else if(scen==='AA'){ const va=ri(3); let vb; do{ vb=ri(3);}while(vb===va); angArcs[va]=1; angArcs[vb]=2; }
+    else { sideTicks[0]=1; sideTicks[1]=2; }   // SS
+    const ans=csCongruenceVerdict(sideTicks,angArcs,angRight);
+    const base=csBaseTri(right), deg=-28+ri(57);
+    const plan={sideTicks:sideTicks,angArcs:angArcs,angRight:angRight};
+    const svg=csTriPairSVG(base, plan, plan, deg);
+    const order=['SSS','SAS','AAS','RHS','none'], names={SSS:'SSS',SAS:'SAS',AAS:'AAS',RHS:'RHS',none:'Not enough information'};
+    qData.choiceAns=ans; qData.choices=order.map(function(c){return {code:c,html:names[c]};});
+    qData.choiceText={}; order.forEach(function(c){qData.choiceText[c]=names[c];});
+    qData.csLevel=2; qData.csScenario=scen; qData.csPlan={level:2,sideTicks:sideTicks,angArcs:angArcs,angRight:angRight};
+    qData.workSteps=METHOD_TIP['congruSimilar']||'';
+    el.innerHTML='<div style="'+A_LBL+'">Which test shows these two triangles are congruent?</div>'+svg;
+    return;
+  }
+
+  /* ───────── L3 (similarity test) ───────── */
+  if(lv===3){
+    const scen=['SSS','AAA','SAS','RHS','SSA','ONEA','TWOS','NOTPROP'][ri(8)];
+    const A=[null,null,null], B=[null,null,null], angArcs=[0,0,0], angRight=[false,false,false];
+    const k=(Math.random()<0.5)?2:3; let rightV=-1, eqAngles=[], right=false;
+    const three=function(){ let s; do{ s=[5+ri(7),5+ri(7),5+ri(7)]; }while(!(s[0]!==s[1]&&s[1]!==s[2]&&s[0]!==s[2])); return s; };
+    if(scen==='SSS'){ const s=three(); for(let i=0;i<3;i++){ A[i]=s[i]; B[i]=s[i]*k; } }
+    else if(scen==='AAA'){ const va=ri(3); let vb; do{ vb=ri(3);}while(vb===va); angArcs[va]=1; angArcs[vb]=2; eqAngles=[va,vb]; }
+    else if(scen==='SAS'){ const v=ri(3), e1=v, e2=(v+2)%3, a=5+ri(7), b=6+ri(7); A[e1]=a; A[e2]=b; B[e1]=a*k; B[e2]=b*k; angArcs[v]=1; eqAngles=[v]; }
+    else if(scen==='RHS'){ right=true; angRight[0]=true; rightV=0; const hyp=13+ri(8), leg=5+ri(6); A[1]=hyp; A[0]=leg; B[1]=hyp*k; B[0]=leg*k; }  // hyp e1 + leg e0
+    else if(scen==='SSA'){ const a=5+ri(7), b=6+ri(7); A[0]=a; A[1]=b; B[0]=a*k; B[1]=b*k; const na=(Math.random()<0.5?0:2); angArcs[na]=1; eqAngles=[na]; } // non-included
+    else if(scen==='ONEA'){ const v=ri(3); angArcs[v]=1; eqAngles=[v]; }
+    else if(scen==='TWOS'){ const a=5+ri(7), b=6+ri(7); A[0]=a; A[1]=b; B[0]=a*k; B[1]=b*k; }   // two sides, no angle
+    else { const s=three(); for(let i=0;i<3;i++){ A[i]=s[i]; } let t; do{ t=[s[0]*k,s[1]*k,s[2]*k]; const j=ri(3); t[j]+=(Math.random()<0.5?1:-1)*(1+ri(2)); }while(csProp(s,t)); for(let i=0;i<3;i++) B[i]=t[i]; }  // NOTPROP
+    const ans=csSimilarityVerdict(A,B,eqAngles,rightV);
+    const base=csBaseTri(right), deg=-28+ri(57);
+    const planA={sideLbl:A.slice(),angArcs:angArcs.slice(),angRight:angRight.slice()};
+    const planB={sideLbl:B.slice(),angArcs:angArcs.slice(),angRight:angRight.slice()};
+    const svg=csTriPairSVG(base, planA, planB, deg);
+    const order=['SSS','AAA','SAS','RHS','none'], names={SSS:'SSS',AAA:'AAA',SAS:'SAS',RHS:'RHS',none:'Not enough information'};
+    qData.choiceAns=ans; qData.choices=order.map(function(c){return {code:c,html:names[c]};});
+    qData.choiceText={}; order.forEach(function(c){qData.choiceText[c]=names[c];});
+    qData.csLevel=3; qData.csScenario=scen; qData.csPlan={level:3,A:A,B:B,eqAngles:eqAngles,rightV:rightV};
+    qData.workSteps=METHOD_TIP['congruSimilar']||'';
+    el.innerHTML='<div style="'+A_LBL+'">Which test shows these two triangles are similar?</div>'+svg;
+    return;
+  }
+
+  /* ───────── L4 (find x) ───────── */
+  const kind=['simside','simside','simside','congside','simang','congang'][ri(6)];
+  const base=csBaseTri(false), deg=-22+ri(45);
+  const angA=nalAngLabelTriple();      // three plausible integer angles summing to 180 for angle cases
+  let planA={}, planB={}, ans, work, prompt, part;
+  if(kind==='simside'){
+    part='side'; const k=(Math.random()<0.5)?2:3; let p=ri(3), u; do{ u=ri(3);}while(u===p);
+    const Ap=5+ri(9), Au=5+ri(9);
+    const slA=[null,null,null]; slA[p]=Ap; slA[u]=Au;
+    const slB=[null,null,null]; slB[p]=Ap*k; slB[u]='x';
+    const av=ri(3); planA={sideLbl:slA,angArcs:mark1(av)}; planB={sideLbl:slB,angArcs:mark1(av),accSide:u};
+    ans=k*Au; work='Scale factor = '+(Ap*k)+' ÷ '+Ap+' = '+k+'.<br>x = '+k+' × '+Au+' = <b>'+ans+'</b>';
+    prompt='The two triangles are similar. Work out the length x.';
+  } else if(kind==='congside'){
+    part='side'; let u=ri(3); const sides=[6+ri(9),6+ri(9),6+ri(9)];
+    const slA=sides.slice(); const slB=[null,null,null]; slB[u]='x';
+    planA={sideTicks:[1,2,3],sideLbl:slA}; planB={sideTicks:[1,2,3],sideLbl:slB,accSide:u};
+    ans=sides[u]; work='The triangles are congruent, so matching sides are equal.<br>x = <b>'+ans+'</b>';
+    prompt='The two triangles are congruent. Work out the length x.';
+  } else if(kind==='simang' || kind==='congang'){
+    part='angle'; const sim=(kind==='simang'); const v=ri(3); const alpha=angA[v];
+    const alA=[null,null,null], alB=[null,null,null]; alA[v]=alpha+'\u00B0'; alB[v]='x';
+    planA={angArcs:mark1(v),angLbl:alA}; planB={angArcs:mark1(v),angLbl:alB,accAng:v};
+    ans=alpha; work='Matching angles in '+(sim?'similar':'congruent')+' triangles are equal.<br>x = <b>'+alpha+'°</b>';
+    prompt='The two triangles are '+(sim?'similar':'congruent')+'. Work out the angle x (in degrees).';
+  }
+  const svg=csTriPairSVG(base, planA, planB, deg);
+  qData.ans=ans; qData.workSteps=work;
+  qData.csLevel=4; qData.csL4={kind:kind,part:part}; qData.csAns=ans;
+  el.innerHTML='<div style="'+A_LBL+'">'+prompt+'</div>'+svg;
+}
+/* helpers used above */
+function csProp(a,b){ const ks=a.map(function(v,i){return b[i]/v;}); return ks.every(function(x){return Math.abs(x-ks[0])<1e-9;}); }
+function mark1(v){ const m=[0,0,0]; m[v]=1; return m; }
+function nalAngLabelTriple(){ let a,b,c,g=0; do{ a=35+ri(46); b=35+ri(46); c=180-a-b; g++; }while(g<60 && !(c>=25 && c<=95)); if(c<25||c>95){a=60;b=70;c=50;} return [a,b,c]; }
+
+/* ═══════════════════════════════════════════════
    EULER'S RULE — V + F = E + 2   (v59; working reformatted v60, lvKey eul)
    L1: a 3D solid is shown (reusing the SHAPE_LIB wireframes); the student counts
    one of faces / vertices / edges. POLYHEDRA ONLY — curved solids break Euler's
@@ -5677,6 +5983,7 @@ function nextQ() {
   else if (skill === 'angleRel')        { genAngleRel(el); }
   else if (skill === 'angleParallel')   { genAngleParallel(el); }
   else if (skill === 'angleQuad')       { genAngleQuad(el); }
+  else if (skill === 'congruSimilar')   { genCongruSimilar(el); }
   else if (skill === 'trigExactDeg')    { genTrigExact(el, false); }
   else if (skill === 'trigExactRad')    { genTrigExact(el, true); }
 
