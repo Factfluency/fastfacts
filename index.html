@@ -17,16 +17,18 @@
     * Angles in Quadrilaterals: quads are now BUILT from their four interior angles
       (two triangles split across the P0-P2 diagonal, law-of-sines exact), so the
       target sits in its true size category. GENUINELY CONCAVE (reflex) quads are
-      mixed into L1/L2 at ~1/3 (reflex vertex 190-245°) so students practise both
+      mixed into L1/L2 at ~1/3 (reflex vertex 190-225°) so students practise both
       concave and convex; convex 4th angle now capped at 170° (was 200°) so the two
       cases are cleanly separated. L3 parallelogram / trapezium / kite are built
       parametrically from the given angle so they still read clearly as that shape.
       Answer logic (sum 360 / property equalities) is UNCHANGED; concave answers
       stay within 1-359, so the share-line and dashboard are unaffected.
-  Angle labels also moved OUTSIDE each vertex (radiating from the centroid) and the
-  triangles enlarged, so values are legible even on thin obtuse slivers — same for
-  the Congruence L4 angle labels. Angle naming (Naming Angles L3) was already
-  to-scale — no change.
+  Angle labels also moved OUTSIDE each vertex (triangles: radiating from the centroid;
+  quads: along the external bisector, so reflex labels land in the open major-arc
+  region, not the concave notch) and the triangles enlarged, so values are legible
+  even on thin obtuse slivers — same for the Congruence L4 angle labels. L4 given
+  angles capped at 155° so no vertex looks near-straight. Angle naming (Naming Angles
+  L3) was already to-scale — no change.
 
   Changes in v64 (new Geometry skill: Congruence & Similarity — Laura sign-off).
   ADDITIVE. New skill id 'congruSimilar' (lvKey 'cs'), 4 levels, recall / Fluent-
@@ -5897,11 +5899,18 @@ function quadDiagram(pts, vals, accIdx, measures){
       const u1=pgU(V,n1), u2=pgU(V,n2);
       const a1=Math.atan2(u1[1],u1[0])*180/Math.PI, a2=Math.atan2(u2[1],u2[0])*180/Math.PI;
       let best=1,bestErr=1e9; for(const sg of [1,-1]){ const e=Math.abs(((a1+sg*m-a2)%360+540)%360-180); if(e<bestErr){bestErr=e;best=sg;} }
-      s+=angArcSweep(V, a1, best*m, 16, null, acc);
+      s+=angArcSweep(V, a1, best*m, (m>180?13:16), null, acc);
     } else { s+=pgArc(V,n1,n2).arc; }
-    const outw=pgU(cen,V), toward=(m!=null && m>180), off=toward?18:22;
-    const dir=toward?[-outw[0],-outw[1]]:outw, lp=[V[0]+dir[0]*off, V[1]+dir[1]*off];
-    s+=pgLbl(lp[0],lp[1], String(vals[i]), acc);
+    // place the label on the EXTERNAL bisector: for a convex vertex that's just
+    // outside the corner; for a reflex vertex it points into the wide major-arc
+    // region, clear of the concave notch (v65 fix, Laura).
+    const u1b=pgU(V,n1), u2b=pgU(V,n2); let bx=-(u1b[0]+u2b[0]), by=-(u1b[1]+u2b[1]); let bl=Math.hypot(bx,by);
+    if (bl<0.05){ const e=pgU(n1,n2); bx=-e[1]; by=e[0]; const oc=pgU(cen,V); if (bx*oc[0]+by*oc[1]<0){ bx=-bx; by=-by; } bl=1; }
+    bx/=bl; by/=bl;
+    // reflex labels sit tight to their own vertex (small offset) so they don't shoot
+    // across a compact dart into the far edge; convex labels sit just outside the corner.
+    const off = (m!=null && m>180) ? 24 : (16 + (String(vals[i]).length>3 ? 17 : 13));
+    s+=pgLbl(V[0]+bx*off, V[1]+by*off, String(vals[i]), acc);
   }
   return pgSvgWrap(s);
 }
@@ -5910,7 +5919,7 @@ function genAngleQuad(el){
   if (level === 1 || level === 2){
     let vals4, g=0; const concave = Math.random() < 0.34;   // ~1/3 concave (Laura: practise both)
     if (concave){
-      const R = 190 + ri(56);              // 190..245 reflex vertex
+      const R = 190 + ri(36);              // 190..225 reflex vertex (shallow enough to label cleanly)
       const S = 360 - R; let x1,x2,x3,h=0;
       do { x1=28+ri(Math.max(1,S-84)); x2=28+ri(Math.max(1,S-x1-56)); x3=S-x1-x2; h++; } while (x3<28 && h<60);
       if (x3<28){ x1=Math.round(S/3); x2=Math.round(S/3); x3=S-x1-x2; }
@@ -5952,8 +5961,9 @@ function genAngleQuad(el){
   // level 4: algebra (sum 360). Bound x so mx, x, c and d all stay in (20,170).
   const m = [1,2,2,3][ri(4)];
   const xmax = m===3 ? 46 : m===2 ? 58 : 70;
-  const x = rr(20, xmax), R = 360 - (m+1)*x;      // R = c + d
-  const clo = Math.max(30, R-170), chi = Math.min(170, R-30);
+  const xmin = (m===1) ? 25 : 20;                 // keep c,d <=155 feasible (no near-straight vertex)
+  const x = rr(xmin, xmax), R = 360 - (m+1)*x;    // R = c + d
+  const clo = Math.max(40, R-155), chi = Math.min(155, R-40);
   const c = (clo<=chi) ? rr(clo,chi) : Math.floor(R/2), d = R - c;
   const labels=[coefLbl(m,0), coefLbl(1,0), c+'°', d+'°'];
   const meas=[m*x, x, c, d];
