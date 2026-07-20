@@ -1,7 +1,32 @@
 <!--
-  Sandy Fast Facts — v64
+  Sandy Fast Facts — v65
   Current skills-platform build: 10 categories, 66 skills, 203 levels. Full version
   history (v22 → v49) lives in SandyFastFacts_HandoffGuide.
+
+  Changes in v65 (angle-diagram realism — Laura). RENDER-ONLY. No ff_ key / id /
+  lvKey / share-line / band change; no .bas regeneration (byte-identical to v64).
+  Every 'find angle x' diagram is now drawn TO SCALE, so the target angle sits in
+  its true size category (an obtuse answer looks obtuse, an acute one acute):
+    * Interior Angles of a Triangle: triangle built from the actual angles.
+    * Angle Relationships (comp / supp / vert / point): rays placed to the real
+      measures; the 'point' arc handles reflex sizes.
+    * Angles on Parallel Lines: transversal steepness + lean derived from the
+      angle size so each marked quadrant shows the correct acute/obtuse angle.
+    * Congruence & Similarity L4 (angle case): the pair is built from the actual
+      angle triple so the labelled / unknown vertex is drawn at its true size.
+    * Angles in Quadrilaterals: quads are now BUILT from their four interior angles
+      (two triangles split across the P0-P2 diagonal, law-of-sines exact), so the
+      target sits in its true size category. GENUINELY CONCAVE (reflex) quads are
+      mixed into L1/L2 at ~1/3 (reflex vertex 190-245°) so students practise both
+      concave and convex; convex 4th angle now capped at 170° (was 200°) so the two
+      cases are cleanly separated. L3 parallelogram / trapezium / kite are built
+      parametrically from the given angle so they still read clearly as that shape.
+      Answer logic (sum 360 / property equalities) is UNCHANGED; concave answers
+      stay within 1-359, so the share-line and dashboard are unaffected.
+  Angle labels also moved OUTSIDE each vertex (radiating from the centroid) and the
+  triangles enlarged, so values are legible even on thin obtuse slivers — same for
+  the Congruence L4 angle labels. Angle naming (Naming Angles L3) was already
+  to-scale — no change.
 
   Changes in v64 (new Geometry skill: Congruence & Similarity — Laura sign-off).
   ADDITIVE. New skill id 'congruSimilar' (lvKey 'cs'), 4 levels, recall / Fluent-
@@ -4693,15 +4718,21 @@ function pythSvg(sides, varied){
 
 /* Triangle with all three angle labels; the hidden one (hideIdx) shows x. */
 function iatSvg(vals, hideIdx, varied){
-  const base=[[0,0],[162,0],[52,-120]];
+  // v65: build the triangle from the ACTUAL angles so every drawn vertex matches
+  // its label — an obtuse answer now looks obtuse, a right angle looks right, etc.
+  const base = nalTriFromAngles(vals[0], vals[1]);
   const deg = varied ? [35,90,145,200,270,315][ri(6)] : 0;
   const flip = varied && Math.random() < 0.5;
-  const pts = pgFit(pgRot(base, deg, flip), 74, 74, 226, 166);
+  const pts = pgFit(pgRot(base, deg, flip), 62, 60, 238, 172);   // v65: larger for legibility
+  const cen = pgCentroid(pts);
   let s = pgPoly(pts);
   for (let i=0;i<3;i++){
     const n1=pts[(i+1)%3], n2=pts[(i+2)%3], acc=(i===hideIdx);
     const A = pgArc(pts[i], n1, n2, acc);
-    s += A.arc + pgLbl(A.pos[0], A.pos[1], acc ? 'x' : (vals[i]+'°'), acc);
+    // label radiates OUTWARD from the centroid, just beyond the vertex, so it never
+    // crosses an edge (works even for thin slivers / near-straight angles). v65 (Laura).
+    const d = pgU(cen, pts[i]), lp = [pts[i][0]+d[0]*22, pts[i][1]+d[1]*22];
+    s += A.arc + pgLbl(lp[0], lp[1], acc ? 'x' : (vals[i]+'°'), acc);
   }
   return pgSvgWrap(s);
 }
@@ -5269,7 +5300,7 @@ function csAngArcs(V,P,Q,n,acc){
 }
 function csAngLabel(V,P,Q,txt,acc){
   const d1=pgU(V,P), d2=pgU(V,Q); let bis=[d1[0]+d2[0],d1[1]+d2[1]]; const bl=Math.hypot(bis[0],bis[1])||1; bis=[bis[0]/bl,bis[1]/bl];
-  const p=[V[0]+bis[0]*24, V[1]+bis[1]*24]; return pgLbl(p[0],p[1],txt,acc);
+  const p=[V[0]-bis[0]*20, V[1]-bis[1]*20]; return pgLbl(p[0],p[1],txt,acc);   // v65: OUTSIDE the vertex for legibility (Laura)
 }
 /* Render one triangle from fitted pts + a mark/label plan. */
 function csTriRender(pts, plan){
@@ -5435,8 +5466,11 @@ function genCongruSimilar(el){
 
   /* ───────── L4 (find x) ───────── */
   const kind=['simside','simside','simside','congside','simang','congang'][ri(6)];
-  const base=csBaseTri(false), deg=-22+ri(45);
   const angA=nalAngLabelTriple();      // three plausible integer angles summing to 180 for angle cases
+  // v65 (Laura): for the angle cases, build the triangle FROM those angles so the
+  // labelled/target vertex is drawn at its true size (an obtuse-ish x looks right).
+  const _isAng=(kind==='simang'||kind==='congang');
+  const base=_isAng ? nalTriFromAngles(angA[0], angA[1]) : csBaseTri(false), deg=-22+ri(45);
   let planA={}, planB={}, ans, work, prompt, part;
   if(kind==='simside'){
     part='side'; const k=(Math.random()<0.5)?2:3; let p=ri(3), u; do{ u=ri(3);}while(u===p);
@@ -5590,41 +5624,47 @@ const ANG_REL = { comp:'Complementary', supp:'Supplementary', vert:'Vertically o
 /* Build the diagram for a relationship. vals = label strings for the marked
    angles in the relationship's canonical order (null → schematic/identify), acc
    = index of the unknown (or -1). */
-function angRelDiagram(key, vals, accIdx, rot){
+function angArcSweep(V, startDeg, sweepDeg, r, txt, acc){
+  const n=Math.max(8, Math.round(Math.abs(sweepDeg)/10)), pts=[];
+  for(let i=0;i<=n;i++){ const a=(startDeg+sweepDeg*i/n)*Math.PI/180; pts.push([V[0]+Math.cos(a)*r, V[1]+Math.sin(a)*r]); }
+  let out='<polyline points="'+pts.map(function(p){return p[0].toFixed(1)+','+p[1].toFixed(1);}).join(' ')+'" fill="none" stroke="'+(acc?'var(--accent)':'var(--text)')+'" stroke-width="2"/>';
+  if(txt!=null){ const ba=(startDeg+sweepDeg/2)*Math.PI/180, off=r+(String(txt).length>3?20:15), lp=[V[0]+Math.cos(ba)*off, V[1]+Math.sin(ba)*off]; out+=angLabel(lp[0],lp[1],txt,acc); }
+  return out;
+}
+/* Build the diagram for a relationship. vals = label strings for the marked angles
+   (null -> schematic/identify); accIdx = index of the unknown (or -1); measures =
+   numeric degree size of each marked angle so the diagram is drawn TO SCALE — an
+   obtuse answer looks obtuse, an acute one acute (v65, Laura). Null measures keeps
+   the schematic look for the L1 identify screens. */
+function angRelDiagram(key, vals, accIdx, rot, measures){
   rot = rot || 0;
-  const R2 = function(d){ return d + rot; };          // apply orientation
+  const R2 = function(d){ return d + rot; };
   let s = '';
   const AC = function(i){ return accIdx === i || accIdx === 'all'; };
+  const M = measures || null;
   if (key === 'comp'){
-    const V = [150,132], L = 106;                      // right angle split 45/45 (schematic)
-    const R = angRay(V,R2(0),L), T = angRay(V,R2(-90),L), S = angRay(V,R2(-45),L);
-    s += shLine(V,R) + shLine(V,T) + shLine(V,S) + pgRA(V, angRay(V,R2(0),20), angRay(V,R2(-90),20));
-    s += angArc(V, angRay(V,R2(0),34), angRay(V,R2(-45),34), null, AC(0));
-    s += angArc(V, angRay(V,R2(-45),34), angRay(V,R2(-90),34), null, AC(1));
-    // two long labels in a 90° corner: place on bisectors but stagger radially so boxes never touch
-    if (vals){
-      if (vals[0] != null){ const p = angLabelPos(V, angRay(V,R2(0),34), angRay(V,R2(-45),34), vals[0], 0);  s += angLabel(p[0],p[1],vals[0],AC(0)); }
-      if (vals[1] != null){ const p = angLabelPos(V, angRay(V,R2(-45),34), angRay(V,R2(-90),34), vals[1], 20); s += angLabel(p[0],p[1],vals[1],AC(1)); }
-    }
+    const V=[150,132], L=106, m0 = M ? M[0] : 45;
+    s += shLine(V,angRay(V,R2(0),L)) + shLine(V,angRay(V,R2(-90),L)) + shLine(V,angRay(V,R2(-m0),L));
+    s += pgRA(V, angRay(V,R2(0),20), angRay(V,R2(-90),20));
+    s += angArcSweep(V, R2(0), -m0, 34, vals?vals[0]:null, AC(0));
+    s += angArcSweep(V, R2(-m0), -(90-m0), 34, vals?vals[1]:null, AC(1));
   } else if (key === 'supp'){
-    const V = [150,140], L = 112;
-    const Lp = angRay(V,R2(180),L), Rp = angRay(V,R2(0),L), S = angRay(V,R2(-72),110);
-    s += shLine(Lp,Rp) + shLine(V,S);
-    s += angArc(V, angRay(V,R2(180),32), angRay(V,R2(-72),32), vals?vals[0]:null, AC(0));
-    s += angArc(V, angRay(V,R2(-72),32), angRay(V,R2(0),32), vals?vals[1]:null, AC(1));
+    const V=[150,140], L=112, m0 = M ? M[0] : 108;
+    s += shLine(angRay(V,R2(180),L), angRay(V,R2(0),L)) + shLine(V, angRay(V,R2(180+m0),L));
+    s += angArcSweep(V, R2(180), m0, 32, vals?vals[0]:null, AC(0));
+    s += angArcSweep(V, R2(180+m0), 180-m0, 32, vals?vals[1]:null, AC(1));
   } else if (key === 'vert'){
-    const V = [150,120], L = 112;
-    const a1=angRay(V,R2(152),L), a2=angRay(V,R2(-28),L), b1=angRay(V,R2(208),L), b2=angRay(V,R2(28),L);
-    s += shLine(a1,a2) + shLine(b1,b2);
-    s += angArc(V, angRay(V,R2(208),30), angRay(V,R2(-28),30), vals?vals[0]:null, AC(0));   // obtuse pair
-    s += angArc(V, angRay(V,R2(28),30),  angRay(V,R2(152),30), vals?vals[1]:null, AC(1));
+    const V=[150,120], L=112, th = M ? M[0] : 152;
+    s += shLine(angRay(V,R2(0),L), angRay(V,R2(180),L)) + shLine(angRay(V,R2(th),L), angRay(V,R2(180+th),L));
+    s += angArcSweep(V, R2(0), th, 30, vals?vals[0]:null, AC(0));
+    s += angArcSweep(V, R2(180), th, 30, vals?vals[1]:null, AC(1));
   } else { // point
-    const V = [150,120], L = 108;
-    const r1=angRay(V,R2(-90),L), r2=angRay(V,R2(145),L), r3=angRay(V,R2(35),L);
-    s += shLine(V,r1) + shLine(V,r2) + shLine(V,r3);
-    s += angArc(V, angRay(V,R2(-90),32), angRay(V,R2(35),32),  vals?vals[0]:null, AC(0));
-    s += angArc(V, angRay(V,R2(35),32),  angRay(V,R2(145),32), vals?vals[1]:null, AC(1));
-    s += angArc(V, angRay(V,R2(145),32), angRay(V,R2(-90),32), vals?vals[2]:null, AC(2));
+    const V=[150,120], L=104, m = M ? M : [125,110,125];
+    const d0=R2(-90), d1=d0+m[0], d2=d1+m[1];
+    s += shLine(V,angRay(V,d0,L)) + shLine(V,angRay(V,d1,L)) + shLine(V,angRay(V,d2,L));
+    s += angArcSweep(V, d0, m[0], 30, vals?vals[0]:null, AC(0));
+    s += angArcSweep(V, d1, m[1], 30, vals?vals[1]:null, AC(1));
+    s += angArcSweep(V, d2, m[2], 30, vals?vals[2]:null, AC(2));
   }
   return pgSvgWrap(s);
 }
@@ -5659,14 +5699,19 @@ function genAngleRel(el){
     else if (key === 'vert'){ const a = (level===2)?rr(4,34)*5:rr(25,155); ans = a; vals=[a+'°','x']; qData.ans=ans; qData.angCheck={mode:'eq',total:a,other:ans};
       work = 'Vertically opposite angles are equal → x = <b>'+ans+'°</b>'; }
     else { // point: two known + x
-      const p = angPointVals(level); ans = p.x; vals = [p.a+'°', p.b+'°', 'x']; qData.ans = ans; qData.angCheck={mode:'sum',total:p.a+p.b+ans,expect:360};
+      const p = angPointVals(level); ans = p.x; vals = [p.a+'°', p.b+'°', 'x']; qData.ans = ans; qData._pa=p.a; qData._pb=p.b; qData.angCheck={mode:'sum',total:p.a+p.b+ans,expect:360};
       work = 'Angles at a point add to 360°.<br>x = 360° − '+p.a+'° − '+p.b+'° = <b>'+ans+'°</b>'; }
     const accIdx = (key==='point') ? 2 : 1;
-    el.innerHTML = '<div style="'+A_LBL+'">Find the size of angle x (in degrees)</div>' + angRelDiagram(key, vals, accIdx, rot);
+    let measures;
+    if (key==='comp') measures=[90-ans, ans];
+    else if (key==='supp') measures=[180-ans, ans];
+    else if (key==='vert') measures=[ans, ans];
+    else measures=[qData._pa, qData._pb, ans];
+    el.innerHTML = '<div style="'+A_LBL+'">Find the size of angle x (in degrees)</div>' + angRelDiagram(key, vals, accIdx, rot, measures);
   } else {
     const eq = angAlgPair(key);   // {labels:[l0,l1], x, work}
     qData.ans = eq.x; qData.angCheck=eq.chk;
-    el.innerHTML = '<div style="'+A_LBL+'">Solve for x</div>' + angRelDiagram(key, eq.labels, -1, rot);
+    el.innerHTML = '<div style="'+A_LBL+'">Solve for x</div>' + angRelDiagram(key, eq.labels, -1, rot, eq.measures);
     work = eq.work;
   }
   qData.workSteps = work;
@@ -5684,7 +5729,7 @@ function angAlgPair(key){
     // equal angles: (2x + b1) = (x + b2), so x = b2 − b1; both angles positive.
     const x = rr(8,30), b1 = rr(5,40), b2 = x + b1;
     const l0 = coefLbl(2,b1), l1 = coefLbl(1,b2);
-    return { labels:[l0, l1], x:x, chk:{mode:'eq',total:2*x+b1,other:x+b2},
+    return { labels:[l0, l1], x:x, chk:{mode:'eq',total:2*x+b1,other:x+b2}, measures:[2*x+b1, x+b2],
       work:'Vertically opposite → equal.<br>'+stripDeg(l0)+' = '+stripDeg(l1)+' → x = <b>'+x+'</b>' };
   }
   // sum type: two positive angles adding to S, each written (m x + b).
@@ -5697,7 +5742,7 @@ function angAlgPair(key){
   if (m1===m2 && b1===b2){ b1 -= 2; b2 += 2; }   // distinct expressions
   const l0 = coefLbl(m1,b1), l1 = coefLbl(m2,b2);
   const word = (key==='comp') ? 'Complementary → add to 90°.' : 'Supplementary → add to 180°.';
-  return { labels:[l0,l1], x:x, chk:{mode:'sum',total:(m1*x+b1)+(m2*x+b2),expect:S},
+  return { labels:[l0,l1], x:x, chk:{mode:'sum',total:(m1*x+b1)+(m2*x+b2),expect:S}, measures:[m1*x+b1, m2*x+b2],
     work:word+'<br>'+stripDeg(l0)+' + '+stripDeg(l1)+' = '+S+' → x = <b>'+x+'</b>' };
 }
 function coefLbl(m,b){ const vx = (m===1)?'x':(m+'x'); if (b===0) return vx+'°'; const bp = (b>0)?(' + '+b):(' − '+Math.abs(b)); return '('+vx+bp+')°'; }
@@ -5713,11 +5758,18 @@ function plAngle(I, hu, tu, quad, txt, acc){
   const P1=[I[0]+d[0][0]*L, I[1]+d[0][1]*L], P2=[I[0]+d[1][0]*L, I[1]+d[1][1]*L];
   return angArc(I, P1, P2, txt, acc);
 }
-function plDiagram(marks, vals){
+function plLeanFor(quad, valAcute){
+  const acuteWhenPlus = (quad==='BR' || quad==='TL');   // this quadrant is acute when lean=+1
+  return acuteWhenPlus ? (valAcute ? 1 : -1) : (valAcute ? -1 : 1);
+}
+function plDiagram(marks, vals, theta, lean){
   const topY=70, botY=182, x0=42, x1=260, C=[150,126];
-  // orientation variety: near-vertical transversal, leaning left or right, varying steepness
-  const lean = (Math.random() < 0.5) ? 1 : -1;
-  const ang = (66 + ri(16)) * Math.PI/180;                 // 66–81° from horizontal
+  // v65 (Laura): steepness + lean derived from the actual angle sizes so the marked
+  // angles are drawn TO SCALE (an obtuse x looks obtuse). theta = the acute angle the
+  // transversal makes; null theta/lean keeps the random look for the L1 identify screen.
+  if (lean == null) lean = (Math.random() < 0.5) ? 1 : -1;
+  const angDeg = (theta == null) ? (66 + ri(16)) : theta;  // acute angle from horizontal
+  const ang = angDeg * Math.PI/180;
   const du = [Math.cos(ang)*lean, Math.sin(ang)];
   const Ta=[C[0]-du[0]*120, C[1]-du[1]*120], Tb=[C[0]+du[0]*120, C[1]+du[1]*120];
   const tu=pgU(Ta,Tb), hu=[1,0];
@@ -5753,10 +5805,12 @@ function genAngleParallel(el){
     return;
   }
   if (level === 4){
-    const e = plAlgPair();     // {key, labels, x, work}
+    const e = plAlgPair();     // {key, labels, x, work, measures}
     qData.ans = e.x; qData.angCheck = e.chk;
     const marks = PL_MARKS[e.key].map(function(m,i){ return {at:m.at, quad:m.quad, acc:false}; });
-    el.innerHTML='<div style="'+A_LBL+'">Parallel lines — solve for x</div>'+plDiagram(marks, e.labels);
+    const _v0 = e.measures[0], _gq4 = PL_MARKS[e.key][0].quad;
+    const _th4 = Math.min(_v0, 180-_v0), _ln4 = plLeanFor(_gq4, _v0 < 90);
+    el.innerHTML='<div style="'+A_LBL+'">Parallel lines — solve for x</div>'+plDiagram(marks, e.labels, _th4, _ln4);
     qData.workSteps = e.work; return;
   }
   // L2 single step, L3 two-step chain. L3 uses only the cross-line relationships
@@ -5783,7 +5837,9 @@ function genAngleParallel(el){
   }
   qData.ans = ans;
   qData.angCheck = (key==='coint') ? {mode:'sum',total:given+ans,expect:180} : {mode:'eq',total:given,other:ans};
-  el.innerHTML='<div style="'+A_LBL+'">Find the size of angle x (in degrees)</div>'+plDiagram(marks, markVals(marks, given, 1));
+  const _gq = PL_MARKS[key][0].quad;                       // the given angle's quadrant
+  const _theta = Math.min(given, 180-given), _lean = plLeanFor(_gq, given < 90);
+  el.innerHTML='<div style="'+A_LBL+'">Find the size of angle x (in degrees)</div>'+plDiagram(marks, markVals(marks, given, 1), _theta, _lean);
   qData.workSteps = work;
 }
 function markVals(marks, given, unknownIdx){ return marks.map(function(m,i){ return i===unknownIdx ? 'x' : (given+'°'); }); }
@@ -5795,61 +5851,102 @@ function plAlgPair(){
     if (!(cs>=12 && cs<=58)){ x = Math.max(5, Math.floor((180-36)/T)); cs = 180 - T*x; }
     const m1=rr(1,T-1), m2=T-m1; let b1=Math.max(4,Math.floor(cs/2)), b2=cs-b1;
     if (m1===m2 && b1===b2){ b1 -= 2; b2 += 2; }
-    return { key:key, labels:[coefLbl(m1,b1), coefLbl(m2,b2)], x:x, chk:{mode:'sum',total:(m1*x+b1)+(m2*x+b2),expect:180},
+    return { key:key, labels:[coefLbl(m1,b1), coefLbl(m2,b2)], x:x, chk:{mode:'sum',total:(m1*x+b1)+(m2*x+b2),expect:180}, measures:[m1*x+b1, m2*x+b2],
       work:'Co-interior → add to 180°.<br>'+stripDeg(coefLbl(m1,b1))+' + '+stripDeg(coefLbl(m2,b2))+' = 180 → x = <b>'+x+'</b>' };
   }
   const x=rr(8,30), b1=rr(5,40), b2=x+b1;   // (2x+b1)=(x+b2) → equal
-  return { key:key, labels:[coefLbl(2,b1), coefLbl(1,b2)], x:x, chk:{mode:'eq',total:2*x+b1,other:x+b2},
+  return { key:key, labels:[coefLbl(2,b1), coefLbl(1,b2)], x:x, chk:{mode:'eq',total:2*x+b1,other:x+b2}, measures:[2*x+b1, x+b2],
     work:ANG_PL[key]+' → equal.<br>'+stripDeg(coefLbl(2,b1))+' = '+stripDeg(coefLbl(1,b2))+' → x = <b>'+x+'</b>' };
 }
 
-/* ---- Skill 5: Angles in Quadrilaterals (numeric at every level) ---- */
-const QUAD_GEN  = [[68,66],[238,86],[212,182],[52,160]];      // schematic convex quad
-const QUAD_PARA = [[74,68],[236,68],[264,176],[102,176]];     // parallelogram
-const QUAD_TRAP = [[104,68],[204,68],[262,176],[46,176]];     // isosceles trapezium
-const QUAD_KITE = [[150,44],[236,120],[150,196],[64,120]];    // kite
-function quadDiagram(pts, vals, accIdx){
-  let s = pgPoly(pts);
-  for (let i=0;i<4;i++){ if (vals[i]==null) continue; const V=pts[i], n1=pts[(i+3)%4], n2=pts[(i+1)%4];
-    s += angArc(V, n1, n2, vals[i], i===accIdx); }
+/* ---- Skill 5: Angles in Quadrilaterals ---- */
+/* v65 (Laura): quads are now BUILT from their four interior angles, so the target
+   angle sits in its true size category — including genuinely concave (reflex) quads,
+   which are mixed into L1/L2 so students meet both. A quadrilateral is not fixed by
+   its angles alone, so we pick a construction: split it across the P0-P2 diagonal
+   into two triangles (law-of-sines exact). Any reflex angle is rotated onto a
+   diagonal endpoint so its split stays valid. L3 shapes are built parametrically so
+   they still read clearly as a parallelogram / trapezium / kite. */
+function angQuadFromAngles(ang){
+  let rot=0; for(let k=0;k<4;k++){ if(ang[k]>180 && k%2===1){ rot=1; break; } }
+  const a=ang.slice(rot).concat(ang.slice(0,rot));
+  const A=a[0],B=a[1],C=a[2];
+  const lo=Math.max(3, A-177, 182-B-C), hi=Math.min(177, A-3, 178-B, 358-B-C);
+  let A1=(lo<=hi)?(lo+hi)/2:Math.max(3,Math.min(A-3,(180-B)/2));
+  const C1=180-B-A1, A2=A-A1, C2=C-C1;
+  const up=nalTriFromAngles(A1,C1)[2], dn=nalTriFromAngles(A2,C2)[2];
+  let pts=[[0,0], up, [1,0], [dn[0],-dn[1]]];
+  if(rot){ pts=pts.slice(4-rot).concat(pts.slice(0,4-rot)); }
+  return pts;
+}
+function quadPara(a){ const r=a*Math.PI/180, w=1.7, h=1.05;
+  return [[0,0],[w,0],[w+h*Math.cos(r), h*Math.sin(r)],[h*Math.cos(r), h*Math.sin(r)]]; }
+function quadTrap(a){ const r=a*Math.PI/180, b=2.0, leg=1.15, dx=leg*Math.cos(r), dy=leg*Math.sin(r);
+  return [[0,0],[b,0],[b-dx,dy],[dx,dy]]; }
+function quadKite(a){ const p=(180-a)*0.40*Math.PI/180, q=(180-a)*0.60*Math.PI/180, dx=0.95;
+  const top=dx/Math.tan(p), bot=dx/Math.tan(q);
+  return [[0,top],[dx,0],[0,-bot],[-dx,0]]; }
+/* Draw the quad fitted to a box; each labelled vertex gets an arc drawn to its true
+   measure (reflex vertices sweep the long way) and a label radiating outward. */
+function quadDiagram(pts, vals, accIdx, measures){
+  const fit=pgFit(pts, 60, 58, 240, 174), cen=pgCentroid(fit);
+  let s=pgPoly(fit);
+  for (let i=0;i<4;i++){ if (vals[i]==null) continue;
+    const V=fit[i], n1=fit[(i+3)%4], n2=fit[(i+1)%4], acc=(i===accIdx), m=measures?measures[i]:null;
+    if (m!=null){
+      const u1=pgU(V,n1), u2=pgU(V,n2);
+      const a1=Math.atan2(u1[1],u1[0])*180/Math.PI, a2=Math.atan2(u2[1],u2[0])*180/Math.PI;
+      let best=1,bestErr=1e9; for(const sg of [1,-1]){ const e=Math.abs(((a1+sg*m-a2)%360+540)%360-180); if(e<bestErr){bestErr=e;best=sg;} }
+      s+=angArcSweep(V, a1, best*m, 16, null, acc);
+    } else { s+=pgArc(V,n1,n2).arc; }
+    const outw=pgU(cen,V), toward=(m!=null && m>180), off=toward?18:22;
+    const dir=toward?[-outw[0],-outw[1]]:outw, lp=[V[0]+dir[0]*off, V[1]+dir[1]*off];
+    s+=pgLbl(lp[0],lp[1], String(vals[i]), acc);
+  }
   return pgSvgWrap(s);
 }
 function genAngleQuad(el){
   el.style.fontSize = '1.05rem';
   if (level === 1 || level === 2){
-    // three angles given, find the fourth (sum 360)
-    let a,b,c,d,g=0;
-    do {
-      if (level===1){ a=rr(11,33)*5; b=rr(11,33)*5; c=rr(11,33)*5; }
-      else { a=rr(40,160); b=rr(40,160); c=rr(40,160); }
-      d = 360-a-b-c; g++;
-    } while ((d<25 || d>200) && g<80);
-    if (d<25 || d>200){ a=80;b=100;c=90;d=90; }
-    const hide = ri(4), vals4=[a,b,c,d];
+    let vals4, g=0; const concave = Math.random() < 0.34;   // ~1/3 concave (Laura: practise both)
+    if (concave){
+      const R = 190 + ri(56);              // 190..245 reflex vertex
+      const S = 360 - R; let x1,x2,x3,h=0;
+      do { x1=28+ri(Math.max(1,S-84)); x2=28+ri(Math.max(1,S-x1-56)); x3=S-x1-x2; h++; } while (x3<28 && h<60);
+      if (x3<28){ x1=Math.round(S/3); x2=Math.round(S/3); x3=S-x1-x2; }
+      const rpos=ri(4), others=[x1,x2,x3]; vals4=[]; let oi=0;
+      for (let k=0;k<4;k++) vals4.push(k===rpos ? R : others[oi++]);
+    } else {
+      do {
+        if (level===1){ vals4=[rr(11,33)*5, rr(11,33)*5, rr(11,33)*5, 0]; }
+        else { vals4=[rr(40,160), rr(40,160), rr(40,160), 0]; }
+        vals4[3]=360-vals4[0]-vals4[1]-vals4[2]; g++;
+      } while ((vals4[3]<25 || vals4[3]>170) && g<80);
+      if (vals4[3]<25 || vals4[3]>170){ vals4=[80,100,90,90]; }
+    }
+    const hide = ri(4);
     const labels = vals4.map(function(v,i){ return i===hide ? 'x' : v+'°'; });
     qData.ans = vals4[hide];
-    qData.angCheck = {mode:'sum', total:a+b+c+d, expect:360};
+    qData.angCheck = {mode:'sum', total:vals4[0]+vals4[1]+vals4[2]+vals4[3], expect:360};
     qData.workSteps = 'Angles in a quadrilateral add to 360°.<br>x = 360° − '+vals4.filter(function(_,i){return i!==hide;}).join('° − ')+'° = <b>'+vals4[hide]+'°</b>';
-    el.innerHTML='<div style="'+A_LBL+'">Find the unknown angle x (in degrees)</div>'+quadDiagram(QUAD_GEN, labels, hide);
+    el.innerHTML='<div style="'+A_LBL+'">Find the unknown angle x (in degrees)</div>'+quadDiagram(angQuadFromAngles(vals4), labels, hide, vals4);
     return;
   }
   if (level === 3){
-    // property-based
     const which = ['para_opp','para_adj','trap','kite'][ri(4)];
-    let pts, labels=[null,null,null,null], ans, work, acc, given;
-    if (which==='para_opp'){ const a=rr(9,27)*5; given=a; pts=QUAD_PARA; labels[0]=a+'°'; labels[2]='x'; ans=a; acc=2;
+    let pts, meas, labels=[null,null,null,null], ans, work, acc, given;
+    if (which==='para_opp'){ const a=rr(9,27)*5; given=a; pts=quadPara(a); meas=[a,180-a,a,180-a]; labels[0]=a+'°'; labels[2]='x'; ans=a; acc=2;
       work='In a parallelogram, opposite angles are equal → x = <b>'+a+'°</b>'; }
-    else if (which==='para_adj'){ const a=rr(9,27)*5; given=a; pts=QUAD_PARA; labels[0]=a+'°'; labels[1]='x'; ans=180-a; acc=1;
+    else if (which==='para_adj'){ const a=rr(9,27)*5; given=a; pts=quadPara(a); meas=[a,180-a,a,180-a]; labels[0]=a+'°'; labels[1]='x'; ans=180-a; acc=1;
       work='In a parallelogram, adjacent (co-interior) angles add to 180°.<br>x = 180° − '+a+'° = <b>'+ans+'°</b>'; }
-    else if (which==='trap'){ const a=rr(11,15)*5; given=a; pts=QUAD_TRAP; labels[0]=a+'°'; labels[1]='x'; ans=a; acc=1;
+    else if (which==='trap'){ const a=rr(11,15)*5; given=a; pts=quadTrap(a); meas=[a,a,180-a,180-a]; labels[0]=a+'°'; labels[1]='x'; ans=a; acc=1;
       work='An isosceles trapezium has equal base angles → x = <b>'+a+'°</b>'; }
-    else { // kite: one pair of opposite angles equal (the pair between the unequal sides)
-      const a=rr(11,29)*5; given=a; pts=QUAD_KITE; labels[1]=a+'°'; labels[3]='x'; ans=a; acc=3;
+    else { const a=rr(11,29)*5; given=a; pts=quadKite(a); const p2=(180-a)*0.80, q2=(180-a)*1.20; meas=[p2,a,q2,a]; labels[1]=a+'°'; labels[3]='x'; ans=a; acc=3;
       work='A kite has one pair of equal opposite angles → x = <b>'+a+'°</b>'; }
     qData.ans = ans;
     qData.angCheck = (which==='para_adj') ? {mode:'sum',total:given+ans,expect:180} : {mode:'eq',total:given,other:ans};
     qData.workSteps = work;
-    el.innerHTML='<div style="'+A_LBL+'">Use the shape\'s properties to find x (in degrees)</div>'+quadDiagram(pts, labels, acc);
+    el.innerHTML='<div style="'+A_LBL+'">Use the shape\'s properties to find x (in degrees)</div>'+quadDiagram(pts, labels, acc, meas);
     return;
   }
   // level 4: algebra (sum 360). Bound x so mx, x, c and d all stay in (20,170).
@@ -5859,11 +5956,11 @@ function genAngleQuad(el){
   const clo = Math.max(30, R-170), chi = Math.min(170, R-30);
   const c = (clo<=chi) ? rr(clo,chi) : Math.floor(R/2), d = R - c;
   const labels=[coefLbl(m,0), coefLbl(1,0), c+'°', d+'°'];
+  const meas=[m*x, x, c, d];
   qData.ans = x; qData.angCheck = {mode:'sum', total:(m*x)+x+c+d, expect:360};
   qData.workSteps = 'Angles in a quadrilateral add to 360°.<br>'+stripDeg(coefLbl(m,0))+' + '+stripDeg(coefLbl(1,0))+' + '+c+' + '+d+' = 360 → '+(m+1)+'x = '+(360-c-d)+' → x = <b>'+x+'</b>';
-  el.innerHTML='<div style="'+A_LBL+'">Solve for x</div>'+quadDiagram(QUAD_GEN, labels, -1);
+  el.innerHTML='<div style="'+A_LBL+'">Solve for x</div>'+quadDiagram(angQuadFromAngles(meas), labels, -1, meas);
 }
-
 /* ═══════════════════════════════════════════════
    QUESTION ENGINE
 ═══════════════════════════════════════════════ */
