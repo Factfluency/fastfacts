@@ -1,7 +1,89 @@
 <!--
-  Sandy Fast Facts — v65
-  Current skills-platform build: 10 categories, 66 skills, 203 levels. Full version
+  Sandy Fast Facts — v70
+  Current skills-platform build: 10 categories, 71 skills, 218 levels (Decimals now 11 skills).
+
+  Changes in v70 (Laura). (1) Place Value L2 now accepts BOTH the place-value fraction
+  (8/100) and any simplified/equivalent form (2/25) — the marking accepts any fraction
+  equal in value to the digit-over-place answer. (2) Convert Decimals→Fractions / Fractions
+  →Decimals LEVEL 1 now only generates decimals whose fraction is already in simplest form
+  over 10/100/1000 (num coprime to den), so the base level never requires cancelling. Bands
+  and the dashboard .bas are unchanged (targets identical). Everything else from v69 stands.
+
+  Changes in v69 (Laura). (1) DECIMALS REORDERED: Place Value, Identify, Expanded Form,
+  Convert Decimals→Fractions, Convert Fractions→Decimals, Rounding, then Add/Subtract,
+  Multiply, Divide, Squares & Cubes, Order of Operations. (2) CONVERT SPLIT into two
+  skills — decToFrac (decimal→fraction, always the num/den boxes) and fracToDec
+  (fraction→decimal, always the number box). This fixes the fraction panel that mis-
+  rendered as a single box (the old per-question convMode switch). New ids/lvKeys:
+  decToFrac/dtf, fracToDec/ftd (recall: decToFrac [12,10,8], fracToDec [14,12,10]).
+  (3) PLACE VALUE L2 now marks the fraction UNSIMPLIFIED, over its place value (8
+  hundredths = 8/100, not 2/25) — reverses the v68 simplified rule per Laura. (4)
+  EXPANDED FORM L2 options and L3 questions now render 1/10^k as real STACKED FRACTIONS
+  (new powFracHTML + .ef-frac CSS) instead of inline "1/10²" text. (5) In-game BACK
+  button now returns to the current skill's LEVEL LIST, not the category menu.
+  Dashboard FastFactsBands.bas regenerated with 15 new rows (the 5 new recall decimal
+  skills × 3 levels) for animal-band parity.
+
+  Changes in v68 (Laura's revised sign-off on the v67 decimal skills). Two decisions
+  changed from v67: (1) Decimal Place Value L2 now marks the fraction in SIMPLEST FORM
+  (8 hundredths → 2/25), so the generator stores the reduced fraction and the standard
+  simplified-fraction marking applies (the v67 unsimplified special-case was removed).
+  (2) The four decimal skills are now RECALL / Fluent-eligible (🎯), not method — added
+  to RECALL_SKILLS with per-level FLUENCY_TARGET speed targets (decPlaceValue [18,12,15],
+  decExpand [16,16,14], decIdentify [15,15,12], decFracConv [12,10,8] cpm — PROPOSED,
+  easily tuned; no student data exists yet). Removed from METHOD_BAND_CEIL. Everything
+  else from v67 stands. Dashboard .bas still needs the 12 rows (now the recall band
+  cutoffs — thirds of each target, Cheetah = round(1.5×target)). Full version
   history (v22 → v49) lives in SandyFastFacts_HandoffGuide.
+
+  Changes in v67 (four new Decimals skills — Laura sign-off). ADDITIVE. Four new skills
+  in the Decimals category, each 3 levels, all METHOD (accuracy-first, no 🎯 Fluent),
+  banded flat Lion 8 / Cheetah 12 as a PLACEHOLDER to recalibrate once students use them.
+  New ids/lvKeys (never rename): decPlaceValue/dpv, decExpand/dxf, decIdentify/did,
+  decFracConv/dfk. No existing ff_ key / id / lvKey / share-line / band changed.
+    * Decimal Place Value — L1 name the place of a highlighted digit (tap; wrong options
+      are the off-by-one-place misconception); L2 write the digit's value as a fraction
+      (the digit over its PLACE, kept unsimplified — a dedicated checkAns branch accepts
+      any power-of-ten denominator with the right value, rejects a simplified 1/2 for
+      5/10); L3 rename (0.62 = ▢ thousandths → 620).
+    * Expanded Form — L1 standard (tap: 3.46 = 3 + 0.4 + 0.06, distractors drop/shift the
+      place value); L2 exponent notation (tap: 2×1/10 + 4×1/10² + …); L3 evaluate a sum
+      back to a decimal (typed).
+    * Identify Decimals — L1 read a point on a drawn number line; L2 read a tenths strip
+      or 10×10 hundredths grid; L3 read a 4/5/20/25-part strip (factors of 100). Typed.
+    * Convert Fractions & Decimals — direction chosen PER QUESTION (getInputMode reads
+      qData.convMode): fraction→decimal typed in the number box, decimal→fraction typed
+      in the num/den boxes and marked SIMPLIFIED. L1 denominators 10/100/1000; L2 factors
+      of 100; L3 wider TERMINATING denominators only (8,16,40,80,200,250 — no recurring).
+    Input modes reused: choice / fraction / number (no new mode → no KNOWN_MODES change,
+    smoke sweep auto-covers). Keypad '.' enabled for decIdentify / decExpand / decFracConv.
+    DASHBOARD FOLLOW-UP (not blocking): FastFactsBands.bas needs 12 new rows (4 skills ×
+    3 levels, all K3 G5 L8 A11 C12) so the Excel dashboard shows animals for these — the
+    app and share-line work without it; only the dashboard's animal column is affected
+    until regenerated. Share-line format unchanged, so parsing is unaffected.
+
+  Changes in v66 (geometry diagram fixes — Laura). RENDER-ONLY. No ff_ key / id /
+  lvKey / share-line / band change; no .bas regeneration (byte-identical to v64).
+  Two classroom-reported diagram problems fixed:
+    * Angles on Parallel Lines — the marked angle you're finding was clipped off the
+      left edge of the canvas (a shallow to-scale transversal spread the two
+      intersections to the edges). Now BOTH intersections are centred and the
+      transversal half-length is capped so every marked wedge + label stays on the
+      300x240 canvas. The two marked angles are also SHADED — accent fill for the
+      unknown (x), a soft neutral fill for the given angle — so students can see
+      exactly which angle they are finding. Still drawn to scale.
+    * Congruence & Similarity L3 ('which test?') and L4 side cases ('find x') — the
+      two triangles were drawn from a generic shape unrelated to the labels and at
+      equal on-screen size, so a genuine 3x enlargement looked congruent and the
+      picture 'would not meet any similarity test'. Each triangle is now BUILT from
+      its actual measurements (SSS from three sides, SAS from two sides + included
+      angle, RHS from the right triangle, AAA from the angles), with B a true scaled
+      copy for the 'similar' answers and a genuinely NON-similar triangle for the
+      'not enough information' answers (NOTPROP / TWOS / ONEA / SSA). L3 side triples
+      now enforce the triangle inequality. Answer logic (csSimilarityVerdict /
+      csCongruenceVerdict) is UNCHANGED — only the drawing is rebuilt; test_angles.js
+      and test_congrusimilar.js stay green (incl. their off-canvas + answer===verdict
+      checks).
 
   Changes in v65 (angle-diagram realism — Laura). RENDER-ONLY. No ff_ key / id /
   lvKey / share-line / band change; no .bas regeneration (byte-identical to v64).
@@ -670,6 +752,10 @@ body {
   color: var(--text);
 }
 /* Fraction question display */
+.ef-frac { display:inline-flex; flex-direction:column; align-items:center; vertical-align:middle; margin:0 3px; }
+.ef-frac .ef-num { font-size:0.82em; line-height:1.05; }
+.ef-frac .ef-line { width:100%; min-width:1.4em; height:2px; background:currentColor; margin:1px 0; border-radius:1px; }
+.ef-frac .ef-den { font-size:0.82em; line-height:1.05; }
 .q-frac {
   display: inline-flex; flex-direction: column;
   align-items: center; line-height: 1;
@@ -847,6 +933,10 @@ body {
   box-shadow: var(--shadow);
   transition: border-color .15s, background .15s, transform .1s;
 }
+/* v69: long options (expanded form w/ stacked fractions) need a full-width,
+   auto-height single column instead of the 74px 2-up trig grid. */
+.choice-grid.wide { grid-template-columns: 1fr; max-width: 440px; }
+.choice-grid.wide .choice-btn { height: auto; min-height: 62px; font-size: 1.05rem; padding: 12px 14px; }
 .choice-btn:hover:not(:disabled) { border-color: var(--accent); }
 .choice-btn:active:not(:disabled) { transform: scale(0.98); }
 .choice-btn.ok  { border-color: var(--green); background: var(--green-bg); }
@@ -2311,12 +2401,17 @@ const CATS = {
   decimals: {
     label: '0.1 Decimals',
     skills: [
+      { id:'decPlaceValue',name:'Decimal Place Value',            inputMode:'number', lvKey:'dpv', levelModes:{1:'choice',2:'fraction',3:'number'} },
+      { id:'decIdentify',  name:'Identify Decimals',              inputMode:'number', lvKey:'did'  },
+      { id:'decExpand',    name:'Expanded Form of Decimals',      inputMode:'number', lvKey:'dxf', levelModes:{1:'choice',2:'choice',3:'number'} },
+      { id:'decToFrac',    name:'Convert Decimals to Fractions',  inputMode:'number', lvKey:'dtf', levelModes:{1:'fraction',2:'fraction',3:'fraction'} },
+      { id:'fracToDec',    name:'Convert Fractions to Decimals',  inputMode:'number', lvKey:'ftd'  },
+      { id:'decRound',     name:'Rounding Decimals',              inputMode:'number', lvKey:'dr'   },
       { id:'decAddSub',    name:'Add &amp; Subtract Decimals',   inputMode:'number', lvKey:'das'  },
       { id:'decMultiply',  name:'Multiply Decimals',              inputMode:'number', lvKey:'dmu'  },
       { id:'decDivide',    name:'Divide Decimals',                inputMode:'number', lvKey:'dd'   },
       { id:'decSquareCube',name:'Squares &amp; Cubes of Decimals',inputMode:'number', lvKey:'dsc'  },
       { id:'decOrderOps',  name:'Order of Operations (Decimals)', inputMode:'number', lvKey:'doo'  },
-      { id:'decRound',     name:'Rounding Decimals',              inputMode:'number', lvKey:'dr'   },
     ]
   },
   ratiosrates: {
@@ -2400,6 +2495,7 @@ const SKILL_YEAR = {
   // Decimals  (decAddSub is foundational — no year chip)
   decAddSub:'', decMultiply:'Yr 7', decDivide:'Yr 7', decSquareCube:'Yr 7–8',
   decOrderOps:'Yr 7', decRound:'Yr 7',
+  decPlaceValue:'Yr 7', decExpand:'Yr 7–8', decIdentify:'Yr 7', decToFrac:'Yr 7–8', fracToDec:'Yr 7–8',
   // Ratios & Rates
   ratioSimplify:'Yr 7–8', ratioEquiv:'Yr 7–8', ratioShare:'Yr 7–8',
   rateSimplify:'Yr 7–8', rateConvert:'Yr 8',
@@ -2564,6 +2660,32 @@ const LEVEL_DEFS = {
   dr: [
     { title:'Level 1 — Round to 1 d.p.',       desc:'Round a decimal to 1 decimal place. Look at the second decimal place to decide.', examples:['3.47 → 3.5', '8.23 → 8.2', '6.75 → 6.8'] },
     { title:'Level 2 — Round to 1 or 2 d.p.',  desc:'A mix of rounding to 1 or 2 decimal places. The question tells you how many.', examples:['3.467 to 2 d.p.', '8.235 to 1 d.p.', '12.744 to 2 d.p.'] },
+  ],
+
+  dpv: [
+    { title:'Level 1 — Name the Place Value', desc:'Tap the place value of the highlighted digit — tenths, hundredths, thousandths or ten-thousandths. The wrong options are the classic slip of being one place out.', examples:['9 in 5.7839 → ten-thousandths', '9 in 0.981 → tenths', '9 in 12.693 → hundredths'] },
+    { title:'Level 2 — Value as a Fraction', desc:'Write the value of the highlighted digit as a fraction — the digit over its place value. Either form is accepted: the place-value fraction (8 hundredths = 8/100) or its simplest form (2/25).', examples:['9 in 5.7839 → 9/10000', '8 in 0.28 → 8/100 or 2/25', '5 in 0.5 → 5/10 or 1/2'] },
+    { title:'Level 3 — Rename Decimals', desc:'Rename a decimal using a smaller place value: how many tenths, hundredths or thousandths is it? Multiply by 10, 100 or 1000.', examples:['0.62 = 620 thousandths', '0.4 = 40 hundredths', '0.7 = 700 thousandths'] },
+  ],
+  dxf: [
+    { title:'Level 1 — Standard Expanded Form', desc:'Tap the correct expanded form — each digit written as its own value and added. The wrong options drop the place value (e.g. 3 + 4 + 6).', examples:['3.46 = 3 + 0.4 + 0.06', '5.2 = 5 + 0.2', '0.78 = 0.7 + 0.08'] },
+    { title:'Level 2 — Exponent Notation', desc:'Tap the expanded form written with powers of ten: tenths are 1/10, hundredths 1/10², thousandths 1/10³.', examples:['0.245 = 2×1/10 + 4×1/10² + 5×1/10³'] },
+    { title:'Level 3 — Evaluate the Expanded Form', desc:'Add the expanded form back together and write the decimal it makes.', examples:['3 + 0.4 + 0.06 = 3.46', '2×1/10 + 4×1/100 = 0.24'] },
+  ],
+  did: [
+    { title:'Level 1 — Decimal on a Number Line', desc:'Read the value shown by the arrow on the number line and write it as a decimal.', examples:['point at 0.6 between 0 and 1', 'point at 2.3 between 2 and 3'] },
+    { title:'Level 2 — Decimal from a Grid', desc:'A whole is split into 10 or 100 equal parts and some are shaded. Write the shaded amount as a decimal.', examples:['37 of 100 shaded → 0.37', '4 of 10 shaded → 0.4'] },
+    { title:'Level 3 — Other Equal-Part Grids', desc:'The whole is split into 5, 4, 20 or 25 equal parts (still fitting into 100). Work out the decimal each shaded part makes.', examples:['3 of 5 shaded → 0.6', '3 of 4 shaded → 0.75', '7 of 20 shaded → 0.35'] },
+  ],
+  dtf: [
+    { title:'Level 1 — Tenths, Hundredths, Thousandths', desc:'Base level — decimals that are already in simplest form over 10, 100 or 1000 (nothing to cancel). Just write the digits over the place value.', examples:['0.7 → 7/10', '0.09 → 9/100', '0.137 → 137/1000'] },
+    { title:'Level 2 — Factors of 100', desc:'Decimals whose fraction lands over a factor of 100 (2, 4, 5, 20, 25, 50). Write over 100, then simplify.', examples:['0.75 → 3/4', '0.6 → 3/5', '0.36 → 9/25'] },
+    { title:'Level 3 — Wider Denominators', desc:'Trickier terminating decimals (eighths, sixteenths, fortieths, …), still exact. Write as a fraction in simplest form.', examples:['0.625 → 5/8', '0.075 → 3/40', '0.4375 → 7/16'] },
+  ],
+  ftd: [
+    { title:'Level 1 — Tenths, Hundredths, Thousandths', desc:'Write a fraction with a denominator of 10, 100 or 1000 as a decimal (already in simplest form).', examples:['7/10 → 0.7', '9/100 → 0.09', '137/1000 → 0.137'] },
+    { title:'Level 2 — Factors of 100', desc:'Denominators that divide into 100 (2, 4, 5, 20, 25, 50). Rewrite over 100 or divide top by bottom.', examples:['3/4 → 0.75', '3/5 → 0.6', '9/25 → 0.36'] },
+    { title:'Level 3 — Wider Denominators', desc:'Trickier terminating conversions (eighths, sixteenths, fortieths, …). Every answer still stops — no recurring decimals.', examples:['5/8 → 0.625', '3/40 → 0.075', '7/16 → 0.4375'] },
   ],
 
   ipow: [
@@ -2797,7 +2919,9 @@ const RECALL_SKILLS = [
   'trigExactDeg','trigExactRad',
   // v56: promoted to recall (Fluent-eligible) with Laura's signed-off targets
   'nameShapes','nameAnglesLines','angleRel','angleParallel','pythagoras',
-  'congruSimilar'
+  'congruSimilar',
+  // v68 (Laura): the four Decimals understanding skills as recall / Fluent-eligible
+  'decPlaceValue','decExpand','decIdentify','decToFrac','fracToDec'
 ];
 function getSkillKind(id) { return RECALL_SKILLS.includes(id) ? 'recall' : 'method'; }
 
@@ -2835,7 +2959,16 @@ const FLUENCY_TARGET = {
   angleParallel:[18, 15, 15, 5],
   pythagoras:[15, 5, 5, 5],
   // v64 (Laura sign-off): L1-L3 = Naming Angles/Lines (18); L4 = Angle Relationships L2 (15, the method level).
-  congruSimilar:[18, 18, 18, 15]
+  congruSimilar:[18, 18, 18, 15],
+  // v68 (Laura) — Decimals as recall. PROPOSED targets (correct-per-minute), tweak freely:
+  //   Place Value: L1 tap-fast (18), L2 type a fraction (12), L3 type a number (15)
+  //   Expanded: L1/L2 tap-read (16), L3 type (14) · Identify: read+type (15/15/12)
+  //   Convert: slower two-step conversion (12/10/8)
+  decPlaceValue:[18, 12, 15],
+  decExpand:[16, 16, 14],
+  decIdentify:[15, 15, 12],
+  decToFrac:[12, 10, 8],   // decimal → fraction (num/den boxes)
+  fracToDec:[14, 12, 10]   // fraction → decimal (typing a decimal is a touch quicker)
 };
 const FLUENT_ACC = 0.90;   // accuracy floor to count as fluent
 function getFluencyTarget(s, lv) {
@@ -2855,6 +2988,11 @@ const METHOD_TIP = {
   decOrderOps:'Brackets first, then × and ÷, then + and −. Line up decimal points when adding.',
   sigFigs:'Count from the first non-zero digit. Leading zeros don\'t count; zeros between/after significant digits usually do.',
   decRound:'Look at the digit just past where you\'re rounding: 5 or more rounds up, less than 5 rounds down.',
+  decPlaceValue:'After the decimal point each place is ten times smaller: tenths, hundredths, thousandths, ten-thousandths. A digit\'s value is that digit over its place — write it over the place value, unsimplified, e.g. the 8 in 0.28 is 8 hundredths = 8/100. To rename, 0.62 = 62 hundredths = 620 thousandths.',
+  decExpand:'Expanded form splits a number into the value of each digit: 3.46 = 3 + 0.4 + 0.06. Using powers of ten, 0.4 = 4 × 1/10 and 0.06 = 6 × 1/10². To go back, just add the parts.',
+  decIdentify:'Count the equal parts the whole is split into (that is the denominator) and how many are shaded, or where the point sits, then write it as a decimal — e.g. 3 out of 5 parts = 6/10 = 0.6.',
+  decToFrac:'Decimal → fraction: write it over its place value (0.35 = 35/100) then simplify (= 7/20).',
+  fracToDec:'Fraction → decimal: make the bottom 10, 100 or 1000, or divide the top by the bottom (3/4 = 0.75).',
   indexMult:'Same base: add the powers. Multiply the numbers in front separately.',
   indexDiv:'Same base: subtract the powers. Divide the numbers in front separately.',
   indexPow:'Power of a power: multiply the powers. Raise the number in front to the outer power.',
@@ -3680,6 +3818,9 @@ function getInputMode() {
   // build the coefficient, every letter, AND its power themselves. A digit-box
   // panel can't test that, so these use the free-text 'algProd' parser.
   if (skill === 'algMultiply' || skill === 'algDivide') return 'algProd';
+  // Convert Fractions & Decimals (v69): split into two skills so each has ONE fixed
+  // panel — decToFrac always the num/den boxes (levelModes: fraction), fracToDec always
+  // the number box. No per-question mode switching (which mis-rendered the fraction panel).
   if (skillMeta.levelModes && skillMeta.levelModes[level]) return skillMeta.levelModes[level];
   return skillMeta.inputMode;
 }
@@ -3921,6 +4062,9 @@ function enableInputs() {
 function buildChoiceGrid() {
   const grid = id('choiceGrid');
   if (!grid) return;
+  // v69: expanded-form options are long (multi-term, stacked fractions) — give
+  // them a full-width, auto-height column so nothing clips in the 74px trig grid.
+  grid.classList.toggle('wide', skill === 'decExpand');
   grid.innerHTML = '';
   (qData.choices || []).forEach(opt => {
     const b = document.createElement('button');
@@ -4107,8 +4251,11 @@ function stopPractice() {
 
 function abortGame() {
   clearInterval(timer);
-  skill = null; level = null; skillMeta = null;
-  goHome();
+  level = null;
+  // v69 (Laura): the in-game Back returns to THIS skill's level list, not the
+  // category menu. Keep skill/skillMeta so selectSkill rebuilds the level cards.
+  if (skillMeta) selectSkill(skillMeta);
+  else goHome();
 }
 
 /* ═══════════════════════════════════════════════
@@ -5360,6 +5507,61 @@ function csL1Verdict(fam, A, B){
   if(A[0]!==B[0]) return 'neither'; if(A[1]===B[1]) return 'congruent'; return 'similar';
 }
 
+/* v66 (Laura): faithful similar-triangle diagrams. Each triangle is built from its
+   ACTUAL measurements so the picture genuinely demonstrates the test; B is a true scaled
+   copy for the 'similar' answers, or a genuinely non-similar triangle for the 'not enough
+   information' answers. The answer logic (csSimilarityVerdict on the marked arrays) is
+   unchanged — only the drawing is rebuilt. */
+function csPtsTwoSidesIncl(e0, e1, thetaDeg){    // edge0=V0V1=e0, edge1=V1V2=e1, included angle at V1
+  const th=thetaDeg*Math.PI/180;
+  return [[e0,0],[0,0],[e1*Math.cos(th), e1*Math.sin(th)]];
+}
+function csRenderSimPair(pA, planA, pB, planB, deg){
+  const fA=pgFit(pgRot(pA,deg,false), CS_BOX_L[0],CS_BOX_L[1],CS_BOX_L[2],CS_BOX_L[3]);
+  const fB=pgFit(pgRot(pB,deg,false), CS_BOX_R[0],CS_BOX_R[1],CS_BOX_R[2],CS_BOX_R[3]);
+  return csWrap(csTriRender(fA,planA)+csTriRender(fB,planB));
+}
+function csSimPairSVG(scen, A, B, deg){
+  const nn=function(arr){ return arr.filter(function(v){return v!=null;}); };
+  let pA,pB,planA,planB;
+  if(scen==='SSS'||scen==='NOTPROP'){
+    pA=nalTriFromSides(A[0],A[1],A[2]); pB=nalTriFromSides(B[0],B[1],B[2]);
+    planA={sideLbl:[A[0],A[1],A[2]]}; planB={sideLbl:[B[0],B[1],B[2]]};
+  } else if(scen==='AAA'){
+    let a,b,c,g=0; do{ a=42+ri(30); b=42+ri(30); c=180-a-b; g++; }
+    while(g<60 && !(c>=32 && Math.abs(a-b)>8 && Math.abs(a-c)>8 && Math.abs(b-c)>8));
+    pA=nalTriFromAngles(a,b); pB=nalTriFromAngles(a,b);
+    planA={angArcs:[1,2,0]}; planB={angArcs:[1,2,0]};
+  } else if(scen==='SAS'){
+    const sa=nn(A)[0], sb=nn(A)[1], k=nn(B)[0]/sa, th=45+ri(30);
+    pA=csPtsTwoSidesIncl(sa,sb,th); pB=csPtsTwoSidesIncl(sa*k,sb*k,th);
+    planA={sideLbl:[sa,sb,null],angArcs:[0,1,0]}; planB={sideLbl:[sa*k,sb*k,null],angArcs:[0,1,0]};
+  } else if(scen==='RHS'){
+    const hyp=A[1], leg=A[0], other=Math.sqrt(Math.max(1,hyp*hyp-leg*leg)), k=B[0]/leg;
+    pA=[[leg,0],[0,0],[0,other]]; pB=[[leg*k,0],[0,0],[0,other*k]];   // right angle at V1, hyp=V1V2, leg=V0V1
+    planA={sideLbl:[leg,hyp,null],angRight:[0,1,0]}; planB={sideLbl:[leg*k,hyp*k,null],angRight:[0,1,0]};
+  } else if(scen==='TWOS'){
+    const sa=A[0], sb=A[1], k=B[0]/sa, thA=40+ri(22), thB=thA+24+ri(18);
+    pA=csPtsTwoSidesIncl(sa,sb,thA); pB=csPtsTwoSidesIncl(sa*k,sb*k,thB);   // different included angle → not similar
+    planA={sideLbl:[sa,sb,null]}; planB={sideLbl:[sa*k,sb*k,null]};
+  } else if(scen==='ONEA'){
+    const al=44+ri(30); const b1=40+ri(24); let b2,g=0;
+    do{ b2=40+ri(30); g++; }while(g<40 && (Math.abs(b2-b1)<12 || (180-al-b2)<26));
+    pA=nalTriFromAngles(al,b1); pB=nalTriFromAngles(al,b2);   // share one angle, different shape
+    planA={angArcs:[1,0,0]}; planB={angArcs:[1,0,0]};
+  } else {   // SSA — ambiguous pair: two sides (ratio k) + equal non-included angle, different shape
+    const k=2+ri(2), phi=28+ri(12); let sa,sb,gA,g=0;
+    do{ sa=10+ri(4); sb=7+ri(3); const sg=sa*Math.sin(phi*Math.PI/180)/sb; g++;
+        gA=(sg<1)?Math.asin(sg)*180/Math.PI:0; }
+    while(g<50 && !(sa>sb && gA>0 && (180-phi-(180-gA))>16));
+    const gB=180-gA, bA=180-phi-gA, bB=180-phi-gB;
+    const sinp=Math.sin(phi*Math.PI/180);
+    const dA=sb*Math.sin(bA*Math.PI/180)/sinp, dB=sb*Math.sin(bB*Math.PI/180)/sinp;
+    pA=nalTriFromSides(sa,sb,dA); pB=nalTriFromSides(sa*k,sb*k,dB*k);   // angle at V0 = phi on both
+    planA={sideLbl:[sa,sb,null],angArcs:[1,0,0]}; planB={sideLbl:[sa*k,sb*k,null],angArcs:[1,0,0]};
+  }
+  return csRenderSimPair(pA,planA,pB,planB,deg);
+}
 function genCongruSimilar(el){
   el.style.fontSize='1.05rem';
   qData.chosen=null; qData.csPlan=null; qData.csL4=null;
@@ -5443,7 +5645,8 @@ function genCongruSimilar(el){
     const scen=['SSS','AAA','SAS','RHS','SSA','ONEA','TWOS','NOTPROP'][ri(8)];
     const A=[null,null,null], B=[null,null,null], angArcs=[0,0,0], angRight=[false,false,false];
     const k=(Math.random()<0.5)?2:3; let rightV=-1, eqAngles=[], right=false;
-    const three=function(){ let s; do{ s=[5+ri(7),5+ri(7),5+ri(7)]; }while(!(s[0]!==s[1]&&s[1]!==s[2]&&s[0]!==s[2])); return s; };
+    const three=function(){ let s,g=0; do{ s=[5+ri(7),5+ri(7),5+ri(7)]; g++; }
+      while(g<60 && !(s[0]!==s[1]&&s[1]!==s[2]&&s[0]!==s[2] && s[0]+s[1]>s[2] && s[1]+s[2]>s[0] && s[0]+s[2]>s[1])); return s; };
     if(scen==='SSS'){ const s=three(); for(let i=0;i<3;i++){ A[i]=s[i]; B[i]=s[i]*k; } }
     else if(scen==='AAA'){ const va=ri(3); let vb; do{ vb=ri(3);}while(vb===va); angArcs[va]=1; angArcs[vb]=2; eqAngles=[va,vb]; }
     else if(scen==='SAS'){ const v=ri(3), e1=v, e2=(v+2)%3, a=5+ri(7), b=6+ri(7); A[e1]=a; A[e2]=b; B[e1]=a*k; B[e2]=b*k; angArcs[v]=1; eqAngles=[v]; }
@@ -5451,12 +5654,10 @@ function genCongruSimilar(el){
     else if(scen==='SSA'){ const a=5+ri(7), b=6+ri(7); A[0]=a; A[1]=b; B[0]=a*k; B[1]=b*k; const na=(Math.random()<0.5?0:2); angArcs[na]=1; eqAngles=[na]; } // non-included
     else if(scen==='ONEA'){ const v=ri(3); angArcs[v]=1; eqAngles=[v]; }
     else if(scen==='TWOS'){ const a=5+ri(7), b=6+ri(7); A[0]=a; A[1]=b; B[0]=a*k; B[1]=b*k; }   // two sides, no angle
-    else { const s=three(); for(let i=0;i<3;i++){ A[i]=s[i]; } let t; do{ t=[s[0]*k,s[1]*k,s[2]*k]; const j=ri(3); t[j]+=(Math.random()<0.5?1:-1)*(1+ri(2)); }while(csProp(s,t)); for(let i=0;i<3;i++) B[i]=t[i]; }  // NOTPROP
+    else { const s=three(); for(let i=0;i<3;i++){ A[i]=s[i]; } let t,g=0; do{ t=[s[0]*k,s[1]*k,s[2]*k]; const j=ri(3); t[j]+=(Math.random()<0.5?1:-1)*(1+ri(2)); g++; }while(g<60 && (csProp(s,t) || !(t[0]+t[1]>t[2]&&t[1]+t[2]>t[0]&&t[0]+t[2]>t[1]))); for(let i=0;i<3;i++) B[i]=t[i]; }  // NOTPROP
     const ans=csSimilarityVerdict(A,B,eqAngles,rightV);
-    const base=csBaseTri(right), deg=-28+ri(57);
-    const planA={sideLbl:A.slice(),angArcs:angArcs.slice(),angRight:angRight.slice()};
-    const planB={sideLbl:B.slice(),angArcs:angArcs.slice(),angRight:angRight.slice()};
-    const svg=csTriPairSVG(base, planA, planB, deg);
+    const deg=-28+ri(57);
+    const svg=csSimPairSVG(scen, A, B, deg);
     const order=['SSS','AAA','SAS','RHS','none'], names={SSS:'SSS',AAA:'AAA',SAS:'SAS',RHS:'RHS',none:'Not enough information'};
     qData.choiceAns=ans; qData.choices=order.map(function(c){return {code:c,html:names[c]};});
     qData.choiceText={}; order.forEach(function(c){qData.choiceText[c]=names[c];});
@@ -5473,19 +5674,21 @@ function genCongruSimilar(el){
   // labelled/target vertex is drawn at its true size (an obtuse-ish x looks right).
   const _isAng=(kind==='simang'||kind==='congang');
   const base=_isAng ? nalTriFromAngles(angA[0], angA[1]) : csBaseTri(false), deg=-22+ri(45);
-  let planA={}, planB={}, ans, work, prompt, part;
+  let planA={}, planB={}, ans, work, prompt, part, ptsA=null, ptsB=null;   // v66: ptsA/ptsB → faithful side-case drawing
   if(kind==='simside'){
-    part='side'; const k=(Math.random()<0.5)?2:3; let p=ri(3), u; do{ u=ri(3);}while(u===p);
-    const Ap=5+ri(9), Au=5+ri(9);
-    const slA=[null,null,null]; slA[p]=Ap; slA[u]=Au;
-    const slB=[null,null,null]; slB[p]=Ap*k; slB[u]='x';
-    const av=ri(3); planA={sideLbl:slA,angArcs:mark1(av)}; planB={sideLbl:slB,angArcs:mark1(av),accSide:u};
+    // v66 (Laura): draw genuine similar triangles (B = k×A) so the scale factor is visible.
+    part='side'; const k=(Math.random()<0.5)?2:3; const Ap=5+ri(9), Au=5+ri(9), th=45+ri(30);
+    planA={sideLbl:[Ap,Au,null],angArcs:[0,1,0]};
+    planB={sideLbl:[Ap*k,'x',null],angArcs:[0,1,0],accSide:1};
+    ptsA=csPtsTwoSidesIncl(Ap,Au,th); ptsB=csPtsTwoSidesIncl(Ap*k,Au*k,th);
     ans=k*Au; work='Scale factor = '+(Ap*k)+' ÷ '+Ap+' = '+k+'.<br>x = '+k+' × '+Au+' = <b>'+ans+'</b>';
     prompt='The two triangles are similar. Work out the length x.';
   } else if(kind==='congside'){
-    part='side'; let u=ri(3); const sides=[6+ri(9),6+ri(9),6+ri(9)];
-    const slA=sides.slice(); const slB=[null,null,null]; slB[u]='x';
-    planA={sideTicks:[1,2,3],sideLbl:slA}; planB={sideTicks:[1,2,3],sideLbl:slB,accSide:u};
+    part='side'; let sides,g=0; do{ sides=[6+ri(9),6+ri(9),6+ri(9)]; g++; }
+    while(g<60 && !(sides[0]+sides[1]>sides[2] && sides[1]+sides[2]>sides[0] && sides[0]+sides[2]>sides[1]));
+    const u=ri(3); const slB=[null,null,null]; slB[u]='x';
+    planA={sideTicks:[1,2,3],sideLbl:sides.slice()}; planB={sideTicks:[1,2,3],sideLbl:slB,accSide:u};
+    ptsA=nalTriFromSides(sides[0],sides[1],sides[2]); ptsB=nalTriFromSides(sides[0],sides[1],sides[2]);
     ans=sides[u]; work='The triangles are congruent, so matching sides are equal.<br>x = <b>'+ans+'</b>';
     prompt='The two triangles are congruent. Work out the length x.';
   } else if(kind==='simang' || kind==='congang'){
@@ -5495,7 +5698,7 @@ function genCongruSimilar(el){
     ans=alpha; work='Matching angles in '+(sim?'similar':'congruent')+' triangles are equal.<br>x = <b>'+alpha+'°</b>';
     prompt='The two triangles are '+(sim?'similar':'congruent')+'. Work out the angle x (in degrees).';
   }
-  const svg=csTriPairSVG(base, planA, planB, deg);
+  const svg=(ptsA&&ptsB) ? csRenderSimPair(ptsA,planA,ptsB,planB,deg) : csTriPairSVG(base, planA, planB, deg);
   qData.ans=ans; qData.workSteps=work;
   qData.csLevel=4; qData.csL4={kind:kind,part:part}; qData.csAns=ans;
   el.innerHTML='<div style="'+A_LBL+'">'+prompt+'</div>'+svg;
@@ -5753,30 +5956,43 @@ function stripDeg(l){ return l.replace(/°$/,''); }
 /* ---- Skill 4: Angles on Parallel Lines ---- */
 const ANG_PL = { corr:'Corresponding', alt:'Alternate', coint:'Co-interior', vert:'Vertically opposite' };
 function plChevron(C){ return shLine([C[0]-8,C[1]-6],[C[0],C[1]]) + shLine([C[0]-8,C[1]+6],[C[0],C[1]]); }
+/* v66 (Laura): shade the marked angle wedge so the angle being found is unmistakable —
+   accent fill for the unknown (x), a soft neutral fill for the given angle. */
+function plWedge(V, d0, d1, r, acc){
+  const a0=Math.atan2(d0[1],d0[0]); const a1=Math.atan2(d1[1],d1[0]); let dd=a1-a0;
+  while(dd>Math.PI)dd-=2*Math.PI; while(dd<-Math.PI)dd+=2*Math.PI;
+  const P0=[V[0]+d0[0]*r, V[1]+d0[1]*r], P1=[V[0]+d1[0]*r, V[1]+d1[1]*r];
+  const sweep=(dd>0)?1:0, col=acc?'var(--accent)':'var(--text)';
+  return '<path d="M '+V[0].toFixed(1)+' '+V[1].toFixed(1)+' L '+P0[0].toFixed(1)+' '+P0[1].toFixed(1)+' A '+r+' '+r+' 0 0 '+sweep+' '+P1[0].toFixed(1)+' '+P1[1].toFixed(1)+' Z" fill="'+col+'" fill-opacity="'+(acc?0.20:0.12)+'" stroke="none"/>';
+}
 function plAngle(I, hu, tu, quad, txt, acc){
   const H=hu, Hn=[-hu[0],-hu[1]], T=tu, Tn=[-tu[0],-tu[1]], L=27;
   const map = { BR:[H,T], BL:[T,Hn], TL:[Hn,Tn], TR:[Tn,H] };
   const d = map[quad];
   const P1=[I[0]+d[0][0]*L, I[1]+d[0][1]*L], P2=[I[0]+d[1][0]*L, I[1]+d[1][1]*L];
-  return angArc(I, P1, P2, txt, acc);
+  return plWedge(I, d[0], d[1], 20, acc) + angArc(I, P1, P2, txt, acc);
 }
 function plLeanFor(quad, valAcute){
   const acuteWhenPlus = (quad==='BR' || quad==='TL');   // this quadrant is acute when lean=+1
   return acuteWhenPlus ? (valAcute ? 1 : -1) : (valAcute ? -1 : 1);
 }
 function plDiagram(marks, vals, theta, lean){
-  const topY=70, botY=182, x0=42, x1=260, C=[150,126];
+  const cx=150, cy=126, x0=40, x1=260;
   // v65 (Laura): steepness + lean derived from the actual angle sizes so the marked
   // angles are drawn TO SCALE (an obtuse x looks obtuse). theta = the acute angle the
   // transversal makes; null theta/lean keeps the random look for the L1 identify screen.
+  // v66 (Laura): the two intersections are centred and the transversal half-length L is
+  // capped so BOTH intersections + their marked wedges/labels stay on the 300×240 canvas
+  // — previously a shallow angle spread them to the edges and clipped the x angle.
   if (lean == null) lean = (Math.random() < 0.5) ? 1 : -1;
-  const angDeg = (theta == null) ? (66 + ri(16)) : theta;  // acute angle from horizontal
+  const angDeg = (theta == null) ? (62 + ri(20)) : theta;  // acute angle from horizontal
   const ang = angDeg * Math.PI/180;
-  const du = [Math.cos(ang)*lean, Math.sin(ang)];
-  const Ta=[C[0]-du[0]*120, C[1]-du[1]*120], Tb=[C[0]+du[0]*120, C[1]+du[1]*120];
-  const tu=pgU(Ta,Tb), hu=[1,0];
-  const ix = function(y){ return Ta[0] + (y-Ta[1])*(Tb[0]-Ta[0])/(Tb[1]-Ta[1]); };
-  const I1=[ix(topY),topY], I2=[ix(botY),botY];
+  const u = [Math.cos(ang)*lean, Math.sin(ang)];            // transversal dir (points down)
+  const L = Math.min(52/Math.max(0.08, Math.abs(u[0])), 52/Math.max(0.08, u[1]));
+  const I1=[cx - u[0]*L, cy - u[1]*L];                      // upper line intersection → at:1
+  const I2=[cx + u[0]*L, cy + u[1]*L];                      // lower line intersection → at:2
+  const topY=I1[1], botY=I2[1], tu=pgU(I1,I2), hu=[1,0];
+  const Ta=[cx - u[0]*(L+34), cy - u[1]*(L+34)], Tb=[cx + u[0]*(L+34), cy + u[1]*(L+34)];
   let s = shLine([x0,topY],[x1,topY]) + shLine([x0,botY],[x1,botY]) + shLine(Ta,Tb);
   s += plChevron([(x0+x1)/2, topY]) + plChevron([(x0+x1)/2, botY]);
   marks.forEach(function(m,i){ const I = (m.at===1)?I1:I2;
@@ -6059,6 +6275,11 @@ function nextQ() {
   else if (skill === 'decSquareCube') { genDecSquareCube(); }
   else if (skill === 'decOrderOps')   { genDecOrderOps(); }
   else if (skill === 'decRound')      { genDecRound(); }
+  else if (skill === 'decPlaceValue') { genDecPlaceValue(el); }
+  else if (skill === 'decExpand')     { genDecExpand(el); }
+  else if (skill === 'decIdentify')   { genDecIdentify(el); }
+  else if (skill === 'decToFrac')     { genDecToFrac(el); }
+  else if (skill === 'fracToDec')     { genFracToDec(el); }
   else if (skill === 'ratioSimplify') { genRatioSimplify(); }
   else if (skill === 'ratioEquiv')    { genRatioEquiv(); }
   else if (skill === 'ratioShare')    { genRatioShare(); }
@@ -7891,6 +8112,12 @@ function checkAns() {
           ? `Simplified: ${qData.ansNum}x / ${qData.ansDen}`
           : `Simplified: ${qData.ansNum}/${qData.ansDen}`;
       }
+    } else if (skill === 'decPlaceValue') {
+      // v70 (Laura): place-value L2 — accept BOTH the place-value fraction (8/100) AND any
+      // simplified / equivalent form (2/25). Any fraction equal in value to the digit-over-
+      // place answer is correct.
+      correct = (un * qData.ansDen === qData.ansNum * ud);
+      if (!correct) feedbackStr = `Answer: ${qData.ansNum}/${qData.ansDen}`;
     } else {
       // Add/subtract, multiply, divide — answer MUST be fully simplified.
       // Student input must have no common factors (gcd == 1) AND equal the stored answer.
@@ -8833,6 +9060,195 @@ function genDecRound() {
 }
 
 /* ═══════════════════════════════════════════════
+   DECIMAL UNDERSTANDING SKILLS (v67, Laura sign-off)
+   Place Value · Expanded Form · Identify · Convert. Method skills (accuracy-first),
+   banded flat Lion 8 / Cheetah 12 (placeholder). Tap-to-answer only where the digit
+   keypad can't type the answer (naming a place, an expanded-form expression) — with
+   the wrong options set to the classic misconceptions; everything numeric is typed.
+═══════════════════════════════════════════════ */
+const DPV_PLACES = [
+  {code:'tenths',         name:'Tenths',          den:10},
+  {code:'hundredths',     name:'Hundredths',      den:100},
+  {code:'thousandths',    name:'Thousandths',     den:1000},
+  {code:'tenthousandths', name:'Ten-thousandths', den:10000},
+];
+function decSvg(inner, h){ h=h||150; return '<svg width="300" height="'+h+'" viewBox="0 0 300 '+h+'" role="img" style="display:block;margin:8px auto 0;max-width:100%">'+inner+'</svg>'; }
+function SUP(i){ return ({1:'',2:'²',3:'³',4:'⁴'})[i] || ''; }
+// v69 (Laura): render "d × 1/10^k" as a real stacked fraction so the powers-of-ten
+// expanded form reads clearly instead of as confusing inline "1/10²" text.
+function powFracHTML(d, k){
+  return d+' × <span class="ef-frac"><span class="ef-num">1</span><span class="ef-line"></span><span class="ef-den">10'+SUP(k)+'</span></span>';
+}
+function decPlaceStr(d,i){ return '0.' + (i>1 ? '0'.repeat(i-1) : '') + d; }
+function fmtDec(x){ return String(dp(x, 6)); }
+function fracHTML(n,d){ return '<span style="display:inline-block;text-align:center;font-family:Nunito,sans-serif;font-weight:900;vertical-align:middle;"><span style="display:block;border-bottom:3px solid var(--text);padding:0 10px;">'+n+'</span><span style="display:block;padding:0 10px;">'+d+'</span></span>'; }
+function decSetChoice(el, promptHtml, options, correctText){
+  const shuffled = shuffleArr(options.slice());
+  qData.choices = shuffled.map(function(t,i){ return {code:'o'+i, html:t}; });
+  qData.choiceText = {}; qData.choices.forEach(function(c){ qData.choiceText[c.code] = c.html; });
+  qData.choiceAns = 'o' + shuffled.indexOf(correctText);
+  el.innerHTML = promptHtml;
+}
+function dpvMakeNumber(maxPlaces){
+  const nd = rr(2, maxPlaces), t = ri(nd), digits = [];
+  for(let i=0;i<nd;i++){ digits.push(i===t ? rr(1,9) : ri(10)); }
+  const intStr = (Math.random()<0.5) ? String(rr(0,99)) : String(rr(0,9));
+  return {intStr:intStr, digits:digits, nd:nd, t:t};
+}
+function dpvNumberHTML(n, hi){
+  let s = '<span style="font-family:Nunito,sans-serif;font-weight:900;font-size:2.4rem;">'+n.intStr+'.';
+  for(let i=0;i<n.nd;i++){
+    s += (hi && i===n.t) ? '<span style="color:var(--accent);text-decoration:underline;">'+n.digits[i]+'</span>' : n.digits[i];
+  }
+  return s + '</span>';
+}
+function genDecPlaceValue(el){
+  el.style.fontSize = '1.05rem';
+  if(level===1){
+    const n = dpvMakeNumber(4), P = DPV_PLACES[n.t], order = DPV_PLACES.slice(0,4);
+    qData.choiceAns = P.code;
+    qData.choices = order.map(function(p){ return {code:p.code, html:p.name}; });
+    qData.choiceText = {}; order.forEach(function(p){ qData.choiceText[p.code] = p.name; });
+    qData.workSteps = METHOD_TIP['decPlaceValue'];
+    el.innerHTML = '<div style="'+A_LBL+'">What is the place value of the highlighted digit?</div>'
+      + '<div style="text-align:center;margin:16px 0;">'+dpvNumberHTML(n,true)+'</div>';
+    return;
+  }
+  if(level===2){
+    const n = dpvMakeNumber(4), P = DPV_PLACES[n.t], digit = n.digits[n.t];
+    qData.ansNum = digit; qData.ansDen = P.den;
+    qData.workSteps = 'The highlighted digit is in the '+P.name.toLowerCase()+' place, so its value is '+digit+'/'+P.den+' (written over its place value, not simplified).';
+    el.innerHTML = '<div style="'+A_LBL+'">Write the value of the highlighted digit as a fraction.</div>'
+      + '<div style="text-align:center;margin:16px 0;">'+dpvNumberHTML(n,true)+'</div>';
+    return;
+  }
+  const dv = rr(1,3); let k; do{ k = rr(1, Math.pow(10,dv)-1); } while(k % 10 === 0);
+  const p = rr(dv, 3), P = DPV_PLACES[p-1], val = k/Math.pow(10,dv);
+  qData.ans = k * Math.pow(10, p-dv);
+  qData.workSteps = fmtDec(val)+' = '+qData.ans+' '+P.name.toLowerCase()+' (× '+Math.pow(10,p)+').';
+  el.style.fontSize = '1.6rem';
+  el.innerHTML = '<div style="'+A_LBL+'">How many '+P.name.toLowerCase()+'?</div>'
+    + '<div style="text-align:center;margin:12px 0;font-weight:900;">'+fmtDec(val)+' &nbsp;=&nbsp; ▢ '+P.name.toLowerCase()+'</div>';
+}
+function genDecExpand(el){
+  el.style.fontSize = '1.05rem';
+  if(level===1){
+    const intPart = rr(1,9), nd = rr(2,3), digits = [];
+    for(let i=0;i<nd;i++) digits.push(rr(1,9));
+    const numStr = intPart+'.'+digits.join('');
+    const correct = [String(intPart)].concat(digits.map(function(d,i){ return decPlaceStr(d,i+1); })).join(' + ');
+    const dropPV  = [String(intPart)].concat(digits.map(String)).join(' + ');
+    const shifted = [String(intPart)].concat(digits.map(function(d,i){ return decPlaceStr(d,i+2); })).join(' + ');
+    const combine = intPart+' + 0.'+digits.join('');
+    decSetChoice(el, '<div style="'+A_LBL+'">Which is the expanded form of this number?</div>'
+      + '<div style="text-align:center;margin:12px 0;font-weight:900;font-size:2.2rem;">'+numStr+'</div>',
+      [correct, dropPV, shifted, combine], correct);
+    return;
+  }
+  if(level===2){
+    const nd = rr(2,3), digits = [];
+    for(let i=0;i<nd;i++) digits.push(rr(1,9));
+    const numStr = '0.'+digits.join('');
+    const correct = digits.map(function(d,i){ return powFracHTML(d,i+1); }).join(' + ');
+    const samePow = digits.map(function(d){ return powFracHTML(d,1); }).join(' + ');
+    const mulPow  = digits.map(function(d,i){ return d+' × 10'+SUP(i+1); }).join(' + ');
+    const shifted = digits.map(function(d,i){ return powFracHTML(d,i+2); }).join(' + ');
+    decSetChoice(el, '<div style="'+A_LBL+'">Which is the expanded form using powers of ten?</div>'
+      + '<div style="text-align:center;margin:12px 0;font-weight:900;font-size:2.2rem;">'+numStr+'</div>',
+      [correct, samePow, mulPow, shifted], correct);
+    return;
+  }
+  const style = (Math.random()<0.5) ? 'std' : 'exp';
+  const nd = rr(2,3), intPart = (Math.random()<0.5) ? rr(1,9) : 0, digits = [];
+  for(let i=0;i<nd;i++) digits.push(rr(1,9));
+  qData.ans = dp(intPart + digits.reduce(function(a,d,i){ return a + d/Math.pow(10,i+1); }, 0), nd);
+  const parts = [], partsTxt = [];
+  if(intPart){ parts.push(String(intPart)); partsTxt.push(String(intPart)); }
+  digits.forEach(function(d,i){
+    if(style==='std'){ const t = decPlaceStr(d,i+1); parts.push(t); partsTxt.push(t); }
+    else { parts.push(powFracHTML(d,i+1)); partsTxt.push(d+'×1/10'+SUP(i+1)); }
+  });
+  qData.workSteps = partsTxt.join(' + ')+' = '+String(qData.ans);
+  el.style.fontSize = '1.5rem';
+  el.innerHTML = '<div style="'+A_LBL+'">Write this as a decimal.</div>'
+    + '<div style="text-align:center;margin:12px 0;font-weight:900;">'+parts.join(' + ')+'</div>';
+}
+function decNumLineSVG(a, t){
+  const x0=30, x1=280, y=95; let s='<line x1="'+x0+'" y1="'+y+'" x2="'+x1+'" y2="'+y+'" stroke="var(--text)" stroke-width="2.5"/>';
+  for(let i=0;i<=10;i++){ const x=x0+(x1-x0)*i/10, big=(i===0||i===10);
+    s+='<line x1="'+x.toFixed(1)+'" y1="'+(y-(big?9:5))+'" x2="'+x.toFixed(1)+'" y2="'+(y+(big?9:5))+'" stroke="var(--text)" stroke-width="'+(big?2.5:1.5)+'"/>'; }
+  s+='<text x="'+x0+'" y="'+(y+30)+'" font-family="Nunito,sans-serif" font-weight="900" font-size="16" fill="var(--text)" text-anchor="middle">'+a+'</text>';
+  s+='<text x="'+x1+'" y="'+(y+30)+'" font-family="Nunito,sans-serif" font-weight="900" font-size="16" fill="var(--text)" text-anchor="middle">'+(a+1)+'</text>';
+  const px=x0+(x1-x0)*t/10;
+  s+='<line x1="'+px.toFixed(1)+'" y1="'+(y-2)+'" x2="'+px.toFixed(1)+'" y2="'+(y-22)+'" stroke="var(--accent)" stroke-width="2.5"/>';
+  s+='<polygon points="'+px.toFixed(1)+','+(y-1)+' '+(px-6).toFixed(1)+','+(y-16)+' '+(px+6).toFixed(1)+','+(y-16)+'" fill="var(--accent)"/>';
+  return decSvg(s, 135);
+}
+function decStripSVG(n, sh){
+  const totalW=250, X0=(300-totalW)/2, y0=45, h=48, cell=totalW/n; let out='';
+  for(let i=0;i<n;i++){ out+='<rect x="'+(X0+i*cell).toFixed(1)+'" y="'+y0+'" width="'+cell.toFixed(1)+'" height="'+h+'" fill="var(--accent)" fill-opacity="'+(i<sh?0.6:0)+'" stroke="var(--text)" stroke-width="1.5"/>'; }
+  return decSvg(out, y0+h+22);
+}
+function decGrid100SVG(sh){
+  const cell=17, X0=(300-cell*10)/2, y0=8; let out='';
+  for(let r=0;r<10;r++) for(let c=0;c<10;c++){ const idx=r*10+c;
+    out+='<rect x="'+(X0+c*cell)+'" y="'+(y0+r*cell)+'" width="'+cell+'" height="'+cell+'" fill="var(--accent)" fill-opacity="'+(idx<sh?0.6:0)+'" stroke="var(--text)" stroke-width="0.8"/>'; }
+  return decSvg(out, y0+cell*10+14);
+}
+function genDecIdentify(el){
+  el.style.fontSize = '1.05rem';
+  if(level===1){
+    const a = rr(0,5), t = rr(1,9);
+    qData.ans = dp(a + t/10, 1);
+    qData.workSteps = 'From '+a+' to '+(a+1)+' is split into ten equal steps; the arrow is '+t+' steps along = '+String(qData.ans)+'.';
+    el.innerHTML = '<div style="'+A_LBL+'">What decimal is shown by the arrow?</div>'+decNumLineSVG(a,t);
+    return;
+  }
+  if(level===2){
+    if(Math.random()<0.5){
+      const sh = rr(1,9); qData.ans = dp(sh/10,1);
+      qData.workSteps = sh+' of 10 equal parts shaded = '+sh+'/10 = '+String(qData.ans)+'.';
+      el.innerHTML = '<div style="'+A_LBL+'">What decimal is shaded? (10 equal parts)</div>'+decStripSVG(10,sh);
+    } else {
+      const sh = rr(1,99); qData.ans = dp(sh/100,2);
+      qData.workSteps = sh+' of 100 small squares shaded = '+sh+'/100 = '+String(qData.ans)+'.';
+      el.innerHTML = '<div style="'+A_LBL+'">What decimal is shaded? (100 small squares)</div>'+decGrid100SVG(sh);
+    }
+    return;
+  }
+  const n = [4,5,20,25][ri(4)], sh = rr(1,n-1);
+  qData.ans = dp(sh/n, 4);
+  qData.workSteps = sh+' of '+n+' equal parts = '+sh+'/'+n+' = '+String(qData.ans)+'.';
+  el.innerHTML = '<div style="'+A_LBL+'">What decimal is shaded? ('+n+' equal parts)</div>'+decStripSVG(n,sh);
+}
+function decFracConvPick(){
+  let den, num;
+  if(level===1){ den = [10,100,1000][ri(3)]; do{ num = rr(1,den-1); } while(gcd(num,den)!==1); }   // v70: base level — unsimplifiable
+  else if(level===2){ den = [2,4,5,20,25,50][ri(6)]; num = rr(1,den-1); }
+  else { den = [8,16,40,80,200,250][ri(6)]; do{ num = rr(1,den-1); } while(gcd(num,den)!==1); }
+  return {num:num, den:den};
+}
+// Decimal → fraction in simplest form (always the num/den boxes).
+function genDecToFrac(el){
+  el.style.fontSize = '2.0rem';
+  const p = decFracConvPick(), num = p.num, den = p.den;
+  const decVal = num/den, g = gcd(num,den), sn = num/g, sd = den/g;
+  qData.ansNum = sn; qData.ansDen = sd;
+  qData.workSteps = fmtDec(decVal)+' = '+num+'/'+den+(sn!==num?(' = '+sn+'/'+sd+' (simplest form)'):' (already simplest)')+'.';
+  el.innerHTML = '<div style="'+A_LBL+'">Write this decimal as a fraction in simplest form.</div>'
+    + '<div style="text-align:center;margin:14px 0;font-weight:900;font-size:2.4rem;">'+fmtDec(decVal)+'</div>';
+}
+// Fraction → decimal (always the number box).
+function genFracToDec(el){
+  el.style.fontSize = '2.0rem';
+  const p = decFracConvPick(), num = p.num, den = p.den, decVal = num/den;
+  qData.ans = dp(decVal, 6);
+  qData.workSteps = num+'/'+den+' = '+fmtDec(decVal)+'.';
+  el.innerHTML = '<div style="'+A_LBL+'">Write this fraction as a decimal.</div>'
+    + '<div style="text-align:center;margin:14px 0;">'+fracHTML(num,den)+'</div>';
+}
+
+/* ═══════════════════════════════════════════════
    RATIOS & RATES (v22)
 ═══════════════════════════════════════════════ */
 
@@ -9352,7 +9768,7 @@ function kbShow() {
                    'eqTwoStepFrac','eqVarDenom','eqBothSides'].includes(skillId)
                   || mode === 'index' || mode === 'sci' || mode === 'algebra' || mode === 'ineq';
   const decSkillsWithDot = ['sciTo','sciFrom','decAddSub','decMultiply','decDivide','decSquareCube','decOrderOps','decRound','sigFigs',
-                            'rateSimplify','rateConvert'];
+                            'rateSimplify','rateConvert','decIdentify','decExpand','fracToDec'];
   const showDot  = (mode === 'sci' || decSkillsWithDot.includes(skillId));
   const showNext = (mode === 'fraction' || mode === 'mixed' || mode === 'index' || mode === 'sci' || mode === 'ratio' || mode === 'algebra' || mode === 'factor');
 
