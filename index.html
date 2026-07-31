@@ -1,6 +1,37 @@
 <!--
-  Sandy Fast Facts — v70
-  Current skills-platform build: 10 categories, 71 skills, 218 levels (Decimals now 11 skills).
+  Sandy Fast Facts — v72
+  Current skills-platform build: 10 categories, 72 skills, 223 levels (Decimals now 12 skills;
+  Compare & Order Decimals now 5 levels).
+
+  Changes in v72 (Laura). Compare & Order Decimals tweaks (storage-safe; no id/key change):
+  (1) L2 ordering is now FIXED ASCENDING (smallest first) and L4 is now FIXED DESCENDING
+      (largest first) — previously each randomised direction. `cmpSetOrder(el, tiles, forceDir)`
+      takes an explicit direction; L2 passes 'asc', L4 passes 'desc'.
+  (2) NEW Level 5 "Order Positive & Negative" — arrange mode, orders a mix of POSITIVE and
+      NEGATIVE integers, fractions and decimals (guaranteed at least one of each sign; direction
+      randomised). New `cmpSignedTile` maker; L5 mode added to levelModes. METHOD_BAND_CEIL
+      compareDec extended to [12,6,10,5,4] (L5 = 4, placeholder). METHOD_TIP notes negatives.
+
+  Changes in v71 (Laura). RENDER + one new skill; all storage-safe (no existing ff_ key
+  changed; new id compareDec only).
+  (1) Convert Decimals→Fractions LEVEL 1 prompt now reads "Write this decimal as a fraction."
+      (dropped "in simplest form" — L1 fractions are already in simplest form). L2/L3 keep it.
+  (2) Add & Subtract Decimals: the stacked layout now aligns on the DECIMAL POINT (blank-align,
+      no padding zeros) instead of right-aligning the last digit — fixes 5 − 2.8 mis-lining up.
+  (3) Multiply Decimals: rendered as a VERTICAL algorithm (numbers right-aligned, × on the last
+      row, overline) instead of a horizontal "a × b".
+  (4) Divide Decimals: rendered as a VERTICAL expression (÷ on the last row, overline) — NOT
+      short division (Laura's call). Right-aligned.
+  (5) NEW skill "Compare & Order Decimals" (id compareDec, lvKey cmp), placed before Rounding
+      Decimals. METHOD skill (no Fluent badge; 🐆 Cheetah stretch). 4 levels:
+        L1 tap the correct sign (< > =) between two decimals  ['choice']
+        L2 tap-to-order 4 decimals ascending/descending       ['arrange' — NEW input mode]
+        L3 tap the correct sign comparing fractions/decimals/integers  ['choice']
+        L4 tap-to-order mixed fractions/decimals/integers      ['arrange']
+      Introduces a new 'arrange' input mode (tap tiles into place; Clear/Check). METHOD_BAND_CEIL
+      compareDec:[12,6,10,5] are PROPOSED placeholders — recalibrate with class data.
+  Dashboard .bas: compareDec rows still TODO (method skill; unknown-skill cells stay blank/safe
+  until appended). Everything else from v70 stands.
 
   Changes in v70 (Laura). (1) Place Value L2 now accepts BOTH the place-value fraction
   (8/100) and any simplified/equivalent form (2/25) — the marking accepts any fraction
@@ -942,6 +973,41 @@ body {
 .choice-btn.ok  { border-color: var(--green); background: var(--green-bg); }
 .choice-btn.bad { border-color: var(--red);   background: var(--red-bg); }
 .choice-btn:disabled { cursor: default; }
+
+/* ── TAP-TO-ARRANGE (v71) — order values by tapping them into place ── */
+.arrange-wrap { display: none; margin-bottom: 14px; }
+.arrange-wrap.visible { display: block; }
+.arrange-instr { font-size: 0.9rem; font-weight: 800; color: var(--muted); text-align: center; margin-bottom: 10px; }
+.arrange-answer {
+  display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; align-items: stretch;
+  min-height: 66px; padding: 8px; margin: 0 auto 12px; max-width: 440px;
+  border: 2px dashed var(--border); border-radius: var(--r-sm); background: var(--surface2);
+}
+.arrange-pool {
+  display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; align-items: stretch;
+  margin: 0 auto 12px; max-width: 440px;
+}
+.arrange-tile {
+  position: relative; background: var(--surface); border: 3px solid var(--border);
+  border-radius: var(--r-sm); color: var(--text); font-family: 'Nunito', sans-serif;
+  font-weight: 900; font-size: 1.3rem; min-width: 58px; min-height: 50px; padding: 8px 14px;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  box-shadow: var(--shadow); transition: border-color .15s, background .15s, transform .1s;
+}
+.arrange-tile:hover:not(:disabled) { border-color: var(--accent); }
+.arrange-tile:active:not(:disabled) { transform: scale(0.97); }
+.arrange-tile:disabled { cursor: default; }
+.arrange-tile .arrange-seq {
+  position: absolute; top: -8px; left: -8px; background: var(--accent); color: #fff;
+  font-size: 0.7rem; font-weight: 900; width: 20px; height: 20px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+}
+.arrange-answer .arrange-empty { color: var(--muted); font-weight: 800; font-size: 0.9rem; align-self: center; }
+.arrange-tile.ok  { border-color: var(--green); background: var(--green-bg); }
+.arrange-tile.bad { border-color: var(--red);   background: var(--red-bg); }
+.arrange-ctrls { display: flex; gap: 10px; justify-content: center; max-width: 440px; margin: 0 auto; }
+.arrange-ctrls button { flex: 1; padding: 12px; font-size: 1rem; }
+.arrange-check:disabled { opacity: 0.5; cursor: default; }
 /* compact stacked fraction for buttons / radian angles */
 .t-frac { display: inline-flex; flex-direction: column; align-items: center; line-height: 1; vertical-align: middle; }
 .t-frac .tn { font-size: 1.2rem; font-weight: 900; }
@@ -2156,6 +2222,17 @@ body {
     <div class="choice-grid" id="choiceGrid"></div>
   </div>
 
+  <!-- Tap-to-arrange answer: order values by tapping (v71) -->
+  <div class="arrange-wrap" id="arrangeAnsWrap">
+    <div class="arrange-instr" id="arrangeInstr"></div>
+    <div class="arrange-answer" id="arrangeAnswer"></div>
+    <div class="arrange-pool" id="arrangePool"></div>
+    <div class="arrange-ctrls">
+      <button class="btn-ghost arrange-clear" id="arrangeClearBtn" onclick="arrangeClear()">Clear</button>
+      <button class="btn-primary arrange-check" id="arrangeCheckBtn" onclick="arrangeSubmit()" disabled>Check</button>
+    </div>
+  </div>
+
   <!-- Factorising answer (v40) — student types each bracket's contents into a
        fixed ( … )( … ) scaffold; brackets are rendered, never typed. -->
   <div id="factorAnsWrap" style="display:none; flex-direction:column; align-items:center; gap:8px; margin-bottom:14px;">
@@ -2406,6 +2483,7 @@ const CATS = {
       { id:'decExpand',    name:'Expanded Form of Decimals',      inputMode:'number', lvKey:'dxf', levelModes:{1:'choice',2:'choice',3:'number'} },
       { id:'decToFrac',    name:'Convert Decimals to Fractions',  inputMode:'number', lvKey:'dtf', levelModes:{1:'fraction',2:'fraction',3:'fraction'} },
       { id:'fracToDec',    name:'Convert Fractions to Decimals',  inputMode:'number', lvKey:'ftd'  },
+      { id:'compareDec',   name:'Compare &amp; Order Decimals',   inputMode:'choice', lvKey:'cmp', levelModes:{1:'choice',2:'arrange',3:'choice',4:'arrange',5:'arrange'} },
       { id:'decRound',     name:'Rounding Decimals',              inputMode:'number', lvKey:'dr'   },
       { id:'decAddSub',    name:'Add &amp; Subtract Decimals',   inputMode:'number', lvKey:'das'  },
       { id:'decMultiply',  name:'Multiply Decimals',              inputMode:'number', lvKey:'dmu'  },
@@ -2494,7 +2572,7 @@ const SKILL_YEAR = {
   mixedToImp:'Yr 7', impToMixed:'Yr 7', fracOrderOps:'Yr 8',
   // Decimals  (decAddSub is foundational — no year chip)
   decAddSub:'', decMultiply:'Yr 7', decDivide:'Yr 7', decSquareCube:'Yr 7–8',
-  decOrderOps:'Yr 7', decRound:'Yr 7',
+  decOrderOps:'Yr 7', decRound:'Yr 7', compareDec:'Yr 7',
   decPlaceValue:'Yr 7', decExpand:'Yr 7–8', decIdentify:'Yr 7', decToFrac:'Yr 7–8', fracToDec:'Yr 7–8',
   // Ratios & Rates
   ratioSimplify:'Yr 7–8', ratioEquiv:'Yr 7–8', ratioShare:'Yr 7–8',
@@ -2656,6 +2734,13 @@ const LEVEL_DEFS = {
     { title:'Level 1 — No Brackets',    desc:'Apply BODMAS with decimals. Multiply and divide before adding and subtracting.', examples:['0.5 + 0.2 × 3', '1.2 × 2 + 0.4', '3.6 ÷ 4 + 0.1'] },
     { title:'Level 2 — With Brackets',  desc:'Use brackets with decimal calculations — work inside first.', examples:['(0.5 + 0.3) × 4', '0.6 × (1 + 0.5)', '(1.2 − 0.4) × 5'] },
     { title:'Level 3 — Mixed Challenge',desc:'Three or more operations with decimals and brackets.', examples:['0.5 + 0.2 × (3 − 1)', '(0.4 + 0.6) × 0.5 ÷ 0.2'] },
+  ],
+  cmp: [
+    { title:'Level 1 — Which Sign?', desc:'Two decimals are shown. Tap the statement with the correct sign (< , > or =) between them. Watch the classic trap: more digits does not mean bigger (0.45 is less than 0.5).', examples:['0.45 < 0.5', '0.7 > 0.68', '0.30 = 0.3'] },
+    { title:'Level 2 — Order 4 Decimals (Ascending)', desc:'Tap the four decimals into ascending order — smallest first. Line up the place values, not the number of digits (0.45 comes before 0.5).', examples:['0.4, 0.45, 0.5, 0.54', '0.09, 0.7, 0.72, 0.9'] },
+    { title:'Level 3 — Compare Mixed Numbers', desc:'Compare a mix of fractions, decimals and whole numbers with the correct sign. Convert to the same form first (usually decimals) so you are comparing like with like.', examples:['3/4 > 0.7', '1/2 = 0.5', '2 > 1.75'] },
+    { title:'Level 4 — Order Mixed Numbers (Descending)', desc:'Tap fractions, decimals and whole numbers into descending order — largest first. Convert each to a decimal in your head, then arrange.', examples:['2, 1.5, 3/4, 0.4', '1, 0.75, 1/2, 0.3'] },
+    { title:'Level 5 — Order Positive & Negative', desc:'Order a mix of positive AND negative integers, fractions and decimals. The question says ascending or descending. Remember: with negatives, the number furthest from zero is the smallest (−2 is less than −0.5).', examples:['ascending: −2, −0.5, 1/4, 1.5', 'descending: 2, 0.3, −3/4, −1.2'] },
   ],
   dr: [
     { title:'Level 1 — Round to 1 d.p.',       desc:'Round a decimal to 1 decimal place. Look at the second decimal place to decide.', examples:['3.47 → 3.5', '8.23 → 8.2', '6.75 → 6.8'] },
@@ -2988,6 +3073,7 @@ const METHOD_TIP = {
   decOrderOps:'Brackets first, then × and ÷, then + and −. Line up decimal points when adding.',
   sigFigs:'Count from the first non-zero digit. Leading zeros don\'t count; zeros between/after significant digits usually do.',
   decRound:'Look at the digit just past where you\'re rounding: 5 or more rounds up, less than 5 rounds down.',
+  compareDec:'Compare place value from the left: line the numbers up on the decimal point and check tenths first, then hundredths — more digits does NOT mean bigger (0.45 is smaller than 0.5). With fractions or whole numbers, turn everything into decimals first, then order them. With negatives, the further a number is below zero the SMALLER it is (−2 is less than −0.5), so on a number line the most negative value comes first when going smallest-to-largest.',
   decPlaceValue:'After the decimal point each place is ten times smaller: tenths, hundredths, thousandths, ten-thousandths. A digit\'s value is that digit over its place — write it over the place value, unsimplified, e.g. the 8 in 0.28 is 8 hundredths = 8/100. To rename, 0.62 = 62 hundredths = 620 thousandths.',
   decExpand:'Expanded form splits a number into the value of each digit: 3.46 = 3 + 0.4 + 0.06. Using powers of ten, 0.4 = 4 × 1/10 and 0.06 = 6 × 1/10². To go back, just add the parts.',
   decIdentify:'Count the equal parts the whole is split into (that is the denominator) and how many are shaded, or where the point sits, then write it as a decimal — e.g. 3 out of 5 parts = 6/10 = 0.6.',
@@ -3106,6 +3192,10 @@ const METHOD_BAND_CEIL = {
   fracOrderOps:5, orderOps:5, intOrderOps:5, decOrderOps:5, ratioShare:5,
   interiorAngles:5, angleQuad:5,   // (nameShapes/angleRel/angleParallel/pythagoras are now recall — see FLUENCY_TARGET)
   eulerRule:8,   // v59 placeholder — Lion 8 / Cheetah 12 (K3 G5 L8 A11 C12), PENDING Laura's Euler calibration
+  // v71/v72 (Laura) — Compare & Order Decimals, METHOD skill. PROPOSED placeholders (recalibrate
+  // with class data): L1 quick sign-tap (12), L2 order 4 decimals ascending (6), L3 mixed compare
+  // (10), L4 order mixed descending (5), L5 order +/− mix (4, hardest). Cheetah = round(1.5×Lion).
+  compareDec:[12, 6, 10, 5, 4],
   // expand single brackets & factorise HCF — Lion 7, Cheetah 10 (overridden below)
   algExpand:7, algFactorHCF:7,
   // heavy multi-step expand / factorise — Lion 4, Cheetah 6
@@ -3894,6 +3984,7 @@ function resetAnswerInputs() {
   id('choiceAnsWrap').style.display = 'none';
   id('choiceAnsWrap').classList.remove('visible');
   { const sg = id('s-game'); if (sg) sg.classList.remove('choice-active'); }  // v57: desktop diagram-shrink is choice-only
+  { const aw = id('arrangeAnsWrap'); if (aw) { aw.style.display = 'none'; aw.classList.remove('visible'); } }  // v71
   id('factorAnsWrap').style.display = 'none';
   id('fracAlgLabel').classList.add('hide');
   id('stdAnsWrap').dataset.wholeFromFrac = '';
@@ -3947,6 +4038,12 @@ function resetAnswerInputs() {
     id('choiceAnsWrap').classList.add('visible');
     { const sg = id('s-game'); if (sg) sg.classList.add('choice-active'); }  // v57: enables desktop diagram cap
     id('choiceGrid').innerHTML = '';
+  } else if (mode === 'arrange') {
+    const aw = id('arrangeAnsWrap');
+    aw.style.display = 'block';
+    aw.classList.add('visible');
+    id('arrangeAnswer').innerHTML = '';
+    id('arrangePool').innerHTML = '';
   } else if (mode === 'factor') {
     id('factorAnsWrap').style.display = 'flex';
   } else {
@@ -4030,6 +4127,8 @@ function enableInputs() {
     inp.focus();
   } else if (mode === 'choice') {
     buildChoiceGrid();
+  } else if (mode === 'arrange') {
+    buildArrangeGrid();
   } else if (mode === 'factor') {
     const b0 = id('factorBox0'), b1 = id('factorBox1');
     // Scaffold layout: two brackets ( … )( … ) or HCF box outside one bracket … ( … )
@@ -4064,7 +4163,7 @@ function buildChoiceGrid() {
   if (!grid) return;
   // v69: expanded-form options are long (multi-term, stacked fractions) — give
   // them a full-width, auto-height column so nothing clips in the 74px trig grid.
-  grid.classList.toggle('wide', skill === 'decExpand');
+  grid.classList.toggle('wide', skill === 'decExpand' || skill === 'compareDec');
   grid.innerHTML = '';
   (qData.choices || []).forEach(opt => {
     const b = document.createElement('button');
@@ -4082,6 +4181,66 @@ function chooseTrig(code) {
   if (qData.chosen != null) return;          // already answered this question
   qData.chosen = code;
   document.querySelectorAll('#choiceGrid .choice-btn').forEach(b => { b.disabled = true; });
+  checkAns();
+}
+
+/* ── Tap-to-arrange (v71) — order values by tapping them into place ── */
+function buildArrangeGrid() {
+  qData.arrangeChosen = [];
+  id('arrangeInstr').textContent = qData.arrangeInstr || 'Tap the values into order.';
+  const clb = id('arrangeClearBtn'); if (clb) clb.disabled = false;
+  arrangeRender();
+}
+function arrangeRender() {
+  const tiles = qData.arrangeTiles || [];
+  const chosen = qData.arrangeChosen || [];
+  const ansRow = id('arrangeAnswer'), pool = id('arrangePool');
+  ansRow.innerHTML = '';
+  if (!chosen.length) {
+    ansRow.innerHTML = '<span class="arrange-empty">Tap values below to place them here…</span>';
+  } else {
+    chosen.forEach(function(code, i) {
+      const t = tiles.find(function(x){ return x.code === code; });
+      if (!t) return;
+      const b = document.createElement('button');
+      b.className = 'arrange-tile'; b.dataset.code = code;
+      b.innerHTML = '<span class="arrange-seq">' + (i + 1) + '</span>' + t.html;
+      b.onclick = function(){ arrangeTapAnswer(code); };
+      ansRow.appendChild(b);
+    });
+  }
+  pool.innerHTML = '';
+  tiles.forEach(function(t) {
+    if (chosen.indexOf(t.code) >= 0) return;
+    const b = document.createElement('button');
+    b.className = 'arrange-tile'; b.dataset.code = t.code;
+    b.innerHTML = t.html;
+    b.onclick = function(){ arrangeTapPool(t.code); };
+    pool.appendChild(b);
+  });
+  const cb = id('arrangeCheckBtn');
+  if (cb) cb.disabled = (tiles.length === 0 || chosen.length !== tiles.length);
+}
+function arrangeTapPool(code) {
+  if (gameOver) return;
+  if (!qData.arrangeChosen || qData.arrangeChosen.indexOf(code) >= 0) return;
+  qData.arrangeChosen.push(code);
+  arrangeRender();
+}
+function arrangeTapAnswer(code) {
+  if (gameOver) return;
+  const i = (qData.arrangeChosen || []).indexOf(code);
+  if (i >= 0) qData.arrangeChosen.splice(i, 1);
+  arrangeRender();
+}
+function arrangeClear() {
+  if (gameOver) return;
+  qData.arrangeChosen = [];
+  arrangeRender();
+}
+function arrangeSubmit() {
+  if (gameOver) return;
+  if ((qData.arrangeChosen || []).length !== (qData.arrangeTiles || []).length) return;
   checkAns();
 }
 
@@ -6280,6 +6439,7 @@ function nextQ() {
   else if (skill === 'decIdentify')   { genDecIdentify(el); }
   else if (skill === 'decToFrac')     { genDecToFrac(el); }
   else if (skill === 'fracToDec')     { genFracToDec(el); }
+  else if (skill === 'compareDec')    { genCompareDec(el); }
   else if (skill === 'ratioSimplify') { genRatioSimplify(); }
   else if (skill === 'ratioEquiv')    { genRatioEquiv(); }
   else if (skill === 'ratioShare')    { genRatioShare(); }
@@ -6367,6 +6527,10 @@ function clearInputState() {
     inp.value = ''; inp.classList.remove('ok','bad','kb-focused');
   } else if (mode === 'choice') {
     id('choiceGrid').innerHTML = '';
+  } else if (mode === 'arrange') {
+    id('arrangeAnswer').innerHTML = '';
+    id('arrangePool').innerHTML = '';
+    const cb = id('arrangeCheckBtn'); if (cb) cb.disabled = true;
   } else if (mode === 'factor') {
     ['factorBox0','factorBox1'].forEach(i => {
       const el = id(i); if (el) { el.value = ''; el.classList.remove('ok','bad','kb-focused'); }
@@ -8016,6 +8180,11 @@ function readUserAnswer(mode) {
       if (qData.choiceText) return qData.choiceText[qData.chosen] || '—';
       return TRIG_VALS[qData.chosen] ? TRIG_VALS[qData.chosen].t : '—';
     }
+    if (mode === 'arrange') {
+      const chosen = qData.arrangeChosen || [];
+      if (!chosen.length) return '—';
+      return chosen.map(function(code){ return (qData.arrangeText && qData.arrangeText[code]) || '?'; }).join(' , ');
+    }
     if (mode === 'factor') {
       const x0 = g('factorBox0') || '?', x1 = g('factorBox1') || '?';
       return (qData.factorLayout === 'monoBracket') ? `${x0}(${x1})` : `(${x0})(${x1})`;
@@ -8322,6 +8491,27 @@ function checkAns() {
       if (b.dataset.code === qData.chosen) b.classList.add(correct ? 'ok' : 'bad');
       else if (!correct && b.dataset.code === qData.choiceAns) b.classList.add('ok');
     });
+  }
+  else if (mode === 'arrange') {
+    // v71: the tapped sequence in qData.arrangeChosen must match the required order.
+    const tiles = qData.arrangeTiles || [];
+    const chosen = qData.arrangeChosen || [];
+    if (chosen.length !== tiles.length) { attempts--; return; }
+    const dir = qData.arrangeDir;
+    const valOf = function(code){ const t = tiles.find(function(x){ return x.code === code; }); return t ? t.val : NaN; };
+    const chosenVals = chosen.map(valOf);
+    const expected = tiles.map(function(t){ return t.val; }).slice().sort(function(a,b){ return dir === 'asc' ? a - b : b - a; });
+    correct = chosenVals.every(function(v, i){ return Math.abs(v - expected[i]) < 1e-9; });
+    if (!correct) feedbackStr = 'Answer: ' + qData.arrangeAns.map(function(code){ return qData.arrangeText[code]; }).join(' , ');
+    document.querySelectorAll('#arrangeAnswer .arrange-tile').forEach(function(b) {
+      const pos = chosen.indexOf(b.dataset.code);
+      const good = pos >= 0 && Math.abs(valOf(b.dataset.code) - expected[pos]) < 1e-9;
+      b.classList.add(good ? 'ok' : 'bad');
+      b.disabled = true;
+    });
+    document.querySelectorAll('#arrangePool .arrange-tile').forEach(function(b){ b.disabled = true; });
+    const cb = id('arrangeCheckBtn'); if (cb) cb.disabled = true;
+    const clb = id('arrangeClearBtn'); if (clb) clb.disabled = true;
   }
   else if (mode === 'factor') {
     const b0 = id('factorBox0'), b1 = id('factorBox1');
@@ -8932,6 +9122,46 @@ function genFracOrderOps() {
 ════════════════════════════════════════════ */
 function dp(n, places) { return Math.round(n * Math.pow(10, places)) / Math.pow(10, places); }
 
+/* ── v71 (Laura): vertical column layouts for decimal +/−/×/÷ ──
+   A monospace stack so digits line up. decColPointHTML aligns on the DECIMAL POINT
+   (add/subtract — blank-aligned, no padding zeros, per Laura). decColRightHTML
+   right-aligns the whole numbers (the standard set-up for × and ÷ written
+   vertically). The operator sits to the left of the last row; the bottom border
+   is the answer line. */
+function decSplitParts(s){ s = String(s); const i = s.indexOf('.'); return i < 0 ? {ip:s, fp:''} : {ip:s.slice(0,i), fp:s.slice(i+1)}; }
+function decColWrap(inner){
+  return '<div style="text-align:center;">'
+    + '<div style="font-family:ui-monospace,\'SF Mono\',\'Roboto Mono\',Menlo,Consolas,monospace;'
+    + 'font-weight:800;font-size:2.4rem;line-height:1.4;display:inline-block;text-align:left;'
+    + 'border-bottom:3px solid var(--text);padding:2px 10px 8px 10px;white-space:pre;min-width:120px;">'
+    + inner + '</div></div>';
+}
+function decColPointHTML(rows, op){
+  const NB = ' ';
+  const parts = rows.map(decSplitParts);
+  const maxIp = Math.max.apply(null, parts.map(p=>p.ip.length));
+  const maxFp = Math.max.apply(null, parts.map(p=>p.fp.length));
+  const lines = parts.map(function(p, idx){
+    const ipPad = NB.repeat(maxIp - p.ip.length) + p.ip;
+    let right = '';
+    if (maxFp > 0) right = (p.fp.length ? '.' + p.fp : NB) + NB.repeat(maxFp - p.fp.length);
+    const opCell = (idx === rows.length - 1) ? op : NB;
+    return '<div>' + opCell + NB + ipPad + right + '</div>';
+  });
+  return decColWrap(lines.join(''));
+}
+function decColRightHTML(rows, op){
+  const NB = ' ';
+  const strs = rows.map(String);
+  const maxLen = Math.max.apply(null, strs.map(s=>s.length));
+  const lines = strs.map(function(s, idx){
+    const padded = NB.repeat(maxLen - s.length) + s;
+    const opCell = (idx === rows.length - 1) ? op : NB;
+    return '<div>' + opCell + NB + padded + '</div>';
+  });
+  return decColWrap(lines.join(''));
+}
+
 function genDecAddSub() {
   let a, b, ans;
   const sub = Math.random() < 0.5;
@@ -8945,20 +9175,12 @@ function genDecAddSub() {
   if (sub && b > a) [a, b] = [b, a];
   ans = dp(sub ? a - b : a + b, 3);
   qData.ans = ans;
-  // Right-aligned column layout so decimal points line up
+  // v71: stacked column aligned on the decimal point (blank-align, no padding zeros).
   const op = sub ? '−' : '+';
-  id('qBox').innerHTML = `
-    <div style="font-family:'Nunito',sans-serif;font-weight:900;font-size:2.4rem;
-                text-align:right;letter-spacing:0;line-height:1.4;
-                border-bottom:3px solid var(--text);padding-bottom:6px;
-                min-width:160px;display:inline-block;">
-      <div>${a}</div>
-      <div>${op}&nbsp;${b}</div>
-    </div>`;
+  id('qBox').innerHTML = decColPointHTML([String(a), String(b)], op);
 }
 
 function genDecMultiply() {
-  const el = id('qText');
   let a, b, ans;
   if (level === 1) {
     a = dp(rr(10, 99) / 10, 1); b = rr(2, 9);
@@ -8971,11 +9193,11 @@ function genDecMultiply() {
     ans = dp(a * b, 3);
   }
   qData.ans = ans;
-  el.textContent = `${a} × ${b}`;
+  // v71 (Laura): vertical multiplication algorithm — numbers right-aligned, × on the last row.
+  id('qBox').innerHTML = decColRightHTML([String(a), String(b)], '×');
 }
 
 function genDecDivide() {
-  const el = id('qText');
   let a, b, ans;
   if (level === 1) {
     // dividend / whole = nice decimal
@@ -8990,7 +9212,8 @@ function genDecDivide() {
     a = dp(ans * b, 2);
   }
   qData.ans = ans;
-  el.textContent = `${a} ÷ ${b}`;
+  // v71 (Laura): written as a vertical expression (÷ on the last row), NOT short division.
+  id('qBox').innerHTML = decColRightHTML([String(a), String(b)], '÷');
 }
 
 function genDecSquareCube() {
@@ -9235,7 +9458,10 @@ function genDecToFrac(el){
   const decVal = num/den, g = gcd(num,den), sn = num/g, sd = den/g;
   qData.ansNum = sn; qData.ansDen = sd;
   qData.workSteps = fmtDec(decVal)+' = '+num+'/'+den+(sn!==num?(' = '+sn+'/'+sd+' (simplest form)'):' (already simplest)')+'.';
-  el.innerHTML = '<div style="'+A_LBL+'">Write this decimal as a fraction in simplest form.</div>'
+  // v71 (Laura): L1 is a base level whose fraction is already in simplest form (nothing to
+  // cancel), so the prompt just says "as a fraction". L2/L3 still require simplest form.
+  const dtfPrompt = (level === 1) ? 'Write this decimal as a fraction.' : 'Write this decimal as a fraction in simplest form.';
+  el.innerHTML = '<div style="'+A_LBL+'">'+dtfPrompt+'</div>'
     + '<div style="text-align:center;margin:14px 0;font-weight:900;font-size:2.4rem;">'+fmtDec(decVal)+'</div>';
 }
 // Fraction → decimal (always the number box).
@@ -9246,6 +9472,121 @@ function genFracToDec(el){
   qData.workSteps = num+'/'+den+' = '+fmtDec(decVal)+'.';
   el.innerHTML = '<div style="'+A_LBL+'">Write this fraction as a decimal.</div>'
     + '<div style="text-align:center;margin:14px 0;">'+fracHTML(num,den)+'</div>';
+}
+
+/* ═══════════════════════════════════════════════
+   COMPARE & ORDER DECIMALS (v71, Laura sign-off) — METHOD skill.
+   L1/L3 = tap the correct inequality ('choice' mode). L2/L4 = drag values into
+   ascending/descending order ('arrange' mode). L3/L4 mix fractions, decimals and
+   whole numbers. Placed before Rounding Decimals.
+═══════════════════════════════════════════════ */
+// A comparable "value tile": {kind, val (number), html (rendered), text (plain)}.
+function cmpDecTile(){
+  const kind = 'dec';
+  // 1 or 2 decimal places in [0.05, 3.95]; varied lengths surface the "more digits
+  // = bigger" misconception (0.45 vs 0.5).
+  const places = (Math.random() < 0.5) ? 1 : 2;
+  const v = (places === 1) ? dp(rr(1, 39) / 10, 1) : dp(rr(5, 395) / 100, 2);
+  const s = String(v);
+  return { kind:kind, val:v, html:'<b>'+s+'</b>', text:s };
+}
+function cmpFracTile(){
+  const POOL = [[1,2],[1,4],[3,4],[1,5],[2,5],[3,5],[4,5],[1,3],[2,3],[1,10],[3,10],[7,10],[9,10],[5,4],[3,2],[7,4],[1,8],[3,8],[5,8],[7,8]];
+  const p = POOL[ri(POOL.length)];
+  return { kind:'frac', val:p[0]/p[1], html:fracHTML(p[0], p[1]), text:p[0]+'/'+p[1] };
+}
+function cmpIntTile(){
+  const n = rr(0, 3);
+  return { kind:'int', val:n, html:'<b>'+n+'</b>', text:String(n) };
+}
+// v72: a signed tile — a decimal / fraction / integer that may be negative. Used by L5.
+function cmpSignedTile(){
+  const r = Math.random();
+  const base = (r < 0.34) ? cmpDecTile() : (r < 0.67 ? cmpFracTile() : cmpIntTile());
+  if(base.val !== 0 && Math.random() < 0.5){
+    if(base.kind === 'frac') return { kind:'frac', val:-base.val, html:'<b>−</b>'+base.html, text:'-'+base.text };
+    return { kind:base.kind, val:-base.val, html:'<b>−'+base.text+'</b>', text:'-'+base.text };
+  }
+  return base;
+}
+// Draw n distinct-value tiles from the given kind-makers (values must differ).
+function cmpDrawTiles(makers, n){
+  const tiles = [], safety = 500; let tries = 0;
+  while(tiles.length < n && tries < safety){
+    tries++;
+    const t = makers[tiles.length % makers.length]();
+    if(tiles.every(function(x){ return Math.abs(x.val - t.val) > 1e-9; })) tiles.push(t);
+  }
+  return tiles;
+}
+// Build the three inequality options (choice mode) for two value tiles A and B.
+function cmpSetInequality(el, A, B){
+  const va = A.val, vb = B.val;
+  const opts = [
+    { code:'lt', html: A.html + ' &nbsp;&lt;&nbsp; ' + B.html, text: A.text + ' < ' + B.text },
+    { code:'gt', html: A.html + ' &nbsp;&gt;&nbsp; ' + B.html, text: A.text + ' > ' + B.text },
+    { code:'eq', html: A.html + ' &nbsp;=&nbsp; ' + B.html,   text: A.text + ' = ' + B.text },
+  ];
+  const shuffled = shuffleArr(opts.slice());
+  qData.choices = shuffled.map(function(o){ return {code:o.code, html:o.html}; });
+  qData.choiceText = {}; opts.forEach(function(o){ qData.choiceText[o.code] = o.text; });
+  qData.choiceAns = (Math.abs(va - vb) < 1e-9) ? 'eq' : (va < vb ? 'lt' : 'gt');
+  qData.chosen = null;
+  qData.workSteps = 'Compare the values: ' + qData.choiceText[qData.choiceAns] + '.';
+  el.innerHTML = '<div style="'+A_LBL+'">Which sign makes this true?</div>'
+    + '<div style="text-align:center;margin:16px 0;font-weight:900;font-size:2.2rem;display:flex;align-items:center;justify-content:center;gap:18px;">'
+    + '<span>'+A.html+'</span><span style="color:var(--accent);">?</span><span>'+B.html+'</span></div>';
+}
+// Set up an ordering question (arrange mode) from a set of value tiles.
+// forceDir ('asc'|'desc') pins the direction; omit it to randomise.
+function cmpSetOrder(el, tiles, forceDir){
+  const dir = forceDir || ((Math.random() < 0.5) ? 'asc' : 'desc');
+  const ordered = tiles.slice().sort(function(a,b){ return dir === 'asc' ? a.val - b.val : b.val - a.val; });
+  // Assign stable codes, then present the pool in a shuffled order (never already sorted).
+  let pool;
+  do { pool = shuffleArr(tiles.slice()); }
+  while(tiles.length > 1 && pool.every(function(t,i){ return t === ordered[i]; }));
+  qData.arrangeTiles = pool.map(function(t,i){ return {code:'t'+i, html:t.html, text:t.text, val:t.val}; });
+  qData.arrangeDir = dir;
+  qData.arrangeChosen = [];
+  // Correct sequence of codes, in the requested direction.
+  const codeByTile = new Map(); qData.arrangeTiles.forEach(function(c){ codeByTile.set(c.val, c.code); });
+  qData.arrangeAns = ordered.map(function(t){ return codeByTile.get(t.val); });
+  qData.arrangeText = {}; qData.arrangeTiles.forEach(function(c){ qData.arrangeText[c.code] = c.text; });
+  const dirWord = dir === 'asc' ? 'ascending order (smallest first)' : 'descending order (largest first)';
+  qData.arrangeInstr = 'Tap the values into ' + dirWord + '.';
+  qData.workSteps = 'In order: ' + qData.arrangeAns.map(function(code){ return qData.arrangeText[code]; }).join(' , ') + '.';
+  el.innerHTML = '<div style="'+A_LBL+'">Put these in ' + dirWord + '.</div>';
+}
+function genCompareDec(el){
+  el.style.fontSize = '1.05rem';
+  if(level === 1){
+    const t = cmpDrawTiles([cmpDecTile], 2);
+    // ~20% of the time make an equal-value pair (same value, different digit lengths).
+    if(Math.random() < 0.2){ const v = dp(rr(1,9)/10, 1); t[0] = {kind:'dec',val:v,html:'<b>'+v+'</b>',text:String(v)}; t[1] = {kind:'dec',val:v,html:'<b>'+v.toFixed(2)+'</b>',text:v.toFixed(2)}; }
+    cmpSetInequality(el, t[0], t[1]);
+  } else if(level === 2){
+    cmpSetOrder(el, cmpDrawTiles([cmpDecTile], 4), 'asc');   // v72 (Laura): L2 fixed ASCENDING
+  } else if(level === 3){
+    const makers = shuffleArr([cmpFracTile, cmpDecTile, cmpIntTile, cmpFracTile]);
+    const t = cmpDrawTiles(makers, 2);
+    // ~20% equal-value (e.g. 3/4 vs 0.75) to make '=' a real answer.
+    if(Math.random() < 0.2){ const p = [[1,2,0.5],[1,4,0.25],[3,4,0.75],[1,5,0.2],[2,5,0.4],[1,10,0.1],[3,10,0.3]][ri(7)];
+      t[0] = {kind:'frac',val:p[2],html:fracHTML(p[0],p[1]),text:p[0]+'/'+p[1]};
+      t[1] = {kind:'dec',val:p[2],html:'<b>'+p[2]+'</b>',text:String(p[2])}; }
+    cmpSetInequality(el, t[0], t[1]);
+  } else if(level === 4){
+    // L4 — order a mix of fraction / decimal / integer (force variety of kinds).
+    const makers = shuffleArr([cmpIntTile, cmpFracTile, cmpDecTile, cmpFracTile]);
+    cmpSetOrder(el, cmpDrawTiles(makers, 4), 'desc');   // v72 (Laura): L4 fixed DESCENDING
+  } else {
+    // L5 (v72, Laura) — order a mix of POSITIVE and NEGATIVE integers, fractions, decimals.
+    // Direction randomised; guarantee at least one negative and one positive value.
+    let tiles, tries = 0;
+    do { tiles = cmpDrawTiles([cmpSignedTile], 4); tries++; }
+    while(tries < 60 && !(tiles.some(function(t){return t.val < 0;}) && tiles.some(function(t){return t.val > 0;})));
+    cmpSetOrder(el, tiles);
+  }
 }
 
 /* ═══════════════════════════════════════════════
@@ -9739,14 +10080,15 @@ function getKbInputOrder() {
   }
   if (mode === 'algType' || mode === 'algProd' || mode === 'algPoly' || mode === 'algFactored') return ['algTypeInput'];
   if (mode === 'choice') return [];
+  if (mode === 'arrange') return [];
   if (mode === 'factor') return ['factorBox0','factorBox1'];
   return ['ansInput'];
 }
 
 /* ── Show/configure keypad based on current skill ── */
 function kbShow() {
-  // Multiple-choice answers are tapped directly — no keypad.
-  if (getInputMode() === 'choice') { kbHide(); return; }
+  // Multiple-choice and tap-to-arrange answers are tapped directly — no keypad.
+  if (getInputMode() === 'choice' || getInputMode() === 'arrange') { kbHide(); return; }
   if (!IS_MOBILE()) return;
   const pad = document.getElementById('mobileKeypad');
   if (!pad) return;
