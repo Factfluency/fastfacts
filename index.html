@@ -1,4 +1,4 @@
-<!-- Sandy Fast Facts — v74 (internal v74.5: question-specific miss reviews; Angles-in-Polygons L4 mixes a/2a with plain-number angles; deeper, clearly-concave polygons) -->
+<!-- Sandy Fast Facts — v74 (internal v74.5: miss reviews now work THIS question's numbers step-by-step (fractions, decimals, integers, indices, ratios, algebra, order-of-ops, etc.) instead of a generic rule; Angles-in-Polygons L4 mixes a/2a with plain-number angles; deeper, clearly-concave polygons) -->
 <!-- Viewport (v48): dropped `maximum-scale=1.0, user-scalable=no`. iOS ignored it (so pinch worked there anyway) but Android obeyed it, blocking accessibility pinch-zoom. Accidental double-tap-to-zoom is killed per-control via `touch-action: manipulation` instead, which leaves deliberate pinch-zoom intact on every platform. -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -6525,16 +6525,32 @@ function nextQ() {
   else if (skill === 'intAddSub') {
     const mx = [10,20,50][level-1];
     const a = rr(-mx,mx), b = rr(-mx,mx);
-    if (Math.random() < 0.5) { qData.ans = a+b; el.textContent = `${f(a)} + ${f(b)}`; }
-    else { qData.ans = a-b; el.textContent = `${f(a)} − ${f(b)}`; }
+    if (Math.random() < 0.5) {
+      qData.ans = a+b; el.textContent = `${f(a)} + ${f(b)}`;
+      qData.workSteps = (b<0)
+        ? `Adding a negative is the same as subtracting: ${f(a)} + (${b}) = ${a} − ${Math.abs(b)} = <b>${a+b}</b>.`
+        : `${a} + ${b} = <b>${a+b}</b>.`;
+    } else {
+      qData.ans = a-b; el.textContent = `${f(a)} − ${f(b)}`;
+      qData.workSteps = (b<0)
+        ? `Subtracting a negative is the same as adding: ${f(a)} − (${b}) = ${a} + ${Math.abs(b)} = <b>${a-b}</b>.`
+        : `${a} − ${b} = <b>${a-b}</b>.`;
+    }
   }
   else if (skill === 'intMultDiv') {
     const mx = [6,10,15][level-1];
     let a = nz(rr(-mx,mx)), b = nz(rr(-mx,mx));
     // nz() ensures neither is zero; extra guard for b in division
     if (b === 0) b = 1;
-    if (Math.random() < 0.5) { qData.ans = a*b; el.textContent = `${f(a)} × ${f(b)}`; }
-    else { qData.ans = a; el.textContent = `${f(a*b)} ÷ ${f(b)}`; }
+    if (Math.random() < 0.5) {
+      qData.ans = a*b; el.textContent = `${f(a)} × ${f(b)}`;
+      const same = (a<0)===(b<0);
+      qData.workSteps = `${Math.abs(a)} × ${Math.abs(b)} = ${Math.abs(a*b)}. ${same?'Same signs give a positive':'Different signs give a negative'}, so the answer is <b>${a*b}</b>.`;
+    } else {
+      qData.ans = a; el.textContent = `${f(a*b)} ÷ ${f(b)}`;
+      const same = ((a*b)<0)===(b<0);
+      qData.workSteps = `${Math.abs(a*b)} ÷ ${Math.abs(b)} = ${Math.abs(a)}. ${same?'Same signs give a positive':'Different signs give a negative'}, so the answer is <b>${a}</b>.`;
+    }
   }
   else if (skill === 'squares') {
     const mx = [10,15,20][level-1];
@@ -6736,39 +6752,40 @@ function asNums(sub) {
 /* ── ORDER OF OPS ── */
 function genOO(el) {
   // All answers guaranteed positive — regenerate if negative
-  let a,b,c,d, ans, txt;
+  let a,b,c,d, ans, txt, work;
   let safety = 0;
   do {
     a=rr(1,10); b=rr(1,10); c=rr(1,10); d=rr(1,5);
     if (level===1) {
-      if (Math.random()<0.5) { ans=a+b*c; txt=`${a} + ${b} × ${c}`; }
-      else { ans=a*b+c; txt=`${a} × ${b} + ${c}`; }
+      if (Math.random()<0.5) { ans=a+b*c; txt=`${a} + ${b} × ${c}`; work=`Do × first: ${b} × ${c} = ${b*c}, then ${a} + ${b*c} = <b>${ans}</b>.`; }
+      else { ans=a*b+c; txt=`${a} × ${b} + ${c}`; work=`Do × first: ${a} × ${b} = ${a*b}, then ${a*b} + ${c} = <b>${ans}</b>.`; }
     } else if (level===2) {
-      if (Math.random()<0.5) { ans=(a+b)*c; txt=`(${a} + ${b}) × ${c}`; }
-      else { ans=a*(b+c); txt=`${a} × (${b} + ${c})`; }
+      if (Math.random()<0.5) { ans=(a+b)*c; txt=`(${a} + ${b}) × ${c}`; work=`Brackets first: (${a} + ${b}) = ${a+b}, then ${a+b} × ${c} = <b>${ans}</b>.`; }
+      else { ans=a*(b+c); txt=`${a} × (${b} + ${c})`; work=`Brackets first: (${b} + ${c}) = ${b+c}, then ${a} × ${b+c} = <b>${ans}</b>.`; }
     } else if (level===3) {
       const t=r(3);
       // L3: use only forms that can't go negative given our ranges
       if (t===1) {
         // ensure b*c > d so subtraction stays positive
-        if (b*c > d) { ans=a+b*c-d; txt=`${a} + ${b} × ${c} − ${d}`; }
-        else { ans=a+b*c; txt=`${a} + ${b} × ${c}`; } // fallback
+        if (b*c > d) { ans=a+b*c-d; txt=`${a} + ${b} × ${c} − ${d}`; work=`Do × first: ${b} × ${c} = ${b*c}, then ${a} + ${b*c} − ${d} = <b>${ans}</b>.`; }
+        else { ans=a+b*c; txt=`${a} + ${b} × ${c}`; work=`Do × first: ${b} × ${c} = ${b*c}, then ${a} + ${b*c} = <b>${ans}</b>.`; } // fallback
       } else if (t===2) {
-        ans=(a+b)*c; txt=`(${a} + ${b}) × ${c}`;
+        ans=(a+b)*c; txt=`(${a} + ${b}) × ${c}`; work=`Brackets first: (${a} + ${b}) = ${a+b}, then ${a+b} × ${c} = <b>${ans}</b>.`;
       } else {
-        ans=a*b+c*d; txt=`${a} × ${b} + ${c} × ${d}`;
+        ans=a*b+c*d; txt=`${a} × ${b} + ${c} × ${d}`; work=`Do each × first: ${a} × ${b} = ${a*b} and ${c} × ${d} = ${c*d}, then ${a*b} + ${c*d} = <b>${ans}</b>.`;
       }
     } else {
       // L4: indices + brackets (do the power right after brackets)
       const t=r(3);
-      if (t===1) { const g=rr(2,6); ans=a+g*g*c; txt=`${a} + ${g}² × ${c}`; }
-      else if (t===2) { const s=a+b; ans=s*s-d; txt=`(${a} + ${b})² − ${d}`; }
-      else { const g=rr(3,9); ans=g*g-c*d; txt=`${g}² − ${c} × ${d}`; }
+      if (t===1) { const g=rr(2,6); ans=a+g*g*c; txt=`${a} + ${g}² × ${c}`; work=`Power first: ${g}² = ${g*g}, then × : ${g*g} × ${c} = ${g*g*c}, then ${a} + ${g*g*c} = <b>${ans}</b>.`; }
+      else if (t===2) { const s=a+b; ans=s*s-d; txt=`(${a} + ${b})² − ${d}`; work=`Brackets then the power: (${a} + ${b}) = ${s}, ${s}² = ${s*s}, then ${s*s} − ${d} = <b>${ans}</b>.`; }
+      else { const g=rr(3,9); ans=g*g-c*d; txt=`${g}² − ${c} × ${d}`; work=`Power & × first: ${g}² = ${g*g}, ${c} × ${d} = ${c*d}, then ${g*g} − ${c*d} = <b>${ans}</b>.`; }
     }
     safety++;
   } while (ans <= 0 && safety < 50);
 
   qData.ans = ans;
+  qData.workSteps = work;
   el.textContent = txt;
   el.style.fontSize = '1.8rem';
 }
@@ -6818,6 +6835,7 @@ function genIndexMult() {
     qData.ansExp  = m + n;
     qData.idxHint = `Multiply the powers: ${m} + ${n} = ?`;
     setText('idxBaseLabel', base + '');
+    qData.workSteps = `Same base — add the powers: ${sup(base,m)} × ${sup(base,n)} = ${sup(base, m+'+'+n)} = <b>${sup(base, m+n)}</b>.`;
     renderIdxQ(`${sup(base,m)} × ${sup(base,n)} = ${sup(base,"?")}`);
   } else if (level === 2) {
     // one variable: a·x^m × b·x^n = (a·b)·x^(m+n)
@@ -6828,6 +6846,7 @@ function genIndexMult() {
     qData.var1     = 'x';
     qData.idxHint  = '';
     const am = a===1?'':a, bm = b===1?'':b;
+    qData.workSteps = `Multiply the numbers in front: ${a} × ${b} = ${a*b}. Add the x powers: ${m} + ${n} = ${m+n}. Answer: <b>${a*b===1?'':a*b}${sup(vr('x'),m+n)}</b>.`;
     renderIdxQ(`${am}${sup(vr('x'),m)} × ${bm}${sup(vr('x'),n)} =`);
   } else {
     // two variables: a·x^m·y^p × b·x^n·y^q = (ab)·x^(m+n)·y^(p+q)
@@ -6840,6 +6859,7 @@ function genIndexMult() {
     qData.var2     = 'y';
     qData.idxHint  = '';
     const am=a===1?'':a, bm=b===1?'':b;
+    qData.workSteps = `Numbers: ${a} × ${b} = ${a*b}. x powers: ${m} + ${n} = ${m+n}. y powers: ${p} + ${q} = ${p+q}. Answer: <b>${a*b===1?'':a*b}${sup(vr('x'),m+n)}${sup(vr('y'),p+q)}</b>.`;
     renderIdxQ(`${am}${sup(vr('x'),m)}${sup(vr('y'),p)} × ${bm}${sup(vr('x'),n)}${sup(vr('y'),q)}`);
   }
 }
@@ -6854,6 +6874,7 @@ function genIndexDiv() {
     qData.ansExp  = res;
     qData.idxHint = `Subtract the powers: ${m} − ${n} = ?`;
     setText('idxBaseLabel', base + '');
+    qData.workSteps = `Same base — subtract the powers: ${sup(base,m)} ÷ ${sup(base,n)} = ${sup(base, m+'−'+n)} = <b>${sup(base, res)}</b>.`;
     renderIdxQ(`${sup(base,m)} ÷ ${sup(base,n)} = ${sup(base,"?")}`);
   } else if (level === 2) {
     const bFact = rr(2,5), mult = rr(2,5);
@@ -6864,6 +6885,7 @@ function genIndexDiv() {
     qData.ansExp   = m - n;
     qData.var1     = 'x';
     qData.idxHint  = '';
+    qData.workSteps = `Divide the numbers in front: ${aFact} ÷ ${bFact} = ${mult}. Subtract the x powers: ${m} − ${n} = ${m-n}. Answer: <b>${mult===1?'':mult}${sup(vr('x'),m-n)}</b>.`;
     renderIdxQ(`${aFact}${sup(vr('x'),m)} ÷ ${bFact}${sup(vr('x'),n)} =`);
   } else {
     const a=rr(2,6),b=rr(1,a),m=rr(2,5),n=rr(1,m-1),p=rr(2,4),q=rr(1,p-1);
@@ -6874,6 +6896,7 @@ function genIndexDiv() {
     qData.var1     = 'x';
     qData.var2     = 'y';
     qData.idxHint  = '';
+    qData.workSteps = `Numbers: ${a} ÷ ${b} = ${a/b}. x powers: ${m} − ${n} = ${m-n}. y powers: ${p} − ${q} = ${p-q}. Answer: <b>${(a/b)===1?'':a/b}${sup(vr('x'),m-n)}${sup(vr('y'),p-q)}</b>.`;
     renderIdxQ(`${a}${sup(vr('x'),m)}${sup(vr('y'),p)} ÷ ${b}${sup(vr('x'),n)}${sup(vr('y'),q)}`);
   }
 }
@@ -6886,6 +6909,7 @@ function genIndexPow() {
     qData.ansExp  = m*n;
     qData.idxHint = `Multiply the powers: ${m} × ${n} = ?`;
     setText('idxBaseLabel', base + '');
+    qData.workSteps = `Power of a power — multiply the powers: (${sup(base,m)})${sup('',n)} = ${sup(base, m+'×'+n)} = <b>${sup(base, m*n)}</b>.`;
     id('qBox').innerHTML = `<div class="idx-q-display">(${sup(base,m)})<sup class="idx-sup">${n}</sup> = ${sup(base,'?')}</div>`;
   } else if (level === 2) {
     const a=rr(1,5), m=rr(2,4), n=rr(2,3);
@@ -6894,7 +6918,8 @@ function genIndexPow() {
     qData.ansExp   = m*n;
     qData.var1     = 'x';
     qData.idxHint  = '';
-    const am = a===1?'':a;
+    const am = a===1?'':a, cf = a===1?1:Math.pow(a,n);
+    qData.workSteps = `Raise the number to the outer power: ${a}${sup('',n)} = ${cf}. Multiply the x powers: ${m} × ${n} = ${m*n}. Answer: <b>${cf===1?'':cf}${sup(vr('x'),m*n)}</b>.`;
     id('qBox').innerHTML = `<div class="idx-q-display">(${am}${sup(vr('x'),m)})<sup class="idx-sup">${n}</sup></div>`;
   } else {
     const a=rr(1,4), m=rr(2,3), p=rr(1,3), n=rr(2,3);
@@ -6905,7 +6930,8 @@ function genIndexPow() {
     qData.var1     = 'x';
     qData.var2     = 'y';
     qData.idxHint  = '';
-    const am = a===1?'':a;
+    const am = a===1?'':a, cf = a===1?1:Math.pow(a,n);
+    qData.workSteps = `Number: ${a}${sup('',n)} = ${cf}. x powers: ${m} × ${n} = ${m*n}. y powers: ${p} × ${n} = ${p*n}. Answer: <b>${cf===1?'':cf}${sup(vr('x'),m*n)}${sup(vr('y'),p*n)}</b>.`;
     id('qBox').innerHTML = `<div class="idx-q-display">(${am}${sup(vr('x'),m)}${sup(vr('y'),p)})<sup class="idx-sup">${n}</sup></div>`;
   }
 }
@@ -6921,6 +6947,7 @@ function genSciTo() {
     qData.sciCoeffAns = c;   // student types e.g. 3.0
     qData.sciExpAns   = exp;
     const numDisplay = (c * Math.pow(10, exp)).toLocaleString();
+    qData.workSteps = `Put one non-zero digit in front of the decimal: ${numDisplay} = <b>${c} × 10${sup('',''+exp)}</b> (the decimal moved ${exp} place${exp>1?'s':''}).`;
     id('qBox').innerHTML = `<div style="font-family:'Nunito',sans-serif;font-weight:900;font-size:2.2rem;text-align:center">${numDisplay}</div>`;
   } else if (level === 2) {
     // decimal coefficient, positive powers
@@ -6931,6 +6958,7 @@ function genSciTo() {
     qData.sciExpAns   = exp;
     const val = mantissa * Math.pow(10, exp);
     const numDisplay = val >= 1000 ? val.toLocaleString() : val.toPrecision(4);
+    qData.workSteps = `Put one non-zero digit in front of the decimal: ${numDisplay} = <b>${mantissa} × 10${sup('',''+exp)}</b> (the decimal moved ${exp} places).`;
     id('qBox').innerHTML = `<div style="font-family:'Nunito',sans-serif;font-weight:900;font-size:2rem;text-align:center">${numDisplay}</div>`;
   } else {
     // positive and negative powers
@@ -6942,6 +6970,7 @@ function genSciTo() {
     const val = mantissa * Math.pow(10, exp);
     if (exp < 0) numDisplay = val.toFixed(Math.abs(exp)+2).replace(/0+$/,'').replace(/\.$/, '');
     else numDisplay = val >= 1000 ? val.toLocaleString() : val.toString();
+    qData.workSteps = `Put one non-zero digit in front of the decimal: ${numDisplay} = <b>${mantissa} × 10${sup('',''+exp)}</b>` + (exp < 0 ? ` — a number below 1 gives a negative power (${exp}).` : ` — the decimal moved ${exp} places, so the power is ${exp}.`);
     id('qBox').innerHTML = `<div style="font-family:'Nunito',sans-serif;font-weight:900;font-size:2rem;text-align:center">${numDisplay}</div>`;
   }
 }
@@ -6960,6 +6989,7 @@ function genSciFrom() {
   }
   const val = mantissa * Math.pow(10, exp);
   qData.ans = Math.round(val * 1e9) / 1e9; // avoid float dust
+  qData.workSteps = `${mantissa} × 10${sup('',''+exp)} → move the decimal ${Math.abs(exp)} place${Math.abs(exp)>1?'s':''} ${exp<0?'left (the number gets smaller)':'right (the number gets bigger)'} = <b>${qData.ans}</b>.`;
   // Display as a × 10^n
   id('qBox').innerHTML = `<div style="font-family:'Nunito',sans-serif;font-weight:900;font-size:2rem;text-align:center">${mantissa} × 10${sup('',''+exp)}</div>`;
   el.textContent = ''; // qBox replaced
@@ -7009,6 +7039,8 @@ function genFracSimplify() {
     num = ansNum * factor; den = ansDen * factor;
     qData.ansNum = ansNum; qData.ansDen = ansDen;
     qData.isAlgebraic = true;
+    const ga = gcd(num, den);
+    qData.workSteps = `HCF of ${num} and ${den} is ${ga}. Divide top and bottom by ${ga}: ${fracHTML(num+'x', den)} = <b>${fracHTML((num/ga)+'x', den/ga)}</b>.`;
     // show label above input
     id('fracAlgLabel').textContent = `Simplify: enter the coefficient of x on top, the number on the bottom`;
     id('fracAlgLabel').classList.remove('hide');
@@ -7018,6 +7050,8 @@ function genFracSimplify() {
 
   qData.ansNum = ansNum;
   qData.ansDen = ansDen;
+  const g2 = gcd(num, den);
+  qData.workSteps = `The HCF of ${num} and ${den} is ${g2}. Divide top and bottom by ${g2}: ${fracHTML(num, den)} = <b>${fracHTML(ansNum, ansDen)}</b>.`;
   id('fracAlgLabel').classList.add('hide');
   renderFracQuestion(`<div class="q-expr">${fracHTML(num, den)}</div>`);
 }
@@ -7112,6 +7146,15 @@ function genFracAddSub() {
   if (qData.ansDen < 0) { qData.ansNum = -qData.ansNum; qData.ansDen = -qData.ansDen; }
 
   const op = subtract ? '−' : '+';
+  // Worked review using THIS question's numbers.
+  const s1 = n1 * (commonD/d1), s2 = n2 * (commonD/d2);
+  const pre = (d1 === d2)
+    ? `The denominators already match (${commonD}). `
+    : `Rewrite both over the common denominator ${commonD}. `;
+  const simplified = (sn !== resNum || sd !== resDen);
+  const finalAns = (sd === 1) ? String(sn) : fracHTML(sn, sd);
+  const ws = pre + `${fracHTML(n1<0?`(${n1})`:n1, d1)} ${op} ${fracHTML(n2<0?`(${n2})`:n2, d2)} = ${fracHTML(s1, commonD)} ${op} ${fracHTML(s2, commonD)} = ` + (simplified ? `${fracHTML(resNum, resDen)} = <b>${finalAns}</b>` : `<b>${finalAns}</b>`);
+  qData.workSteps = ws + '.';
   id('fracAlgLabel').classList.add('hide');
   renderFracQuestion(`<div class="q-expr" style="font-size:1.9rem;gap:8px;align-items:center">
     ${fracHTML(n1<0?`(${n1})`:n1, d1)}
@@ -7158,6 +7201,14 @@ function genFracAddSubMixed() {
   if (qData.ansDen < 0) { qData.ansNum = -qData.ansNum; qData.ansDen = -qData.ansDen; }
 
   const op = subtract ? '−' : '+';
+  // Worked review: mixed → improper → common denominator → answer, on THIS question.
+  {
+    const simp = (fn !== resNum || fd !== commonD);
+    const finalAns = (fd === 1) ? String(fn) : fracHTML(fn, fd);
+    let ws = `Change to improper fractions: ${w1}${fracHTML(n1,d1)} = ${fracHTML(imp1n,d1)}, ${w2}${fracHTML(n2,d2)} = ${fracHTML(imp2n,d2)}. `;
+    ws += `Common denominator ${commonD}: ${fracHTML(scaled1,commonD)} ${op} ${fracHTML(scaled2,commonD)} = ` + (simp ? `${fracHTML(resNum,commonD)} = <b>${finalAns}</b>` : `<b>${finalAns}</b>`);
+    qData.workSteps = ws + '.';
+  }
   // Only show the improper-fraction label when the answer isn't a whole number.
   // When ansDen === 1, enableInputs() will switch to the plain number box and
   // set its own "Answer is a whole number" label automatically.
@@ -7195,6 +7246,12 @@ function genFracMultiply() {
   qData.ansNum = sn; qData.ansDen = sd;
   if (qData.ansDen < 0) { qData.ansNum = -qData.ansNum; qData.ansDen = -qData.ansDen; }
 
+  {
+    const simp = (sn !== rawNum || sd !== rawDen);
+    const finalAns = (sd === 1) ? String(sn) : fracHTML(sn, sd);
+    const ws = `Multiply the tops and multiply the bottoms: ${fracHTML(n1<0?`(${n1})`:n1, d1)} × ${fracHTML(n2<0?`(${n2})`:n2, d2)} = ` + (simp ? `${fracHTML(rawNum, rawDen)} = <b>${finalAns}</b>` : `<b>${finalAns}</b>`);
+    qData.workSteps = ws + '.';
+  }
   id('fracAlgLabel').classList.add('hide');
   renderFracQuestion(`<div class="q-expr" style="font-size:2rem;gap:8px;align-items:center">
     ${fracHTML(n1<0?`(${n1})`:n1, d1)}
@@ -7226,6 +7283,14 @@ function genFracDivide() {
   if (qData.ansDen < 0) { qData.ansNum = -qData.ansNum; qData.ansDen = -qData.ansDen; }
   if (sd < 0) { qData.ansNum = -qData.ansNum; }
 
+  {
+    const simp = (sn !== rawNum || Math.abs(sd) !== rawDen);
+    const finalAns = (qData.ansDen === 1) ? String(qData.ansNum) : fracHTML(qData.ansNum, qData.ansDen);
+    const ws = `Keep, flip, multiply — turn ÷ into × by flipping the second fraction: `
+      + `${fracHTML(n1<0?`(${n1})`:n1, d1)} ÷ ${fracHTML(n2<0?`(${n2})`:n2, d2)} = ${fracHTML(n1<0?`(${n1})`:n1, d1)} × ${fracHTML(d2, n2)} = `
+      + (simp ? `${fracHTML(rawNum, rawDen)} = <b>${finalAns}</b>` : `<b>${finalAns}</b>`);
+    qData.workSteps = ws + '.';
+  }
   id('fracAlgLabel').classList.add('hide');
   renderFracQuestion(`<div class="q-expr" style="font-size:2rem;gap:8px;align-items:center">
     ${fracHTML(n1<0?`(${n1})`:n1, d1)}
@@ -7515,6 +7580,9 @@ function genAlgParts(el) {
   }
   qData.ans = ans;
   const q = askConst ? 'the constant term' : `the coefficient of ${aVar(namedBase)}`;
+  qData.workSteps = askConst
+    ? `The constant is the term with no letter. Here that is <b>${ans}</b>.`
+    : `The coefficient of ${aVar(namedBase)} is the number multiplying ${aVar(namedBase)}. Here that is <b>${ans}</b>.`;
   el.innerHTML = `<div style="${A_LBL}">In this expression, what is ${q}?</div>${aExpr(terms)}`;
 }
 
@@ -7525,12 +7593,14 @@ function genAlgSub(el) {
     const v = ['x','a','m','y'][ri(4)];
     const a = rr(2,6), b = rr(1,12), xv = rr(2,6);
     qData.ans = a*xv + b;
+    qData.workSteps = `Substitute ${aVar(v)} = ${xv}: ${a} × ${xv} + ${b} = ${a*xv} + ${b} = <b>${a*xv+b}</b>.`;
     el.innerHTML = `<div style="${A_LBL}">If ${aVar(v)} = ${xv}, find</div>${aExpr([{coeff:a,base:v},{coeff:b,base:''}])}`;
   } else if (level === 2) {
     const pairs = [['a','b'],['x','y'],['m','n'],['p','q']];
     const [v1, v2] = pairs[ri(pairs.length)];
     const a = rr(2,6), b = rr(2,6), xv = rr(1,6), yv = rr(1,6);
     qData.ans = a*xv + b*yv;
+    qData.workSteps = `Substitute ${aVar(v1)} = ${xv} and ${aVar(v2)} = ${yv}: ${a} × ${xv} + ${b} × ${yv} = ${a*xv} + ${b*yv} = <b>${a*xv+b*yv}</b>.`;
     el.innerHTML = `<div style="${A_LBL}">If ${aVar(v1)} = ${xv} and ${aVar(v2)} = ${yv}, find</div>${aExpr([{coeff:a,base:v1},{coeff:b,base:v2}])}`;
   } else if (level === 3) {
     const v = ['x','a','m'][ri(3)];
@@ -7539,14 +7609,17 @@ function genAlgSub(el) {
     if (type === 0) {
       const c = rr(2,6);
       qData.ans = xv*xv + c*xv;
+      qData.workSteps = `Substitute ${aVar(v)} = ${xv}: (${xv})² + ${c}(${xv}) = ${xv*xv} + (${c*xv}) = <b>${xv*xv + c*xv}</b>.`;
       el.innerHTML = `<div style="${A_LBL}">If ${aVar(v)} = ${aNum(xv)}, find</div>${aPow(v,2)} + ${c}${aVar(v)}`;
     } else if (type === 1) {
       const a = rr(2,6), b = rr(1,9);
       qData.ans = a*xv + b;
+      qData.workSteps = `Substitute ${aVar(v)} = ${xv}: ${a}(${xv}) + ${b} = ${a*xv} + ${b} = <b>${a*xv+b}</b>.`;
       el.innerHTML = `<div style="${A_LBL}">If ${aVar(v)} = ${aNum(xv)}, find</div>${a}${aVar(v)} + ${b}`;
     } else {
       const k = rr(1,9);
       qData.ans = xv*xv - k;
+      qData.workSteps = `Substitute ${aVar(v)} = ${xv}: (${xv})² − ${k} = ${xv*xv} − ${k} = <b>${xv*xv - k}</b>.`;
       el.innerHTML = `<div style="${A_LBL}">If ${aVar(v)} = ${aNum(xv)}, find</div>${aPow(v,2)} − ${k}`;
     }
   } else {
@@ -7561,7 +7634,7 @@ function genAlgSub(el) {
     ];
     const f = forms[ri(forms.length)]();
     qData.ans = f.ans;
-    qData.workSteps = 'Substitute into ' + f.lbl + ' with ' + f.sub + ' → ' + f.ans + '.';
+    qData.workSteps = 'Substitute into ' + f.lbl + ' with ' + f.sub + ' → <b>' + f.ans + '</b>.';
     el.innerHTML = `<div style="${A_LBL}">Substitute into the formula and evaluate</div>`
       + `<div style="text-align:center;font-weight:900;font-size:1.7rem;margin:6px 0;">${f.lbl}</div>`
       + `<div style="text-align:center;font-weight:800;color:var(--muted);">${f.sub}</div>`;
@@ -9175,17 +9248,22 @@ function genIntSquareCube() {
   const pw = p === 2 ? '²' : '³';
   const np = Math.pow(n, p);                       // n^p (positive)
   const form = ['pos', 'negIn', 'negOut'][ri(3)];
+  const expand = (base) => p === 2 ? `${base} × ${base}` : `${base} × ${base} × ${base}`;
   if (form === 'pos') {
     qData.ans = np;
     el.textContent = `${n}${pw}`;
+    qData.workSteps = `${n}${pw} means ${expand(n)} = <b>${np}</b>.`;
   } else if (form === 'negIn') {
     // (−n)^p  →  + for even powers, − for odd
     qData.ans = (p % 2 === 0) ? np : -np;
     el.textContent = `(−${n})${pw}`;
+    qData.workSteps = `The whole −${n} is raised to the power: ${expand('(−'+n+')')} = <b>${qData.ans}</b>. `
+      + (p % 2 === 0 ? `An even power of a negative is positive.` : `An odd power of a negative stays negative.`);
   } else {
     // −(n)^p  →  always negative (the power applies before the leading minus)
     qData.ans = -np;
     el.textContent = `−(${n})${pw}`;
+    qData.workSteps = `Do the power first, then the minus: ${n}${pw} = ${np}, so −(${n})${pw} = <b>${-np}</b>.`;
   }
 }
 
@@ -9195,34 +9273,35 @@ function genIntSquareCube() {
 function genIntOrderOps() {
   const el = id('qText');
   el.style.fontSize = '1.8rem';
-  let ans, txt, safety = 0;
+  let ans, txt, work, safety = 0;
   do {
     const a = rr(1, 8), b = rr(1, 6), c = rr(1, 6);
     const na = -a, nb = -b, nc = -c;
     if (level === 1) {
       const t = r(3);
-      if (t === 1) { ans = na + b * c;  txt = `${na} + ${b} × ${c}`; }
-      else if (t === 2) { ans = a * nb + c; txt = `${a} × (${nb}) + ${c}`; }
-      else { ans = a + b * nc; txt = `${a} + ${b} × (${nc})`; }
+      if (t === 1) { ans = na + b * c;  txt = `${na} + ${b} × ${c}`; work = `Do × first: ${na} + ${b} × ${c} = ${na} + ${b*c} = <b>${ans}</b>.`; }
+      else if (t === 2) { ans = a * nb + c; txt = `${a} × (${nb}) + ${c}`; work = `Do × first: ${a} × (${nb}) = ${a*nb}, then ${a*nb} + ${c} = <b>${ans}</b>.`; }
+      else { ans = a + b * nc; txt = `${a} + ${b} × (${nc})`; work = `Do × first: ${b} × (${nc}) = ${b*nc}, then ${a} + (${b*nc}) = <b>${ans}</b>.`; }
     } else if (level === 2) {
       const t = r(2);
-      if (t === 1) { ans = (na + b) * c;  txt = `(${na} + ${b}) × ${c}`; }
-      else { ans = a * (nb + c); txt = `${a} × (${nb} + ${c})`; }
+      if (t === 1) { ans = (na + b) * c;  txt = `(${na} + ${b}) × ${c}`; work = `Brackets first: (${na} + ${b}) = ${na+b}, then ${na+b} × ${c} = <b>${ans}</b>.`; }
+      else { ans = a * (nb + c); txt = `${a} × (${nb} + ${c})`; work = `Brackets first: (${nb} + ${c}) = ${nb+c}, then ${a} × (${nb+c}) = <b>${ans}</b>.`; }
     } else if (level === 3) {
       const t = r(3);
-      if (t === 1) { ans = na + b * nc; txt = `${na} + ${b} × (${nc})`; }
-      else if (t === 2) { ans = (na + b) * nc; txt = `(${na} + ${b}) × (${nc})`; }
-      else { ans = a * nb + c * na; txt = `${a} × (${nb}) + ${c} × (${na})`; }
+      if (t === 1) { ans = na + b * nc; txt = `${na} + ${b} × (${nc})`; work = `Do × first: ${b} × (${nc}) = ${b*nc}, then ${na} + (${b*nc}) = <b>${ans}</b>.`; }
+      else if (t === 2) { ans = (na + b) * nc; txt = `(${na} + ${b}) × (${nc})`; work = `Brackets first: (${na} + ${b}) = ${na+b}, then ${na+b} × (${nc}) = <b>${ans}</b>.`; }
+      else { ans = a * nb + c * na; txt = `${a} × (${nb}) + ${c} × (${na})`; work = `Do each × first: ${a} × (${nb}) = ${a*nb} and ${c} × (${na}) = ${c*na}, then ${a*nb} + (${c*na}) = <b>${ans}</b>.`; }
     } else {
       // L4: indices with negatives & brackets. (−a)² = a²; but −a² = −(a²).
       const t = r(3);
-      if (t === 1) { ans = a * a + b * nc; txt = `(${na})² + ${b} × (${nc})`; }
-      else if (t === 2) { const s = na + b; ans = s * s - c; txt = `(${na} + ${b})² − ${c}`; }
-      else { ans = -(a * a) + b * c; txt = `−${a}² + ${b} × ${c}`; }
+      if (t === 1) { ans = a * a + b * nc; txt = `(${na})² + ${b} × (${nc})`; work = `Powers & × first: (${na})² = ${a*a}, ${b} × (${nc}) = ${b*nc}, then ${a*a} + (${b*nc}) = <b>${ans}</b>.`; }
+      else if (t === 2) { const s = na + b; ans = s * s - c; txt = `(${na} + ${b})² − ${c}`; work = `Brackets, then the power: (${na} + ${b}) = ${s}, (${s})² = ${s*s}, then ${s*s} − ${c} = <b>${ans}</b>.`; }
+      else { ans = -(a * a) + b * c; txt = `−${a}² + ${b} × ${c}`; work = `Power before the minus: ${a}² = ${a*a} so −${a}² = ${-(a*a)}; ${b} × ${c} = ${b*c}; then ${-(a*a)} + ${b*c} = <b>${ans}</b>.`; }
     }
     safety++;
   } while (safety < 50 && (isNaN(ans) || !isFinite(ans)));
   qData.ans = ans;
+  qData.workSteps = work;
   el.textContent = txt;
 }
 
@@ -9265,6 +9344,12 @@ function genSigFigs() {
     }
     qData.ans = sfCount;
     el.textContent = `sig figs in ${display}`;
+    const plural = sfCount === 1 ? 'significant figure' : 'significant figures';
+    qData.workSteps = (t === 'leadingZero')
+      ? `Leading zeros don't count — start at the first non-zero digit. So ${display} has <b>${sfCount}</b> ${plural}.`
+      : (t === 'trailing')
+      ? `Count the non-zero digits (the trailing zeros here just show size): ${display} has <b>${sfCount}</b> ${plural}.`
+      : `Count every digit from the first non-zero one: ${display} has <b>${sfCount}</b> ${plural}.`;
   } else {
     // Level 2: Round to given sig figs
     // Generate a number and ask to round to 1, 2, or 3 s.f.
@@ -9275,6 +9360,9 @@ function genSigFigs() {
     qData.ans = rounded;
     el.textContent = `${rawInt} to ${sf} s.f.`;
     el.style.fontSize = '1.7rem';
+    const digits = String(rawInt);
+    const nextDigit = digits[sf];
+    qData.workSteps = `Keep the first ${sf} digit${sf>1?'s':''} of ${rawInt}. The next digit is ${nextDigit} (${Number(nextDigit) >= 5 ? '5 or more → round up' : 'less than 5 → round down'}), giving <b>${rounded}</b>.`;
   }
 }
 
@@ -9309,6 +9397,7 @@ function genMixedToImp() {
   const [impN, impD] = simplify(whole * den + num, den);
   qData.ansNum = impN;
   qData.ansDen = impD;
+  qData.workSteps = `Multiply the whole by the bottom, then add the top: ${whole} × ${den} + ${num} = ${whole*den+num}. Keep the same denominator: <b>${fracHTML(impN, impD)}</b>.`;
   // Display as mixed number
   id('qBox').innerHTML = `<div class="idx-q-display" style="font-size:2rem;gap:8px;align-items:center">
     <span>${whole}</span>${fracHTML(num, den)}
@@ -9333,6 +9422,11 @@ function genImpToMixed() {
   qData.ansWhole = wholeAns;
   qData.ansNum = remN;
   qData.ansDen = remD;
+  {
+    let ws = `Divide the top by the bottom: ${impNum} ÷ ${den} = ${wholeAns} remainder ${impNum%den}. That's ${wholeAns} and ${fracHTML(impNum%den, den)}`;
+    if (remN !== (impNum%den) || remD !== den) ws += ` = ${wholeAns} ${fracHTML(remN, remD)}`;
+    qData.workSteps = ws + `. Answer: <b>${wholeAns} ${fracHTML(remN, remD)}</b>.`;
+  }
   // Display improper fraction
   id('qBox').innerHTML = `<div class="idx-q-display" style="font-size:2rem;gap:8px;align-items:center">
     ${fracHTML(impNum, den)}
@@ -9344,7 +9438,8 @@ function genImpToMixed() {
    ORDER OF OPERATIONS WITH FRACTIONS
 ════════════════════════════════════════════ */
 function genFracOrderOps() {
-  let ansNum, ansDen, html, safety = 0;
+  let ansNum, ansDen, html, work, safety = 0;
+  const fin = (n, d) => (d === 1 ? `<b>${n}</b>` : `<b>${fracHTML(n, d)}</b>`);
   do {
     const d = rr(2, 8);
     const n1 = rr(1, d - 1), n2 = rr(1, d - 1), w = rr(2, 5);
@@ -9353,11 +9448,13 @@ function genFracOrderOps() {
       const [sn, sd] = simplify(ansNum, ansDen);
       ansNum = sn; ansDen = sd;
       html = `${fracHTML(n1, d)} + ${fracHTML(n2, d)} × ${w}`;
+      work = `Do × first: ${fracHTML(n2, d)} × ${w} = ${fracHTML(n2*w, d)}, then ${fracHTML(n1, d)} + ${fracHTML(n2*w, d)} = ${fracHTML(n1+n2*w, d)} = ${fin(ansNum, ansDen)}.`;
     } else if (level === 2) {
       ansNum = (n1 + n2) * w; ansDen = d;
       const [sn, sd] = simplify(ansNum, ansDen);
       ansNum = sn; ansDen = sd;
       html = `(${fracHTML(n1, d)} + ${fracHTML(n2, d)}) × ${w}`;
+      work = `Brackets first: ${fracHTML(n1, d)} + ${fracHTML(n2, d)} = ${fracHTML(n1+n2, d)}, then × ${w} = ${fracHTML((n1+n2)*w, d)} = ${fin(ansNum, ansDen)}.`;
     } else if (level === 3) {
       const d2 = rr(2, 6);
       const n3 = rr(1, d - 1);
@@ -9367,6 +9464,7 @@ function genFracOrderOps() {
       const [sn, sd] = simplify(totalN, commonD);
       ansNum = sn; ansDen = sd;
       html = `${fracHTML(n1, d)} × ${fracHTML(n2, d2)} + ${fracHTML(n3, d)}`;
+      work = `Do × first: ${fracHTML(n1, d)} × ${fracHTML(n2, d2)} = ${fracHTML(prodN, prodD)}, then add ${fracHTML(n3, d)} = ${fin(ansNum, ansDen)}.`;
     } else {
       // L4: a squared fraction, then the rest of BODMAS
       const sqN = n1 * n1, sqD = d * d;
@@ -9376,12 +9474,15 @@ function genFracOrderOps() {
         const tot = sqN * (cD / sqD) + n2 * (cD / d);
         const [sn, sd] = simplify(tot, cD); ansNum = sn; ansDen = sd;
         html = `(${fracHTML(n1, d)})² + ${fracHTML(n2, d)}`;
+        work = `Power first: (${fracHTML(n1, d)})² = ${fracHTML(sqN, sqD)}, then + ${fracHTML(n2, d)} = ${fin(ansNum, ansDen)}.`;
       } else if (t === 2) {
         const [sn, sd] = simplify(sqN * w, sqD); ansNum = sn; ansDen = sd;
         html = `(${fracHTML(n1, d)})² × ${w}`;
+        work = `Power first: (${fracHTML(n1, d)})² = ${fracHTML(sqN, sqD)}, then × ${w} = ${fin(ansNum, ansDen)}.`;
       } else {
         const [sn, sd] = simplify(sqD - sqN, sqD); ansNum = sn; ansDen = sd;
         html = `1 − (${fracHTML(n1, d)})²`;
+        work = `Power first: (${fracHTML(n1, d)})² = ${fracHTML(sqN, sqD)}, then 1 − ${fracHTML(sqN, sqD)} = ${fin(ansNum, ansDen)}.`;
       }
     }
     safety++;
@@ -9389,6 +9490,7 @@ function genFracOrderOps() {
 
   qData.ansNum = ansNum;
   qData.ansDen = ansDen;
+  qData.workSteps = work;
   if (ansDen === 1) qData.ans = ansNum;
   id('qBox').innerHTML = `<div class="idx-q-display" style="font-size:1.6rem;gap:8px;align-items:center;flex-wrap:wrap">${html} =</div>`;
 }
@@ -9456,6 +9558,7 @@ function genDecAddSub(forceOp) {
   qData.ans = ans;
   // v71: stacked column aligned on the decimal point (blank-align, no padding zeros).
   const op = sub ? '−' : '+';
+  qData.workSteps = `Line up the decimal points, then ${sub?'subtract':'add'}: ${a} ${op} ${b} = <b>${ans}</b>.`;
   id('qBox').innerHTML = decColPointHTML([String(a), String(b)], op);
 }
 
@@ -9477,8 +9580,8 @@ function genDecPow10() {
     do { raw = rr(1, 999); } while (raw % 10 === 0);   // non-zero last digit ⇒ exactly d dp
     return dp(raw / Math.pow(10, d), d);
   }
-  function doMultiply(m) { const a = decVal();            qData.ans = dp(a * m, 3); return `${a} × ${m}`; }
-  function doDivide(m)   { const q = decVal();            qData.ans = q; return `${dp(q * m, 3)} ÷ ${m}`; }
+  function doMultiply(m) { const a = decVal();            qData.ans = dp(a * m, 3); qData.workSteps = `Multiplying makes it bigger — the digits shift left: ${a} × ${m} = <b>${qData.ans}</b>.`; return `${a} × ${m}`; }
+  function doDivide(m)   { const q = decVal();            qData.ans = q; qData.workSteps = `Dividing makes it smaller — the digits shift right: ${dp(q * m, 3)} ÷ ${m} = <b>${q}</b>.`; return `${dp(q * m, 3)} ÷ ${m}`; }
 
   let m, txt;
   if (level === 1) {                      // multiply by a pure power of ten
@@ -9507,6 +9610,12 @@ function genDecMultiply() {
     ans = dp(a * b, 3);
   }
   qData.ans = ans;
+  {
+    const da = decSplitParts(String(a)).fp.length, db = decSplitParts(String(b)).fp.length;
+    const ai = Math.round(a * Math.pow(10, da)), bi = Math.round(b * Math.pow(10, db));
+    const tot = da + db;
+    qData.workSteps = `Ignore the points and multiply: ${ai} × ${bi} = ${ai*bi}. The question has ${tot} decimal place${tot===1?'':'s'} in total, so put the point back: <b>${ans}</b>.`;
+  }
   // v71 (Laura): vertical multiplication algorithm — numbers right-aligned, × on the last row.
   id('qBox').innerHTML = decColRightHTML([String(a), String(b)], '×');
 }
@@ -9526,6 +9635,15 @@ function genDecDivide() {
     a = dp(ans * b, 2);
   }
   qData.ans = ans;
+  {
+    const k = decSplitParts(String(b)).fp.length;
+    if (k > 0) {
+      const a2 = dp(a * Math.pow(10, k), 3), b2 = Math.round(b * Math.pow(10, k));
+      qData.workSteps = `Shift both numbers ${k} place${k>1?'s':''} so you divide by a whole number: ${a} ÷ ${b} = ${a2} ÷ ${b2} = <b>${ans}</b>.`;
+    } else {
+      qData.workSteps = `${a} ÷ ${b} = <b>${ans}</b>.`;
+    }
+  }
   // v71 (Laura): written as a vertical expression (÷ on the last row), NOT short division.
   id('qBox').innerHTML = decColRightHTML([String(a), String(b)], '÷');
 }
@@ -9538,17 +9656,22 @@ function genDecSquareCube() {
     n = dp(rr(1, 9) / 10, 1);
     ans = dp(n * n, 2);
     el.textContent = `${n}²`;
+    qData.workSteps = `${n}² means ${n} × ${n} = <b>${ans}</b>.`;
   } else if (level === 2) {
     // cubes of x.x decimals
     n = dp(rr(1, 5) / 10, 1);
     ans = dp(n * n * n, 3);
     el.textContent = `${n}³`;
+    qData.workSteps = `${n}³ means ${n} × ${n} × ${n} = <b>${ans}</b>.`;
   } else {
     // mix including 2 d.p.
     const doSquare = Math.random() < 0.5;
     n = doSquare ? dp(rr(10, 99) / 100, 2) : dp(rr(1, 5) / 10, 1);
     ans = doSquare ? dp(n * n, 4) : dp(n * n * n, 3);
     el.textContent = `${n}${doSquare ? '²' : '³'}`;
+    qData.workSteps = doSquare
+      ? `${n}² means ${n} × ${n} = <b>${ans}</b>.`
+      : `${n}³ means ${n} × ${n} × ${n} = <b>${ans}</b>.`;
   }
   qData.ans = ans;
 }
@@ -9556,30 +9679,31 @@ function genDecSquareCube() {
 function genDecOrderOps() {
   const el = id('qText');
   el.style.fontSize = '1.8rem';
-  let ans, txt, safety = 0;
+  let ans, txt, work, safety = 0;
   do {
     const a = dp(rr(1, 9) / 10, 1), b = dp(rr(1, 9) / 10, 1), c = rr(2, 5);
     if (level === 1) {
-      if (Math.random() < 0.5) { ans = dp(a + b * c, 2); txt = `${a} + ${b} × ${c}`; }
-      else { ans = dp(a * c + b, 2); txt = `${a} × ${c} + ${b}`; }
+      if (Math.random() < 0.5) { ans = dp(a + b * c, 2); txt = `${a} + ${b} × ${c}`; work = `Do × first: ${b} × ${c} = ${dp(b*c,2)}, then ${a} + ${dp(b*c,2)} = <b>${ans}</b>.`; }
+      else { ans = dp(a * c + b, 2); txt = `${a} × ${c} + ${b}`; work = `Do × first: ${a} × ${c} = ${dp(a*c,2)}, then ${dp(a*c,2)} + ${b} = <b>${ans}</b>.`; }
     } else if (level === 2) {
-      if (Math.random() < 0.5) { ans = dp((a + b) * c, 2); txt = `(${a} + ${b}) × ${c}`; }
-      else { ans = dp(a * (b + c), 2); txt = `${a} × (${b} + ${c})`; }
+      if (Math.random() < 0.5) { ans = dp((a + b) * c, 2); txt = `(${a} + ${b}) × ${c}`; work = `Brackets first: (${a} + ${b}) = ${dp(a+b,1)}, then × ${c} = <b>${ans}</b>.`; }
+      else { ans = dp(a * (b + c), 2); txt = `${a} × (${b} + ${c})`; work = `Brackets first: (${b} + ${c}) = ${dp(b+c,1)}, then ${a} × ${dp(b+c,1)} = <b>${ans}</b>.`; }
     } else if (level === 3) {
-      ans = dp(a + b * c - dp(rr(1,9)/10, 1), 2);
       const sub = dp(rr(1,9)/10, 1);
       ans = dp(a + b * c - sub, 2);
       txt = `${a} + ${b} × ${c} − ${sub}`;
+      work = `Do × first: ${b} × ${c} = ${dp(b*c,2)}, then ${a} + ${dp(b*c,2)} − ${sub} = <b>${ans}</b>.`;
     } else {
       // L4: a squared decimal, with brackets (power straight after brackets)
       const t = r(3);
-      if (t === 1) { ans = dp(a * a + b, 2); txt = `${a}² + ${b}`; }
-      else if (t === 2) { const s = dp(a + b, 1); ans = dp(s * s, 2); txt = `(${a} + ${b})²`; }
-      else { ans = dp(a * a * c, 2); txt = `${a}² × ${c}`; }
+      if (t === 1) { ans = dp(a * a + b, 2); txt = `${a}² + ${b}`; work = `Power first: ${a}² = ${dp(a*a,2)}, then + ${b} = <b>${ans}</b>.`; }
+      else if (t === 2) { const s = dp(a + b, 1); ans = dp(s * s, 2); txt = `(${a} + ${b})²`; work = `Brackets then the power: (${a} + ${b}) = ${s}, ${s}² = <b>${ans}</b>.`; }
+      else { ans = dp(a * a * c, 2); txt = `${a}² × ${c}`; work = `Power first: ${a}² = ${dp(a*a,2)}, then × ${c} = <b>${ans}</b>.`; }
     }
     safety++;
   } while ((ans <= 0 || !isFinite(ans)) && safety < 50);
   qData.ans = ans;
+  qData.workSteps = work;
   el.textContent = txt;
 }
 
@@ -9599,6 +9723,8 @@ function genDecRound() {
   }
   ans = dp(Math.round(num * Math.pow(10, places)) / Math.pow(10, places), places);
   qData.ans = ans;
+  const nextDigit = Math.floor(num * Math.pow(10, places + 1)) % 10;
+  qData.workSteps = `Rounding ${num} to ${places} d.p. — look at the next digit, ${nextDigit}: ${nextDigit >= 5 ? '5 or more → round up' : 'less than 5 → round down'}, giving <b>${ans}</b>.`;
   el.textContent = `${num} to ${places} d.p.`;
 }
 
@@ -9690,6 +9816,7 @@ function genDecExpand(el){
     decSetChoice(el, '<div style="'+A_LBL+'">Which is the expanded form of this number?</div>'
       + '<div style="text-align:center;margin:12px 0;font-weight:900;font-size:2.2rem;">'+numStr+'</div>',
       [correct, dropPV, shifted, combine], correct);
+    qData.workSteps = 'Split each digit into its place value: ' + numStr + ' = <b>' + correct + '</b>.';
     return;
   }
   if(level===2){
@@ -9703,6 +9830,7 @@ function genDecExpand(el){
     decSetChoice(el, '<div style="'+A_LBL+'">Which is the expanded form using powers of ten?</div>'
       + '<div style="text-align:center;margin:12px 0;font-weight:900;font-size:2.2rem;">'+numStr+'</div>',
       [correct, samePow, mulPow, shifted], correct);
+    qData.workSteps = 'Each digit sits over its power of ten: ' + numStr + ' = <b>' + correct + '</b>.';
     return;
   }
   const style = (Math.random()<0.5) ? 'std' : 'exp';
@@ -10625,6 +10753,8 @@ function genRatioSimplify() {
     const k = rr(2, 9);
     const num1 = a * k, num2 = b * k;
     qData.ansA = a; qData.ansB = b;
+    const g = gcd(num1, num2);
+    qData.workSteps = `The HCF of ${num1} and ${num2} is ${g}. Divide both parts by ${g}: ${num1} : ${num2} = <b>${a} : ${b}</b>.`;
     el.textContent = `${num1} : ${num2}`;
   }
   else if (level === 2) {
@@ -10637,6 +10767,7 @@ function genRatioSimplify() {
     qData.ansA = a; qData.ansB = b;
     // Format with appropriate decimal places
     const dp1 = placesChoice === 10 ? 1 : 2;
+    qData.workSteps = `Multiply both parts by ${placesChoice} to clear the decimals: ${num1.toFixed(dp1)} : ${num2.toFixed(dp1)} = ${a*k} : ${b*k}. Then divide by the HCF ${k}: <b>${a} : ${b}</b>.`;
     el.textContent = `${num1.toFixed(dp1)} : ${num2.toFixed(dp1)}`;
   }
   else {
@@ -10678,6 +10809,7 @@ function genRatioSimplify() {
     }
     qData.ansA = ansA;
     qData.ansB = ansB;
+    qData.workSteps = `Multiply both parts by the common denominator to clear the fractions, then divide by their HCF: ${pickedNumL}/${pickedDenL} : ${pickedNumR}/${pickedDenR} = <b>${ansA} : ${ansB}</b>.`;
     el.textContent = `${pickedNumL}/${pickedDenL} : ${pickedNumR}/${pickedDenR}`;
   }
 }
@@ -10695,9 +10827,11 @@ function genRatioEquiv() {
     const unknownSide = ri(2); // 0 = left, 1 = right
     if (unknownSide === 0) {
       qData.ans = a * k;
+      qData.workSteps = `${b} was multiplied by ${k} to get ${b*k}, so multiply the other part by ${k} too: ${a} × ${k} = <b>${a*k}</b>.`;
       el.textContent = `${a} : ${b}  =  ?  : ${b * k}`;
     } else {
       qData.ans = b * k;
+      qData.workSteps = `${a} was multiplied by ${k} to get ${a*k}, so multiply the other part by ${k} too: ${b} × ${k} = <b>${b*k}</b>.`;
       el.textContent = `${a} : ${b}  =  ${a * k} : ?`;
     }
   }
@@ -10709,6 +10843,8 @@ function genRatioEquiv() {
     const scaled = [a * k, b * k, c * k];
     const ans = scaled[which];
     qData.ans = ans;
+    const base3 = [a, b, c];
+    qData.workSteps = `Each part is multiplied by ${k}. So the missing part = ${base3[which]} × ${k} = <b>${ans}</b>.`;
     const parts = scaled.map((v, i) => i === which ? '?' : v);
     el.textContent = `${a} : ${b} : ${c}  =  ${parts[0]} : ${parts[1]} : ${parts[2]}`;
   }
@@ -10739,6 +10875,7 @@ function genRatioEquiv() {
     const finalScaled = base.map(v => v * k);
     const which = ri(3);
     qData.ans = finalScaled[which];
+    qData.workSteps = `Each part is multiplied by ${k}. So the missing part = ${base[which]} × ${k} = <b>${finalScaled[which]}</b>.`;
     const parts = finalScaled.map((v, i) => i === which ? '?' : v);
     el.textContent = `${base[0]} : ${base[1]} : ${base[2]}  =  ${parts[0]} : ${parts[1]} : ${parts[2]}`;
   }
@@ -10768,6 +10905,7 @@ function genRatioShare() {
     const which = askForA
       ? (a > b ? 'larger' : 'smaller')
       : (b > a ? 'larger' : 'smaller');
+    qData.workSteps = `Total parts = ${a} + ${b} = ${sum}. One part = ${total} ÷ ${sum} = ${mult}. The ${which} share = ${askForA?a:b} × ${mult} = <b>${qData.ans}</b>.`;
     el.innerHTML = `Share ${totalStr} in <strong>${a} : ${b}</strong><br><span style="color:var(--accent)">${which} share = ?</span>`;
   }
   else if (level === 2) {
@@ -10784,6 +10922,7 @@ function genRatioShare() {
     const idx = ri(3);
     const targetVal = sorted[idx];
     qData.ans = targetVal * mult;
+    qData.workSteps = `Total parts = ${a} + ${b} + ${c} = ${sum}. One part = ${total} ÷ ${sum} = ${mult}. The ${labels[idx]} share = ${targetVal} × ${mult} = <b>${qData.ans}</b>.`;
     el.innerHTML = `Share ${totalStr} in <strong>${a} : ${b} : ${c}</strong><br><span style="color:var(--accent)">${labels[idx]} share = ?</span>`;
   }
   else if (level === 3) {
@@ -10799,6 +10938,7 @@ function genRatioShare() {
     const idx = ri(3);
     const targetVal = sorted[idx];
     qData.ans = targetVal * mult;
+    qData.workSteps = `Total parts = ${a} + ${b} + ${c} = ${sum}. One part = ${total} ÷ ${sum} = ${mult}. The ${labels[idx]} share = ${targetVal} × ${mult} = <b>${qData.ans}</b>.`;
     el.innerHTML = `Share ${totalStr} in <strong>${a} : ${b} : ${c}</strong><br><span style="color:var(--accent)">${labels[idx]} share = ?</span>`;
   }
   else {
@@ -10810,16 +10950,16 @@ function genRatioShare() {
     const mode = ri(3);
     if (mode === 0) {          // given smaller share → find larger
       qData.ans = larger * mult;
-      qData.workSteps = 'One part = ' + (smaller*mult) + ' ÷ ' + smaller + ' = ' + mult + ' per part → larger = ' + larger + ' × ' + mult + ' = ' + qData.ans + '.';
+      qData.workSteps = 'One part = ' + (smaller*mult) + ' ÷ ' + smaller + ' = ' + mult + ' per part → larger = ' + larger + ' × ' + mult + ' = <b>' + qData.ans + '</b>.';
       el.innerHTML = `In <strong>${a} : ${b}</strong>, the smaller share is ${$}${smaller*mult}.<br><span style="color:var(--accent)">larger share = ?</span>`;
     } else if (mode === 1) {   // given difference → find total
       const diff = (larger - smaller) * mult;
       qData.ans = (a + b) * mult;
-      qData.workSteps = 'Difference ' + diff + ' = ' + (larger-smaller) + ' parts → 1 part = ' + mult + ' → total = ' + (a+b) + ' × ' + mult + ' = ' + qData.ans + '.';
+      qData.workSteps = 'Difference ' + diff + ' = ' + (larger-smaller) + ' parts → 1 part = ' + mult + ' → total = ' + (a+b) + ' × ' + mult + ' = <b>' + qData.ans + '</b>.';
       el.innerHTML = `In <strong>${a} : ${b}</strong>, the difference between the shares is ${$}${diff}.<br><span style="color:var(--accent)">total = ?</span>`;
     } else {                   // given larger share → find smaller
       qData.ans = smaller * mult;
-      qData.workSteps = 'One part = ' + (larger*mult) + ' ÷ ' + larger + ' = ' + mult + ' per part → smaller = ' + smaller + ' × ' + mult + ' = ' + qData.ans + '.';
+      qData.workSteps = 'One part = ' + (larger*mult) + ' ÷ ' + larger + ' = ' + mult + ' per part → smaller = ' + smaller + ' × ' + mult + ' = <b>' + qData.ans + '</b>.';
       el.innerHTML = `In <strong>${a} : ${b}</strong>, the larger share is ${$}${larger*mult}.<br><span style="color:var(--accent)">smaller share = ?</span>`;
     }
   }
@@ -10859,9 +10999,11 @@ function genRateSimplify() {
   let qStr;
   if (ctx.qty === '$') {
     qStr = `$${total} for ${divisor} ${ctx.per}`;
+    qData.workSteps = `Find the cost of ONE ${ctx.per}: ${total} ÷ ${divisor} = <b>$${unitRate}</b> per ${ctx.per}.`;
     el.innerHTML = `${qStr}<br><span style="color:var(--accent)">$ per ${ctx.per} = ?</span>`;
   } else {
     qStr = `${total} ${ctx.unit} in ${divisor} ${ctx.per}`;
+    qData.workSteps = `Find the amount in ONE ${ctx.per}: ${total} ÷ ${divisor} = <b>${unitRate} ${ctx.unit}/${ctx.per}</b>.`;
     el.innerHTML = `${qStr}<br><span style="color:var(--accent)">${ctx.unit}/${ctx.per} = ?</span>`;
   }
 }
@@ -10884,12 +11026,14 @@ function genRateConvert() {
       // Only use if kmh is whole (i.e. ms divisible by 5)
       if (Number.isInteger(kmh)) {
         qData.ans = ms;
+        qData.workSteps = `km/h → m/s means divide by 3.6: ${kmh} ÷ 3.6 = <b>${ms}</b> m/s.`;
         el.innerHTML = `${kmh} km/h<br><span style="color:var(--accent)">m/s = ?</span>`;
         return;
       }
       // Fallback: pick a known clean pair
       const cleanMs = [5, 10, 15, 20, 25, 30][ri(6)];
       qData.ans = cleanMs;
+      qData.workSteps = `km/h → m/s means divide by 3.6: ${cleanMs * 3.6} ÷ 3.6 = <b>${cleanMs}</b> m/s.`;
       el.innerHTML = `${cleanMs * 3.6} km/h<br><span style="color:var(--accent)">m/s = ?</span>`;
     }
     else if (choice === 1) {
@@ -10897,12 +11041,14 @@ function genRateConvert() {
       const ms = [5, 10, 15, 20, 25, 30][ri(6)];
       const kmh = ms * 3.6;
       qData.ans = kmh;
+      qData.workSteps = `m/s → km/h means multiply by 3.6: ${ms} × 3.6 = <b>${kmh}</b> km/h.`;
       el.innerHTML = `${ms} m/s<br><span style="color:var(--accent)">km/h = ?</span>`;
     }
     else {
       // $/kg → cents/g. $X/kg = X/10 cents/g
       const dollarsPerKg = rr(1, 9); // whole dollars
       qData.ans = dp(dollarsPerKg / 10, 1);
+      qData.workSteps = `$${dollarsPerKg}/kg = ${dollarsPerKg*100} cents for 1000 g, so per gram = ${dollarsPerKg*100} ÷ 1000 = <b>${qData.ans}</b> cents/g.`;
       el.innerHTML = `$${dollarsPerKg}/kg<br><span style="color:var(--accent)">cents per gram = ?</span>`;
     }
   }
@@ -10913,18 +11059,21 @@ function genRateConvert() {
       // $/L → cents/mL. $X/L = X/10 c/mL.
       const dollarsPerL = dp(rr(80, 350) / 100, 2); // e.g. 1.20
       qData.ans = dp(dollarsPerL / 10, 3);
+      qData.workSteps = `$${dollarsPerL.toFixed(2)}/L = ${dp(dollarsPerL*100,2)} cents for 1000 mL, so per mL = ${dp(dollarsPerL*100,2)} ÷ 1000 = <b>${qData.ans}</b> cents/mL.`;
       el.innerHTML = `$${dollarsPerL.toFixed(2)}/L<br><span style="color:var(--accent)">cents per mL = ?</span>`;
     }
     else if (choice === 1) {
       // km/h → m/s. Pick kmh that gives a clean answer (kmh divisible by 3.6 ideally)
       const kmh = [18, 36, 54, 72, 90, 108, 27, 45, 63, 81][ri(10)];
       qData.ans = dp(kmh / 3.6, 2);
+      qData.workSteps = `km/h → m/s means divide by 3.6: ${kmh} ÷ 3.6 = <b>${qData.ans}</b> m/s.`;
       el.innerHTML = `${kmh} km/h<br><span style="color:var(--accent)">m/s = ?</span>`;
     }
     else {
       // $/kg → cents/g, decimal version
       const dollarsPerKg = dp(rr(50, 950) / 100, 2); // e.g. $2.50
       qData.ans = dp(dollarsPerKg / 10, 3);
+      qData.workSteps = `$${dollarsPerKg.toFixed(2)}/kg = ${dp(dollarsPerKg*100,2)} cents for 1000 g, so per gram = ${dp(dollarsPerKg*100,2)} ÷ 1000 = <b>${qData.ans}</b> cents/g.`;
       el.innerHTML = `$${dollarsPerKg.toFixed(2)}/kg<br><span style="color:var(--accent)">cents per gram = ?</span>`;
     }
   }
