@@ -1,354 +1,5 @@
-<!--
-  Sandy Fast Facts — v73
-  Current skills-platform build: 10 categories, 75 skills, 233 levels (Decimals now 15 skills).
-
-  Changes in v73 (Laura). ADDITIVE + storage-safe — no existing id/lvKey/ff_ key changed.
-  Three new Decimals skills (all RECALL / Fluent-eligible):
-  (1) NEW "Add Decimals" (id decAdd, lvKey da) and "Subtract Decimals" (id decSub, lvKey dsu) —
-      split out from the combined skill. The combined "Add & Subtract Decimals" is KEPT unchanged.
-      Same three levels, column-aligned layout and gameplay as the combined skill; genDecAddSub
-      now takes a forceOp arg ('add'/'sub'/undefined) and genDecAdd/genDecSub call it. Bands reuse
-      the combined skill's target (scalar 18) so banding is identical.
-  (2) NEW "Multiply & Divide by 10, 100, 1000" (id decPow10, lvKey dp10) after Divide Decimals.
-      L1 multiply by 10/100/1000 · L2 divide · L3 mixed × / ÷ · L4 mixed by multiples (20, 50,
-      400 …). genDecPow10 constructs divides from the answer so every answer is an exact decimal.
-      RECALL; PROPOSED FLUENCY_TARGET [18,16,14,10] — recalibrate with class data.
-  Dashboard: FastFactsBands_v70.bas appends decAdd/decSub (×3) + decPow10 (×4); prior rows byte-identical.
-
-  Changes in v72 (Laura). Compare & Order Decimals tweaks (storage-safe; no id/key change):
-  (1) L2 ordering is now FIXED ASCENDING (smallest first) and L4 is now FIXED DESCENDING
-      (largest first) — previously each randomised direction. `cmpSetOrder(el, tiles, forceDir)`
-      takes an explicit direction; L2 passes 'asc', L4 passes 'desc'.
-  (2) NEW Level 5 "Order Positive & Negative" — arrange mode, orders a mix of POSITIVE and
-      NEGATIVE integers, fractions and decimals (guaranteed at least one of each sign; direction
-      randomised). New `cmpSignedTile` maker; L5 mode added to levelModes. METHOD_BAND_CEIL
-      compareDec extended to [12,6,10,5,4] (L5 = 4, placeholder). METHOD_TIP notes negatives.
-
-  Changes in v71 (Laura). RENDER + one new skill; all storage-safe (no existing ff_ key
-  changed; new id compareDec only).
-  (1) Convert Decimals→Fractions LEVEL 1 prompt now reads "Write this decimal as a fraction."
-      (dropped "in simplest form" — L1 fractions are already in simplest form). L2/L3 keep it.
-  (2) Add & Subtract Decimals: the stacked layout now aligns on the DECIMAL POINT (blank-align,
-      no padding zeros) instead of right-aligning the last digit — fixes 5 − 2.8 mis-lining up.
-  (3) Multiply Decimals: rendered as a VERTICAL algorithm (numbers right-aligned, × on the last
-      row, overline) instead of a horizontal "a × b".
-  (4) Divide Decimals: rendered as a VERTICAL expression (÷ on the last row, overline) — NOT
-      short division (Laura's call). Right-aligned.
-  (5) NEW skill "Compare & Order Decimals" (id compareDec, lvKey cmp), placed before Rounding
-      Decimals. METHOD skill (no Fluent badge; 🐆 Cheetah stretch). 4 levels:
-        L1 tap the correct sign (< > =) between two decimals  ['choice']
-        L2 tap-to-order 4 decimals ascending/descending       ['arrange' — NEW input mode]
-        L3 tap the correct sign comparing fractions/decimals/integers  ['choice']
-        L4 tap-to-order mixed fractions/decimals/integers      ['arrange']
-      Introduces a new 'arrange' input mode (tap tiles into place; Clear/Check). METHOD_BAND_CEIL
-      compareDec:[12,6,10,5] are PROPOSED placeholders — recalibrate with class data.
-  Dashboard .bas: compareDec rows still TODO (method skill; unknown-skill cells stay blank/safe
-  until appended). Everything else from v70 stands.
-
-  Changes in v70 (Laura). (1) Place Value L2 now accepts BOTH the place-value fraction
-  (8/100) and any simplified/equivalent form (2/25) — the marking accepts any fraction
-  equal in value to the digit-over-place answer. (2) Convert Decimals→Fractions / Fractions
-  →Decimals LEVEL 1 now only generates decimals whose fraction is already in simplest form
-  over 10/100/1000 (num coprime to den), so the base level never requires cancelling. Bands
-  and the dashboard .bas are unchanged (targets identical). Everything else from v69 stands.
-
-  Changes in v69 (Laura). (1) DECIMALS REORDERED: Place Value, Identify, Expanded Form,
-  Convert Decimals→Fractions, Convert Fractions→Decimals, Rounding, then Add/Subtract,
-  Multiply, Divide, Squares & Cubes, Order of Operations. (2) CONVERT SPLIT into two
-  skills — decToFrac (decimal→fraction, always the num/den boxes) and fracToDec
-  (fraction→decimal, always the number box). This fixes the fraction panel that mis-
-  rendered as a single box (the old per-question convMode switch). New ids/lvKeys:
-  decToFrac/dtf, fracToDec/ftd (recall: decToFrac [12,10,8], fracToDec [14,12,10]).
-  (3) PLACE VALUE L2 now marks the fraction UNSIMPLIFIED, over its place value (8
-  hundredths = 8/100, not 2/25) — reverses the v68 simplified rule per Laura. (4)
-  EXPANDED FORM L2 options and L3 questions now render 1/10^k as real STACKED FRACTIONS
-  (new powFracHTML + .ef-frac CSS) instead of inline "1/10²" text. (5) In-game BACK
-  button now returns to the current skill's LEVEL LIST, not the category menu.
-  Dashboard FastFactsBands.bas regenerated with 15 new rows (the 5 new recall decimal
-  skills × 3 levels) for animal-band parity.
-
-  Changes in v68 (Laura's revised sign-off on the v67 decimal skills). Two decisions
-  changed from v67: (1) Decimal Place Value L2 now marks the fraction in SIMPLEST FORM
-  (8 hundredths → 2/25), so the generator stores the reduced fraction and the standard
-  simplified-fraction marking applies (the v67 unsimplified special-case was removed).
-  (2) The four decimal skills are now RECALL / Fluent-eligible (🎯), not method — added
-  to RECALL_SKILLS with per-level FLUENCY_TARGET speed targets (decPlaceValue [18,12,15],
-  decExpand [16,16,14], decIdentify [15,15,12], decFracConv [12,10,8] cpm — PROPOSED,
-  easily tuned; no student data exists yet). Removed from METHOD_BAND_CEIL. Everything
-  else from v67 stands. Dashboard .bas still needs the 12 rows (now the recall band
-  cutoffs — thirds of each target, Cheetah = round(1.5×target)). Full version
-  history (v22 → v49) lives in SandyFastFacts_HandoffGuide.
-
-  Changes in v67 (four new Decimals skills — Laura sign-off). ADDITIVE. Four new skills
-  in the Decimals category, each 3 levels, all METHOD (accuracy-first, no 🎯 Fluent),
-  banded flat Lion 8 / Cheetah 12 as a PLACEHOLDER to recalibrate once students use them.
-  New ids/lvKeys (never rename): decPlaceValue/dpv, decExpand/dxf, decIdentify/did,
-  decFracConv/dfk. No existing ff_ key / id / lvKey / share-line / band changed.
-    * Decimal Place Value — L1 name the place of a highlighted digit (tap; wrong options
-      are the off-by-one-place misconception); L2 write the digit's value as a fraction
-      (the digit over its PLACE, kept unsimplified — a dedicated checkAns branch accepts
-      any power-of-ten denominator with the right value, rejects a simplified 1/2 for
-      5/10); L3 rename (0.62 = ▢ thousandths → 620).
-    * Expanded Form — L1 standard (tap: 3.46 = 3 + 0.4 + 0.06, distractors drop/shift the
-      place value); L2 exponent notation (tap: 2×1/10 + 4×1/10² + …); L3 evaluate a sum
-      back to a decimal (typed).
-    * Identify Decimals — L1 read a point on a drawn number line; L2 read a tenths strip
-      or 10×10 hundredths grid; L3 read a 4/5/20/25-part strip (factors of 100). Typed.
-    * Convert Fractions & Decimals — direction chosen PER QUESTION (getInputMode reads
-      qData.convMode): fraction→decimal typed in the number box, decimal→fraction typed
-      in the num/den boxes and marked SIMPLIFIED. L1 denominators 10/100/1000; L2 factors
-      of 100; L3 wider TERMINATING denominators only (8,16,40,80,200,250 — no recurring).
-    Input modes reused: choice / fraction / number (no new mode → no KNOWN_MODES change,
-    smoke sweep auto-covers). Keypad '.' enabled for decIdentify / decExpand / decFracConv.
-    DASHBOARD FOLLOW-UP (not blocking): FastFactsBands.bas needs 12 new rows (4 skills ×
-    3 levels, all K3 G5 L8 A11 C12) so the Excel dashboard shows animals for these — the
-    app and share-line work without it; only the dashboard's animal column is affected
-    until regenerated. Share-line format unchanged, so parsing is unaffected.
-
-  Changes in v66 (geometry diagram fixes — Laura). RENDER-ONLY. No ff_ key / id /
-  lvKey / share-line / band change; no .bas regeneration (byte-identical to v64).
-  Two classroom-reported diagram problems fixed:
-    * Angles on Parallel Lines — the marked angle you're finding was clipped off the
-      left edge of the canvas (a shallow to-scale transversal spread the two
-      intersections to the edges). Now BOTH intersections are centred and the
-      transversal half-length is capped so every marked wedge + label stays on the
-      300x240 canvas. The two marked angles are also SHADED — accent fill for the
-      unknown (x), a soft neutral fill for the given angle — so students can see
-      exactly which angle they are finding. Still drawn to scale.
-    * Congruence & Similarity L3 ('which test?') and L4 side cases ('find x') — the
-      two triangles were drawn from a generic shape unrelated to the labels and at
-      equal on-screen size, so a genuine 3x enlargement looked congruent and the
-      picture 'would not meet any similarity test'. Each triangle is now BUILT from
-      its actual measurements (SSS from three sides, SAS from two sides + included
-      angle, RHS from the right triangle, AAA from the angles), with B a true scaled
-      copy for the 'similar' answers and a genuinely NON-similar triangle for the
-      'not enough information' answers (NOTPROP / TWOS / ONEA / SSA). L3 side triples
-      now enforce the triangle inequality. Answer logic (csSimilarityVerdict /
-      csCongruenceVerdict) is UNCHANGED — only the drawing is rebuilt; test_angles.js
-      and test_congrusimilar.js stay green (incl. their off-canvas + answer===verdict
-      checks).
-
-  Changes in v65 (angle-diagram realism — Laura). RENDER-ONLY. No ff_ key / id /
-  lvKey / share-line / band change; no .bas regeneration (byte-identical to v64).
-  Every 'find angle x' diagram is now drawn TO SCALE, so the target angle sits in
-  its true size category (an obtuse answer looks obtuse, an acute one acute):
-    * Interior Angles of a Triangle: triangle built from the actual angles.
-    * Angle Relationships (comp / supp / vert / point): rays placed to the real
-      measures; the 'point' arc handles reflex sizes.
-    * Angles on Parallel Lines: transversal steepness + lean derived from the
-      angle size so each marked quadrant shows the correct acute/obtuse angle.
-    * Congruence & Similarity L4 (angle case): the pair is built from the actual
-      angle triple so the labelled / unknown vertex is drawn at its true size.
-    * Angles in Quadrilaterals: quads are now BUILT from their four interior angles
-      (two triangles split across the P0-P2 diagonal, law-of-sines exact), so the
-      target sits in its true size category. GENUINELY CONCAVE (reflex) quads are
-      mixed into L1/L2 at ~1/3 (reflex vertex 190-225°) so students practise both
-      concave and convex; convex 4th angle now capped at 170° (was 200°) so the two
-      cases are cleanly separated. L3 parallelogram / trapezium / kite are built
-      parametrically from the given angle so they still read clearly as that shape.
-      Answer logic (sum 360 / property equalities) is UNCHANGED; concave answers
-      stay within 1-359, so the share-line and dashboard are unaffected.
-  Angle labels also moved OUTSIDE each vertex (triangles: radiating from the centroid;
-  quads: along the external bisector, so reflex labels land in the open major-arc
-  region, not the concave notch) and the triangles enlarged, so values are legible
-  even on thin obtuse slivers — same for the Congruence L4 angle labels. L4 given
-  angles capped at 155° so no vertex looks near-straight. Angle naming (Naming Angles
-  L3) was already to-scale — no change.
-
-  Changes in v64 (new Geometry skill: Congruence & Similarity — Laura sign-off).
-  ADDITIVE. New skill id 'congruSimilar' (lvKey 'cs'), 4 levels, recall / Fluent-
-  eligible. NO existing ff_ key / id / lvKey / share-line / band change. Requires a
-  .bas regeneration (4 new band rows appended; all prior rows byte-identical).
-    * L1 [choice]: identify Congruent / Similar / Neither from a labelled pair of
-      shapes (triangles, rectangles, regular polygons). Congruent trumps similar.
-    * L2 [choice, fixed order SSS / SAS / AAS / RHS / Not enough information]: name
-      the congruence test for the marked pair (tick marks = equal sides, arcs =
-      equal angles, square = right angle). 'Not enough information' catches AAA/SSA.
-    * L3 [choice, fixed order SSS / AAA / SAS / RHS / Not enough information]: name
-      the similarity test (numeric side labels on both = known ratio). 'Not enough
-      information' catches SSA-similar, lone facts, non-proportional sides.
-    * L4 [number, integers]: find a missing side (scale factor) or angle (matching
-      angles equal) in a congruent / similar pair. The method level.
-    Bands (Laura): L1-L3 target 18 (= Naming Angles/Lines) -> K6 G12 L18 A26, C27;
-    L4 target 15 (= Angle Relationships L2) -> K5 G10 L15 A22, C23. The correct
-    L2/L3 answer is re-derived by an independent verdict so exactly one option is
-    ever right.
-
-  Changes in v63 (notation + picture variety on Naming Angles, Lines & Triangles —
-  Laura). ADDITIVE to the question generators only. Answer set is UNCHANGED (same
-  words, same choice codes, same options/order), so NO ff_ key / share-line / skill
-  id / lvKey / band change and NO .bas regeneration (byte-identical to v61/v62).
-    • L1–L3 now show, 50/50, EITHER a picture (as before) OR mathematical notation,
-      so students link each word to its symbol/size:
-        L1 → a single letter = point; a bar over two letters = segment; one arrow
-             over = ray; a double arrow over = line.
-        L2 → AB ∥ CD (parallel) or AB ⊥ CD (perpendicular). 'Neither' has no symbol,
-             so it is ALWAYS a picture (still an option button every question).
-        L3 → an angle size in degrees to classify: acute 1–89, right 90, obtuse
-             91–179, straight 180, reflex 181–359, revolution 360.
-    • L4 richer diagrams (Option A): angle triangles are now drawn to scale from a
-      wide random interior-angle triple and LABELLED with all three angles; side
-      triangles are built by SSS from wider random side triples — both give genuinely
-      different shapes AND numbers every question (not just rotation). No right-angle
-      square; the numbers are authoritative. Fixed option order per axis retained.
-
-  Changes in v62 (fixed-order multiple choice for the new skill — Laura). RENDER
-  ORDER ONLY. No ff_ key / share-line / skill id / lvKey / band change; .bas NOT
-  regenerated (byte-identical to v61). On 'Naming Angles, Lines & Triangles', every
-  level whose full option set is shown on every question now renders those options
-  in a FIXED canonical order instead of shuffling — same treatment as Angle
-  Relationships L1 / Angles on Parallel Lines L1, to cut cognitive load. The figure
-  is random each question, so the answer is NOT position-predictable.
-    L1 → Point, Ray, Line segment, Line (fixed).
-    L2 → Parallel, Perpendicular, Neither (fixed).
-    L4 → by angles: Acute, Right, Obtuse (fixed); by sides: Equilateral, Isosceles,
-         Scalene (fixed).
-  L3 stays SHUFFLED — it shows the correct answer with 3 random distractors from a
-  pool of 6, so the option set changes per question and there is no stable order.
-
-  Changes in v61 (new Geometry skill + Geometry reorder — Laura). ADDITIVE +
-  reorder only. NO existing ff_ key / id / lvKey / share-line / band-threshold
-  change. Requires a .bas regeneration (4 new band rows appended; every prior
-  row byte-identical) because the new skill is Fluent-eligible.
-  1. NEW SKILL — 'Naming Angles, Lines & Triangles' (id nameAnglesLines, lvKey
-     nal, inputMode choice, recall / Fluent-eligible, Yr 7). Four levels, each a
-     tap-to-identify task drawn as SVG:
-       L1 point / ray / line segment / line       (4 options)
-       L2 parallel / perpendicular / neither        (3 options; no right-angle
-          square — perpendicular judged by eye, 'neither' drawn 40–54° off-square)
-       L3 acute / right / obtuse / straight / reflex / revolution  (correct + 3;
-          an orange arc + arrowhead marks the named angle → reflex reads major side)
-       L4 triangles, axis-split so every question has ONE answer: 'by its angles'
-          (acute/right/obtuse) or 'by its sides' (equilateral/isosceles/scalene,
-          isosceles = exactly two equal sides). 3 options.
-     Target 18 across all four levels (mirrors Naming 2D & 3D Shapes) → bands
-     6 / 12 / 18 / 26, Cheetah 27.
-  2. GEOMETRY REORDER (display only — order ≠ rename, storage-safe): Naming 2D &
-     3D Shapes, Naming Angles Lines & Triangles, Euler's Rule, Interior Angles,
-     Angle Relationships, Angles on Parallel Lines, Angles in Quadrilaterals.
-
-  Changes in v60 (Euler's Rule worked-answer copy — Laura). Copy/format only —
-  NO band, skill, id/lvKey, ff_ key, or share-line change; no .bas regeneration.
-  The Level 2 "show working" for Euler's Rule now matches how it's taught:
-  the rule is stated as V + F = E + 2 (V first) and the solution is laid out one
-  step per line — state rule, substitute the two knowns, rearrange, solve — e.g.
-  for "15 faces, 39 edges, find vertices":
-       V + F = E + 2
-       V + 15 = 39 + 2
-       V = 41 − 15
-       V = 26
-  The same V + F = E + 2 ordering now appears in the method tip, the L1 check
-  hint, and the Level 2 description. Band cutoffs unchanged (still placeholder
-  Lion 8, pending calibration).
-
-  Changes in v59 (new Geometry skill + a display fix — Laura). NO ff_ key or
-  share-line FORMAT change → storage-safe & share-safe. New skill adds new band
-  rows to FastFactsBands.bas (additive; the share-line format is unchanged).
-
-  1. NEW SKILL — "Euler's Rule — Edges, Faces & Vertices" (id eulerRule, lvKey eul),
-     placed in Geometry directly under Naming 2D & 3D Shapes. Year 7. Two levels:
-       • L1 — a 3D solid is shown (reusing the existing SHAPE_LIB wireframes); the
-         student counts one of faces / vertices / edges. Polyhedra only (prisms,
-         pyramids, cube, cuboid) — curved solids break Euler's rule and their
-         F/V/E is contested, so they're excluded. Dodecahedron omitted from L1
-         (uncountable off the diagram).
-       • L2 — no diagram, no name; two of F/V/E are given as numbers, the student
-         finds the third with V + F = E + 2. Values drawn from REAL solids (prisms
-         and pyramids 3–15 sides, plus the dodecahedron), so every triple is a
-         genuine polyhedron. Any of F/V/E can be the unknown.
-     Method skill (banded, no 🎯 Fluent badge), placeholder ceiling Lion 8 /
-     Cheetah 12 (K3 G5 L8 A11 C12) — matches the "rest of row 1" family and is
-     flagged PENDING Laura's Euler calibration. L2 carries a LEVEL_REC nudge toward
-     Challenge (label only, never blocks). Whole-number 'number' input — no new
-     input mode, so KNOWN_MODES is unchanged.
-
-  2. DISPLAY FIX — the Geometry/Trig category header read "TRIGONOMETRY &AMP;
-     PYTHAGORAS". The label string held the HTML entity "&amp;" but is rendered via
-     textContent (then upper-cased), so the entity showed literally. Changed the
-     stored label to a plain "&", matching the sibling "Ratios & Rates" label.
-     Display-only — not a skill id, lvKey, ff_ key or share-line value.
-
-  Changes in v58 (Fluency unlocked for geometry & Pythagoras — Laura). Students
-  were being force-switched into the 3-minute Challenge on these skills and, if
-  they'd wanted a quick go, exiting with no score at all. Fluency is now allowed;
-  L2+ shows a "Best played in Challenge" hint instead of blocking. NO ff_ key,
-  share-line, skill id, lvKey or band threshold changed → storage-safe & share-safe.
-
-  1. Removed noFluency from Pythagoras, Interior Angles, Angle Relationships,
-     Angles on Parallel Lines, and Angles in Quadrilaterals. They can now be
-     played in Fluency (60s) as well as Challenge (180s). Because the score is
-     rate-normalised (correct-per-minute × accuracy²), Fluency and Challenge sit
-     on the same scale — a 60s round yields a real, comparable band.
-
-  2. Per-level hint (LEVEL_REC): L1 of each is left un-flagged (fast enough to
-     band from 60s); L2 onwards recommends Challenge on the level-select screen,
-     with the existing one-tap "Switch to Challenge". Naming 2D & 3D Shapes is
-     unchanged (already Fluency, no hint).
-
-     Note: Interior Angles & Angles in Quadrilaterals remain 'method' skills —
-     they earn an animal band in Fluency but not the "Fluent" badge, and their
-     band ceiling is still the flat placeholder (Lion 5 / Cheetah 8).
-
-  ── Changes in v57 (multiple-choice UI polish — Laura classroom feedback). Purely
-  presentational + render-order; NO ff_ key, share-line, skill id, lvKey or band
-  threshold changed → storage-safe & share-safe. 14 suites still passing.
-
-  1. Uniform buttons (all choice skills — trig, shapes, angle L1). Every option
-     button is now the SAME fixed size (74px, 2×2 grid) whatever the label length;
-     text shrinks to 1.15rem and wraps to two lines instead of the box growing.
-
-  2. Desktop fit (all choice-mode geometry). On a laptop the tall diagram card was
-     pushing the answer grid below the fold. Choice questions now cap the diagram
-     to 200px on ≥768px screens (scoped via #s-game.choice-active — number-input
-     geometry is untouched) so all four options stay on screen. 2×2 kept on every
-     device, so the spatial map is identical phone and desktop.
-
-  3. Fixed option positions for the two same-4-options skills:
-       • Angle Relationships L1 → Complementary, Supplementary, Vertically opposite,
-         Angles at a point (fixed).
-       • Angles on Parallel Lines L1 → Corresponding, Alternate, Co-interior,
-         Vertically opposite (fixed).
-     No longer shuffled, to cut cognitive load. Safe because the diagram still
-     rotates/varies and the relationship itself is random, so position never leaks
-     the answer. Trig & Naming Shapes stay shuffled (their options differ per Q).
-
-  Changes in v56 (classroom-review round on the new skills; students are on ≤v49 so
-  none of the band changes below can disturb an existing score or PB):
-
-  1. Band recalibration — Laura sign-off (Hard Rule 4). Four skills promoted from
-     method to RECALL, so they now earn the 🎯 Fluent badge, with signed-off targets:
-       • Naming 2D & 3D Shapes — all levels = Trig Exact Values L2  (T=18:
-         🦘0-6 🐕7-12 🦁13-18 🦌19-26 🐆27+)
-       • Angle Relationships / Angles on Parallel Lines — L1 = Trig Exact L2 (18);
-         L2 & L3 = Multiply Integers L3 (T=15: 🦘0-5 🐕6-10 🦁11-15 🦌16-22 🐆23+)
-       • Pythagoras — L1 = Multiply Integers L3 (15)
-     Levels Laura didn't name keep their previous band numbers, carried as recall
-     targets so nothing else moves: angle-skill L4 = 5, Pythagoras L2–L4 = 5. (These
-     two carry-over choices are flagged for confirmation — see handoff notes.)
-     Storage-safe & share-safe: bands are display-only, computed from the score; no
-     ff_ key, share-line, skill id or lvKey changed. test_bands updated + passing.
-
-  2. Naming 2D & 3D Shapes — Level 1 now includes every quadrilateral, special ones
-     too (parallelogram, rhombus, trapezium, kite) alongside the original 2D shapes.
-
-  3. Angle-diagram variety, so students can't pattern-match one picture:
-       • Angle Relationships diagrams now render at a random orientation (the marked
-         angle is no longer always in the same spot). Complementary uses a clean
-         right-angle split; supplementary a steep ray; vertically-opposite the obtuse
-         pair; angles-at-a-point three rays.
-       • Angles on Parallel Lines — the transversal now leans either way at a varying
-         steepness each question.
-       • The algebra level (L4) of Angle Relationships now includes COMPLEMENTARY
-         angles again (Laura), with the two expressions staggered so they stay clear
-         of the right-angle rays and of each other.
-     Verified by the geometric checker: 0 line-overlaps, 0 label collisions and 0
-     off-canvas labels across 400 samples per level.
-
-  Tests: ALL 15 SUITES PASSED. Storage-safety re-verified against v50.
-
-  --------------------------------------------------------------------------------
-
-<!-- v48: dropped `maximum-scale=1.0, user-scalable=no`. iOS ignored it (so pinch worked there anyway) but Android obeyed it, blocking accessibility pinch-zoom. Accidental double-tap-to-zoom is now killed per-control via `touch-action: manipulation` instead, which leaves deliberate pinch-zoom intact on every platform. -->
+<!-- Sandy Fast Facts — v74 -->
+<!-- Viewport (v48): dropped `maximum-scale=1.0, user-scalable=no`. iOS ignored it (so pinch worked there anyway) but Android obeyed it, blocking accessibility pinch-zoom. Accidental double-tap-to-zoom is killed per-control via `touch-action: manipulation` instead, which leaves deliberate pinch-zoom intact on every platform. -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
@@ -1020,6 +671,22 @@ body {
 .arrange-ctrls { display: flex; gap: 10px; justify-content: center; max-width: 440px; margin: 0 auto; }
 .arrange-ctrls button { flex: 1; padding: 12px; font-size: 1rem; }
 .arrange-check:disabled { opacity: 0.5; cursor: default; }
+/* ── Convert FDP table (v74) ── */
+.fdp-table { border-collapse: collapse; margin: 0 auto; font-family: 'Nunito', sans-serif; }
+.fdp-table th { background: var(--accent); color: #fff; font-weight: 900; font-size: 0.82rem; padding: 8px 10px; border: 1px solid var(--accent); }
+.fdp-table td { border: 1px solid var(--border); padding: 8px 10px; text-align: center; min-width: 92px; height: 58px; vertical-align: middle; }
+.fdp-given { font-weight: 900; font-size: 1.25rem; color: var(--text); }
+.fdp-inwrap { display: inline-flex; align-items: center; gap: 3px; justify-content: center; }
+.fdp-unit { font-weight: 900; font-size: 1.1rem; color: var(--muted); }
+.fdp-input { width: 62px; text-align: center; font-size: 1.15rem; padding: 6px 4px; }
+.fdp-fracwrap { display: inline-flex; flex-direction: column; align-items: center; gap: 2px; }
+.fdp-fracline { width: 40px; height: 3px; background: var(--text); border-radius: 2px; }
+.fdp-frac { width: 46px; text-align: center; font-size: 1.05rem; padding: 4px 2px; }
+/* ── Profit / Loss toggle (v74) ── */
+.pl-btn { flex: 0 0 auto; padding: 12px 22px; font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 1.05rem; border: 2px solid var(--border); background: var(--surface); color: var(--text); border-radius: var(--r-sm); cursor: pointer; }
+.pl-btn.sel { border-color: var(--accent); background: var(--accent); color: #fff; }
+.pl-btn.ok  { border-color: var(--green); background: var(--green); color: #fff; }
+.pl-btn.bad { border-color: var(--red);   background: var(--red);   color: #fff; }
 /* compact stacked fraction for buttons / radian angles */
 .t-frac { display: inline-flex; flex-direction: column; align-items: center; line-height: 1; vertical-align: middle; }
 .t-frac .tn { font-size: 1.2rem; font-weight: 900; }
@@ -1925,7 +1592,7 @@ body {
     <div class="cat-card" onclick="openCat('integers')">
       <span class="cat-icon">±</span>
       <div class="cat-name">Integers</div>
-      <div class="cat-desc">Add, subtract, multiply, squares, cubes &amp; BODMAS</div>
+      <div class="cat-desc">Add, subtract, multiply, divide, squares, cubes &amp; BODMAS</div>
     </div>
     <div class="cat-card" onclick="openCat('exponents')">
       <span class="cat-icon">x²</span>
@@ -1941,7 +1608,12 @@ body {
     <div class="cat-card" onclick="openCat('decimals')">
       <span class="cat-icon">0.1</span>
       <div class="cat-name">Decimals</div>
-      <div class="cat-desc">×÷ +−, squares, cubes, rounding &amp; BODMAS</div>
+      <div class="cat-desc">Place value, convert, compare, round, ×÷ +−, squares &amp; BODMAS</div>
+    </div>
+    <div class="cat-card" onclick="openCat('percentages')">
+      <span class="cat-icon">%</span>
+      <div class="cat-name">Percentages</div>
+      <div class="cat-desc">Identify, convert FDP, of an amount, increase/decrease &amp; profit/loss</div>
     </div>
     <div class="cat-card" onclick="openCat('ratiosrates')">
       <span class="cat-icon">➡️</span>
@@ -1956,7 +1628,7 @@ body {
     <div class="cat-card" onclick="openCat('equations')">
       <span class="cat-icon">⚖️</span>
       <div class="cat-name">Equations</div>
-      <div class="cat-desc">One &amp; two-step, fractions, denominators &amp; both sides</div>
+      <div class="cat-desc">One &amp; two-step, fractions, both sides &amp; inequalities</div>
     </div>
     <div class="cat-card" onclick="openCat('trig')">
       <span class="cat-icon">📐</span>
@@ -1966,7 +1638,7 @@ body {
     <div class="cat-card" onclick="openCat('geometry')">
       <span class="cat-icon">△</span>
       <div class="cat-name">Geometry</div>
-      <div class="cat-desc">Angles &amp; diagram-based reasoning</div>
+      <div class="cat-desc">Naming shapes, angles, Euler's rule &amp; congruence</div>
     </div>
 
   </div>
@@ -2258,6 +1930,37 @@ body {
     </div>
   </div>
 
+  <!-- Convert FDP table (v74) — fill the blank cells; 1 point per correct box. -->
+  <div id="pctTableWrap" style="display:none; flex-direction:column; align-items:center; gap:12px; margin-bottom:14px;">
+    <table class="fdp-table">
+      <thead><tr><th>Percentage</th><th>Decimal</th><th>Fraction</th></tr></thead>
+      <tbody id="fdpBody">
+        <tr>
+          <td class="fdp-cell"><span class="fdp-given" id="pctPg0"></span><span class="fdp-inwrap" id="pctPin0"><input id="pctP0" class="ans-input fdp-input" type="text" inputmode="decimal" disabled placeholder="?"><span class="fdp-unit">%</span></span></td>
+          <td class="fdp-cell"><span class="fdp-given" id="pctDg0"></span><span class="fdp-inwrap" id="pctDin0"><input id="pctD0" class="ans-input fdp-input" type="text" inputmode="decimal" disabled placeholder="?"></span></td>
+          <td class="fdp-cell"><span class="fdp-given" id="pctFg0"></span><span class="fdp-fracwrap" id="pctFin0"><input id="pctFn0" class="ans-input fdp-frac" type="text" inputmode="numeric" disabled placeholder="?"><span class="fdp-fracline"></span><input id="pctFd0" class="ans-input fdp-frac" type="text" inputmode="numeric" disabled placeholder="?"></span></td>
+        </tr>
+        <tr>
+          <td class="fdp-cell"><span class="fdp-given" id="pctPg1"></span><span class="fdp-inwrap" id="pctPin1"><input id="pctP1" class="ans-input fdp-input" type="text" inputmode="decimal" disabled placeholder="?"><span class="fdp-unit">%</span></span></td>
+          <td class="fdp-cell"><span class="fdp-given" id="pctDg1"></span><span class="fdp-inwrap" id="pctDin1"><input id="pctD1" class="ans-input fdp-input" type="text" inputmode="decimal" disabled placeholder="?"></span></td>
+          <td class="fdp-cell"><span class="fdp-given" id="pctFg1"></span><span class="fdp-fracwrap" id="pctFin1"><input id="pctFn1" class="ans-input fdp-frac" type="text" inputmode="numeric" disabled placeholder="?"><span class="fdp-fracline"></span><input id="pctFd1" class="ans-input fdp-frac" type="text" inputmode="numeric" disabled placeholder="?"></span></td>
+        </tr>
+        <tr>
+          <td class="fdp-cell"><span class="fdp-given" id="pctPg2"></span><span class="fdp-inwrap" id="pctPin2"><input id="pctP2" class="ans-input fdp-input" type="text" inputmode="decimal" disabled placeholder="?"><span class="fdp-unit">%</span></span></td>
+          <td class="fdp-cell"><span class="fdp-given" id="pctDg2"></span><span class="fdp-inwrap" id="pctDin2"><input id="pctD2" class="ans-input fdp-input" type="text" inputmode="decimal" disabled placeholder="?"></span></td>
+          <td class="fdp-cell"><span class="fdp-given" id="pctFg2"></span><span class="fdp-fracwrap" id="pctFin2"><input id="pctFn2" class="ans-input fdp-frac" type="text" inputmode="numeric" disabled placeholder="?"><span class="fdp-fracline"></span><input id="pctFd2" class="ans-input fdp-frac" type="text" inputmode="numeric" disabled placeholder="?"></span></td>
+        </tr>
+      </tbody>
+    </table>
+    <button class="btn-primary" id="pctCheckBtn" onclick="checkAns()" style="max-width:220px;">Check</button>
+  </div>
+
+  <!-- Profit & Loss toggle (v74) — number box (stdAnsWrap) + Profit/Loss selector. -->
+  <div id="plToggleWrap" style="display:none; justify-content:center; gap:12px; margin-bottom:14px;">
+    <button type="button" class="pl-btn" id="plProfitBtn" onclick="plChoose('profit')">▲ Profit</button>
+    <button type="button" class="pl-btn" id="plLossBtn" onclick="plChoose('loss')">▼ Loss</button>
+  </div>
+
   <div class="acc-row">
     <div class="acc-label">Accuracy</div>
     <div class="acc-track"><div class="acc-fill" id="accFill" style="width:0%"></div></div>
@@ -2497,14 +2200,25 @@ const CATS = {
       { id:'fracToDec',    name:'Convert Fractions to Decimals',  inputMode:'number', lvKey:'ftd'  },
       { id:'compareDec',   name:'Compare &amp; Order Decimals',   inputMode:'choice', lvKey:'cmp', levelModes:{1:'choice',2:'arrange',3:'choice',4:'arrange',5:'arrange'} },
       { id:'decRound',     name:'Rounding Decimals',              inputMode:'number', lvKey:'dr'   },
-      { id:'decAddSub',    name:'Add &amp; Subtract Decimals',   inputMode:'number', lvKey:'das'  },
       { id:'decAdd',       name:'Add Decimals',                  inputMode:'number', lvKey:'da'   },
       { id:'decSub',       name:'Subtract Decimals',             inputMode:'number', lvKey:'dsu'  },
+      { id:'decAddSub',    name:'Add &amp; Subtract Decimals',   inputMode:'number', lvKey:'das'  },
+      { id:'decPow10',     name:'Multiply &amp; Divide by 10, 100, 1000', inputMode:'number', lvKey:'dp10' },
       { id:'decMultiply',  name:'Multiply Decimals',              inputMode:'number', lvKey:'dmu'  },
       { id:'decDivide',    name:'Divide Decimals',                inputMode:'number', lvKey:'dd'   },
-      { id:'decPow10',     name:'Multiply &amp; Divide by 10, 100, 1000', inputMode:'number', lvKey:'dp10' },
       { id:'decSquareCube',name:'Squares &amp; Cubes of Decimals',inputMode:'number', lvKey:'dsc'  },
       { id:'decOrderOps',  name:'Order of Operations (Decimals)', inputMode:'number', lvKey:'doo'  },
+    ]
+  },
+  percentages: {
+    label: '% Percentages',
+    skills: [
+      { id:'pctIdentify',  name:'Identify Percentages',                inputMode:'number',   lvKey:'pid' },
+      { id:'pctFDP',       name:'Convert Fractions, Decimals &amp; Percentages', inputMode:'pctTable', lvKey:'pfdp' },
+      { id:'pctExpress',   name:'One Amount as a Percentage of Another', inputMode:'number',  lvKey:'pex' },
+      { id:'pctOfAmount',  name:'Finding a Percentage of an Amount',    inputMode:'number',   lvKey:'poa' },
+      { id:'pctChange',    name:'Percentage Increase &amp; Decrease',   inputMode:'number',   lvKey:'pcd' },
+      { id:'pctProfitLoss',name:'Profit &amp; Loss',                    inputMode:'plToggle', lvKey:'ppl' },
     ]
   },
   ratiosrates: {
@@ -2590,6 +2304,8 @@ const SKILL_YEAR = {
   decPow10:'Yr 7', decSquareCube:'Yr 7–8',
   decOrderOps:'Yr 7', decRound:'Yr 7', compareDec:'Yr 7',
   decPlaceValue:'Yr 7', decExpand:'Yr 7–8', decIdentify:'Yr 7', decToFrac:'Yr 7–8', fracToDec:'Yr 7–8',
+  // Percentages
+  pctIdentify:'Yr 7', pctFDP:'Yr 7–8', pctExpress:'Yr 8', pctOfAmount:'Yr 7–8', pctChange:'Yr 8–9', pctProfitLoss:'Yr 9',
   // Ratios & Rates
   ratioSimplify:'Yr 7–8', ratioEquiv:'Yr 7–8', ratioShare:'Yr 7–8',
   rateSimplify:'Yr 7–8', rateConvert:'Yr 8',
@@ -2803,6 +2519,37 @@ const LEVEL_DEFS = {
     { title:'Level 1 — Tenths, Hundredths, Thousandths', desc:'Write a fraction with a denominator of 10, 100 or 1000 as a decimal (already in simplest form).', examples:['7/10 → 0.7', '9/100 → 0.09', '137/1000 → 0.137'] },
     { title:'Level 2 — Factors of 100', desc:'Denominators that divide into 100 (2, 4, 5, 20, 25, 50). Rewrite over 100 or divide top by bottom.', examples:['3/4 → 0.75', '3/5 → 0.6', '9/25 → 0.36'] },
     { title:'Level 3 — Wider Denominators', desc:'Trickier terminating conversions (eighths, sixteenths, fortieths, …). Every answer still stops — no recurring decimals.', examples:['5/8 → 0.625', '3/40 → 0.075', '7/16 → 0.4375'] },
+  ],
+
+  /* ── PERCENTAGES (v74, Laura) ── */
+  pid: [
+    { title:'Level 1 — Tens &amp; Hundreds Grids', desc:'Read the percentage shaded on a 100-square grid or a strip of ten. Type your answer as a percentage.', examples:['37 of 100 shaded → 37%', '4 of 10 shaded → 40%', '80 of 100 → 80%'] },
+    { title:'Level 2 — Factor Grids', desc:'Grids whose size divides into 10 or 100 (5, 20, 25, 50 parts). Every answer is a whole percentage.', examples:['3 of 5 → 60%', '9 of 20 → 45%', '13 of 25 → 52%'] },
+    { title:'Level 3 — Other Grids', desc:'Grids of other sizes (eighths, fortieths, …) — answers can go to one or two decimal places.', examples:['3 of 8 → 37.5%', '5 of 16 → 31.25%', '7 of 40 → 17.5%'] },
+  ],
+  pfdp: [
+    { title:'Level 1 — Nice Values', desc:'Fill the blanks in the table. Convert between fraction, decimal and percentage for friendly values. You score 1 point for every box you fill in correctly.', examples:['½ = 0.5 = 50%', '¼ = 0.25 = 25%', '1/5 = 0.2 = 20%'] },
+    { title:'Level 2 — Less Nice Values', desc:'The same table, with trickier values like 16% or 24%. One point per correct box.', examples:['4/25 = 0.16 = 16%', '3/20 = 0.15 = 15%', '9/25 = 0.36 = 36%'] },
+    { title:'Level 3 — Thirds &amp; Over 100%', desc:'Recurring values like 1/3 (accept 33.3%) and amounts over 100%. One point per correct box.', examples:['1/3 = 0.33… = 33⅓%', '2/3 ≈ 66.7%', '6/5 = 1.2 = 120%'] },
+  ],
+  pex: [
+    { title:'Level 1 — Friendly Totals', desc:'Write one amount as a percentage of another when the total divides neatly. Type your answer as a percentage.', examples:['35 as a % of 50 → 70%', '18 as a % of 25 → 72%', '9 as a % of 20 → 45%'] },
+    { title:'Level 2 — Round to the Nearest Percent', desc:'The division does not come out exactly — round your answer to the nearest whole percent.', examples:['17 out of 30 → 57%', '25 out of 40 → 63%', '11 out of 60 → 18%'] },
+    { title:'Level 3 — Different Units', desc:'The two amounts use different units — convert to the same unit first (cents/dollars, grams/kilograms, mm/cm).', examples:['20c as a % of $2 → 10%', '300 g as a % of 2 kg → 15%', '15 mm as a % of 60 cm → 2.5%'] },
+  ],
+  poa: [
+    { title:'Level 1 — Friendly Percentages', desc:'Find 10%, 20%, 25%, 50% and other easy percentages of an amount.', examples:['10% of 80 → 8', '25% of 60 → 15', '20% of 45 → 9'] },
+    { title:'Level 2 — Any Whole Percent', desc:'Find trickier whole-number percentages such as 11% or 18% of an amount.', examples:['11% of 200 → 22', '18% of 50 → 9', '35% of 80 → 28'] },
+    { title:'Level 3 — Decimals &amp; Over 100%', desc:'Percentages like 12.5%, or more than 100% of an amount.', examples:['12.5% of 80 → 10', '150% of 40 → 60', '7.5% of 200 → 15'] },
+  ],
+  pcd: [
+    { title:'Level 1 — Friendly Increase / Decrease', desc:'Increase or decrease an amount by an easy percentage (10%, 20%, 25%, …).', examples:['Increase 80 by 10% → 88', 'Decrease 60 by 25% → 45', 'Increase 50 by 20% → 60'] },
+    { title:'Level 2 — Any Whole Percent', desc:'Increase or decrease an amount by a trickier whole percentage (11%, 18%, …).', examples:['Increase 200 by 11% → 222', 'Decrease 50 by 18% → 41', 'Increase 80 by 35% → 108'] },
+    { title:'Level 3 — Real-World Words', desc:'Spot the change word — marked up, inflated, appreciation and rise all mean increase; discount, reduction, depreciated and decline all mean decrease.', examples:['$60 marked up 20% → $72', '$80 discounted 25% → $60', '$50 depreciated 10% → $45'] },
+  ],
+  ppl: [
+    { title:'Level 1 — Profit or Loss', desc:'An item is bought and sold — work out the profit or loss in dollars, then tap Profit or Loss.', examples:['Buy $60, sell $25 → $35 loss', 'Buy $40, sell $70 → $30 profit', 'Buy $18, sell $30 → $12 profit'] },
+    { title:'Level 2 — Percentage Profit or Loss', desc:'Work out the percentage profit or loss on the cost price, then tap Profit or Loss.', examples:['Buy $200, sell $40 → 80% loss', 'Buy $50, sell $60 → 20% profit', 'Buy $80, sell $100 → 25% profit'] },
   ],
 
   ipow: [
@@ -3038,9 +2785,20 @@ const RECALL_SKILLS = [
   'nameShapes','nameAnglesLines','angleRel','angleParallel','pythagoras',
   'congruSimilar',
   // v68 (Laura): the four Decimals understanding skills as recall / Fluent-eligible
-  'decPlaceValue','decExpand','decIdentify','decToFrac','fracToDec'
+  'decPlaceValue','decExpand','decIdentify','decToFrac','fracToDec',
+  // v74 (Laura): two Percentages skills as recall / Fluent-eligible (the rest are method)
+  'pctIdentify','pctOfAmount'
 ];
 function getSkillKind(id) { return RECALL_SKILLS.includes(id) ? 'recall' : 'method'; }
+/* v74 (Laura): a few recall skills are Fluent-eligible on the lower levels but METHOD
+   (accuracy-first, no Fluent) on the top level. List those method levels here — the
+   skill stays in RECALL_SKILLS (so it still counts as a Fluent skill overall), but the
+   listed levels behave as method (no fluency target, 🐆 Cheetah goal, "accuracy first"). */
+const METHOD_LEVEL_OVERRIDE = { pctIdentify:[3], pctOfAmount:[3] };
+function getLevelKind(id, lv) {
+  if (RECALL_SKILLS.includes(id) && !((METHOD_LEVEL_OVERRIDE[id] || []).includes(lv))) return 'recall';
+  return 'method';
+}
 
 /* Fluency targets (correct answers per minute) for recall skills. A session is
    "Fluent" when CPM ≥ target AND accuracy ≥ 90%.
@@ -3089,7 +2847,13 @@ const FLUENCY_TARGET = {
   decExpand:[16, 16, 14],
   decIdentify:[15, 15, 12],
   decToFrac:[12, 10, 8],   // decimal → fraction (num/den boxes)
-  fracToDec:[14, 12, 10]   // fraction → decimal (typing a decimal is a touch quicker)
+  fracToDec:[14, 12, 10],   // fraction → decimal (typing a decimal is a touch quicker)
+  // v74 (Laura) — Percentages recall skills. L1/L2 are Fluent-eligible; L3 is METHOD
+  // (target 0 → no fluency badge; banded via BAND_OVERRIDE + METHOD_LEVEL_OVERRIDE).
+  //   Identify %:          L1 15/min · L2 10/min · L3 method
+  //   Finding % of amount: L1 15/min · L2 10/min · L3 method
+  pctIdentify:[15, 10, 0],
+  pctOfAmount:[15, 10, 0]
 };
 const FLUENT_ACC = 0.90;   // accuracy floor to count as fluent
 function getFluencyTarget(s, lv) {
@@ -3239,6 +3003,11 @@ const METHOD_BAND_CEIL = {
   algExpand:7, algFactorHCF:7,
   // heavy multi-step expand / factorise — Lion 4, Cheetah 6
   algExpandTwo:4, algExpandBinom:4, algFactorMonic:4, algFactorGroup:4,
+  // v74 (Laura) — Percentages METHOD skills. Exact per-level Antelope cut-offs for pctFDP and
+  // the L3 (method) levels of pctIdentify/pctOfAmount are set in BAND_OVERRIDE below; the Lion
+  // values here are only a fallback.
+  pctIdentify:[15, 10, 6], pctOfAmount:[15, 10, 6],   // only L3 is read (L1/L2 are recall)
+  pctFDP:[11, 9, 6], pctExpress:[6, 5, 4], pctChange:[6, 5, 4], pctProfitLoss:[5, 4],
 };
 /* Explicit Cheetah thresholds where Laura's value differs from round(1.5·Lion). */
 const METHOD_BAND_CHEETAH = {
@@ -3251,6 +3020,19 @@ const METHOD_BAND_CHEETAH = {
 const BAND_OVERRIDE = {
   addition_L3:    [3, 6, 10, 15],   // K 0-3, G 4-6, L 7-10, A 11-15, C 16+
   subtraction_L3: [3, 6, 10, 15],
+  // v74 (Laura) — Percentages. Format [Kangaroo max, Greyhound max, Lion max, Antelope max];
+  // Cheetah = Antelope max + 1. "Fluent" = start of Antelope (Lion max + 1).
+  // Identify % / Finding % of an amount: L1 Fluent at 15, L2 Fluent at 10, L3 METHOD (Antelope at 7).
+  pctIdentify_L1: [5, 10, 14, 19],  // Fluent (Antelope) at 15
+  pctIdentify_L2: [3, 6, 9, 13],    // Fluent (Antelope) at 10
+  pctIdentify_L3: [2, 4, 6, 9],     // method — Antelope at 7
+  pctOfAmount_L1: [5, 10, 14, 19],  // Fluent (Antelope) at 15
+  pctOfAmount_L2: [3, 6, 9, 13],    // Fluent (Antelope) at 10
+  pctOfAmount_L3: [2, 4, 6, 9],     // method — Antelope at 7
+  // Convert FDP (method, scored per box): Antelope at L1 12, L2 10, L3 7.
+  pctFDP_L1: [4, 8, 11, 15],        // Antelope at 12
+  pctFDP_L2: [3, 6, 9, 13],         // Antelope at 10
+  pctFDP_L3: [2, 4, 6, 9],          // Antelope at 7
 };
 const DEFAULT_METHOD_CEIL = 5;
 
@@ -3309,7 +3091,7 @@ function nextBandInfo(score, s, lv) {
    it's sticky and needs no extra storage), exactly like the animal. */
 const FLUENT_BAND_INDEX = 3;   // Antelope
 function isRecallFluent(s, lv) {
-  if (getSkillKind(s) !== 'recall') return false;
+  if (getLevelKind(s, lv) !== 'recall') return false;
   const pb = getPB(s, lv);
   return pb > 0 && animalIndexFor(pb, s, lv) >= FLUENT_BAND_INDEX;
 }
@@ -3862,7 +3644,7 @@ function selectSkill(smeta) {
     // they currently are; method skills keep the Cheetah stretch target.
     const lvlAnimal = pb > 0 ? animalChipHTML(animalForScore(pb, skill, lv)) : '';
     let goalHTML;
-    if (getSkillKind(skill) === 'recall') {
+    if (getLevelKind(skill, lv) === 'recall') {
       const fluentAt = bandCutoffs(skill, lv).l + 1;   // start of Antelope
       goalHTML = isRecallFluent(skill, lv)
         ? `<span class="fluent-badge">🎯 Fluent ✓ (${fluentAt})</span>`
@@ -3980,7 +3762,7 @@ function prepGameScreen() {
   kbHide();
 
   const pb = getPB(skill, level);
-  const kind = getSkillKind(skill);
+  const kind = getLevelKind(skill, level);
   const tgt  = getFluencyTarget(skill, level);
   // recall skills get a speed target; method skills get an accuracy-first reminder
   const recallNudge = tgt ? `🎯 Fluency target: <strong>${tgt}/min</strong>` : '⏱ Go for speed';
@@ -4025,6 +3807,8 @@ function resetAnswerInputs() {
   { const sg = id('s-game'); if (sg) sg.classList.remove('choice-active'); }  // v57: desktop diagram-shrink is choice-only
   { const aw = id('arrangeAnsWrap'); if (aw) { aw.style.display = 'none'; aw.classList.remove('visible'); } }  // v71
   id('factorAnsWrap').style.display = 'none';
+  { const pt = id('pctTableWrap'); if (pt) pt.style.display = 'none'; }   // v74
+  { const pl = id('plToggleWrap'); if (pl) pl.style.display = 'none'; }   // v74
   id('fracAlgLabel').classList.add('hide');
   id('stdAnsWrap').dataset.wholeFromFrac = '';
 
@@ -4033,7 +3817,8 @@ function resetAnswerInputs() {
    'idxCoeff','idxExp','idxExpB','idxExpC','sciCoeff','sciExp',
    'ratioA','ratioB',
    'algC0','algC1','algC2','algP0','algP1','algP2','algTypeInput',
-   'factorBox0','factorBox1'].forEach(i => {
+   'factorBox0','factorBox1',
+   'pctP0','pctD0','pctFn0','pctFd0','pctP1','pctD1','pctFn1','pctFd1','pctP2','pctD2','pctFn2','pctFd2'].forEach(i => {
     const el = id(i);
     if (el) { el.value=''; el.disabled=true; el.classList.remove('ok','bad'); }
   });
@@ -4085,6 +3870,12 @@ function resetAnswerInputs() {
     id('arrangePool').innerHTML = '';
   } else if (mode === 'factor') {
     id('factorAnsWrap').style.display = 'flex';
+  } else if (mode === 'pctTable') {
+    id('pctTableWrap').style.display = 'flex';
+  } else if (mode === 'plToggle') {
+    id('stdAnsWrap').style.display = 'block';
+    id('ansInput').className = 'ans-input';
+    id('plToggleWrap').style.display = 'flex';
   } else {
     // 'number'
     id('stdAnsWrap').style.display = 'block';
@@ -4168,6 +3959,13 @@ function enableInputs() {
     buildChoiceGrid();
   } else if (mode === 'arrange') {
     buildArrangeGrid();
+  } else if (mode === 'pctTable') {
+    buildPctTable();
+  } else if (mode === 'plToggle') {
+    const inp = id('ansInput');
+    inp.disabled = false;
+    plResetButtons();
+    inp.focus();
   } else if (mode === 'factor') {
     const b0 = id('factorBox0'), b1 = id('factorBox1');
     // Scaffold layout: two brackets ( … )( … ) or HCF box outside one bracket … ( … )
@@ -4281,6 +4079,48 @@ function arrangeSubmit() {
   if (gameOver) return;
   if ((qData.arrangeChosen || []).length !== (qData.arrangeTiles || []).length) return;
   checkAns();
+}
+
+/* ── Convert FDP table (v74) — populate given cells, enable blank inputs ── */
+function fmtNum(x){ return String(dp(x, 6)); }
+function buildPctTable() {
+  const rows = qData.pctRows || [];
+  const cb = id('pctCheckBtn'); if (cb) cb.disabled = false;
+  rows.forEach(function(r, i){
+    const givenP = (r.given === 'pct'), givenD = (r.given === 'dec'), givenF = (r.given === 'frac');
+    // Percentage cell
+    id('pctPg' + i).style.display = givenP ? '' : 'none';
+    id('pctPin' + i).style.display = givenP ? 'none' : '';
+    if (givenP) id('pctPg' + i).textContent = fmtNum(r.pctExact) + '%';
+    const pIn = id('pctP' + i); pIn.value = ''; pIn.classList.remove('ok','bad'); pIn.disabled = givenP;
+    // Decimal cell
+    id('pctDg' + i).style.display = givenD ? '' : 'none';
+    id('pctDin' + i).style.display = givenD ? 'none' : '';
+    if (givenD) id('pctDg' + i).textContent = fmtNum(r.decExact);
+    const dIn = id('pctD' + i); dIn.value = ''; dIn.classList.remove('ok','bad'); dIn.disabled = givenD;
+    // Fraction cell
+    id('pctFg' + i).style.display = givenF ? '' : 'none';
+    id('pctFin' + i).style.display = givenF ? 'none' : '';
+    if (givenF) id('pctFg' + i).innerHTML = fracHTML(r.n, r.d);
+    const fnIn = id('pctFn' + i), fdIn = id('pctFd' + i);
+    fnIn.value = ''; fdIn.value = ''; fnIn.classList.remove('ok','bad'); fdIn.classList.remove('ok','bad');
+    fnIn.disabled = givenF; fdIn.disabled = givenF;
+  });
+  kbActivateInputs();
+  kbShow();
+}
+
+/* ── Profit / Loss toggle (v74) ── */
+function plResetButtons() {
+  qData.plChosen = null;
+  ['plProfitBtn','plLossBtn'].forEach(function(b){ const el = id(b); if (el) el.classList.remove('sel','ok','bad'); });
+}
+function plChoose(dir) {
+  if (gameOver) return;
+  if (qData.plMarked) return;           // locked after checking
+  qData.plChosen = dir;
+  id('plProfitBtn').classList.toggle('sel', dir === 'profit');
+  id('plLossBtn').classList.toggle('sel', dir === 'loss');
 }
 
 /* ── setupIndexInput: shows the right sub-row and enables the right inputs ── */
@@ -6482,6 +6322,12 @@ function nextQ() {
   else if (skill === 'decToFrac')     { genDecToFrac(el); }
   else if (skill === 'fracToDec')     { genFracToDec(el); }
   else if (skill === 'compareDec')    { genCompareDec(el); }
+  else if (skill === 'pctIdentify')   { genPctIdentify(el); }
+  else if (skill === 'pctFDP')        { genPctFDP(el); }
+  else if (skill === 'pctExpress')    { genPctExpress(el); }
+  else if (skill === 'pctOfAmount')   { genPctOfAmount(el); }
+  else if (skill === 'pctChange')     { genPctChange(el); }
+  else if (skill === 'pctProfitLoss') { genPctProfitLoss(el); }
   else if (skill === 'ratioSimplify') { genRatioSimplify(); }
   else if (skill === 'ratioEquiv')    { genRatioEquiv(); }
   else if (skill === 'ratioShare')    { genRatioShare(); }
@@ -6577,6 +6423,15 @@ function clearInputState() {
     ['factorBox0','factorBox1'].forEach(i => {
       const el = id(i); if (el) { el.value = ''; el.classList.remove('ok','bad','kb-focused'); }
     });
+  } else if (mode === 'pctTable') {
+    ['pctP0','pctD0','pctFn0','pctFd0','pctP1','pctD1','pctFn1','pctFd1','pctP2','pctD2','pctFn2','pctFd2'].forEach(i => {
+      const el = id(i); if (el) { el.value = ''; el.classList.remove('ok','bad','kb-focused'); }
+    });
+    const cb = id('pctCheckBtn'); if (cb) cb.disabled = false;
+  } else if (mode === 'plToggle') {
+    id('ansInput').value = '';
+    id('ansInput').classList.remove('ok','bad','kb-focused');
+    plResetButtons();
   } else {
     id('ansInput').value = '';
     id('ansInput').classList.remove('ok','bad','kb-focused');
@@ -8231,6 +8086,13 @@ function readUserAnswer(mode) {
       const x0 = g('factorBox0') || '?', x1 = g('factorBox1') || '?';
       return (qData.factorLayout === 'monoBracket') ? `${x0}(${x1})` : `(${x0})(${x1})`;
     }
+    if (mode === 'plToggle') {
+      const a = g('ansInput') || '?';
+      return a + (qData.plMode === 'pct' ? '%' : '') + (qData.plChosen ? ' ' + qData.plChosen : '');
+    }
+    if (mode === 'pctTable') {
+      return (qData._boxPts != null) ? (qData._boxPts + '/' + qData._boxTot + ' boxes') : '—';
+    }
   } catch (e) {}
   return '—';
 }
@@ -8579,9 +8441,64 @@ function checkAns() {
     if (!correct) feedbackStr = `Answer: ${qData.factorAnsText}`;
     [b0, b1].forEach(b => { b.classList.remove('ok','bad'); b.classList.add(correct ? 'ok' : 'bad'); });
   }
+  else if (mode === 'pctTable') {
+    // Fill-the-blanks Fraction/Decimal/Percentage table — 1 point per correct box.
+    const rows = qData.pctRows || [];
+    let filled = 0, boxTot = 0, boxPts = 0;
+    rows.forEach(function(r, i){
+      if (r.given !== 'pct') {
+        boxTot++;
+        const inp = id('pctP' + i), raw = inp.value.trim(); let ok = false;
+        if (raw !== '') { filled++; const v = parseFloat(raw); const tol = r.recurring ? 0.2 : 0.01; ok = !isNaN(v) && Math.abs(v - r.pctExact) <= tol; }
+        inp.classList.remove('ok','bad'); inp.classList.add(ok ? 'ok' : 'bad'); if (ok) boxPts++;
+      }
+      if (r.given !== 'dec') {
+        boxTot++;
+        const inp = id('pctD' + i), raw = inp.value.trim(); let ok = false;
+        if (raw !== '') { filled++; const v = parseFloat(raw); const tol = r.recurring ? 0.01 : 0.001; ok = !isNaN(v) && Math.abs(v - r.decExact) <= tol; }
+        inp.classList.remove('ok','bad'); inp.classList.add(ok ? 'ok' : 'bad'); if (ok) boxPts++;
+      }
+      if (r.given !== 'frac') {
+        boxTot++;
+        const nIn = id('pctFn' + i), dIn = id('pctFd' + i), rn = nIn.value.trim(), rd = dIn.value.trim(); let ok = false;
+        if (rn !== '' && rd !== '') { filled++; const un = parseInt(rn, 10), ud = parseInt(rd, 10); ok = !isNaN(un) && !isNaN(ud) && ud !== 0 && (un * r.d === r.n * ud); }
+        [nIn, dIn].forEach(function(x){ x.classList.remove('ok','bad'); x.classList.add(ok ? 'ok' : 'bad'); });
+        if (ok) boxPts++;
+      }
+    });
+    if (filled === 0) { attempts--; return; }        // accidental empty submit — no penalty
+    qData._boxPts = boxPts; qData._boxTot = boxTot;
+    correct = (boxPts === boxTot);
+    if (!correct) feedbackStr = boxPts + ' / ' + boxTot + ' boxes correct';
+    const cb = id('pctCheckBtn'); if (cb) cb.disabled = true;
+  }
+  else if (mode === 'plToggle') {
+    const raw = id('ansInput').value.trim();
+    if (raw === '' || raw === '.') { attempts--; id('ansInput').focus(); return; }
+    const val = parseFloat(raw);
+    if (isNaN(val)) { attempts--; id('ansInput').focus(); return; }
+    if (!qData.plChosen) { attempts--; id('feedback').style.color = 'var(--amber)'; setText('feedback', 'Tap Profit or Loss'); return; }
+    const amtOk = Math.abs(val - qData.ans) <= 0.01;
+    const dirOk = qData.plChosen === qData.plDir;
+    correct = amtOk && dirOk;
+    qData.plMarked = true;
+    const shownAns = (qData.plMode === 'pct') ? (qData.ans + '% ' + qData.plDir) : ('$' + qData.ans + ' ' + qData.plDir);
+    if (!correct) feedbackStr = 'Answer: ' + shownAns;
+    id('ansInput').classList.remove('ok','bad'); id('ansInput').classList.add(amtOk ? 'ok' : 'bad');
+    ['plProfitBtn','plLossBtn'].forEach(function(b){ id(b).classList.remove('sel'); });
+    id(qData.plChosen === 'profit' ? 'plProfitBtn' : 'plLossBtn').classList.add(dirOk ? 'ok' : 'bad');
+    if (!dirOk) id(qData.plDir === 'profit' ? 'plProfitBtn' : 'plLossBtn').classList.add('ok');
+  }
+
+  // Scoring — pctTable awards 1 point per correct box (attsThis boxes); all other
+  // modes are one point for one question.
+  let gained = correct ? 1 : 0;
+  let attsThis = 1;
+  if (mode === 'pctTable') { gained = qData._boxPts || 0; attsThis = qData._boxTot || 1; }
+  if (attsThis > 1) attempts += (attsThis - 1);
+  score += gained;
 
   if (correct) {
-    score++;
     streak++;
     if (streak > bestStreak) bestStreak = streak;
     setText('feedback','');
@@ -8668,7 +8585,7 @@ function endSession() {
     recordSession(skill, level, fluency, score, Math.round(acc * 100), cpm, pbResult === 'new');
     // Dormant since v43: the fluent flag is no longer surfaced (replaced by the
     // animal band), but we keep setting it so the ff_fl_ key stays storage-safe.
-    if (getSkillKind(skill) === 'recall') {
+    if (getLevelKind(skill, level) === 'recall') {
       const tgt = getFluencyTarget(skill, level);
       if (tgt && cpm >= tgt && acc >= FLUENT_ACC) setFluent(skill, level);
     }
@@ -8759,7 +8676,7 @@ function showResults(fluency, correct, acc, cpm, pbResult, pb, trend) {
   // Scored sessions (Fluency/Challenge) show the animal earned from this
   // session's Fluency Score. Practice shows NO animal — recall keeps its
   // "try Fluency mode" nudge, method keeps its accuracy message.
-  const kind = getSkillKind(skill);
+  const kind = getLevelKind(skill, level);
   const scored = sessionMode === 'fluency' || sessionMode === 'challenge';
   const v = id('rVerdict');
   if (scored) {
@@ -8901,7 +8818,7 @@ function renderLB() {
     // v45: highest animal band for this skill+level (from its PB), plus a Fluent
     // tick for recall skills that have reached Antelope+.
     const animalChip = animalChipHTML(animalForScore(r.pb, r.id, r.lv));
-    const isRecall = getSkillKind(r.id) === 'recall';
+    const isRecall = getLevelKind(r.id, r.lv) === 'recall';
     const fluentTick = (isRecall && animalIndexFor(r.pb, r.id, r.lv) >= FLUENT_BAND_INDEX)
       ? ' <span class="fluent-badge">🎯</span>' : '';
     tr.innerHTML = `<td>${r.name}</td><td>L${r.lv}</td><td style="white-space:nowrap">${animalChip}${fluentTick}</td><td>${sparkHtml}</td><td>${r.pb}</td>`;
@@ -9668,6 +9585,213 @@ function genCompareDec(el){
 }
 
 /* ═══════════════════════════════════════════════
+   PERCENTAGES (v74, Laura sign-off)
+   pctIdentify   — read a shaded grid (RECALL, typed %)
+   pctFDP        — fill-the-blanks Fraction/Decimal/Percentage table
+                   (METHOD, bespoke 'pctTable' mode, 1 point per box)
+   pctExpress    — one amount as a percentage of another (METHOD, typed %)
+   pctOfAmount   — find a percentage of an amount (RECALL, typed value)
+   pctChange     — percentage increase & decrease (METHOD; L3 worded)
+   pctProfitLoss — profit & loss $ then % (METHOD, 'plToggle' mode)
+   All typed answers are plain numbers; the unit (%, $) is stated in the prompt.
+═══════════════════════════════════════════════ */
+// A decimal terminates iff its denominator (lowest terms) has only 2s and 5s.
+function pctTerminates(d){ d = Math.abs(d); while(d % 2 === 0) d /= 2; while(d % 5 === 0) d /= 5; return d === 1; }
+// Draw a general n-part grid with `sh` parts shaded (reuses the decimal renderers).
+function pctGridSVG(n, sh){
+  if(n === 100) return decGrid100SVG(sh);
+  if(n <= 25)   return decStripSVG(n, sh);
+  const cols = 10, rows = Math.ceil(n / cols), cell = 17, X0 = (300 - cell * cols) / 2, y0 = 8; let out = '';
+  for(let i = 0; i < n; i++){ const r = Math.floor(i / cols), c = i % cols;
+    out += '<rect x="' + (X0 + c * cell) + '" y="' + (y0 + r * cell) + '" width="' + cell + '" height="' + cell + '" fill="var(--accent)" fill-opacity="' + (i < sh ? 0.6 : 0) + '" stroke="var(--text)" stroke-width="0.8"/>'; }
+  return decSvg(out, y0 + cell * rows + 14);
+}
+
+function genPctIdentify(el){
+  el.style.fontSize = '1.05rem';
+  let n, sh, svg;
+  if(level === 1){
+    if(Math.random() < 0.5){ n = 100; sh = rr(1, 99); svg = decGrid100SVG(sh); }
+    else { n = 10; sh = rr(1, 9); svg = decStripSVG(10, sh); }
+  } else if(level === 2){
+    n = [4, 5, 20, 25, 50][ri(5)]; sh = rr(1, n - 1); svg = pctGridSVG(n, sh);
+  } else {
+    n = [8, 16, 40][ri(3)]; sh = rr(1, n - 1); svg = pctGridSVG(n, sh);
+  }
+  const pct = dp(100 * sh / n, 2);
+  qData.ans = pct;
+  qData.workSteps = sh + ' of ' + n + ' shaded = ' + sh + '/' + n + ' = ' + String(pct) + '%.';
+  el.innerHTML = '<div style="' + A_LBL + '">What percentage is shaded? (' + n + ' equal parts)</div>' + svg;
+}
+
+/* ── Convert Fractions / Decimals / Percentages — fill-the-blanks table ──
+   Builds qData.pctRows; the table itself lives in the answer panel (pctTable mode).
+   Each row: one form given, the other two blank. 1 point per correctly-filled box. */
+const PFDP_L1 = [[1,2],[1,4],[3,4],[1,5],[2,5],[3,5],[4,5],[1,10],[3,10],[7,10],[9,10],[1,20]];
+const PFDP_L2 = [[4,25],[6,25],[9,25],[11,25],[13,25],[16,25],[3,20],[7,20],[9,20],[11,20],[13,50],[21,50],[7,50],[29,50]];
+const PFDP_L3_REC  = [[1,3],[2,3],[1,6],[5,6]];
+const PFDP_L3_OVER = [[6,5],[3,2],[7,5],[11,10],[9,4],[5,2],[9,5]];
+function pctMakeRow(base){
+  const n = base[0], d = base[1];
+  const recurring = !pctTerminates(d);
+  const pctExact = 100 * n / d, decExact = n / d;
+  // Recurring rows always GIVE the fraction (so we never print an ugly 33.333% given cell).
+  const given = recurring ? 'frac' : ['pct','dec','frac'][ri(3)];
+  return { n:n, d:d, pctExact:pctExact, decExact:decExact, recurring:recurring, given:given };
+}
+function genPctFDP(el){
+  el.style.fontSize = '1.05rem';
+  let pool;
+  if(level === 1) pool = PFDP_L1.slice();
+  else if(level === 2) pool = PFDP_L2.slice();
+  else pool = null;
+  const rows = [];
+  const usedVals = [];
+  let safety = 0;
+  while(rows.length < 3 && safety < 200){
+    safety++;
+    let base;
+    if(level === 3){
+      // Mix: guarantee at least one recurring; allow over-100.
+      const r = Math.random();
+      if(rows.length === 0 || r < 0.4) base = PFDP_L3_REC[ri(PFDP_L3_REC.length)];
+      else base = PFDP_L3_OVER[ri(PFDP_L3_OVER.length)];
+    } else {
+      base = pool[ri(pool.length)];
+    }
+    const v = base[0] / base[1];
+    if(usedVals.some(function(x){ return Math.abs(x - v) < 1e-9; })) continue;
+    usedVals.push(v);
+    rows.push(pctMakeRow(base));
+  }
+  qData.pctRows = rows;
+  qData.workSteps = 'Correct table: ' + rows.map(function(r){
+    return r.n + '/' + r.d + ' = ' + String(dp(r.decExact, 4)) + ' = ' + String(dp(r.pctExact, 2)) + '%';
+  }).join('  ·  ');
+  el.innerHTML = '<div style="' + A_LBL + '">Fill in the missing boxes. You score 1 point for each correct box.</div>';
+}
+
+function genPctExpress(el){
+  el.style.fontSize = '1.7rem';
+  if(level === 1){
+    const B = [4, 5, 10, 20, 25, 50][ri(6)];
+    const A = rr(1, B - 1);
+    qData.ans = dp(100 * A / B, 2);           // B divides 100 → whole percent
+    qData.workSteps = A + ' ÷ ' + B + ' × 100 = ' + String(qData.ans) + '%.';
+    el.innerHTML = '<div style="' + A_LBL + '">Write the first amount as a percentage of the second.</div>'
+      + '<div style="text-align:center;margin:12px 0;font-weight:900;">What is ' + A + ' as a percentage of ' + B + '?</div>';
+  } else if(level === 2){
+    const B = [30, 40, 60, 70, 80, 90, 120][ri(7)];
+    let A, exact;
+    do { A = rr(1, B - 1); exact = 100 * A / B; } while(Math.abs(exact - Math.round(exact)) < 1e-9); // force non-exact
+    qData.ans = Math.round(exact);
+    qData.workSteps = A + ' ÷ ' + B + ' × 100 = ' + dp(exact, 2) + '% ≈ ' + qData.ans + '% (nearest whole percent).';
+    el.innerHTML = '<div style="' + A_LBL + '">Round your answer to the nearest whole percent.</div>'
+      + '<div style="text-align:center;margin:12px 0;font-weight:900;">Find ' + A + ' out of ' + B + ' as a percentage.</div>';
+  } else {
+    // Unit conversion — build from a tidy target percentage so answers stay clean.
+    const kind = ri(3);
+    const pcts = [2.5, 5, 10, 15, 20, 25, 40, 50];
+    const pct = pcts[ri(pcts.length)];
+    let small, large, q;
+    if(kind === 0){          // cents as a % of dollars
+      const D = [1, 2, 4, 5][ri(4)]; large = 100 * D; small = dp(pct / 100 * large, 2);
+      q = 'What is ' + small + ' cents as a percentage of $' + D + '?';
+    } else if(kind === 1){   // grams as a % of kilograms
+      const K = [1, 2, 4, 5][ri(4)]; large = 1000 * K; small = dp(pct / 100 * large, 2);
+      q = 'What is ' + small + ' g as a percentage of ' + K + ' kg?';
+    } else {                 // millimetres as a % of centimetres
+      const C = [20, 40, 50, 60, 100, 200][ri(6)]; large = 10 * C; small = dp(pct / 100 * large, 2);
+      q = 'What is ' + small + ' mm as a percentage of ' + C + ' cm?';
+    }
+    qData.ans = dp(pct, 2);
+    qData.workSteps = 'Convert to the same unit: ' + small + ' ÷ ' + large + ' × 100 = ' + String(qData.ans) + '%.';
+    el.innerHTML = '<div style="' + A_LBL + '">Convert to the same unit first, then write it as a percentage.</div>'
+      + '<div style="text-align:center;margin:12px 0;font-weight:900;">' + q + '</div>';
+  }
+}
+
+// Shared helper: pick a (percentage, amount) pair whose product is a clean ≤2dp value.
+function pctPickOfAmount(lvl){
+  if(lvl === 1){
+    const pct = [5, 10, 15, 20, 25, 30, 40, 50, 60, 75, 80, 90][ri(12)];
+    const amt = 20 * rr(1, 25);
+    return { pct:pct, amt:amt };
+  } else if(lvl === 2){
+    const pct = [11, 12, 13, 14, 16, 17, 18, 19, 22, 24, 35, 45, 55, 65, 85][ri(15)];
+    const amt = 5 * rr(2, 40);
+    return { pct:pct, amt:amt };
+  } else {
+    if(Math.random() < 0.5){
+      const pct = [2.5, 7.5, 12.5, 37.5, 62.5, 87.5][ri(6)];
+      const amt = 40 * rr(1, 12);
+      return { pct:pct, amt:amt };
+    } else {
+      const pct = [110, 120, 125, 150, 175, 200, 250][ri(7)];
+      const amt = 20 * rr(1, 20);
+      return { pct:pct, amt:amt };
+    }
+  }
+}
+function genPctOfAmount(el){
+  el.style.fontSize = '2rem';
+  const p = pctPickOfAmount(level);
+  qData.ans = dp(p.pct / 100 * p.amt, 2);
+  qData.workSteps = p.pct + '% of ' + p.amt + ' = ' + p.pct + ' ÷ 100 × ' + p.amt + ' = ' + String(qData.ans) + '.';
+  el.innerHTML = '<div style="' + A_LBL + '">Find the percentage of the amount.</div>'
+    + '<div style="text-align:center;margin:10px 0;font-weight:900;">What is ' + p.pct + '% of ' + p.amt + '?</div>';
+}
+
+const PCT_UP_WORDS   = ['marked up', 'inflated', 'appreciated', 'risen'];
+const PCT_DOWN_WORDS = ['discounted', 'reduced', 'depreciated', 'declined'];
+function genPctChange(el){
+  el.style.fontSize = '1.6rem';
+  if(level === 1 || level === 2){
+    const p = pctPickOfAmount(level === 1 ? 1 : 2);
+    const up = Math.random() < 0.5;
+    const changeVal = dp(p.pct / 100 * p.amt, 2);
+    qData.ans = dp(up ? p.amt + changeVal : p.amt - changeVal, 2);
+    qData.workSteps = (up ? 'Increase' : 'Decrease') + ' ' + p.amt + ' by ' + p.pct + '%: ' + p.amt + (up ? ' + ' : ' − ') + changeVal + ' = ' + String(qData.ans) + '.';
+    el.innerHTML = '<div style="' + A_LBL + '">Find the new amount.</div>'
+      + '<div style="text-align:center;margin:10px 0;font-weight:900;">' + (up ? 'Increase' : 'Decrease') + ' ' + p.amt + ' by ' + p.pct + '%</div>';
+  } else {
+    // L3 — worded increase / decrease using real-world synonyms.
+    const up = Math.random() < 0.5;
+    const pct = [10, 12, 15, 20, 25, 30, 40, 50][ri(8)];
+    const amt = 20 * rr(2, 30);                         // whole-dollar base
+    const word = up ? PCT_UP_WORDS[ri(PCT_UP_WORDS.length)] : PCT_DOWN_WORDS[ri(PCT_DOWN_WORDS.length)];
+    const changeVal = dp(pct / 100 * amt, 2);
+    qData.ans = dp(up ? amt + changeVal : amt - changeVal, 2);
+    qData.workSteps = word + ' means ' + (up ? 'increase' : 'decrease') + ': $' + amt + (up ? ' + ' : ' − ') + '$' + changeVal + ' = $' + String(qData.ans) + '.';
+    el.innerHTML = '<div style="' + A_LBL + '">Read the change word carefully, then find the new value ($).</div>'
+      + '<div style="text-align:center;margin:10px 0;font-weight:900;">A $' + amt + ' item is ' + word + ' by ' + pct + '%. Find the new value.</div>';
+  }
+}
+
+function genPctProfitLoss(el){
+  el.style.fontSize = '1.5rem';
+  if(level === 1){
+    let cost, sell;
+    do { cost = rr(10, 90); sell = rr(10, 120); } while(cost === sell);
+    const dir = sell > cost ? 'profit' : 'loss';
+    qData.ans = Math.abs(sell - cost);
+    qData.plDir = dir; qData.plMode = 'amount';
+    qData.workSteps = '$' + sell + ' − $' + cost + ' = $' + (sell - cost) + ' → $' + qData.ans + ' ' + dir + '.';
+    el.innerHTML = '<div style="' + A_LBL + '">Work out the profit or loss in dollars, then tap Profit or Loss.</div>'
+      + '<div style="text-align:center;margin:10px 0;font-weight:900;">An item was bought for $' + cost + ' and sold for $' + sell + '.</div>';
+  } else {
+    const cost = [25, 40, 50, 80, 100, 200][ri(6)];
+    const pct = [10, 20, 25, 40, 50, 60, 80][ri(7)];
+    const up = Math.random() < 0.5;
+    const sell = dp(up ? cost * (1 + pct / 100) : cost * (1 - pct / 100), 2);
+    qData.ans = pct; qData.plDir = up ? 'profit' : 'loss'; qData.plMode = 'pct';
+    qData.workSteps = '|' + sell + ' − ' + cost + '| ÷ ' + cost + ' × 100 = ' + pct + '% ' + qData.plDir + '.';
+    el.innerHTML = '<div style="' + A_LBL + '">Work out the percentage profit or loss (on the cost price), then tap Profit or Loss.</div>'
+      + '<div style="text-align:center;margin:10px 0;font-weight:900;">Bought for $' + cost + ', sold for $' + sell + '.</div>';
+  }
+}
+
+/* ═══════════════════════════════════════════════
    RATIOS & RATES (v22)
 ═══════════════════════════════════════════════ */
 
@@ -10006,7 +10130,11 @@ const KB_INPUTS = ['ansInput','fracNum','fracDen','mixedWhole','mixedNum','mixed
                    'idxCoeff','idxExp','idxExpB','idxExpC','sciCoeff','sciExp',
                    'ratioA','ratioB',
                    'algC0','algC1','algC2','algP0','algP1','algP2','algTypeInput',
-                   'factorBox0','factorBox1'];
+                   'factorBox0','factorBox1',
+                   // v74 — Convert FDP table cells (3 rows × pct/dec/frac-num/frac-den)
+                   'pctP0','pctD0','pctFn0','pctFd0',
+                   'pctP1','pctD1','pctFn1','pctFd1',
+                   'pctP2','pctD2','pctFn2','pctFd2'];
 
 /* ── Setup: called once on load ── */
 function kbSetup() {
@@ -10160,6 +10288,17 @@ function getKbInputOrder() {
   if (mode === 'choice') return [];
   if (mode === 'arrange') return [];
   if (mode === 'factor') return ['factorBox0','factorBox1'];
+  if (mode === 'pctTable') {
+    const rows = (typeof qData !== 'undefined' && qData.pctRows) || [];
+    const order = [];
+    rows.forEach(function(r, i){
+      if (r.given !== 'pct')  order.push('pctP' + i);
+      if (r.given !== 'dec')  order.push('pctD' + i);
+      if (r.given !== 'frac') { order.push('pctFn' + i); order.push('pctFd' + i); }
+    });
+    return order.length ? order : ['pctP0'];
+  }
+  if (mode === 'plToggle') return ['ansInput'];
   return ['ansInput'];
 }
 
@@ -10188,9 +10327,11 @@ function kbShow() {
                    'eqTwoStepFrac','eqVarDenom','eqBothSides'].includes(skillId)
                   || mode === 'index' || mode === 'sci' || mode === 'algebra' || mode === 'ineq';
   const decSkillsWithDot = ['sciTo','sciFrom','decAddSub','decAdd','decSub','decMultiply','decDivide','decPow10','decSquareCube','decOrderOps','decRound','sigFigs',
-                            'rateSimplify','rateConvert','decIdentify','decExpand','fracToDec'];
-  const showDot  = (mode === 'sci' || decSkillsWithDot.includes(skillId));
-  const showNext = (mode === 'fraction' || mode === 'mixed' || mode === 'index' || mode === 'sci' || mode === 'ratio' || mode === 'algebra' || mode === 'factor');
+                            'rateSimplify','rateConvert','decIdentify','decExpand','fracToDec',
+                            // v74 — percentages can have decimal answers
+                            'pctIdentify','pctExpress','pctOfAmount','pctChange','pctProfitLoss'];
+  const showDot  = (mode === 'sci' || mode === 'pctTable' || mode === 'plToggle' || decSkillsWithDot.includes(skillId));
+  const showNext = (mode === 'fraction' || mode === 'mixed' || mode === 'index' || mode === 'sci' || mode === 'ratio' || mode === 'algebra' || mode === 'factor' || mode === 'pctTable');
 
   const negBtn  = document.getElementById('kbNegBtn');
   const dotBtn  = document.getElementById('kbDotBtn');
