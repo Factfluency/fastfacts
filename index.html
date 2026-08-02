@@ -1,4 +1,4 @@
-<!-- Sandy Fast Facts — v74 -->
+<!-- Sandy Fast Facts — v74 (internal v74.5: question-specific miss reviews; Angles-in-Polygons L4 mixes a/2a with plain-number angles; deeper, clearly-concave polygons) -->
 <!-- Viewport (v48): dropped `maximum-scale=1.0, user-scalable=no`. iOS ignored it (so pinch worked there anyway) but Android obeyed it, blocking accessibility pinch-zoom. Accidental double-tap-to-zoom is killed per-control via `touch-action: manipulation` instead, which leaves deliberate pinch-zoom intact on every platform. -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1752,6 +1752,11 @@ body {
     <button type="button" class="pow-btn" onclick="insertIneq('≤')" aria-label="insert less than or equal">≤</button>
     <button type="button" class="pow-btn" onclick="insertIneq('≥')" aria-label="insert greater than or equal">≥</button>
   </div>
+  <!-- Desktop surd button (v74): surd mode (Pythagoras, Surds skills) needs a √ that a
+       physical keyboard can't type. On mobile the keypad already has √. -->
+  <div id="surdDeskRow" style="display:none; justify-content:center; gap:8px; margin:-4px 0 12px;">
+    <button type="button" class="pow-btn" onclick="insertSurd()" aria-label="insert square root">√</button>
+  </div>
 
   <!-- Index notation answer panel -->
   <!-- Completely hidden unless mode=index or mode=sci. Never shown for other skills. -->
@@ -2163,11 +2168,16 @@ const CATS = {
   number: {
     label: '🔢 Number',
     skills: [
-      { id:'timesTables', name:'Times Tables',          inputMode:'number', lvKey:'tt'  },
-      { id:'division',    name:'Division',               inputMode:'number', lvKey:'div' },
+      { id:'numberBonds', name:'Number Bonds',           inputMode:'number', lvKey:'nb'  },
       { id:'addition',    name:'Addition',               inputMode:'number', lvKey:'as'  },
       { id:'subtraction', name:'Subtraction',            inputMode:'number', lvKey:'as'  },
+      { id:'timesTables', name:'Times Tables',          inputMode:'number', lvKey:'tt'  },
+      { id:'division',    name:'Division',               inputMode:'number', lvKey:'div' },
       { id:'orderOps',    name:'Order of Operations',    inputMode:'number', lvKey:'oo'  },
+      { id:'factorsMultiples', name:'Factors, Multiples &amp; Primes', inputMode:'number', lvKey:'fmp', levelModes:{1:'choice',2:'choice',3:'number'} },
+      { id:'primeFactor', name:'Prime Factorisation', inputMode:'number', lvKey:'pfac', levelModes:{1:'choice',2:'number',3:'number'} },
+      { id:'hcfLcm',      name:'Highest Common Factor &amp; Lowest Common Multiple', inputMode:'number', lvKey:'hcflcm' },
+      { id:'roundEst',    name:'Rounding &amp; Estimation', inputMode:'number', lvKey:'rest' },
       { id:'sigFigs',     name:'Significant Figures',    inputMode:'number', lvKey:'sf'  },
     ]
   },
@@ -2190,8 +2200,13 @@ const CATS = {
       { id:'indexMult',  name:'Index Law (Multiplication Law)',  inputMode:'index',  lvKey:'imul' },
       { id:'indexDiv',   name:'Index Law (Division Law)',        inputMode:'index',  lvKey:'idiv' },
       { id:'indexPow',   name:'Index Law (Power of a Power)',    inputMode:'index',  lvKey:'ipow' },
+      { id:'negIndices', name:'Negative &amp; Zero Indices',  inputMode:'fraction', lvKey:'nidx' },
       { id:'sciTo',      name:'Number → Scientific Notation', inputMode:'sci', lvKey:'sci' },
       { id:'sciFrom',    name:'Scientific Notation → Number', inputMode:'number', lvKey:'sci' },
+      { id:'surdSimplify', name:'Simplify Surds',            inputMode:'surd', lvKey:'ssim' },
+      { id:'surdAddSub',   name:'Add &amp; Subtract Surds',  inputMode:'surd', lvKey:'sas'  },
+      { id:'surdMultiply', name:'Multiply Surds',            inputMode:'surd', lvKey:'smul' },
+      { id:'surdDivide',   name:'Divide Surds',              inputMode:'surd', lvKey:'sdiv' },
     ]
   },
 
@@ -2199,9 +2214,11 @@ const CATS = {
     label: '½ Fractions',
     skills: [
       { id:'fracSimplify',   name:'Simplify Fractions',                inputMode:'fraction', lvKey:'fs'   },
+      { id:'fracCompare',    name:'Compare &amp; Order Fractions',     inputMode:'choice',   lvKey:'fcmp', levelModes:{1:'choice',2:'arrange',3:'arrange'} },
       { id:'fracAddSub',     name:'Add &amp; Subtract Fractions',      inputMode:'fraction', lvKey:'fas'  },
       { id:'fracMultiply',   name:'Multiply Fractions',                inputMode:'fraction', lvKey:'fmu'  },
       { id:'fracDivide',     name:'Divide Fractions',                  inputMode:'fraction', lvKey:'fd'   },
+      { id:'fracOfAmount',   name:'Fraction of an Amount',             inputMode:'number',   lvKey:'foa'  },
       { id:'mixedToImp',     name:'Mixed Number → Improper Fraction',  inputMode:'fraction', lvKey:'mi'   },
       { id:'impToMixed',     name:'Improper Fraction → Mixed Number',  inputMode:'mixed',    lvKey:'mi'   },
       { id:'fracOrderOps',   name:'Order of Operations (Fractions)',   inputMode:'fraction', lvKey:'foo'  },
@@ -2232,9 +2249,10 @@ const CATS = {
     skills: [
       { id:'pctIdentify',  name:'Identify Percentages',                inputMode:'number',   lvKey:'pid' },
       { id:'pctFDP',       name:'Convert Fractions, Decimals &amp; Percentages', inputMode:'pctTable', lvKey:'pfdp' },
-      { id:'pctExpress',   name:'One Amount as a Percentage of Another', inputMode:'number',  lvKey:'pex' },
       { id:'pctOfAmount',  name:'Finding a Percentage of an Amount',    inputMode:'number',   lvKey:'poa' },
+      { id:'pctExpress',   name:'One Amount as a Percentage of Another', inputMode:'number',  lvKey:'pex' },
       { id:'pctChange',    name:'Percentage Increase &amp; Decrease',   inputMode:'number',   lvKey:'pcd' },
+      { id:'pctReverse',   name:'Reverse Percentages',                 inputMode:'number',   lvKey:'prev' },
       { id:'pctProfitLoss',name:'Profit &amp; Loss',                    inputMode:'plToggle', lvKey:'ppl' },
     ]
   },
@@ -2246,6 +2264,7 @@ const CATS = {
       { id:'ratioShare',    name:'Sharing in a Ratio',     inputMode:'number', lvKey:'rsh'  },
       { id:'rateSimplify',  name:'Simplifying Rates',      inputMode:'number', lvKey:'rtsim' },
       { id:'rateConvert',   name:'Converting Rates',       inputMode:'number', lvKey:'rtcv'  },
+      { id:'bestBuy',       name:'Best Buys &amp; Unit Price', inputMode:'number', lvKey:'bbuy', levelModes:{2:'choice'} },
     ]
   },
   algebra: {
@@ -2259,8 +2278,8 @@ const CATS = {
       { id:'algExpand',      name:'Expand Single Brackets',               inputMode:'algebra', lvKey:'aexp'   },
       { id:'algExpandTwo',   name:'Expand &amp; Simplify (Two Brackets)', inputMode:'algPoly', lvKey:'aexp2'  },
       { id:'algExpandBinom', name:'Expanding Binomial Brackets',           inputMode:'algPoly', lvKey:'aeb'    },
-      { id:'algFactorMonic', name:'Factorise Monic Quadratics',           inputMode:'algFactored',  lvKey:'afm'    },
       { id:'algFactorHCF',   name:'Factorise (Highest Common Factor)',    inputMode:'algFactored',  lvKey:'afh'    },
+      { id:'algFactorMonic', name:'Factorise Monic Quadratics',           inputMode:'algFactored',  lvKey:'afm'    },
       { id:'algFactorGroup', name:'Factorise by Grouping',                inputMode:'algFactored',  lvKey:'afg'    },
     ]
   },
@@ -2274,6 +2293,7 @@ const CATS = {
       { id:'eqVarDenom',      name:'Equations with x on the Denominator',  inputMode:'fraction', lvKey:'eq5' },
       { id:'eqBothSides',     name:'Variables on Both Sides',              inputMode:'fraction', lvKey:'eq6' },
       { id:'ineqLinear',      name:'Two &amp; Three-Step Inequalities',   inputMode:'ineq', lvKey:'ineq' },
+      { id:'rearrange',       name:'Rearranging Formulas',                 inputMode:'choice', lvKey:'rear' },
     ]
   },
   trig: {
@@ -2294,6 +2314,7 @@ const CATS = {
       { id:'angleRel', name:'Angle Relationships', inputMode:'number', lvKey:'arl', levelModes:{1:'choice'} },
       { id:'angleParallel', name:'Angles on Parallel Lines', inputMode:'number', lvKey:'apl', levelModes:{1:'choice'} },
       { id:'angleQuad', name:'Angles in Quadrilaterals', inputMode:'number', lvKey:'aqd' },
+      { id:'anglePoly', name:'Angles in Polygons', inputMode:'number', lvKey:'apoly' },
       { id:'congruSimilar', name:'Congruence &amp; Similarity', inputMode:'number', lvKey:'cs', levelModes:{1:'choice',2:'choice',3:'choice'} },
     ]
   }
@@ -2308,14 +2329,17 @@ const SKILL_YEAR = {
   // Number  (foundational skills below high-school level carry no year chip)
   timesTables:'', division:'', addition:'', subtraction:'',
   orderOps:'Yr 7', sigFigs:'Yr 9',
+  numberBonds:'', factorsMultiples:'Yr 7', primeFactor:'Yr 7–8', hcfLcm:'Yr 7–8', roundEst:'Yr 7',
   // Integers
   intAddSub:'Yr 7', intMultDiv:'Yr 7', intSquareCube:'Yr 7–8', intOrderOps:'Yr 7',
   // Exponents
   squares:'Yr 7', roots:'Yr 7', cubes:'Yr 8', cubeRoots:'Yr 8',
   indexMult:'Yr 8', indexDiv:'Yr 8', indexPow:'Yr 8', sciTo:'Yr 9', sciFrom:'Yr 9',
+  negIndices:'Yr 9', surdSimplify:'Yr 10', surdAddSub:'Yr 10', surdMultiply:'Yr 10', surdDivide:'Yr 10',
   // Fractions
   fracSimplify:'Yr 7', fracAddSub:'Yr 7', fracMultiply:'Yr 7', fracDivide:'Yr 7',
   mixedToImp:'Yr 7', impToMixed:'Yr 7', fracOrderOps:'Yr 8',
+  fracOfAmount:'Yr 7', fracCompare:'Yr 7',
   // Decimals  (decAddSub/decAdd/decSub are foundational — no year chip)
   decAddSub:'', decAdd:'', decSub:'', decMultiply:'Yr 7', decDivide:'Yr 7',
   decPow10:'Yr 7', decSquareCube:'Yr 7–8',
@@ -2323,9 +2347,10 @@ const SKILL_YEAR = {
   decPlaceValue:'Yr 7', decExpand:'Yr 7–8', decIdentify:'Yr 7', decToFrac:'Yr 7–8', fracToDec:'Yr 7–8',
   // Percentages
   pctIdentify:'Yr 7', pctFDP:'Yr 7–8', pctExpress:'Yr 8', pctOfAmount:'Yr 7–8', pctChange:'Yr 8–9', pctProfitLoss:'Yr 9',
+  pctReverse:'Yr 9–10',
   // Ratios & Rates
   ratioSimplify:'Yr 7–8', ratioEquiv:'Yr 7–8', ratioShare:'Yr 7–8',
-  rateSimplify:'Yr 7–8', rateConvert:'Yr 8',
+  rateSimplify:'Yr 7–8', rateConvert:'Yr 8', bestBuy:'Yr 8',
   // Algebra
   algParts:'Yr 7', algSub:'Yr 7', algLikeTerms:'Yr 7–8', algMultiply:'Yr 7–9',
   algDivide:'Yr 7–9', algExpand:'Yr 8', algExpandTwo:'Yr 8–9',
@@ -2334,13 +2359,13 @@ const SKILL_YEAR = {
   // Equations
   eqOneStepAddSub:'Yr 7', eqOneStepMulDiv:'Yr 7', eqTwoStep:'Yr 7–8',
   eqTwoStepFrac:'Yr 7–9', eqVarDenom:'Yr 8–9', eqBothSides:'Yr 8–9',
-  ineqLinear:'Yr 8–9',
+  ineqLinear:'Yr 8–9', rearrange:'Yr 9–10',
   // Trigonometry & Pythagoras
   pythagoras:'Yr 8', trigExactDeg:'Yr 10A', trigExactRad:'VCE',
   // Geometry
   interiorAngles:'Yr 7',
   nameShapes:'Yr 7', nameAnglesLines:'Yr 7', eulerRule:'Yr 7',
-  angleRel:'Yr 7', angleParallel:'Yr 7', angleQuad:'Yr 8',
+  angleRel:'Yr 7', angleParallel:'Yr 7', angleQuad:'Yr 8', anglePoly:'Yr 8',
   congruSimilar:'Yr 8'
 };
 
@@ -2360,6 +2385,11 @@ const LEVEL_DEFS = {
     { title:'Level 1 — Single Digit',  desc:'Add or subtract single-digit numbers (1–9). Focus on instant recall.', examples:['7 + 8', '9 − 4', '6 + 7'] },
     { title:'Level 2 — Two Digit',     desc:'Add or subtract numbers up to 99. Includes carrying and borrowing.', examples:['47 + 36', '82 − 57', '63 + 29'] },
     { title:'Level 3 — Three Digit',   desc:'Add or subtract numbers up to 999. Mental arithmetic challenge.', examples:['347 + 256', '801 − 463', '592 + 317'] },
+  ],
+  nb: [
+    { title:'Level 1 — Make 10',       desc:'Find the number that completes the pair to 10. The building block for all mental addition.', examples:['7 + ▢ = 10', '3 + ▢ = 10', '6 + ▢ = 10'] },
+    { title:'Level 2 — Make 20 & 100', desc:'Complete the pair to 20 (and friendly hundreds). Extends the make-10 idea.', examples:['13 + ▢ = 20', '8 + ▢ = 20', '60 + ▢ = 100'] },
+    { title:'Level 3 — Doubles',       desc:'Instant recall of doubles up to 12 + 12. Great for two-digit mental addition.', examples:['8 + 8', '12 + 12', '7 + 7'] },
   ],
   int: [
     { title:'Level 1 — Range ±10',   desc:'Integers from −10 to +10. Covers basic negative number operations.', examples:['−6 + 4', '3 − (−2)', '−5 + 8'] },
@@ -2383,6 +2413,7 @@ const LEVEL_DEFS = {
     { title:'Level 1 — No Brackets',   desc:'Two operations, no brackets. Focuses on multiplication before addition/subtraction.', examples:['3 + 4 × 2', '6 × 5 − 8', '2 + 9 × 3'] },
     { title:'Level 2 — With Brackets', desc:'Brackets change the order — work out what is inside first, then apply the operation.', examples:['(3 + 4) × 2', '5 × (6 + 3)', '(8 − 3) × 4'] },
     { title:'Level 3 — Mixed Challenge',desc:'Three or more operations mixed together. Tests full BODMAS understanding.', examples:['2 + 3 × 4 − 1', '(5 + 2) × 3 − 4', '4 × 3 + 2 × 5'] },
+    { title:'Level 4 — Indices & Brackets', desc:'Now with powers and nested brackets. Do indices right after brackets, before × ÷ + −.', examples:['2 + 3² × 2', '(2 + 3)² − 4', '5² − 4 × 3'] },
   ],
   /* ── FRACTION LEVELS ── */
   fs: [
@@ -2440,6 +2471,7 @@ const LEVEL_DEFS = {
     { title:'Level 1 — No Brackets',   desc:'Apply BODMAS with negative integers. Multiplication and division before addition and subtraction.', examples:['−3 + 4 × 2', '6 × (−2) + 5', '−8 ÷ 2 + 3'] },
     { title:'Level 2 — With Brackets', desc:'Brackets with negative integers — work inside brackets first, then apply remaining operations.', examples:['(−3 + 4) × 2', '5 × (−2 + 6)', '−2 × (3 − 7)'] },
     { title:'Level 3 — Mixed Challenge',desc:'Three or more operations with negative numbers and brackets. Tests full BODMAS with integers.', examples:['−2 + 3 × (−4)', '(−5 + 2) × (−3)', '4 × (−2) + (−3) × 2'] },
+    { title:'Level 4 — Indices & Brackets', desc:'Powers with negative integers and brackets. A bracketed negative squared is positive: (−2)² = 4.', examples:['(−2)² + 3 × (−4)', '(−5 + 2)² − 4', '−3² + 20'] },
   ],
   /* ── MIXED ↔ IMPROPER ── */
   mi: [
@@ -2457,6 +2489,7 @@ const LEVEL_DEFS = {
     { title:'Level 1 — Add & Multiply',   desc:'Apply BODMAS to fractions: multiply before adding. Same denominator fractions only.', examples:['½ + ¼ × 2', '⅓ × 3 + ½', '¾ + ¼ × 4'] },
     { title:'Level 2 — With Brackets',    desc:'Brackets containing fractions — work inside first, then apply the outer operation.', examples:['(½ + ¼) × 2', '⅓ × (1 + ½)', '(¾ − ¼) × 4'] },
     { title:'Level 3 — Mixed Operations', desc:'Three operations including division with fractions and brackets. Full BODMAS challenge.', examples:['½ + ¼ × ⅔', '(⅓ + ½) ÷ ¼', '⅔ × ¾ + ⅙'] },
+    { title:'Level 4 — Squared Fractions', desc:'Now with a squared fraction. Do the power first, then the rest of BODMAS.', examples:['(½)² + ¼', '(⅓)² × 3', '¾ − (½)²'] },
   ],
   /* ── DECIMALS ── */
   das: [
@@ -2499,6 +2532,7 @@ const LEVEL_DEFS = {
     { title:'Level 1 — No Brackets',    desc:'Apply BODMAS with decimals. Multiply and divide before adding and subtracting.', examples:['0.5 + 0.2 × 3', '1.2 × 2 + 0.4', '3.6 ÷ 4 + 0.1'] },
     { title:'Level 2 — With Brackets',  desc:'Use brackets with decimal calculations — work inside first.', examples:['(0.5 + 0.3) × 4', '0.6 × (1 + 0.5)', '(1.2 − 0.4) × 5'] },
     { title:'Level 3 — Mixed Challenge',desc:'Three or more operations with decimals and brackets.', examples:['0.5 + 0.2 × (3 − 1)', '(0.4 + 0.6) × 0.5 ÷ 0.2'] },
+    { title:'Level 4 — Indices & Brackets', desc:'Now with a squared decimal and nested brackets. Do the power straight after brackets.', examples:['0.2² + 0.5', '(0.5 + 0.1)² × 2', '1.1² − 0.2'] },
   ],
   cmp: [
     { title:'Level 1 — Which Sign?', desc:'Two decimals are shown. Tap the statement with the correct sign (< , > or =) between them. Watch the classic trap: more digits does not mean bigger (0.45 is less than 0.5).', examples:['0.45 < 0.5', '0.7 > 0.68', '0.30 = 0.3'] },
@@ -2569,6 +2603,87 @@ const LEVEL_DEFS = {
     { title:'Level 2 — Percentage Profit or Loss', desc:'Work out the percentage profit or loss on the cost price, then tap Profit or Loss.', examples:['Buy $200, sell $40 → 80% loss', 'Buy $50, sell $60 → 20% profit', 'Buy $80, sell $100 → 25% profit'] },
   ],
 
+  /* ── NEW BASE-FACT & METHOD SKILLS (v74.2, Laura) ── */
+  fmp: [
+    { title:'Level 1 — Prime or Not?', desc:'Tap whether a number is prime (only factors 1 and itself) or not prime.', examples:['17 → Prime', '21 → Not prime', '2 → Prime'] },
+    { title:'Level 2 — Is It a Factor?', desc:'Tap whether the first number is a factor of the second (divides it exactly).', examples:['6 a factor of 24? Yes', '7 a factor of 20? No', '9 a factor of 54? Yes'] },
+    { title:'Level 3 — Multiples', desc:'Type the multiple asked for — the Nth multiple of a number.', examples:['4th multiple of 7 → 28', '6th multiple of 8 → 48', '3rd multiple of 12 → 36'] },
+  ],
+  hcflcm: [
+    { title:'Level 1 — Highest Common Factor', desc:'Type the largest number that divides into both — the HCF.', examples:['HCF of 12 & 18 → 6', 'HCF of 20 & 30 → 10', 'HCF of 9 & 24 → 3'] },
+    { title:'Level 2 — Lowest Common Multiple', desc:'Type the smallest number both go into — the LCM.', examples:['LCM of 4 & 6 → 12', 'LCM of 3 & 5 → 15', 'LCM of 6 & 8 → 24'] },
+    { title:'Level 3 — Harder Pairs', desc:'HCF or LCM of trickier pairs with larger numbers.', examples:['HCF of 36 & 48 → 12', 'LCM of 8 & 12 → 24', 'LCM of 9 & 15 → 45'] },
+  ],
+  rest: [
+    { title:'Level 1 — Round to 10 or 100', desc:'Round a whole number to the nearest 10 or 100.', examples:['67 to 10 → 70', '340 to 100 → 300', '85 to 10 → 90'] },
+    { title:'Level 2 — Round to 100 or 1000', desc:'Round larger whole numbers to the nearest 100 or 1000.', examples:['4 620 to 1000 → 5000', '2 480 to 100 → 2500', '7 350 to 1000 → 7000'] },
+    { title:'Level 3 — Round to the Leading Digit', desc:'Round to 1 significant figure — keep the first digit and make the rest zeros.', examples:['3 470 → 3000', '68 → 70', '820 → 800'] },
+    { title:'Level 4 — Estimate a Calculation', desc:'Round each number to its leading digit first, then estimate the answer.', examples:['39 × 21 ≈ 800', '612 + 288 ≈ 900', '81 ÷ 19 ≈ 4'] },
+  ],
+  foa: [
+    { title:'Level 1 — Unit Fractions', desc:'Find a unit fraction of an amount (½, ⅓, ¼, ⅕…) — just divide by the denominator.', examples:['½ of 30 → 15', '¼ of 20 → 5', '⅓ of 18 → 6'] },
+    { title:'Level 2 — Non-Unit Fractions', desc:'Find a fraction of an amount — divide by the bottom, multiply by the top.', examples:['¾ of 20 → 15', '⅖ of 30 → 12', '⅚ of 24 → 20'] },
+    { title:'Level 3 — Harder Amounts', desc:'Larger amounts and trickier fractions; answers stay whole.', examples:['⅜ of 64 → 24', '⁴⁄₇ of 84 → 48', '⅚ of 90 → 75'] },
+  ],
+  fcmp: [
+    { title:'Level 1 — Which Sign?', desc:'Tap the correct sign (< > =) between two fractions. Compare by a common denominator or by converting to decimals.', examples:['½ ? ⅗', '¾ ? ⅔', '⅖ ? 0.4'] },
+    { title:'Level 2 — Order Ascending', desc:'Tap the fractions into order, smallest first.', examples:['½, ¼, ⅝, ⅓', '⅔, ½, ¾, ⅚'] },
+    { title:'Level 3 — Order Descending', desc:'Tap the fractions into order, largest first (includes some over 1).', examples:['¾, ⅞, ½, 5⁄4', '⅗, ⅘, ⅔, 1'] },
+  ],
+  nidx: [
+    { title:'Level 1 — Zero & Unit Index', desc:'Anything to the power 0 is 1; to the power 1 is itself; a⁻¹ is 1 over a.', examples:['7⁰ → 1', '5⁻¹ → 1/5', '(−3)⁰ → 1'] },
+    { title:'Level 2 — Negative Indices', desc:'A negative index means one over the positive power. Type the answer as a fraction.', examples:['2⁻³ → 1/8', '3⁻² → 1/9', '10⁻² → 1/100'] },
+    { title:'Level 3 — Fraction Bases', desc:'Negative indices of fractions — flip and apply the power.', examples:['(⅔)⁻¹ → 3/2', '(¾)⁻² → 16/9', '(⅖)⁻² → 25/4'] },
+  ],
+  ssim: [
+    { title:'Level 1 — Simplify a Surd', desc:'Take out the largest square factor. Type using √ (e.g. 2√3).', examples:['√12 → 2√3', '√18 → 3√2', '√50 → 5√2'] },
+    { title:'Level 2 — Larger Radicands', desc:'Bigger numbers under the root — find the largest square factor.', examples:['√72 → 6√2', '√98 → 7√2', '√200 → 10√2'] },
+    { title:'Level 3 — With a Coefficient', desc:'Simplify a surd that already has a number in front.', examples:['2√8 → 4√2', '3√12 → 6√3', '2√27 → 6√3'] },
+  ],
+  sas: [
+    { title:'Level 1 — Same Surd', desc:'Add or subtract surds that already have the same root. Combine the numbers in front.', examples:['3√2 + 5√2 → 8√2', '7√5 − 2√5 → 5√5', '√3 + 4√3 → 5√3'] },
+    { title:'Level 2 — Simplify First', desc:'One surd must be simplified before you can combine them.', examples:['2√3 + √12 → 4√3', '√8 + √2 → 3√2', '√27 − √3 → 2√3'] },
+    { title:'Level 3 — Harder', desc:'Larger numbers; simplify each surd, then combine.', examples:['√50 + √8 → 7√2', '√75 − √12 → 3√3', '√20 + √45 → 5√5'] },
+  ],
+  smul: [
+    { title:'Level 1 — Multiply Roots', desc:'√a × √b = √(ab). Simplify your answer.', examples:['√3 × √6 → 3√2', '√2 × √5 → √10', '√6 × √2 → 2√3'] },
+    { title:'Level 2 — With Coefficients', desc:'Multiply the numbers in front and the roots separately, then simplify.', examples:['2√3 × 4√2 → 8√6', '3√2 × √6 → 6√3', '2√5 × 3√5 → 30'] },
+    { title:'Level 3 — Harder', desc:'Bigger numbers; the answer may simplify to a whole number.', examples:['√8 × √6 → 4√3', '2√6 × 3√8 → 24√3', '√12 × √3 → 6'] },
+  ],
+  sdiv: [
+    { title:'Level 1 — Divide Roots', desc:'√a ÷ √b = √(a÷b). Simplify your answer.', examples:['√18 ÷ √2 → 3', '√12 ÷ √3 → 2', '√20 ÷ √5 → 2'] },
+    { title:'Level 2 — Surd Answers', desc:'The quotient is itself a surd — simplify it.', examples:['√24 ÷ √2 → 2√3', '√54 ÷ √3 → 3√2', '√40 ÷ √2 → 2√5'] },
+    { title:'Level 3 — With Coefficients', desc:'Divide the numbers in front and the roots separately.', examples:['6√8 ÷ 2√2 → 6', '8√6 ÷ 2√3 → 4√2', '10√12 ÷ 5√3 → 4'] },
+  ],
+  prev: [
+    { title:'Level 1 — After an Increase', desc:'A price grew by a percentage — work back to the original. Divide by (100% + rate).', examples:['+10% → $88, was $80', '+20% → $60, was $50', '+25% → $100, was $80'] },
+    { title:'Level 2 — After a Decrease', desc:'A price was reduced by a percentage — work back to the original. Divide by (100% − rate).', examples:['−20% → $80, was $100', '−10% → $45, was $50', '−25% → $60, was $80'] },
+    { title:'Level 3 — Mixed', desc:'A mix of increase and decrease, with less friendly numbers.', examples:['−15% → $68, was $80', '+12% → $56, was $50', '−40% → $90, was $150'] },
+  ],
+  bbuy: [
+    { title:'Level 1 — Unit Price', desc:'Find the price per unit (per 100 g, per item, per litre) so you can compare.', examples:['$6 for 3 kg → $2/kg', '$4.50 for 5 → 90c each', '$8 for 2 L → $4/L'] },
+    { title:'Level 2 — Which Is Better Value?', desc:'Tap the option with the lower unit price — the better buy.', examples:['500g $4 vs 1kg $7', '3 for $5 vs 5 for $9', '2L $6 vs 3L $8'] },
+    { title:'Level 3 — How Much You Save', desc:'Work out the saving per unit (or overall) by buying the better-value option.', examples:['per-kg saving', 'cents saved each', 'saving per litre'] },
+  ],
+
+  /* ── FINAL THREE SKILLS (v74.3, Laura) ── */
+  pfac: [
+    { title:'Level 1 — Recognise It', desc:'Tap the correct prime factorisation (in index form) of the number.', examples:['36 → 2² × 3²', '60 → 2² × 3 × 5', '72 → 2³ × 3²'] },
+    { title:'Level 2 — Missing Power', desc:'The prime factorisation is given with one power missing — type it in.', examples:['72 = 2^▢ × 3² → 3', '48 = 2^▢ × 3 → 4', '200 = 2³ × 5^▢ → 2'] },
+    { title:'Level 3 — Count the Factors', desc:'How many prime factors does the number have, counting repeats?', examples:['120 = 2³×3×5 → 5', '36 = 2²×3² → 4', '90 = 2×3²×5 → 4'] },
+  ],
+  rear: [
+    { title:'Level 1 — One Step', desc:'Rearrange a one-step formula to make the named letter the subject. Tap the correct new formula.', examples:['P = 4s → s = P/4', 'A = lw → w = A/l', 'C = πd → d = C/π'] },
+    { title:'Level 2 — Two Steps', desc:'Rearrange a two-step formula. Undo the operations in reverse order.', examples:['v = u + at → a = (v−u)/t', 'y = mx + c → x = (y−c)/m', 'P = 2(l+w) → w = P/2 − l'] },
+    { title:'Level 3 — Squares & Roots', desc:'Rearrange formulas that involve a square — you will need a square root.', examples:['A = πr² → r = √(A/π)', 'a²+b²=c² → b = √(c²−a²)', 'E = mc² → c = √(E/m)'] },
+  ],
+  apoly: [
+    { title:'Level 1 — Angle Sum', desc:'Find the sum of the interior angles of the polygon: (n − 2) × 180°.', examples:['pentagon → 540°', 'hexagon → 720°', 'octagon → 1080°'] },
+    { title:'Level 2 — Find the Missing Angle', desc:'The interior angles are given except one — use the angle sum to find x.', examples:['quadrilateral: 90,100,80, x → 90', 'pentagon: find x'] },
+    { title:'Level 3 — Regular Polygons', desc:'Find each interior angle, or each exterior angle, of a regular polygon.', examples:['regular hexagon interior → 120°', 'regular pentagon exterior → 72°', 'regular decagon interior → 144°'] },
+    { title:'Level 4 — Angles in Terms of a', desc:'The interior angles are written using a (e.g. a, 2a, 3a). Use the angle sum to solve for a.', examples:['quad a,2a,3a,4a → a = 36°', 'pentagon 2a,3a,4a,5a,6a → a = 27°'] },
+  ],
+
   ipow: [
     { title:'Level 1 — Numbers Only',    desc:'Multiply the indices when raising a power to another power. Enter the resulting power.', examples:['(3²)⁴ = 3?'] },
     { title:'Level 2 — One Variable',    desc:'Raise an expression with one variable to a power. Raise the coefficient and multiply the index of x. Enter both.', examples:['(2x²)³ = ?'] },
@@ -2596,6 +2711,7 @@ const LEVEL_DEFS = {
     { title:'Level 1 — Two-Part Share',   desc:'Share a total in a two-part ratio. All arithmetic stays within the 12× tables — focus is on the sharing method, not big multiplication.', examples:['Share $24 in 1 : 2 — larger?', 'Share 35 in 3 : 4 — smaller?', 'Share $60 in 5 : 7 — larger?'] },
     { title:'Level 2 — Three-Part Share', desc:'Share a total in a three-part ratio. Question tells you which share (smallest, middle or largest).', examples:['Share 60 kg in 2 : 3 : 5 — smallest?', 'Share $120 in 1 : 2 : 3 — middle?', 'Share 240 in 3 : 4 : 5 — largest?'] },
     { title:'Level 3 — Larger Numbers',   desc:'Three-part shares with larger totals and ratios. Same forward-share method, bigger numbers test fluency.', examples:['Share $840 in 4 : 7 : 9 — middle?', 'Share 1500 in 2 : 5 : 8 — largest?', 'Share $660 in 3 : 4 : 4 — smallest?'] },
+    { title:'Level 4 — Given One Part', desc:'You are told one share or the difference between shares — work back to the amount asked for.', examples:['3 : 5, smaller is 18 — larger?', '2 : 7, difference is 20 — total?', '4 : 9, larger is 63 — smaller?'] },
   ],
   rtsim: [
     { title:'Level 1 — Simplify Rates',   desc:'Express a quantity as a unit rate by dividing. Whole-number answers.', examples:['$28 for 4 kg → $?/kg', '180 km in 3 h → ?km/h', '$45 for 5 L → $?/L'] },
@@ -2615,6 +2731,7 @@ const LEVEL_DEFS = {
     { title:'Level 1 — One Variable',     desc:'Substitute one whole-number value and evaluate. Answers stay positive.', examples:['x = 4: 2x + 5', 'x = 3: 4x − 2', 'a = 5: 3a + 1'] },
     { title:'Level 2 — Two Variables',    desc:'Substitute two whole-number values and evaluate. Answers stay positive.', examples:['a=3, b=2: 4a + 2b', 'x=5, y=1: 2x + 3y', 'm=4, n=6: m + 2n'] },
     { title:'Level 3 — Negatives & Squares', desc:'Negative values and a squared term. Answers may be negative — mind the order of operations.', examples:['x = −2: x² + 3x', 'x = −3: 2x + 5', 'x = −4: x² − 1'] },
+    { title:'Level 4 — Substitute into Formulas', desc:'Substitute values into a real formula and evaluate — area, perimeter, speed and more.', examples:['A = ½bh, b=6 h=4', 'v = u + at, u=3 a=2 t=5', 'P = 2(l + w), l=8 w=3'] },
   ],
   alike: [
     { title:'Level 1 — One Variable, Add', desc:'Collect like terms in one variable. Type the coefficient; the variable is shown for you.', examples:['3x + 5x', '4y + 2y', '6a + a'] },
@@ -2714,6 +2831,8 @@ const LEVEL_DEFS = {
     { title:'Level 1 — Common 2D Shapes', desc:'Name the flat (2D) shape shown in the diagram. Tap the correct name. Triangles, quadrilaterals and other polygons plus the circle.', examples:['triangle', 'rectangle', 'pentagon', 'hexagon'] },
     { title:'Level 2 — 3D Solids', desc:'Name the solid (3D) shape shown in the diagram. Tap the correct name. Cubes, prisms, pyramids, cylinders, cones and spheres.', examples:['cube', 'cylinder', 'square pyramid', 'triangular prism'] },
     { title:'Level 3 — Mixed &amp; Tricky', desc:'A mix of 2D and 3D shapes, including the easily-confused ones: parallelogram vs rhombus vs trapezium vs kite, and prism vs pyramid vs cuboid.', examples:['parallelogram vs rhombus', 'trapezium vs kite', 'cuboid vs triangular prism'] },
+    { title:'Level 4 — Regular or Irregular?', desc:'A regular polygon has all sides and all angles equal. Tap whether the polygon shown is regular or irregular.', examples:['regular hexagon → Regular', 'lopsided pentagon → Irregular'] },
+    { title:'Level 5 — Convex or Concave?', desc:'A concave polygon has a corner that caves in (an angle over 180°). Tap whether the polygon is convex or concave.', examples:['all corners out → Convex', 'a dart / arrow → Concave'] },
   ],
   nal: [
     { title:'Level 1 — Points, Rays &amp; Lines', desc:'Tap whether it is a point, a ray, a line segment or a line — shown either as a diagram or in symbols. In symbols a bar (AB) is a segment, one arrow is a ray, and a double arrow is a line; a single letter is a point.', examples:['one dot / a letter → point', 'one arrow → ray', 'double arrow → line'] },
@@ -2804,7 +2923,9 @@ const RECALL_SKILLS = [
   // v68 (Laura): the four Decimals understanding skills as recall / Fluent-eligible
   'decPlaceValue','decExpand','decIdentify','decToFrac','fracToDec',
   // v74 (Laura): two Percentages skills as recall / Fluent-eligible (the rest are method)
-  'pctIdentify','pctOfAmount'
+  'pctIdentify','pctOfAmount',
+  // v74.2 (Laura): base-fact skills as recall / Fluent-eligible
+  'factorsMultiples','hcfLcm','roundEst','fracOfAmount','numberBonds'
 ];
 function getSkillKind(id) { return RECALL_SKILLS.includes(id) ? 'recall' : 'method'; }
 /* v74 (Laura): a few recall skills are Fluent-eligible on the lower levels but METHOD
@@ -2832,6 +2953,7 @@ const FLUENCY_TARGET = {
   division:   [30, 30, 25],   // v45: L1 = L2 = 30
   addition:   [30, 18, 10],   // L1 single-digit recall (30) → L2 two-digit → L3 three-digit mental
   subtraction:[30, 18, 10],   // (L3 bands are custom-overridden — see BAND_OVERRIDE)
+  numberBonds:[30, 25, 30],   // v74.2 (Laura): standalone base-fact skill — make 10 / make 20 / doubles
   // v45: squares/roots/cubes/cubeRoots L1 & L2 now match L2 times-tables (30); L3 unchanged.
   squares:[30, 30, 18], roots:[30, 30, 15], cubes:[30, 30, 14], cubeRoots:[30, 30, 13],
   intAddSub:25, intMultDiv:22, intSquareCube:18,
@@ -2849,7 +2971,7 @@ const FLUENCY_TARGET = {
   //   angle skills L1 = Trig Exact L2 (18); L2/L3 = Multiply Integers L3 (15);
   //   L4 (algebra) left at 5 = its old method band (unspecified — confirm).
   //   pythagoras L1 = Multiply Integers L3 (15); L2–L4 kept at 5 (old bands).
-  nameShapes:[18, 18, 18],
+  nameShapes:[18, 18, 18, 18, 18],   // v74.4: +L4 regular/irregular, +L5 convex/concave
   nameAnglesLines:[18, 18, 18, 18],
   angleRel:[18, 15, 15, 5],
   angleParallel:[18, 15, 15, 5],
@@ -2870,7 +2992,12 @@ const FLUENCY_TARGET = {
   //   Identify %:          L1 12/min · L2 7/min · L3 method  (v74.1: dropped from 15/10 per Laura)
   //   Finding % of amount: L1 15/min · L2 10/min · L3 method
   pctIdentify:[12, 7, 0],
-  pctOfAmount:[15, 10, 0]
+  pctOfAmount:[15, 10, 0],
+  // v74.2 (Laura): base-fact recall skills. PROPOSED per-level targets — recalibrate with class data.
+  factorsMultiples:[20, 15, 12],   // L1 prime? (fast tap) · L2 factor? · L3 multiples (typed)
+  hcfLcm:[12, 10, 8],              // L1 HCF · L2 LCM · L3 harder
+  roundEst:[18, 15, 12, 10],      // L1 round 10/100 · L2 round 100/1000 · L3 leading digit · L4 estimate
+  fracOfAmount:[15, 12, 8]        // L1 friendly · L2 non-unit · L3 harder
 };
 const FLUENT_ACC = 0.90;   // accuracy floor to count as fluent
 function getFluencyTarget(s, lv) {
@@ -3025,6 +3152,16 @@ const METHOD_BAND_CEIL = {
   // values here are only a fallback.
   pctIdentify:[15, 10, 6], pctOfAmount:[15, 10, 6],   // only L3 is read (L1/L2 are recall)
   pctFDP:[11, 9, 6], pctExpress:[6, 5, 4], pctChange:[6, 5, 4], pctProfitLoss:[5, 4],
+  // v74.2 (Laura) — new METHOD skills. PROPOSED placeholders — recalibrate with class data.
+  fracCompare:[12, 6, 5],          // L1 sign-tap · L2 order asc · L3 order desc (mirrors Compare Decimals)
+  negIndices:[10, 8, 6],           // evaluate zero/negative indices
+  surdSimplify:[10, 8, 6], surdAddSub:[8, 6, 5], surdMultiply:[8, 6, 5], surdDivide:[8, 6, 5],
+  pctReverse:[6, 5, 4],            // reverse percentages (multi-step)
+  bestBuy:[6, 5, 4],               // unit price / best buy
+  // v74.3 (Laura) — the final three skills. PROPOSED placeholders — recalibrate with class data.
+  primeFactor:[8, 6, 6],           // L1 recognise · L2 missing power · L3 count factors
+  rearrange:[7, 6, 5],             // recognise the correct rearrangement
+  anglePoly:[8, 6, 8, 6],          // L1 angle sum · L2 find missing · L3 regular polygon angle · L4 algebra
 };
 /* Explicit Cheetah thresholds where Laura's value differs from round(1.5·Lion). */
 const METHOD_BAND_CHEETAH = {
@@ -3917,6 +4054,8 @@ function resetAnswerInputs() {
   }
   // Desktop inequality-sign buttons: only for the inequalities mode on a computer.
   { const idr = id('ineqDeskRow'); if (idr) idr.style.display = (mode === 'ineq' && !IS_MOBILE()) ? 'flex' : 'none'; }
+  // Desktop √ button: only for surd mode on a computer.
+  { const sdr = id('surdDeskRow'); if (sdr) sdr.style.display = (mode === 'surd' && !IS_MOBILE()) ? 'flex' : 'none'; }
 }
 
 function enableInputs() {
@@ -4034,7 +4173,7 @@ function buildChoiceGrid() {
   if (!grid) return;
   // v69: expanded-form options are long (multi-term, stacked fractions) — give
   // them a full-width, auto-height column so nothing clips in the 74px trig grid.
-  grid.classList.toggle('wide', skill === 'decExpand' || skill === 'compareDec');
+  grid.classList.toggle('wide', skill === 'decExpand' || skill === 'compareDec' || skill === 'rearrange' || skill === 'primeFactor');
   grid.innerHTML = '';
   (qData.choices || []).forEach(opt => {
     const b = document.createElement('button');
@@ -4689,8 +4828,8 @@ function genTrigExact(el, useRad) {
   const opts = shuffleArr([ans, ...picks]);
   qData.choices = opts.map(c => ({ code: c, html: TRIG_VALS[c].h }));
 
-  qData.workSteps = METHOD_TIP[skill] || '';
   const angle = useRad ? `(${radHtml(row.rad)})` : `${row.deg}°`;
+  qData.workSteps = `${fn} ${angle} = <b>${TRIG_VALS[ans].h}</b> — read it from the special 30-60-90 / 45-45-90 triangle or the unit circle (check the quadrant for the sign).`;
   el.innerHTML = `<div style="${A_LBL}">Tap the exact value</div>` +
                  `<span style="font-size:2.4rem;font-weight:900">${fn} ${angle}</span>`;
 }
@@ -5040,6 +5179,21 @@ function genInteriorAngles(el){
    are level-aware: L1/L2 pull other level-appropriate shapes; L3 pulls from the
    answer's own confusable family (parallelogram vs rhombus, prism vs pyramid, …).
 ═══════════════════════════════════════════════ */
+/* v74.5 (Laura): one-line "why" for the miss review — names the actual shape shown
+   plus its single distinguishing feature, instead of a generic paragraph. */
+const NSH_HINT = {
+  triangle:'3 sides', square:'4 equal sides and 4 right angles', rectangle:'4 right angles, opposite sides equal',
+  pentagon:'5 sides', hexagon:'6 sides', heptagon:'7 sides', octagon:'8 sides', nonagon:'9 sides', decagon:'10 sides',
+  parallelogram:'two pairs of parallel sides', rhombus:'4 equal sides', trapezium:'exactly one pair of parallel sides',
+  kite:'two pairs of adjacent equal sides', circle:'one curved edge, no corners', oval:'a stretched circle', semicircle:'half a circle',
+  cube:'6 square faces', cuboid:'6 rectangular faces', sphere:'a perfectly round ball', hemisphere:'half a sphere',
+  cylinder:'two circular ends joined by a curved surface', cone:'a circular base rising to a point', torus:'a ring / doughnut shape',
+  triangularPrism:'two triangular ends joined by rectangles', pentagonalPrism:'two pentagon ends joined by rectangles',
+  hexagonalPrism:'two hexagon ends joined by rectangles', triangularPyramid:'a triangular base rising to an apex',
+  squarePyramid:'a square base rising to an apex', pentagonalPyramid:'a pentagon base rising to an apex',
+  hexagonalPyramid:'a hexagon base rising to an apex', dodecahedron:'12 pentagon faces',
+};
+function nshWhy(key, name){ const h = NSH_HINT[key]; return 'This shape is a <b>' + name + '</b>' + (h ? ' — ' + h + '.' : '.'); }
 function shPoly(pts, dash){ return '<polygon points="'+pts.map(function(p){return p[0]+','+p[1];}).join(' ')+'" fill="none" stroke="var(--text)" stroke-width="2.5" stroke-linejoin="round"'+(dash?' stroke-dasharray="5 4"':'')+'/>'; }
 function shLine(a, b, dash){ return '<line x1="'+a[0]+'" y1="'+a[1]+'" x2="'+b[0]+'" y2="'+b[1]+'" stroke="var(--text)" stroke-width="2.5" stroke-linecap="round"'+(dash?' stroke-dasharray="5 4"':'')+'/>'; }
 function shEll(cx, cy, rx, ry, dash){ return '<ellipse cx="'+cx+'" cy="'+cy+'" rx="'+rx+'" ry="'+ry+'" fill="none" stroke="var(--text)" stroke-width="2.5"'+(dash?' stroke-dasharray="5 4"':'')+'/>'; }
@@ -5172,6 +5326,34 @@ function nshFamily(key){
   return NSH_L1;
 }
 function genNameShapes(el){
+  // v74.4 (Laura): L4 regular/irregular, L5 convex/concave — drawn polygons, fixed 2-option choice.
+  if(level === 4 || level === 5){
+    el.style.fontSize = '1.05rem';
+    let pts, correct, opts, promptTxt;
+    if(level === 4){
+      const n = rr(4, 8), reg = Math.random() < 0.5;
+      pts = reg ? polyRegPts(n) : polyJitterPts(n);
+      opts = ['Regular','Irregular']; correct = reg ? 'Regular' : 'Irregular';
+      promptTxt = 'Is this polygon regular or irregular?';
+      qData.workSteps = reg
+        ? 'All ' + n + ' sides and all ' + n + ' angles are equal, so it is <b>regular</b>.'
+        : 'The sides and angles are not all equal, so it is <b>irregular</b>.';
+    } else {
+      const n = rr(4, 7), concave = Math.random() < 0.5;
+      pts = concave ? polyConcavePts(n) : (Math.random() < 0.5 ? polyRegPts(n) : polyJitterPts(n));
+      opts = ['Convex','Concave']; correct = concave ? 'Concave' : 'Convex';
+      promptTxt = 'Is this polygon convex or concave?';
+      qData.workSteps = concave
+        ? 'One vertex caves inwards — its angle is more than 180° (a reflex angle) — so it is <b>concave</b>.'
+        : 'Every angle is less than 180° (no dents), so it is <b>convex</b>.';
+    }
+    qData.chosen = null;
+    qData.choices = opts.map(function(t, i){ return { code:'o'+i, html:t }; });   // fixed order (no shuffle)
+    qData.choiceText = {}; opts.forEach(function(t, i){ qData.choiceText['o'+i] = t; });
+    qData.choiceAns = 'o' + opts.indexOf(correct);
+    el.innerHTML = '<div style="'+A_LBL+'">' + promptTxt + '</div>' + polyShapeSVG(pts, null);
+    return;
+  }
   const pool = level === 1 ? NSH_L1 : level === 2 ? NSH_L2 : NSH_L3;
   const key = pool[ri(pool.length)];
   const shape = SHAPE_LIB[key];
@@ -5192,7 +5374,7 @@ function genNameShapes(el){
   opts.forEach(function(k){ qData.choiceText[k] = SHAPE_LIB[k].name; });
   qData.nshDim = shape.dim;                          // runtime-only test hooks
   qData.nshVariants = shape.variants.length;
-  qData.workSteps = METHOD_TIP['nameShapes'] || '';
+  qData.workSteps = nshWhy(key, shape.name);
 
   el.style.fontSize = '1.1rem';
   el.innerHTML = '<div style="'+A_LBL+'">Name this shape</div>' + shWrap(shape.variants[ri(shape.variants.length)]);
@@ -5393,6 +5575,23 @@ const NAL_LV = {
 };
 const NAL_SIDE_NAMES = {equilateral:'Equilateral',isosceles:'Isosceles',scalene:'Scalene'};
 const NAL_ANG_NAMES  = {acute:'Acute',right:'Right',obtuse:'Obtuse'};
+/* v74.5 (Laura): short, question-specific "why" for the miss review. */
+const NAL_WHY_L1 = { point:'A single dot marks a <b>point</b>.', ray:'A <b>ray</b> starts at one endpoint and goes on forever one way (one arrow).', segment:'A <b>line segment</b> has two endpoints and no arrows.', line:'A <b>line</b> goes on forever both ways (an arrow at each end).' };
+const NAL_WHY_L2 = { parallel:'The lines never meet — they stay the same distance apart, so they are <b>parallel</b> (∥).', perpendicular:'The lines cross at a right angle (90°), so they are <b>perpendicular</b> (⊥).', neither:'The lines are not parallel and do not meet at a right angle, so <b>neither</b>.' };
+const NAL_BAND = { acute:'less than 90°', right:'exactly 90°', obtuse:'between 90° and 180°', straight:'exactly 180°', reflex:'between 180° and 360°', revolution:'a full turn of 360°' };
+const NAL_WHY_ANG = { acute:'all three angles are less than 90°', right:'one angle is exactly 90°', obtuse:'one angle is more than 90°' };
+const NAL_WHY_SIDE = { equilateral:'all three sides are equal', isosceles:'exactly two sides are equal', scalene:'all three sides are different' };
+function nalWhy(lv, ans, num, axis, names){
+  if(lv===1) return NAL_WHY_L1[ans] || '';
+  if(lv===2) return NAL_WHY_L2[ans] || '';
+  if(lv===3){ const nm=(names[ans]||ans).toLowerCase(), band=NAL_BAND[ans]||'';
+    return num!=null ? (num + '° is ' + band + ', so it is a <b>' + nm + '</b> angle.')
+                     : ('A <b>' + nm + '</b> angle is ' + band + '.'); }
+  // L4 triangle classification
+  const nm=(names[ans]||ans);
+  const why=(axis==='angles') ? NAL_WHY_ANG[ans] : NAL_WHY_SIDE[ans];
+  return 'This triangle is <b>' + nm + '</b> — ' + (why||'') + '.';
+}
 function genNameAnglesLines(el){
   const lv=level;
   qData.chosen=null; qData.nalNumber=null;
@@ -5441,7 +5640,7 @@ function genNameAnglesLines(el){
   qData.nalType   = ans;                          // runtime-only test hooks
   qData.nalLevel  = lv;
   qData.nalStim   = stim;                         // 'picture' | 'notation'
-  qData.workSteps = METHOD_TIP['nameAnglesLines'] || '';
+  qData.workSteps = nalWhy(lv, ans, qData.nalNumber, qData.nalAxis, names);
   el.style.fontSize='1.1rem';
   el.innerHTML='<div style="'+A_LBL+'">'+prompt+'</div>'+svg;
 }
@@ -5681,7 +5880,11 @@ function genCongruSimilar(el){
     qData.choiceAns=ans; qData.choices=order.map(function(c){return {code:c,html:names[c]};});
     qData.choiceText={}; order.forEach(function(c){qData.choiceText[c]=names[c];});
     qData.csLevel=1; qData.csFam=fam; qData.csRel=ans; qData.csA=Anum; qData.csB=Bnum;
-    qData.workSteps=METHOD_TIP['congruSimilar']||'';
+    qData.workSteps=({
+      congruent:'Matching sides are equal, so the shapes are the same size and shape → <b>congruent</b>.',
+      similar:'Every side of one is the same multiple of the other — same shape, just scaled → <b>similar</b>.',
+      neither:'The sides are not all equal and not in a constant ratio, so <b>neither</b>.'
+    })[ans] || '';
     el.innerHTML='<div style="'+A_LBL+'">Are these two shapes congruent, similar, or neither?</div>'+csWrap(svgA+svgB);
     return;
   }
@@ -5707,7 +5910,13 @@ function genCongruSimilar(el){
     qData.choiceAns=ans; qData.choices=order.map(function(c){return {code:c,html:names[c]};});
     qData.choiceText={}; order.forEach(function(c){qData.choiceText[c]=names[c];});
     qData.csLevel=2; qData.csScenario=scen; qData.csPlan={level:2,sideTicks:sideTicks,angArcs:angArcs,angRight:angRight};
-    qData.workSteps=METHOD_TIP['congruSimilar']||'';
+    qData.workSteps=({
+      SSS:'All three pairs of sides are marked equal → <b>SSS</b>.',
+      SAS:'Two pairs of sides and the angle between them are equal → <b>SAS</b>.',
+      AAS:'Two pairs of angles and a matching side are equal → <b>AAS</b>.',
+      RHS:'A right angle, the hypotenuse and one leg are equal → <b>RHS</b>.',
+      none:'The marked facts don’t match any test (e.g. AAA or SSA proves nothing), so <b>not enough information</b>.'
+    })[ans] || '';
     el.innerHTML='<div style="'+A_LBL+'">Which test shows these two triangles are congruent?</div>'+svg;
     return;
   }
@@ -5734,7 +5943,13 @@ function genCongruSimilar(el){
     qData.choiceAns=ans; qData.choices=order.map(function(c){return {code:c,html:names[c]};});
     qData.choiceText={}; order.forEach(function(c){qData.choiceText[c]=names[c];});
     qData.csLevel=3; qData.csScenario=scen; qData.csPlan={level:3,A:A,B:B,eqAngles:eqAngles,rightV:rightV};
-    qData.workSteps=METHOD_TIP['congruSimilar']||'';
+    qData.workSteps=({
+      SSS:'All three pairs of sides are in the same ratio → <b>SSS</b>.',
+      AAA:'Two pairs of angles are equal (so all three are) → <b>AAA</b>.',
+      SAS:'Two pairs of sides in the same ratio with an equal angle between them → <b>SAS</b>.',
+      RHS:'A right angle with the hypotenuse and one side in the same ratio → <b>RHS</b>.',
+      none:'The marked facts don’t prove the triangles are the same shape, so <b>not enough information</b>.'
+    })[ans] || '';
     el.innerHTML='<div style="'+A_LBL+'">Which test shows these two triangles are similar?</div>'+svg;
     return;
   }
@@ -5958,7 +6173,12 @@ function genAngleRel(el){
     const opts = keys.slice();
     qData.choices = opts.map(function(k){ return { code:k, html:ANG_REL[k] }; });
     qData.choiceText = {}; opts.forEach(function(k){ qData.choiceText[k] = ANG_REL[k]; });
-    qData.workSteps = METHOD_TIP['angleRel'] || '';
+    qData.workSteps = ({
+      comp:'The two angles sit inside a right angle — together they make 90°, so they are <b>complementary</b>.',
+      supp:'The two angles lie along a straight line — together they make 180°, so they are <b>supplementary</b>.',
+      vert:'The two angles are opposite each other where the lines cross, so they are <b>vertically opposite</b> (equal).',
+      point:'The angles meet at one point and fill the whole turn of 360°, so they are <b>angles at a point</b>.'
+    })[key] || '';
     el.innerHTML = '<div style="'+A_LBL+'">What is the relationship between the marked angles?</div>' + angRelDiagram(key, null, 'all', rot);
     return;
   }
@@ -6089,7 +6309,12 @@ function genAngleParallel(el){
     const opts=keys.slice();
     qData.choices=opts.map(function(k){ return {code:k, html:ANG_PL[k]}; });
     qData.choiceText={}; opts.forEach(function(k){ qData.choiceText[k]=ANG_PL[k]; });
-    qData.workSteps=METHOD_TIP['angleParallel']||'';
+    qData.workSteps=({
+      corr:'The angles are in the same position at each intersection (an F-shape), so they are <b>corresponding</b> — and equal.',
+      alt:'The angles are on opposite sides of the transversal between the lines (a Z-shape), so they are <b>alternate</b> — and equal.',
+      coint:'The angles are on the same side of the transversal between the lines (a C-shape), so they are <b>co-interior</b> — and add to 180°.',
+      vert:'The angles are opposite each other at one intersection, so they are <b>vertically opposite</b> — and equal.'
+    })[key] || '';
     const marks = PL_MARKS[key].map(function(m){ return {at:m.at, quad:m.quad, acc:true}; });
     el.innerHTML='<div style="'+A_LBL+'">Two parallel lines are cut by a transversal. What is the relationship between the marked angles?</div>'+plDiagram(marks, null);
     return;
@@ -6362,6 +6587,22 @@ function nextQ() {
   else if (skill === 'pctOfAmount')   { genPctOfAmount(el); }
   else if (skill === 'pctChange')     { genPctChange(el); }
   else if (skill === 'pctProfitLoss') { genPctProfitLoss(el); }
+  else if (skill === 'pctReverse')    { genPctReverse(el); }
+  else if (skill === 'numberBonds')   { genNumberBonds(el); }
+  else if (skill === 'factorsMultiples') { genFactorsMultiples(el); }
+  else if (skill === 'hcfLcm')        { genHcfLcm(el); }
+  else if (skill === 'roundEst')      { genRoundEst(el); }
+  else if (skill === 'fracOfAmount')  { genFracOfAmount(el); }
+  else if (skill === 'fracCompare')   { genFracCompare(el); }
+  else if (skill === 'negIndices')    { genNegIndices(el); }
+  else if (skill === 'surdSimplify')  { genSurdSimplify(el); }
+  else if (skill === 'surdAddSub')    { genSurdAddSub(el); }
+  else if (skill === 'surdMultiply')  { genSurdMultiply(el); }
+  else if (skill === 'surdDivide')    { genSurdDivide(el); }
+  else if (skill === 'bestBuy')       { genBestBuy(el); }
+  else if (skill === 'primeFactor')   { genPrimeFactor(el); }
+  else if (skill === 'rearrange')     { genRearrange(el); }
+  else if (skill === 'anglePoly')     { genAnglePoly(el); }
   else if (skill === 'ratioSimplify') { genRatioSimplify(); }
   else if (skill === 'ratioEquiv')    { genRatioEquiv(); }
   else if (skill === 'ratioShare')    { genRatioShare(); }
@@ -6505,7 +6746,7 @@ function genOO(el) {
     } else if (level===2) {
       if (Math.random()<0.5) { ans=(a+b)*c; txt=`(${a} + ${b}) × ${c}`; }
       else { ans=a*(b+c); txt=`${a} × (${b} + ${c})`; }
-    } else {
+    } else if (level===3) {
       const t=r(3);
       // L3: use only forms that can't go negative given our ranges
       if (t===1) {
@@ -6517,6 +6758,12 @@ function genOO(el) {
       } else {
         ans=a*b+c*d; txt=`${a} × ${b} + ${c} × ${d}`;
       }
+    } else {
+      // L4: indices + brackets (do the power right after brackets)
+      const t=r(3);
+      if (t===1) { const g=rr(2,6); ans=a+g*g*c; txt=`${a} + ${g}² × ${c}`; }
+      else if (t===2) { const s=a+b; ans=s*s-d; txt=`(${a} + ${b})² − ${d}`; }
+      else { const g=rr(3,9); ans=g*g-c*d; txt=`${g}² − ${c} × ${d}`; }
     }
     safety++;
   } while (ans <= 0 && safety < 50);
@@ -7285,7 +7532,7 @@ function genAlgSub(el) {
     const a = rr(2,6), b = rr(2,6), xv = rr(1,6), yv = rr(1,6);
     qData.ans = a*xv + b*yv;
     el.innerHTML = `<div style="${A_LBL}">If ${aVar(v1)} = ${xv} and ${aVar(v2)} = ${yv}, find</div>${aExpr([{coeff:a,base:v1},{coeff:b,base:v2}])}`;
-  } else {
+  } else if (level === 3) {
     const v = ['x','a','m'][ri(3)];
     const xv = -rr(1,5);
     const type = ri(3);
@@ -7302,6 +7549,22 @@ function genAlgSub(el) {
       qData.ans = xv*xv - k;
       el.innerHTML = `<div style="${A_LBL}">If ${aVar(v)} = ${aNum(xv)}, find</div>${aPow(v,2)} − ${k}`;
     }
+  } else {
+    // L4: substitute into a real formula and evaluate (answers are whole numbers)
+    el.style.fontSize = '1.5rem';
+    const forms = [
+      () => { const b = 2*rr(2,6), h = rr(3,9); return { ans: b*h/2, lbl: 'A = ½bh', sub: 'b = '+b+',  h = '+h }; },
+      () => { const l = rr(3,12), wd = rr(2,9);  return { ans: 2*(l+wd), lbl: 'P = 2(l + w)', sub: 'l = '+l+',  w = '+wd }; },
+      () => { const u = rr(2,9), a = rr(2,6), t = rr(2,6); return { ans: u + a*t, lbl: 'v = u + at', sub: 'u = '+u+',  a = '+a+',  t = '+t }; },
+      () => { const l = rr(3,12), wd = rr(2,9);  return { ans: l*wd, lbl: 'A = lw', sub: 'l = '+l+',  w = '+wd }; },
+      () => { const s = rr(3,15);                return { ans: 4*s, lbl: 'P = 4s', sub: 's = '+s }; },
+    ];
+    const f = forms[ri(forms.length)]();
+    qData.ans = f.ans;
+    qData.workSteps = 'Substitute into ' + f.lbl + ' with ' + f.sub + ' → ' + f.ans + '.';
+    el.innerHTML = `<div style="${A_LBL}">Substitute into the formula and evaluate</div>`
+      + `<div style="text-align:center;font-weight:900;font-size:1.7rem;margin:6px 0;">${f.lbl}</div>`
+      + `<div style="text-align:center;font-weight:800;color:var(--muted);">${f.sub}</div>`;
   }
 }
 
@@ -8945,11 +9208,17 @@ function genIntOrderOps() {
       const t = r(2);
       if (t === 1) { ans = (na + b) * c;  txt = `(${na} + ${b}) × ${c}`; }
       else { ans = a * (nb + c); txt = `${a} × (${nb} + ${c})`; }
-    } else {
+    } else if (level === 3) {
       const t = r(3);
       if (t === 1) { ans = na + b * nc; txt = `${na} + ${b} × (${nc})`; }
       else if (t === 2) { ans = (na + b) * nc; txt = `(${na} + ${b}) × (${nc})`; }
       else { ans = a * nb + c * na; txt = `${a} × (${nb}) + ${c} × (${na})`; }
+    } else {
+      // L4: indices with negatives & brackets. (−a)² = a²; but −a² = −(a²).
+      const t = r(3);
+      if (t === 1) { ans = a * a + b * nc; txt = `(${na})² + ${b} × (${nc})`; }
+      else if (t === 2) { const s = na + b; ans = s * s - c; txt = `(${na} + ${b})² − ${c}`; }
+      else { ans = -(a * a) + b * c; txt = `−${a}² + ${b} × ${c}`; }
     }
     safety++;
   } while (safety < 50 && (isNaN(ans) || !isFinite(ans)));
@@ -9089,7 +9358,7 @@ function genFracOrderOps() {
       const [sn, sd] = simplify(ansNum, ansDen);
       ansNum = sn; ansDen = sd;
       html = `(${fracHTML(n1, d)} + ${fracHTML(n2, d)}) × ${w}`;
-    } else {
+    } else if (level === 3) {
       const d2 = rr(2, 6);
       const n3 = rr(1, d - 1);
       const prodN = n1 * n2, prodD = d * d2;
@@ -9098,6 +9367,22 @@ function genFracOrderOps() {
       const [sn, sd] = simplify(totalN, commonD);
       ansNum = sn; ansDen = sd;
       html = `${fracHTML(n1, d)} × ${fracHTML(n2, d2)} + ${fracHTML(n3, d)}`;
+    } else {
+      // L4: a squared fraction, then the rest of BODMAS
+      const sqN = n1 * n1, sqD = d * d;
+      const t = r(3);
+      if (t === 1) {
+        const cD = lcm(sqD, d);
+        const tot = sqN * (cD / sqD) + n2 * (cD / d);
+        const [sn, sd] = simplify(tot, cD); ansNum = sn; ansDen = sd;
+        html = `(${fracHTML(n1, d)})² + ${fracHTML(n2, d)}`;
+      } else if (t === 2) {
+        const [sn, sd] = simplify(sqN * w, sqD); ansNum = sn; ansDen = sd;
+        html = `(${fracHTML(n1, d)})² × ${w}`;
+      } else {
+        const [sn, sd] = simplify(sqD - sqN, sqD); ansNum = sn; ansDen = sd;
+        html = `1 − (${fracHTML(n1, d)})²`;
+      }
     }
     safety++;
   } while (ansNum <= 0 && safety < 50);
@@ -9280,11 +9565,17 @@ function genDecOrderOps() {
     } else if (level === 2) {
       if (Math.random() < 0.5) { ans = dp((a + b) * c, 2); txt = `(${a} + ${b}) × ${c}`; }
       else { ans = dp(a * (b + c), 2); txt = `${a} × (${b} + ${c})`; }
-    } else {
+    } else if (level === 3) {
       ans = dp(a + b * c - dp(rr(1,9)/10, 1), 2);
       const sub = dp(rr(1,9)/10, 1);
       ans = dp(a + b * c - sub, 2);
       txt = `${a} + ${b} × ${c} − ${sub}`;
+    } else {
+      // L4: a squared decimal, with brackets (power straight after brackets)
+      const t = r(3);
+      if (t === 1) { ans = dp(a * a + b, 2); txt = `${a}² + ${b}`; }
+      else if (t === 2) { const s = dp(a + b, 1); ans = dp(s * s, 2); txt = `(${a} + ${b})²`; }
+      else { ans = dp(a * a * c, 2); txt = `${a}² × ${c}`; }
     }
     safety++;
   } while ((ans <= 0 || !isFinite(ans)) && safety < 50);
@@ -9334,11 +9625,15 @@ function powFracHTML(d, k){
 function decPlaceStr(d,i){ return '0.' + (i>1 ? '0'.repeat(i-1) : '') + d; }
 function fmtDec(x){ return String(dp(x, 6)); }
 function fracHTML(n,d){ return '<span style="display:inline-block;text-align:center;font-family:Nunito,sans-serif;font-weight:900;vertical-align:middle;"><span style="display:block;border-bottom:3px solid var(--text);padding:0 10px;">'+n+'</span><span style="display:block;padding:0 10px;">'+d+'</span></span>'; }
-function decSetChoice(el, promptHtml, options, correctText){
-  const shuffled = shuffleArr(options.slice());
-  qData.choices = shuffled.map(function(t,i){ return {code:'o'+i, html:t}; });
+function decSetChoice(el, promptHtml, options, correctText, noShuffle){
+  // v74.2 (Laura): pass noShuffle=true for questions whose option SET is identical every
+  // time (e.g. Yes/No, Prime/Not prime) so the buttons stay in the same spot — this stops
+  // "silly errors" from the answer jumping position. Questions with different options each
+  // time (expanded forms, exact values, best-buy pairs) keep the default shuffle.
+  const order = noShuffle ? options.slice() : shuffleArr(options.slice());
+  qData.choices = order.map(function(t,i){ return {code:'o'+i, html:t}; });
   qData.choiceText = {}; qData.choices.forEach(function(c){ qData.choiceText[c.code] = c.html; });
-  qData.choiceAns = 'o' + shuffled.indexOf(correctText);
+  qData.choiceAns = 'o' + order.indexOf(correctText);
   el.innerHTML = promptHtml;
 }
 function dpvMakeNumber(maxPlaces){
@@ -9361,7 +9656,7 @@ function genDecPlaceValue(el){
     qData.choiceAns = P.code;
     qData.choices = order.map(function(p){ return {code:p.code, html:p.name}; });
     qData.choiceText = {}; order.forEach(function(p){ qData.choiceText[p.code] = p.name; });
-    qData.workSteps = METHOD_TIP['decPlaceValue'];
+    qData.workSteps = 'Count the places after the decimal point: 1st = tenths, 2nd = hundredths, 3rd = thousandths, 4th = ten-thousandths. The highlighted digit is in place ' + (n.t+1) + ' → <b>' + P.name.toLowerCase() + '</b>.';
     el.innerHTML = '<div style="'+A_LBL+'">What is the place value of the highlighted digit?</div>'
       + '<div style="text-align:center;margin:16px 0;">'+dpvNumberHTML(n,true)+'</div>';
     return;
@@ -9556,8 +9851,9 @@ function cmpSetInequality(el, A, B){
     { code:'gt', html: A.html + ' &nbsp;&gt;&nbsp; ' + B.html, text: A.text + ' > ' + B.text },
     { code:'eq', html: A.html + ' &nbsp;=&nbsp; ' + B.html,   text: A.text + ' = ' + B.text },
   ];
-  const shuffled = shuffleArr(opts.slice());
-  qData.choices = shuffled.map(function(o){ return {code:o.code, html:o.html}; });
+  // v74.2 (Laura): keep <, >, = in fixed positions every question (same option set) so
+  // students don't make silly errors from the signs jumping around.
+  qData.choices = opts.map(function(o){ return {code:o.code, html:o.html}; });
   qData.choiceText = {}; opts.forEach(function(o){ qData.choiceText[o.code] = o.text; });
   qData.choiceAns = (Math.abs(va - vb) < 1e-9) ? 'eq' : (va < vb ? 'lt' : 'gt');
   qData.chosen = null;
@@ -9853,6 +10149,457 @@ function genPctProfitLoss(el){
 }
 
 /* ═══════════════════════════════════════════════
+   NEW BASE-FACT & METHOD GENERATORS (v74.2, Laura)
+═══════════════════════════════════════════════ */
+function isPrime(n){ if(n < 2) return false; for(let i = 2; i*i <= n; i++){ if(n % i === 0) return false; } return true; }
+function round1sig(n){ if(n === 0) return 0; const d = Math.pow(10, Math.floor(Math.log10(Math.abs(n)))); return Math.round(n / d) * d; }
+function numPowHTML(base, exp){ const e = exp < 0 ? '−' + Math.abs(exp) : '' + exp; return base + '<sup style="font-size:0.6em;">' + e + '</sup>'; }
+function surdTerm(c, r){ if(r === 1) return '' + c; return (c === 1 ? '' : '' + c) + '√' + r; }
+function surdSetAns(c, r, lbl, expr, work){
+  const cr = surdSimplify(c, r);
+  qData.ansSurd = { c: cr.c, r: cr.r }; qData.ans = cr.c * Math.sqrt(cr.r);
+  qData.ansDisplay = surdFmt(cr); qData.workSteps = work;
+  id('qText').innerHTML = '<div style="' + A_LBL + '">' + lbl + '</div>'
+    + '<div style="text-align:center;margin:10px 0;font-weight:900;font-size:2.2rem;">' + expr + '</div>';
+}
+
+/* ── Number: Number Bonds (make 10 / 20 / 100, doubles) ── */
+function genNumberBonds(el){
+  el.style.fontSize = '2rem';
+  if(level === 1){
+    const a = rr(1, 9); qData.ans = 10 - a; qData.workSteps = a + ' + ' + (10 - a) + ' = 10.';
+    el.innerHTML = '<div style="' + A_LBL + '">Fill the gap to make 10.</div><div style="text-align:center;margin:10px 0;font-weight:900;font-size:2.2rem;">' + a + ' + ▢ = 10</div>';
+  } else if(level === 2){
+    if(Math.random() < 0.7){ const a = rr(1, 19); qData.ans = 20 - a; qData.workSteps = a + ' + ' + (20 - a) + ' = 20.'; el.innerHTML = '<div style="' + A_LBL + '">Fill the gap to make 20.</div><div style="text-align:center;margin:10px 0;font-weight:900;font-size:2.2rem;">' + a + ' + ▢ = 20</div>'; }
+    else { const a = rr(1, 9) * 10; qData.ans = 100 - a; qData.workSteps = a + ' + ' + (100 - a) + ' = 100.'; el.innerHTML = '<div style="' + A_LBL + '">Fill the gap to make 100.</div><div style="text-align:center;margin:10px 0;font-weight:900;font-size:2.2rem;">' + a + ' + ▢ = 100</div>'; }
+  } else {
+    const k = rr(2, 12); qData.ans = 2 * k; qData.workSteps = 'Double ' + k + ' = ' + (2 * k) + '.';
+    el.innerHTML = '<div style="' + A_LBL + '">Type the double.</div><div style="text-align:center;margin:10px 0;font-weight:900;font-size:2.4rem;">' + k + ' + ' + k + '</div>';
+  }
+}
+
+/* ── Number: Factors, Multiples & Primes ── */
+function genFactorsMultiples(el){
+  el.style.fontSize = '1.5rem';
+  if(level === 1){
+    let n;
+    if(Math.random() < 0.5){ const P = [2,3,5,7,11,13,17,19,23,29,31,37,41,43,47,53,59]; n = P[ri(P.length)]; }
+    else { do { n = rr(4, 60); } while(isPrime(n)); }
+    qData.workSteps = n + ' is ' + (isPrime(n) ? 'prime — its only factors are 1 and ' + n + '.' : 'not prime — it has factors other than 1 and itself.');
+    decSetChoice(el, '<div style="' + A_LBL + '">Is this number prime?</div><div style="text-align:center;margin:12px 0;font-weight:900;font-size:2.6rem;">' + n + '</div>', ['Prime','Not prime'], isPrime(n) ? 'Prime' : 'Not prime', true);
+  } else if(level === 2){
+    const y = rr(12, 60); let x;
+    if(Math.random() < 0.5){ const f = []; for(let i = 2; i < y; i++){ if(y % i === 0) f.push(i); } x = f.length ? f[ri(f.length)] : 1; }
+    else { do { x = rr(2, 12); } while(y % x === 0); }
+    const isF = (y % x === 0);
+    qData.workSteps = x + (isF ? ' is' : ' is not') + ' a factor of ' + y + ' (' + y + ' ÷ ' + x + (isF ? ' = ' + (y / x) + ').' : ' is not a whole number).');
+    decSetChoice(el, '<div style="' + A_LBL + '">Is the first number a factor of the second?</div><div style="text-align:center;margin:12px 0;font-weight:900;font-size:2rem;">Is ' + x + ' a factor of ' + y + '?</div>', ['Yes','No'], isF ? 'Yes' : 'No', true);
+  } else {
+    const x = rr(3, 12), k = rr(2, 12);
+    qData.ans = x * k;
+    const ord = ['','1st','2nd','3rd','4th','5th','6th','7th','8th','9th','10th','11th','12th'][k];
+    qData.workSteps = ord + ' multiple of ' + x + ' = ' + x + ' × ' + k + ' = ' + qData.ans + '.';
+    el.innerHTML = '<div style="' + A_LBL + '">Type the multiple.</div><div style="text-align:center;margin:10px 0;font-weight:900;">What is the ' + ord + ' multiple of ' + x + '?</div>';
+  }
+}
+
+/* ── Number: HCF & LCM ── */
+function genHcfLcm(el){
+  el.style.fontSize = '1.5rem';
+  function hcfPair(gLo, gHi){ const g = rr(gLo, gHi); let m, n; do { m = rr(2, 6); n = rr(2, 6); } while(gcd(m, n) !== 1 || m === n); return [g*m, g*n]; }
+  let a, b, wantHCF;
+  if(level === 1){ wantHCF = true; [a, b] = hcfPair(2, 9); }
+  else if(level === 2){ wantHCF = false; a = rr(2, 9); b = rr(2, 9); if(a === b) b = a + 1; }
+  else { wantHCF = Math.random() < 0.5; if(wantHCF){ [a, b] = hcfPair(3, 12); } else { a = rr(4, 12); b = rr(4, 12); if(a === b) b = a + 2; } }
+  qData.ans = wantHCF ? gcd(a, b) : lcm(a, b);
+  qData.workSteps = (wantHCF ? 'HCF' : 'LCM') + ' of ' + a + ' and ' + b + ' = ' + qData.ans + '.';
+  el.innerHTML = '<div style="' + A_LBL + '">' + (wantHCF ? 'Highest Common Factor' : 'Lowest Common Multiple') + '</div>'
+    + '<div style="text-align:center;margin:10px 0;font-weight:900;">' + (wantHCF ? 'HCF' : 'LCM') + ' of ' + a + ' and ' + b + '?</div>';
+}
+
+/* ── Number: Rounding & Estimation ── */
+function genRoundEst(el){
+  el.style.fontSize = '1.6rem';
+  if(level === 1){
+    const place = Math.random() < 0.5 ? 10 : 100;
+    const n = place === 10 ? rr(11, 199) : rr(120, 1900);
+    qData.ans = Math.round(n / place) * place;
+    qData.workSteps = n + ' to the nearest ' + place + ' = ' + qData.ans + '.';
+    el.innerHTML = '<div style="' + A_LBL + '">Round to the nearest ' + place + '.</div><div style="text-align:center;margin:10px 0;font-weight:900;font-size:2.2rem;">' + n + '</div>';
+  } else if(level === 2){
+    const place = Math.random() < 0.5 ? 100 : 1000;
+    const n = rr(1200, 9900);
+    qData.ans = Math.round(n / place) * place;
+    qData.workSteps = n + ' to the nearest ' + place + ' = ' + qData.ans + '.';
+    el.innerHTML = '<div style="' + A_LBL + '">Round to the nearest ' + place + '.</div><div style="text-align:center;margin:10px 0;font-weight:900;font-size:2.2rem;">' + n + '</div>';
+  } else if(level === 3){
+    // Round to the leading digit (1 significant figure)
+    const digits = [2, 3, 4][ri(3)];
+    let n; do { n = rr(Math.pow(10, digits - 1) + 1, Math.pow(10, digits) - 1); } while(n % Math.pow(10, digits - 1) === 0);
+    qData.ans = round1sig(n);
+    qData.workSteps = n + ' rounded to the leading digit (1 significant figure) = ' + qData.ans + '.';
+    el.innerHTML = '<div style="' + A_LBL + '">Round to the leading digit (1 significant figure).</div><div style="text-align:center;margin:10px 0;font-weight:900;font-size:2.2rem;">' + n + '</div>';
+  } else {
+    const ops = ['×','+','−','÷']; let a, b, op, ans, t = 0;
+    do {
+      op = ops[ri(4)];
+      if(op === '×'){ a = rr(11, 89); b = rr(11, 49); ans = round1sig(a) * round1sig(b); }
+      else if(op === '+'){ a = rr(120, 890); b = rr(120, 890); ans = round1sig(a) + round1sig(b); }
+      else if(op === '−'){ a = rr(410, 900); b = rr(60, 290); ans = round1sig(a) - round1sig(b); }
+      else { const db = [20,30,40,50][ri(4)], q = rr(2, 9); a = db * q + rr(-4, 4); b = db + rr(-4, 4); ans = round1sig(a) / round1sig(b); }
+      t++;
+    } while((!isFinite(ans) || ans <= 0 || Math.round(ans) !== ans) && t < 60);
+    qData.ans = ans;
+    qData.workSteps = 'Round each to the leading digit: ' + round1sig(a) + ' ' + op + ' ' + round1sig(b) + ' ≈ ' + ans + '.';
+    el.innerHTML = '<div style="' + A_LBL + '">Estimate — round each number to its leading digit first.</div><div style="text-align:center;margin:10px 0;font-weight:900;font-size:2rem;">' + a + ' ' + op + ' ' + b + '</div>';
+  }
+}
+
+/* ── Fractions: Fraction of an Amount ── */
+function genFracOfAmount(el){
+  el.style.fontSize = '1.7rem';
+  let d, n, amt;
+  if(level === 1){ d = [2,3,4,5,6,10][ri(6)]; n = 1; amt = d * rr(2, 12); }
+  else if(level === 2){ d = [3,4,5,6,8][ri(5)]; n = rr(2, d - 1); amt = d * rr(2, 12); }
+  else { d = [6,7,8,9,12][ri(5)]; n = rr(2, d - 1); amt = d * rr(4, 12); }
+  qData.ans = n * amt / d;
+  qData.workSteps = n + '/' + d + ' of ' + amt + ' = ' + amt + ' ÷ ' + d + ' × ' + n + ' = ' + qData.ans + '.';
+  el.innerHTML = '<div style="' + A_LBL + '">Find the fraction of the amount.</div>'
+    + '<div style="text-align:center;margin:10px 0;font-weight:900;display:flex;align-items:center;justify-content:center;gap:10px;">' + fracHTML(n, d) + '<span>of ' + amt + '</span></div>';
+}
+
+/* ── Fractions: Compare & Order (reuses the Compare Decimals tile engine) ── */
+function genFracCompare(el){
+  el.style.fontSize = '1.05rem';
+  if(level === 1){ const t = cmpDrawTiles([cmpFracTile], 2); cmpSetInequality(el, t[0], t[1]); }
+  else if(level === 2){ cmpSetOrder(el, cmpDrawTiles([cmpFracTile], 4), 'asc'); }
+  else { cmpSetOrder(el, cmpDrawTiles([cmpFracTile], 4), 'desc'); }
+}
+
+/* ── Exponents: Negative & Zero Indices (answers as fractions / whole numbers) ── */
+function genNegIndices(el){
+  el.style.fontSize = '2rem';
+  if(level === 1){
+    const t = r(3), a = rr(2, 9);
+    if(t === 1){ qData.ansNum = 1; qData.ansDen = 1; qData.workSteps = 'Any non-zero number to the power 0 is 1.'; el.innerHTML = '<div style="' + A_LBL + '">Evaluate</div><div style="text-align:center;margin:8px 0;font-weight:900;font-size:2.4rem;">' + numPowHTML(a, 0) + '</div>'; }
+    else if(t === 2){ qData.ansNum = a; qData.ansDen = 1; qData.workSteps = a + ' to the power 1 is ' + a + '.'; el.innerHTML = '<div style="' + A_LBL + '">Evaluate</div><div style="text-align:center;margin:8px 0;font-weight:900;font-size:2.4rem;">' + numPowHTML(a, 1) + '</div>'; }
+    else { qData.ansNum = 1; qData.ansDen = a; qData.workSteps = a + ' to the power −1 = 1/' + a + '.'; el.innerHTML = '<div style="' + A_LBL + '">Evaluate (give a fraction)</div><div style="text-align:center;margin:8px 0;font-weight:900;font-size:2.4rem;">' + numPowHTML(a, -1) + '</div>'; }
+  } else if(level === 2){
+    const a = rr(2, 6), k = rr(2, 3), den = Math.pow(a, k);
+    qData.ansNum = 1; qData.ansDen = den;
+    qData.workSteps = a + ' to the power −' + k + ' = 1 / ' + a + '^' + k + ' = 1/' + den + '.';
+    el.innerHTML = '<div style="' + A_LBL + '">Evaluate (give a fraction)</div><div style="text-align:center;margin:8px 0;font-weight:900;font-size:2.4rem;">' + numPowHTML(a, -k) + '</div>';
+  } else {
+    const P = [[2,3],[3,4],[2,5],[3,5],[4,5],[1,2],[1,3]]; const pr = P[ri(P.length)], n = pr[0], dd = pr[1];
+    const k = rr(1, 2);
+    let nn = Math.pow(dd, k), ddn = Math.pow(n, k); const g = gcd(nn, ddn); nn /= g; ddn /= g;
+    qData.ansNum = nn; qData.ansDen = ddn;
+    qData.workSteps = '(' + n + '/' + dd + ') to the power −' + k + ' = (' + dd + '/' + n + ')' + (k > 1 ? ('^' + k) : '') + ' = ' + nn + '/' + ddn + '.';
+    el.innerHTML = '<div style="' + A_LBL + '">Evaluate (give a fraction)</div><div style="text-align:center;margin:8px 0;font-weight:900;display:flex;align-items:center;justify-content:center;">(' + fracHTML(n, dd) + ')' + '<sup style="font-size:0.6em;">−' + k + '</sup></div>';
+  }
+}
+
+/* ── Exponents: Surds ── */
+const SURD_SIMP_SMALL = [8,12,18,20,24,27,32,44,45,48,50];
+const SURD_SIMP_BIG   = [52,54,63,72,75,80,90,98,108,112,125,128,147,150,175,180,200];
+const SURD_SQFREE = [2,3,5,6,7,10];
+function genSurdSimplify(el){
+  el.style.fontSize = '1.05rem';
+  if(level === 1){ const N = SURD_SIMP_SMALL[ri(SURD_SIMP_SMALL.length)]; surdSetAns(1, N, 'Simplify the surd', '√' + N, '√' + N + ' = ' + surdFmt(surdSimplify(1, N)) + '.'); }
+  else if(level === 2){ const N = SURD_SIMP_BIG[ri(SURD_SIMP_BIG.length)]; surdSetAns(1, N, 'Simplify the surd', '√' + N, '√' + N + ' = ' + surdFmt(surdSimplify(1, N)) + '.'); }
+  else { const c = rr(2, 4), N = SURD_SIMP_SMALL[ri(SURD_SIMP_SMALL.length)]; surdSetAns(c, N, 'Simplify the surd', c + '√' + N, c + '√' + N + ' = ' + surdFmt(surdSimplify(c, N)) + '.'); }
+}
+function genSurdAddSub(el){
+  el.style.fontSize = '1.4rem';
+  if(level === 1){
+    const k = SURD_SQFREE[ri(SURD_SQFREE.length)]; let a = rr(2, 8), b = rr(1, 7), op, res;
+    if(Math.random() < 0.5){ op = '+'; res = a + b; } else { if(a <= b){ a = b + rr(1, 4); } op = '−'; res = a - b; }
+    surdSetAns(res, k, 'Simplify', surdTerm(a, k) + ' ' + op + ' ' + surdTerm(b, k), surdTerm(a, k) + ' ' + op + ' ' + surdTerm(b, k) + ' = ' + surdFmt(surdSimplify(res, k)) + '.');
+  } else if(level === 2){
+    const k = SURD_SQFREE[ri(SURD_SQFREE.length)], p = rr(2, 6), q = rr(2, 3), N = q*q*k, res = p + q;
+    surdSetAns(res, k, 'Simplify (simplify each surd first)', surdTerm(p, k) + ' + √' + N, surdTerm(p, k) + ' + √' + N + ' = ' + surdTerm(p, k) + ' + ' + q + '√' + k + ' = ' + surdFmt(surdSimplify(res, k)) + '.');
+  } else {
+    const k = SURD_SQFREE[ri(SURD_SQFREE.length)]; let p = rr(2, 5), q = rr(1, 4), op, res;
+    if(Math.random() < 0.5){ op = '+'; res = p + q; } else { if(p <= q){ p = q + rr(1, 3); } op = '−'; res = p - q; }
+    const N1 = p*p*k, N2 = q*q*k;
+    surdSetAns(res, k, 'Simplify (simplify each surd first)', '√' + N1 + ' ' + op + ' √' + N2, '√' + N1 + ' ' + op + ' √' + N2 + ' = ' + p + '√' + k + ' ' + op + ' ' + q + '√' + k + ' = ' + surdFmt(surdSimplify(res, k)) + '.');
+  }
+}
+function genSurdMultiply(el){
+  el.style.fontSize = '1.4rem';
+  if(level === 1){ const a = SURD_SQFREE[ri(6)], b = SURD_SQFREE[ri(6)]; surdSetAns(1, a*b, 'Multiply', '√' + a + ' × √' + b, '√' + a + ' × √' + b + ' = √' + (a*b) + ' = ' + surdFmt(surdSimplify(1, a*b)) + '.'); }
+  else if(level === 2){ const c = rr(2, 4), d = rr(2, 4), a = SURD_SQFREE[ri(6)], b = SURD_SQFREE[ri(6)]; surdSetAns(c*d, a*b, 'Multiply', surdTerm(c, a) + ' × ' + surdTerm(d, b), surdTerm(c, a) + ' × ' + surdTerm(d, b) + ' = ' + (c*d) + '√' + (a*b) + ' = ' + surdFmt(surdSimplify(c*d, a*b)) + '.'); }
+  else { const S = [2,3,5,6,7,10,14,15]; const a = S[ri(S.length)], b = S[ri(S.length)], c = rr(1, 3), d = rr(1, 3); surdSetAns(c*d, a*b, 'Multiply', surdTerm(c, a) + ' × ' + surdTerm(d, b), surdTerm(c, a) + ' × ' + surdTerm(d, b) + ' = ' + surdFmt(surdSimplify(c*d, a*b)) + '.'); }
+}
+function genSurdDivide(el){
+  el.style.fontSize = '1.4rem';
+  if(level === 1){
+    let B, sq, A, t = 0; do { B = [2,3,5,6][ri(4)]; sq = [4,9,16,25][ri(4)]; A = B * sq; t++; } while(isPerfSq(A) && t < 40);
+    surdSetAns(Math.round(Math.sqrt(sq)), 1, 'Divide', '√' + A + ' ÷ √' + B, '√' + A + ' ÷ √' + B + ' = √' + sq + ' = ' + Math.round(Math.sqrt(sq)) + '.');
+  } else if(level === 2){
+    let B, m, A, t = 0; do { B = [2,3,5][ri(3)]; m = [8,12,18,20,24,27,45,50][ri(8)]; A = B * m; t++; } while(isPerfSq(A) && t < 40);
+    surdSetAns(1, m, 'Divide', '√' + A + ' ÷ √' + B, '√' + A + ' ÷ √' + B + ' = √' + m + ' = ' + surdFmt(surdSimplify(1, m)) + '.');
+  } else {
+    let d, g, c, B, m, A, t = 0; do { d = rr(2, 3); g = rr(2, 3); c = d*g; B = [2,3][ri(2)]; m = (Math.random() < 0.5) ? [4,9][ri(2)] : [8,12,18][ri(3)]; A = B * m; t++; } while(isPerfSq(A) && t < 40);
+    surdSetAns(g, m, 'Divide', surdTerm(c, A) + ' ÷ ' + surdTerm(d, B), surdTerm(c, A) + ' ÷ ' + surdTerm(d, B) + ' = ' + g + '√' + m + ' = ' + surdFmt(surdSimplify(g, m)) + '.');
+  }
+}
+
+/* ── Percentages: Reverse Percentages ── */
+function genPctReverse(el){
+  el.style.fontSize = '1.5rem';
+  let p, orig, nw, inc, factor;
+  if(level === 1){ p = [10,20,25,50,5][ri(5)]; orig = 20 * rr(3, 15); inc = true; factor = 1 + p/100; nw = dp(orig * factor, 2); }
+  else if(level === 2){ p = [10,20,25,50][ri(4)]; orig = 20 * rr(3, 15); inc = false; factor = 1 - p/100; nw = dp(orig * factor, 2); }
+  else { p = [12,15,40,60][ri(4)]; orig = 100 * rr(1, 6); inc = Math.random() < 0.5; factor = inc ? 1 + p/100 : 1 - p/100; nw = dp(orig * factor, 2); }
+  qData.ans = orig;
+  qData.workSteps = 'The new price is ' + (inc ? (100 + p) : (100 - p)) + '% of the original, so original = ' + nw + ' ÷ ' + factor + ' = ' + orig + '.';
+  el.innerHTML = '<div style="' + A_LBL + '">Find the original amount ($).</div>'
+    + '<div style="text-align:center;margin:10px 0;font-weight:900;">After a ' + p + '% ' + (inc ? 'increase' : 'decrease') + ' the price is $' + nw + '. What was the original?</div>';
+}
+
+/* ── Ratios & Rates: Best Buys & Unit Price ── */
+function genBestBuy(el){
+  el.style.fontSize = '1.4rem';
+  if(level === 1){
+    const U = [['kg','kg'],['L','L'],['item','item']][ri(3)][0];
+    const per = rr(2, 9), qty = rr(2, 6), price = per * qty;
+    qData.ans = per;
+    const qtyStr = U === 'item' ? qty + ' items' : qty + ' ' + U;
+    qData.workSteps = '$' + price + ' ÷ ' + qty + ' = $' + per + ' per ' + U + '.';
+    el.innerHTML = '<div style="' + A_LBL + '">Find the price per ' + U + ' ($).</div><div style="text-align:center;margin:10px 0;font-weight:900;">$' + price + ' for ' + qtyStr + '</div>';
+  } else if(level === 2){
+    const U = ['kg','L'][ri(2)]; let ua, ub; do { ua = rr(2, 9); ub = rr(2, 9); } while(ua === ub);
+    const qa = rr(2, 6), qb = rr(2, 6), pa = ua*qa, pb = ub*qb;
+    const optA = '$' + pa + ' for ' + qa + ' ' + U, optB = '$' + pb + ' for ' + qb + ' ' + U;
+    qData.workSteps = 'A is $' + ua + '/' + U + ', B is $' + ub + '/' + U + ' → the cheaper per ' + U + ' is the better buy.';
+    decSetChoice(el, '<div style="' + A_LBL + '">Which is better value?</div>', [optA, optB], ua < ub ? optA : optB);
+  } else {
+    const U = ['kg','L'][ri(2)]; let ua, ub; do { ua = rr(2, 9); ub = rr(2, 9); } while(ua === ub);
+    const qa = rr(2, 6), qb = rr(2, 6), pa = ua*qa, pb = ub*qb;
+    qData.ans = Math.abs(ua - ub);
+    qData.workSteps = 'A is $' + ua + '/' + U + ', B is $' + ub + '/' + U + ' → saving $' + Math.abs(ua - ub) + ' per ' + U + '.';
+    el.innerHTML = '<div style="' + A_LBL + '">How much cheaper per ' + U + ' is the better buy? ($)</div><div style="text-align:center;margin:10px 0;font-weight:900;font-size:1.2rem;">$' + pa + ' for ' + qa + ' ' + U + '  vs  $' + pb + ' for ' + qb + ' ' + U + '</div>';
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   FINAL THREE SKILLS (v74.3, Laura)
+═══════════════════════════════════════════════ */
+/* ── Number: Prime Factorisation ── */
+function primeFactorise(n){ const f = {}; let m = n; for(let p = 2; p*p <= m; p++){ while(m % p === 0){ f[p] = (f[p]||0) + 1; m /= p; } } if(m > 1) f[m] = (f[m]||0) + 1; return f; }
+function pfIndexHTML(f){ return Object.keys(f).map(Number).sort(function(a,b){return a-b;}).map(function(p){ const e = f[p]; return e === 1 ? '' + p : p + '<sup style="font-size:0.6em;">' + e + '</sup>'; }).join(' × '); }
+function pfCount(f){ return Object.keys(f).reduce(function(a,k){ return a + f[k]; }, 0); }
+function genPrimeFactor(el){
+  el.style.fontSize = '1.4rem';
+  if(level === 1){
+    let N, f; do { N = rr(12, 144); f = primeFactorise(N); } while(Object.keys(f).length < 2 || Object.keys(f).length > 3);
+    const correct = pfIndexHTML(f);
+    const opts = [correct];
+    // drop an exponent
+    { const g = Object.assign({}, f); const ks = Object.keys(g).map(Number); const k = ks[ri(ks.length)]; if(g[k] > 1){ g[k] -= 1; const s = pfIndexHTML(g); if(opts.indexOf(s) < 0) opts.push(s); } }
+    // composite grouping (a not prime)
+    { for(let a = 4; a <= Math.floor(Math.sqrt(N)) + 4; a++){ if(N % a === 0 && !isPrime(a)){ const s = a + ' × ' + (N / a); if(opts.indexOf(s) < 0){ opts.push(s); } break; } } }
+    // wrong prime swap
+    { const ks = Object.keys(f).map(Number); const k = ks[ks.length - 1]; const np = [2,3,5,7,11].find(function(p){ return !(p in f); }); if(np != null){ const g = {}; ks.forEach(function(x){ g[x === k ? np : x] = f[x]; }); const s = pfIndexHTML(g); if(opts.indexOf(s) < 0) opts.push(s); } }
+    // add-an-exponent (pad to 4 if needed)
+    if(opts.length < 4){ const g = Object.assign({}, f); const ks = Object.keys(g).map(Number); const k = ks[0]; g[k] += 1; const s = pfIndexHTML(g); if(opts.indexOf(s) < 0) opts.push(s); }
+    qData.workSteps = N + ' = ' + correct + '.';
+    decSetChoice(el, '<div style="' + A_LBL + '">Which is the number written as a product of primes?</div><div style="text-align:center;margin:12px 0;font-weight:900;font-size:2.4rem;">' + N + '</div>', opts.slice(0, 4), correct);
+  } else if(level === 2){
+    let N, f; do { N = rr(24, 300); f = primeFactorise(N); } while(Object.keys(f).length < 2);
+    const ks = Object.keys(f).map(Number).sort(function(a,b){return a-b;});
+    const hideK = ks[ri(ks.length)]; qData.ans = f[hideK];
+    const parts = ks.map(function(p){ const e = f[p]; if(p === hideK) return p + '<sup style="font-size:0.6em;">▢</sup>'; return e === 1 ? '' + p : p + '<sup style="font-size:0.6em;">' + e + '</sup>'; });
+    qData.workSteps = N + ' = ' + pfIndexHTML(f) + ', so the missing power is ' + f[hideK] + '.';
+    el.innerHTML = '<div style="' + A_LBL + '">Find the missing power.</div><div style="text-align:center;margin:10px 0;font-weight:900;font-size:1.9rem;">' + N + ' = ' + parts.join(' × ') + '</div>';
+  } else {
+    let N, f; do { N = rr(24, 320); f = primeFactorise(N); } while(pfCount(f) < 3);
+    qData.ans = pfCount(f);
+    qData.workSteps = N + ' = ' + pfIndexHTML(f) + ' → ' + qData.ans + ' prime factors (counting repeats).';
+    el.innerHTML = '<div style="' + A_LBL + '">How many prime factors does this number have, counting repeats?</div><div style="text-align:center;margin:10px 0;font-weight:900;font-size:2.2rem;">' + N + '</div>';
+  }
+}
+
+/* ── Equations: Rearranging Formulas (recognise the correct rearrangement) ──
+   Fractions are drawn as stacked fractions (sfrac) — never with a slash. Each option
+   carries a plain-text `t` (for the feedback line) and a stacked-HTML `h` (for the button). */
+function sfrac(nH, dH){ return '<span style="display:inline-flex;flex-direction:column;text-align:center;vertical-align:middle;line-height:1.05;margin:0 1px;"><span style="border-bottom:2px solid currentColor;padding:0 6px;">' + nH + '</span><span style="padding:0 6px;">' + dH + '</span></span>'; }
+function radHTML(inner){ return '<span style="white-space:nowrap;">√<span style="border-top:2px solid currentColor;padding:2px 4px 0;">' + inner + '</span></span>'; }
+function O(t, h, c){ return { t:t, h:h, c:!!c }; }
+const REAR_L1 = [
+  {ft:'P = 4s', fh:'P = 4s', v:'s', o:[ O('s = P/4','s = '+sfrac('P','4'),1), O('s = 4P','s = 4P'), O('s = P − 4','s = P − 4'), O('s = 4/P','s = '+sfrac('4','P')) ]},
+  {ft:'A = lw', fh:'A = lw', v:'w', o:[ O('w = A/l','w = '+sfrac('A','l'),1), O('w = Al','w = Al'), O('w = l/A','w = '+sfrac('l','A')), O('w = A − l','w = A − l') ]},
+  {ft:'C = πd', fh:'C = πd', v:'d', o:[ O('d = C/π','d = '+sfrac('C','π'),1), O('d = Cπ','d = Cπ'), O('d = π/C','d = '+sfrac('π','C')), O('d = C − π','d = C − π') ]},
+  {ft:'v = at', fh:'v = at', v:'t', o:[ O('t = v/a','t = '+sfrac('v','a'),1), O('t = va','t = va'), O('t = a/v','t = '+sfrac('a','v')), O('t = v − a','t = v − a') ]},
+  {ft:'d = st', fh:'d = st', v:'s', o:[ O('s = d/t','s = '+sfrac('d','t'),1), O('s = dt','s = dt'), O('s = t/d','s = '+sfrac('t','d')), O('s = d − t','s = d − t') ]},
+];
+const REAR_L2 = [
+  {ft:'v = u + at', fh:'v = u + at', v:'a', o:[ O('a = (v − u)/t','a = '+sfrac('v − u','t'),1), O('a = (v + u)/t','a = '+sfrac('v + u','t')), O('a = v − u − t','a = v − u − t'), O('a = t(v − u)','a = t(v − u)') ]},
+  {ft:'y = mx + c', fh:'y = mx + c', v:'x', o:[ O('x = (y − c)/m','x = '+sfrac('y − c','m'),1), O('x = (y + c)/m','x = '+sfrac('y + c','m')), O('x = y − c − m','x = y − c − m'), O('x = m(y − c)','x = m(y − c)') ]},
+  {ft:'P = 2(l + w)', fh:'P = 2(l + w)', v:'w', o:[ O('w = P/2 − l','w = '+sfrac('P','2')+' − l',1), O('w = 2P − l','w = 2P − l'), O('w = P − 2l','w = P − 2l'), O('w = (P − l)/2','w = '+sfrac('P − l','2')) ]},
+  {ft:'A = ½bh', fh:'A = '+sfrac('1','2')+'bh', v:'h', o:[ O('h = 2A/b','h = '+sfrac('2A','b'),1), O('h = A/(2b)','h = '+sfrac('A','2b')), O('h = 2Ab','h = 2Ab'), O('h = (A − b)/2','h = '+sfrac('A − b','2')) ]},
+];
+const REAR_L3 = [
+  {ft:'A = πr²', fh:'A = πr²', v:'r', o:[ O('r = √(A/π)','r = '+radHTML(sfrac('A','π')),1), O('r = A/π','r = '+sfrac('A','π')), O('r = √A / π','r = '+sfrac(radHTML('A'),'π')), O('r = A/π²','r = '+sfrac('A','π²')) ]},
+  {ft:'a² + b² = c²', fh:'a² + b² = c²', v:'b', o:[ O('b = √(c² − a²)','b = '+radHTML('c² − a²'),1), O('b = c − a','b = c − a'), O('b = √(c² + a²)','b = '+radHTML('c² + a²')), O('b = c² − a²','b = c² − a²') ]},
+  {ft:'E = mc²', fh:'E = mc²', v:'c', o:[ O('c = √(E/m)','c = '+radHTML(sfrac('E','m')),1), O('c = E/m','c = '+sfrac('E','m')), O('c = √E / m','c = '+sfrac(radHTML('E'),'m')), O('c = E/m²','c = '+sfrac('E','m²')) ]},
+  {ft:'s = ½at²', fh:'s = '+sfrac('1','2')+'at²', v:'t', o:[ O('t = √(2s/a)','t = '+radHTML(sfrac('2s','a')),1), O('t = 2s/a','t = '+sfrac('2s','a')), O('t = √(s/a)','t = '+radHTML(sfrac('s','a'))), O('t = 2s/a²','t = '+sfrac('2s','a²')) ]},
+];
+function genRearrange(el){
+  el.style.fontSize = '1.3rem';
+  const pool = level === 1 ? REAR_L1 : level === 2 ? REAR_L2 : REAR_L3;
+  const it = pool[ri(pool.length)];
+  const opts = shuffleArr(it.o.slice());
+  const wrap = function(inner){ return '<span style="display:inline-flex;align-items:center;justify-content:center;gap:3px;font-weight:900;">' + inner + '</span>'; };
+  qData.chosen = null;
+  qData.choices = opts.map(function(o, i){ return { code:'o'+i, html:wrap(o.h) }; });
+  qData.choiceText = {}; opts.forEach(function(o, i){ qData.choiceText['o'+i] = o.t; });
+  qData.choiceAns = 'o' + opts.findIndex(function(o){ return o.c; });
+  qData.workSteps = 'Rearrange ' + it.ft + ' to make ' + it.v + ' the subject → ' + (it.o.find(function(o){return o.c;}).t) + '.';
+  el.innerHTML = '<div style="' + A_LBL + '">Make <b>' + it.v + '</b> the subject:</div>'
+    + '<div style="text-align:center;margin:10px 0;font-size:1.9rem;">' + wrap(it.fh) + '</div>';
+}
+
+/* ── Geometry: Angles in Polygons ── */
+const POLY_NAMES = {3:'triangle',4:'quadrilateral',5:'pentagon',6:'hexagon',7:'heptagon',8:'octagon',9:'nonagon',10:'decagon',12:'dodecagon'};
+/* ── Polygon geometry toolkit (all point generators return MATH coords, y up) ── */
+function polyRegPts(n){ const p = []; for(let i = 0; i < n; i++){ const a = (-90 + i * 360 / n) * Math.PI / 180; p.push([Math.cos(a), Math.sin(a)]); } return p; }
+// Convex but irregular: distinct points on a circle with unequal angular gaps.
+function polyJitterPts(n){ const gaps = [], p = []; let tot = 0; for(let i = 0; i < n; i++){ const g = 0.55 + Math.random(); gaps.push(g); tot += g; } let acc = 0; for(let i = 0; i < n; i++){ const a = -Math.PI/2 + 2*Math.PI*acc/tot; acc += gaps[i]; p.push([Math.cos(a), Math.sin(a)]); } return p; }
+// Concave: push one vertex deep past the centroid so it "caves in" as an obvious
+// reflex notch (v74.5, Laura — the old shallow pull often still read as convex).
+// Verify: the notch angle is clearly reflex (≥ 205°) AND the polygon stays simple
+// (no crossing edges); retry, then fall back to a guaranteed concave "dart".
+function polyIsConcave(pts){ const n = pts.length; let pos = 0, neg = 0; for(let i = 0; i < n; i++){ const a = pts[i], b = pts[(i+1)%n], c = pts[(i+2)%n]; const cr = (b[0]-a[0])*(c[1]-b[1]) - (b[1]-a[1])*(c[0]-b[0]); if(cr > 1e-6) pos++; else if(cr < -1e-6) neg++; } return pos > 0 && neg > 0; }
+// Largest interior angle (degrees). > 180 ⇒ concave; the bigger it is, the deeper the notch.
+function polyMaxInterior(pts){
+  const n = pts.length; let area = 0;
+  for(let i = 0; i < n; i++){ const p = pts[i], q = pts[(i+1)%n]; area += p[0]*q[1] - q[0]*p[1]; }
+  const s = area > 0 ? 1 : -1; let mx = 0;
+  for(let i = 0; i < n; i++){
+    const a = pts[(i-1+n)%n], b = pts[i], c = pts[(i+1)%n];
+    const ein = [b[0]-a[0], b[1]-a[1]], eout = [c[0]-b[0], c[1]-b[1]];
+    const cross = ein[0]*eout[1] - ein[1]*eout[0], dot = ein[0]*eout[0] + ein[1]*eout[1];
+    const interior = 180 - Math.atan2(s*cross, dot)*180/Math.PI;   // convex <180, reflex >180
+    if(interior > mx) mx = interior;
+  }
+  return mx;
+}
+function polySegCross(a,b,c,d){
+  const o = function(p,q,r){ return (q[0]-p[0])*(r[1]-p[1]) - (q[1]-p[1])*(r[0]-p[0]); };
+  const d1 = o(a,b,c), d2 = o(a,b,d), d3 = o(c,d,a), d4 = o(c,d,b);
+  return ((d1>0&&d2<0)||(d1<0&&d2>0)) && ((d3>0&&d4<0)||(d3<0&&d4>0));
+}
+function polyIsSimple(pts){
+  const n = pts.length;
+  for(let i = 0; i < n; i++) for(let j = i+1; j < n; j++){
+    if(i === j || (i+1)%n === j || (j+1)%n === i) continue;   // skip shared-vertex edges
+    if(polySegCross(pts[i], pts[(i+1)%n], pts[j], pts[(j+1)%n])) return false;
+  }
+  return true;
+}
+function polyConcavePts(n){
+  for(let t = 0; t < 80; t++){
+    const p = polyJitterPts(n), cx = p.reduce(function(a,q){return a+q[0];},0)/n, cy = p.reduce(function(a,q){return a+q[1];},0)/n, i = ri(n);
+    const a = p[(i-1+n)%n], b = p[(i+1)%n];
+    const mx = (a[0]+b[0])/2, my = (a[1]+b[1])/2;             // midpoint of the two neighbours
+    // Drive the vertex from that midpoint through the centroid and out the far side:
+    // factor > 1 lands it past the middle → a deep, unmistakable reflex notch.
+    const f = 1.25 + Math.random()*0.25;
+    p[i] = [mx + (cx-mx)*f, my + (cy-my)*f];
+    if(polyMaxInterior(p) >= 205 && polyIsSimple(p)) return p;
+  }
+  return [[0,1],[0.62,-0.9],[0,-0.32],[-0.62,-0.9]];   // guaranteed deep concave dart
+}
+// Build a to-scale convex polygon whose interior angle at vertex k is A[k] (degrees).
+function polyFromInteriorAngles(A){
+  const n = A.length, ext = A.map(function(a){ return Math.PI - a*Math.PI/180; });
+  const dirs = []; let h = 0; for(let k = 0; k < n; k++){ dirs.push([Math.cos(h), Math.sin(h)]); h += ext[(k+1)%n]; }
+  // Solve Σ L_k·dir_k = 0 by adjusting two edge lengths (rest = 1). Pick the pair that
+  // maximises the smaller of the two solved lengths → a well-proportioned, closed polygon.
+  let best = null;
+  for(let a = 0; a < n; a++) for(let b = a+1; b < n; b++){
+    let Rx = 0, Ry = 0; for(let k = 0; k < n; k++){ if(k===a||k===b) continue; Rx += dirs[k][0]; Ry += dirs[k][1]; }
+    const det = dirs[a][0]*dirs[b][1] - dirs[b][0]*dirs[a][1]; if(Math.abs(det) < 1e-6) continue;
+    const La = (-Rx*dirs[b][1] + Ry*dirs[b][0])/det, Lb = (dirs[a][0]*(-Ry) - dirs[a][1]*(-Rx))/det;
+    const m = Math.min(La, Lb);
+    if(La > 0.05 && Lb > 0.05 && (best === null || m > best.m)){ best = { a:a, b:b, La:La, Lb:Lb, m:m }; }
+  }
+  const L = new Array(n).fill(1); if(best){ L[best.a] = best.La; L[best.b] = best.Lb; }
+  const pts = [[0,0]]; for(let k = 0; k < n-1; k++){ const p = pts[k]; pts.push([p[0] + L[k]*dirs[k][0], p[1] + L[k]*dirs[k][1]]); }
+  return pts;
+}
+// Draw a polygon (fit to canvas, flip to screen). labels[k] shown just inside vertex k.
+function polyShapeSVG(pts, labels){
+  let P = pts.map(function(p){ return [p[0], -p[1]]; });
+  P = pgFit(P, 46, 22, 254, 196);
+  let s = pgPoly(P);
+  if(labels){ const cx = P.reduce(function(a,p){return a+p[0];},0)/P.length, cy = P.reduce(function(a,p){return a+p[1];},0)/P.length;
+    for(let i = 0; i < P.length; i++){ if(labels[i] == null) continue; const p = P[i], ux = cx-p[0], uy = cy-p[1], l = Math.hypot(ux, uy) || 1; s += pgLbl(p[0] + ux/l*26, p[1] + uy/l*26, labels[i], /[xa]/.test(String(labels[i]))); } }
+  return decSvg(s, 212);
+}
+function polyAnglesSVG(A, labels){ return polyShapeSVG(polyFromInteriorAngles(A), labels); }
+
+// Angles-in-polygon algebra sets (v74.5, Laura): each vertex is EITHER an algebra term
+// (coef·a, e.g. a or 2a) OR a plain-number angle (konst°, e.g. 90°), never both — so a
+// question reads like "a, 2a, 90°, 90°". Interior angles = coef·a + konst, and the whole
+// set sums to (n−2)·180, giving a whole-number a with every angle in (30°, 175°).
+// Solve: a = ((n−2)·180 − Σkonst) / Σcoef.
+const APOLY_ALG = [
+  {n:4, coef:[1,2,0,0], konst:[0,0,90,90]},    // a=60 → 60,120,90,90
+  {n:4, coef:[1,1,0,0], konst:[0,0,80,100]},   // a=90 → 90,90,80,100
+  {n:4, coef:[2,1,0,0], konst:[0,0,60,120]},   // a=60 → 120,60,60,120
+  {n:4, coef:[1,3,0,0], konst:[0,0,100,60]},   // a=50 → 50,150,100,60
+  {n:4, coef:[1,2,0,0], konst:[0,0,70,80]},    // a=70 → 70,140,70,80
+  {n:5, coef:[1,2,0,0,0], konst:[0,0,100,110,120]}, // a=70 → 70,140,100,110,120
+  {n:5, coef:[1,1,1,0,0], konst:[0,0,0,120,120]},   // a=100 → 100,100,100,120,120
+  {n:5, coef:[2,1,0,0,0], konst:[0,0,90,100,110]},  // a=80 → 160,80,90,100,110
+  {n:5, coef:[1,1,0,0,0], konst:[0,0,100,120,140]}, // a=90 → 90,90,100,120,140
+];
+function genAnglePoly(el){
+  el.style.fontSize = '1.05rem';
+  if(level === 1){
+    const n = [4,5,6,7,8][ri(5)], sum = (n - 2) * 180; qData.ans = sum;
+    qData.workSteps = 'Interior angle sum = (n − 2) × 180 = (' + n + ' − 2) × 180 = ' + sum + '°.';
+    el.innerHTML = '<div style="' + A_LBL + '">Sum of the interior angles of this ' + POLY_NAMES[n] + '? (degrees)</div>' + polyShapeSVG(polyRegPts(n), null);
+  } else if(level === 2){
+    const n = [4,5][ri(2)], sum = (n - 2) * 180;
+    let given, x, t = 0;
+    do { given = []; let tot = 0; for(let i = 0; i < n - 1; i++){ const g = rr(60, 150); given.push(g); tot += g; } x = sum - tot; t++; } while((x < 35 || x > 165) && t < 120);
+    qData.ans = x;
+    const angs = given.concat([x]);                       // vertex k gets angs[k]
+    const labels = given.map(function(g){ return g + '°'; }); labels.push('x');
+    qData.workSteps = 'Angles add to ' + sum + '°.  x = ' + sum + ' − (' + given.join(' + ') + ') = ' + x + '°.';
+    el.innerHTML = '<div style="' + A_LBL + '">Find x (degrees).</div>' + polyAnglesSVG(angs, labels);
+  } else if(level === 3){
+    const n = [5,6,8,9,10,12][ri(6)], interior = Math.random() < 0.5;
+    qData.ans = interior ? (n - 2) * 180 / n : 360 / n;
+    qData.workSteps = interior
+      ? 'Each interior angle = (n − 2) × 180 ÷ n = ' + ((n-2)*180) + ' ÷ ' + n + ' = ' + qData.ans + '°.'
+      : 'Each exterior angle = 360 ÷ n = 360 ÷ ' + n + ' = ' + qData.ans + '°.';
+    el.innerHTML = '<div style="' + A_LBL + '">Each ' + (interior ? 'interior' : 'exterior') + ' angle of a regular ' + POLY_NAMES[n] + '? (degrees)</div>' + polyShapeSVG(polyRegPts(n), null);
+  } else {
+    // L4: some angles are algebra terms (a, 2a, …), some are plain numbers (e.g. 40°). Solve for a.
+    // Rotate the vertex arrays so the algebra/number angles don't always sit in the same spot. (v74.5, Laura)
+    const it = APOLY_ALG[ri(APOLY_ALG.length)], n = it.n, r = ri(n);
+    const coefs = it.coef.slice(r).concat(it.coef.slice(0, r));
+    const konst = it.konst.slice(r).concat(it.konst.slice(0, r));
+    const sum = (n - 2) * 180;
+    const S = coefs.reduce(function(x,y){return x+y;}, 0);
+    const K = konst.reduce(function(x,y){return x+y;}, 0);
+    const a = (sum - K) / S;
+    qData.ans = a;
+    const angs = coefs.map(function(c, k){ return c * a + konst[k]; });
+    const labels = coefs.map(function(c, k){ return c === 0 ? (konst[k] + '°') : ((c === 1 ? '' : c) + 'a'); });
+    const terms = coefs.map(function(c, k){ return c === 0 ? String(konst[k]) : ((c === 1 ? '' : c) + 'a'); });
+    qData.workSteps = 'Angles add to ' + sum + '°: ' + terms.join(' + ') + ' = ' + S + 'a + ' + K
+      + ' = ' + sum + ', so ' + S + 'a = ' + (sum - K) + ', a = <b>' + a + '°</b>.';
+    el.innerHTML = '<div style="' + A_LBL + '">Some angles are shown in terms of a, some are numbers. Find the value of a (degrees).</div>' + polyAnglesSVG(angs, labels);
+  }
+}
+
+/* ═══════════════════════════════════════════════
    RATIOS & RATES (v22)
 ═══════════════════════════════════════════════ */
 
@@ -10039,7 +10786,7 @@ function genRatioShare() {
     qData.ans = targetVal * mult;
     el.innerHTML = `Share ${totalStr} in <strong>${a} : ${b} : ${c}</strong><br><span style="color:var(--accent)">${labels[idx]} share = ?</span>`;
   }
-  else {
+  else if (level === 3) {
     // Level 3 — three-part with larger totals
     const [a, b, c] = pickPrettyRatio3();
     const sum = a + b + c;
@@ -10053,6 +10800,28 @@ function genRatioShare() {
     const targetVal = sorted[idx];
     qData.ans = targetVal * mult;
     el.innerHTML = `Share ${totalStr} in <strong>${a} : ${b} : ${c}</strong><br><span style="color:var(--accent)">${labels[idx]} share = ?</span>`;
+  }
+  else {
+    // Level 4 — given ONE part or the DIFFERENCE, work back to what's asked.
+    const [a, b] = pickPrettyRatio2();
+    const mult = rr(3, 15);
+    const smaller = Math.min(a, b), larger = Math.max(a, b);
+    const money = Math.random() < 0.6, $ = money ? '$' : '';
+    const mode = ri(3);
+    if (mode === 0) {          // given smaller share → find larger
+      qData.ans = larger * mult;
+      qData.workSteps = 'One part = ' + (smaller*mult) + ' ÷ ' + smaller + ' = ' + mult + ' per part → larger = ' + larger + ' × ' + mult + ' = ' + qData.ans + '.';
+      el.innerHTML = `In <strong>${a} : ${b}</strong>, the smaller share is ${$}${smaller*mult}.<br><span style="color:var(--accent)">larger share = ?</span>`;
+    } else if (mode === 1) {   // given difference → find total
+      const diff = (larger - smaller) * mult;
+      qData.ans = (a + b) * mult;
+      qData.workSteps = 'Difference ' + diff + ' = ' + (larger-smaller) + ' parts → 1 part = ' + mult + ' → total = ' + (a+b) + ' × ' + mult + ' = ' + qData.ans + '.';
+      el.innerHTML = `In <strong>${a} : ${b}</strong>, the difference between the shares is ${$}${diff}.<br><span style="color:var(--accent)">total = ?</span>`;
+    } else {                   // given larger share → find smaller
+      qData.ans = smaller * mult;
+      qData.workSteps = 'One part = ' + (larger*mult) + ' ÷ ' + larger + ' = ' + mult + ' per part → smaller = ' + smaller + ' × ' + mult + ' = ' + qData.ans + '.';
+      el.innerHTML = `In <strong>${a} : ${b}</strong>, the larger share is ${$}${larger*mult}.<br><span style="color:var(--accent)">smaller share = ?</span>`;
+    }
   }
 }
 
@@ -10273,6 +11042,16 @@ function insertIneq(ch) {
   const inp = document.getElementById('ansInput');
   if (!inp || inp.disabled) return;
   inp.value += ch;
+  inp.classList.remove('ok', 'bad');
+  inp.focus();
+}
+
+/* Desktop √ button (v74): the physical keyboard can't type √, so insert it here
+   for surd-mode answers (Pythagoras and the Surds skills). */
+function insertSurd() {
+  const inp = document.getElementById('ansInput');
+  if (!inp || inp.disabled) return;
+  inp.value += '√';
   inp.classList.remove('ok', 'bad');
   inp.focus();
 }
