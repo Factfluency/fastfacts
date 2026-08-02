@@ -672,16 +672,33 @@ body {
 .arrange-ctrls button { flex: 1; padding: 12px; font-size: 1rem; }
 .arrange-check:disabled { opacity: 0.5; cursor: default; }
 /* ── Convert FDP table (v74) ── */
-.fdp-table { border-collapse: collapse; margin: 0 auto; font-family: 'Nunito', sans-serif; }
-.fdp-table th { background: var(--accent); color: #fff; font-weight: 900; font-size: 0.82rem; padding: 8px 10px; border: 1px solid var(--accent); }
-.fdp-table td { border: 1px solid var(--border); padding: 8px 10px; text-align: center; min-width: 92px; height: 58px; vertical-align: middle; }
-.fdp-given { font-weight: 900; font-size: 1.25rem; color: var(--text); }
-.fdp-inwrap { display: inline-flex; align-items: center; gap: 3px; justify-content: center; }
-.fdp-unit { font-weight: 900; font-size: 1.1rem; color: var(--muted); }
-.fdp-input { width: 62px; text-align: center; font-size: 1.15rem; padding: 6px 4px; }
-.fdp-fracwrap { display: inline-flex; flex-direction: column; align-items: center; gap: 2px; }
-.fdp-fracline { width: 40px; height: 3px; background: var(--text); border-radius: 2px; }
-.fdp-frac { width: 46px; text-align: center; font-size: 1.05rem; padding: 4px 2px; }
+.fdp-table { border-collapse: collapse; margin: 0 auto; font-family: 'Nunito', sans-serif; width: 100%; max-width: 380px; table-layout: fixed; }
+.fdp-table th { background: var(--accent); color: #fff; font-weight: 900; font-size: 0.8rem; padding: 7px 4px; border: 1px solid var(--accent); width: 33.33%; }
+.fdp-table td { border: 1px solid var(--border); padding: 7px 3px; text-align: center; height: 56px; vertical-align: middle; overflow: hidden; }
+.fdp-given { font-weight: 900; font-size: 1.2rem; color: var(--text); }
+.fdp-inwrap { display: inline-flex; align-items: center; gap: 2px; justify-content: center; max-width: 100%; }
+.fdp-unit { font-weight: 900; font-size: 1rem; color: var(--muted); flex: 0 0 auto; }
+/* box-sizing:border-box so the fixed width INCLUDES padding+border and never spills into
+   the next column (the base .ans-input is content-box + 180px, which we override here). */
+.fdp-input { box-sizing: border-box; width: 68px; max-width: 100%; text-align: center; font-size: 1.1rem; font-weight: 900; padding: 8px 3px; }
+.fdp-fracwrap { display: inline-flex; flex-direction: column; align-items: center; gap: 2px; max-width: 100%; }
+.fdp-fracline { width: 38px; height: 3px; background: var(--text); border-radius: 2px; }
+.fdp-frac { box-sizing: border-box; width: 46px; max-width: 100%; text-align: center; font-size: 1rem; font-weight: 900; padding: 6px 2px; }
+/* Narrow phones: shrink everything so the 3 columns always fit without horizontal scroll. */
+@media (max-width: 430px) {
+  .fdp-table th { font-size: 0.66rem; padding: 6px 1px; }
+  .fdp-table td { padding: 6px 1px; height: 52px; }
+  .fdp-given { font-size: 1.02rem; }
+  .fdp-input { width: 50px; font-size: 1rem; padding: 8px 1px; }
+  .fdp-frac  { width: 38px; font-size: 0.95rem; padding: 6px 1px; }
+  .fdp-fracline { width: 30px; }
+  .fdp-unit { font-size: 0.8rem; }
+}
+/* Review copy of the table (results screen) — compact, with filled boxes highlighted. */
+.fdp-review { margin: 6px auto 4px; }
+.fdp-review td { height: auto; padding: 6px 4px; font-size: 1rem; }
+.fdp-review td.fdp-fill { background: var(--surface2); color: var(--accent); font-weight: 900; }
+.fdp-review td.fdp-given-cell { color: var(--muted); }
 /* ── Profit / Loss toggle (v74) ── */
 .pl-btn { flex: 0 0 auto; padding: 12px 22px; font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 1.05rem; border: 2px solid var(--border); background: var(--surface); color: var(--text); border-radius: var(--r-sm); cursor: pointer; }
 .pl-btn.sel { border-color: var(--accent); background: var(--accent); color: #fff; }
@@ -2850,9 +2867,9 @@ const FLUENCY_TARGET = {
   fracToDec:[14, 12, 10],   // fraction → decimal (typing a decimal is a touch quicker)
   // v74 (Laura) — Percentages recall skills. L1/L2 are Fluent-eligible; L3 is METHOD
   // (target 0 → no fluency badge; banded via BAND_OVERRIDE + METHOD_LEVEL_OVERRIDE).
-  //   Identify %:          L1 15/min · L2 10/min · L3 method
+  //   Identify %:          L1 12/min · L2 7/min · L3 method  (v74.1: dropped from 15/10 per Laura)
   //   Finding % of amount: L1 15/min · L2 10/min · L3 method
-  pctIdentify:[15, 10, 0],
+  pctIdentify:[12, 7, 0],
   pctOfAmount:[15, 10, 0]
 };
 const FLUENT_ACC = 0.90;   // accuracy floor to count as fluent
@@ -3022,9 +3039,10 @@ const BAND_OVERRIDE = {
   subtraction_L3: [3, 6, 10, 15],
   // v74 (Laura) — Percentages. Format [Kangaroo max, Greyhound max, Lion max, Antelope max];
   // Cheetah = Antelope max + 1. "Fluent" = start of Antelope (Lion max + 1).
-  // Identify % / Finding % of an amount: L1 Fluent at 15, L2 Fluent at 10, L3 METHOD (Antelope at 7).
-  pctIdentify_L1: [5, 10, 14, 19],  // Fluent (Antelope) at 15
-  pctIdentify_L2: [3, 6, 9, 13],    // Fluent (Antelope) at 10
+  // Identify %: L1 Fluent at 12, L2 Fluent at 7, L3 METHOD (Antelope at 7). (v74.1 per Laura)
+  // Finding % of an amount: L1 Fluent at 15, L2 Fluent at 10, L3 METHOD (Antelope at 7).
+  pctIdentify_L1: [4, 8, 11, 16],   // Fluent (Antelope) at 12
+  pctIdentify_L2: [2, 4, 6, 10],    // Fluent (Antelope) at 7
   pctIdentify_L3: [2, 4, 6, 9],     // method — Antelope at 7
   pctOfAmount_L1: [5, 10, 14, 19],  // Fluent (Antelope) at 15
   pctOfAmount_L2: [3, 6, 9, 13],    // Fluent (Antelope) at 10
@@ -3234,8 +3252,24 @@ function allCandidates() {
   }));
   return out;
 }
+/* v74.1 (Laura): the Daily Mix must only ever suggest skills a student should be
+   attempting. Eligible = a "basics" skill (Number/Integers/Exponents fundamentals),
+   OR a skill+level the student has already attempted, OR the very next level up from
+   one they've attempted (natural progression). New advanced skills a student has
+   never touched are never dropped into the mix. */
+const MIX_BASICS = new Set([
+  'timesTables', 'division', 'addition', 'subtraction',   // Number fundamentals
+  'intAddSub', 'intMultDiv', 'intSquareCube',             // Integers (not Order of Operations)
+  'squares', 'roots', 'cubes', 'cubeRoots'                // Exponents fundamentals
+]);
+function mixEligible(c) {
+  if (MIX_BASICS.has(c.skill)) return true;                        // always allow the basics
+  if (getLast(c.skill, c.level) > 0) return true;                  // already attempted this level
+  if (c.level > 1 && getLast(c.skill, c.level - 1) > 0) return true; // ready for the next step
+  return false;
+}
 function buildDailyMix() {
-  const cand = allCandidates();
+  const cand = allCandidates().filter(mixEligible);
   const now = Date.now();
   const recentCats = new Set();
   cand.forEach(c => { const t = getLast(c.skill, c.level); if (t && (now - t) < 14 * 864e5) recentCats.add(c.cat); });
@@ -9665,10 +9699,33 @@ function genPctFDP(el){
     rows.push(pctMakeRow(base));
   }
   qData.pctRows = rows;
-  qData.workSteps = 'Correct table: ' + rows.map(function(r){
-    return r.n + '/' + r.d + ' = ' + String(dp(r.decExact, 4)) + ' = ' + String(dp(r.pctExact, 2)) + '%';
-  }).join('  ·  ');
+  qData.workSteps = pctFDPReviewHTML(rows);
   el.innerHTML = '<div style="' + A_LBL + '">Fill in the missing boxes. You score 1 point for each correct box.</div>';
+}
+/* Review HTML for the FDP table: the completed table (boxes the student had to fill
+   are highlighted) plus a per-row "how to fill it in" step. Shown under "Show me how". */
+function pctFDPReviewHTML(rows){
+  // Friendly display: exact for terminating values, rounded + "…" for recurring ones.
+  function pctDisp(r){ return (r.recurring ? String(dp(r.pctExact, 1)) + '…' : fmtNum(r.pctExact)) + '%'; }
+  function decDisp(r){ return r.recurring ? String(dp(r.decExact, 3)) + '…' : fmtNum(r.decExact); }
+  var t = '<div style="font-weight:800;margin-bottom:6px;">Completed table (filled boxes highlighted):</div>';
+  t += '<table class="fdp-table fdp-review"><thead><tr><th>Percentage</th><th>Decimal</th><th>Fraction</th></tr></thead><tbody>';
+  rows.forEach(function(r){
+    function cell(val, given){ return '<td class="' + (given ? 'fdp-given-cell' : 'fdp-fill') + '">' + val + '</td>'; }
+    t += '<tr>' + cell(pctDisp(r), r.given === 'pct')
+       + cell(decDisp(r), r.given === 'dec')
+       + cell(fracHTML(r.n, r.d), r.given === 'frac') + '</tr>';
+  });
+  t += '</tbody></table>';
+  t += '<div style="font-weight:800;margin:10px 0 4px;">How to fill each row:</div><ul style="margin:0;padding-left:18px;text-align:left;">';
+  rows.forEach(function(r){
+    t += '<li style="margin-bottom:4px;"><b>' + r.n + '/' + r.d + '</b> → decimal: ' + r.n + ' ÷ ' + r.d + ' = ' + decDisp(r)
+       + ' → percentage: × 100 = ' + pctDisp(r) + '.'
+       + (r.recurring ? ' <i>(Recurring — 1 or 2 decimal places is fine.)</i>' : '')
+       + '</li>';
+  });
+  t += '</ul>';
+  return t;
 }
 
 function genPctExpress(el){
@@ -9714,12 +9771,16 @@ function genPctExpress(el){
 // Shared helper: pick a (percentage, amount) pair whose product is a clean ≤2dp value.
 function pctPickOfAmount(lvl){
   if(lvl === 1){
+    // v74.1 (Laura): keep amounts as clean hundreds (e.g. 80% of 200, not 80% of 220)
+    // so students practise the concept via 10% / 50% / 25%, not awkward arithmetic.
     const pct = [5, 10, 15, 20, 25, 30, 40, 50, 60, 75, 80, 90][ri(12)];
-    const amt = 20 * rr(1, 25);
+    const amt = 100 * rr(1, 9);
     return { pct:pct, amt:amt };
   } else if(lvl === 2){
+    // v74.1 (Laura): amounts are clean hundreds so 1% (and 10%) are whole numbers —
+    // students build e.g. 18% from 10% + 8×1%, rather than a hard multiplication.
     const pct = [11, 12, 13, 14, 16, 17, 18, 19, 22, 24, 35, 45, 55, 65, 85][ri(15)];
-    const amt = 5 * rr(2, 40);
+    const amt = 100 * rr(1, 9);
     return { pct:pct, amt:amt };
   } else {
     if(Math.random() < 0.5){
