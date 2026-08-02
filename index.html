@@ -1,7 +1,19 @@
 <!--
-  Sandy Fast Facts — v72
-  Current skills-platform build: 10 categories, 72 skills, 223 levels (Decimals now 12 skills;
-  Compare & Order Decimals now 5 levels).
+  Sandy Fast Facts — v73
+  Current skills-platform build: 10 categories, 75 skills, 233 levels (Decimals now 15 skills).
+
+  Changes in v73 (Laura). ADDITIVE + storage-safe — no existing id/lvKey/ff_ key changed.
+  Three new Decimals skills (all RECALL / Fluent-eligible):
+  (1) NEW "Add Decimals" (id decAdd, lvKey da) and "Subtract Decimals" (id decSub, lvKey dsu) —
+      split out from the combined skill. The combined "Add & Subtract Decimals" is KEPT unchanged.
+      Same three levels, column-aligned layout and gameplay as the combined skill; genDecAddSub
+      now takes a forceOp arg ('add'/'sub'/undefined) and genDecAdd/genDecSub call it. Bands reuse
+      the combined skill's target (scalar 18) so banding is identical.
+  (2) NEW "Multiply & Divide by 10, 100, 1000" (id decPow10, lvKey dp10) after Divide Decimals.
+      L1 multiply by 10/100/1000 · L2 divide · L3 mixed × / ÷ · L4 mixed by multiples (20, 50,
+      400 …). genDecPow10 constructs divides from the answer so every answer is an exact decimal.
+      RECALL; PROPOSED FLUENCY_TARGET [18,16,14,10] — recalibrate with class data.
+  Dashboard: FastFactsBands_v70.bas appends decAdd/decSub (×3) + decPow10 (×4); prior rows byte-identical.
 
   Changes in v72 (Laura). Compare & Order Decimals tweaks (storage-safe; no id/key change):
   (1) L2 ordering is now FIXED ASCENDING (smallest first) and L4 is now FIXED DESCENDING
@@ -2486,8 +2498,11 @@ const CATS = {
       { id:'compareDec',   name:'Compare &amp; Order Decimals',   inputMode:'choice', lvKey:'cmp', levelModes:{1:'choice',2:'arrange',3:'choice',4:'arrange',5:'arrange'} },
       { id:'decRound',     name:'Rounding Decimals',              inputMode:'number', lvKey:'dr'   },
       { id:'decAddSub',    name:'Add &amp; Subtract Decimals',   inputMode:'number', lvKey:'das'  },
+      { id:'decAdd',       name:'Add Decimals',                  inputMode:'number', lvKey:'da'   },
+      { id:'decSub',       name:'Subtract Decimals',             inputMode:'number', lvKey:'dsu'  },
       { id:'decMultiply',  name:'Multiply Decimals',              inputMode:'number', lvKey:'dmu'  },
       { id:'decDivide',    name:'Divide Decimals',                inputMode:'number', lvKey:'dd'   },
+      { id:'decPow10',     name:'Multiply &amp; Divide by 10, 100, 1000', inputMode:'number', lvKey:'dp10' },
       { id:'decSquareCube',name:'Squares &amp; Cubes of Decimals',inputMode:'number', lvKey:'dsc'  },
       { id:'decOrderOps',  name:'Order of Operations (Decimals)', inputMode:'number', lvKey:'doo'  },
     ]
@@ -2570,8 +2585,9 @@ const SKILL_YEAR = {
   // Fractions
   fracSimplify:'Yr 7', fracAddSub:'Yr 7', fracMultiply:'Yr 7', fracDivide:'Yr 7',
   mixedToImp:'Yr 7', impToMixed:'Yr 7', fracOrderOps:'Yr 8',
-  // Decimals  (decAddSub is foundational — no year chip)
-  decAddSub:'', decMultiply:'Yr 7', decDivide:'Yr 7', decSquareCube:'Yr 7–8',
+  // Decimals  (decAddSub/decAdd/decSub are foundational — no year chip)
+  decAddSub:'', decAdd:'', decSub:'', decMultiply:'Yr 7', decDivide:'Yr 7',
+  decPow10:'Yr 7', decSquareCube:'Yr 7–8',
   decOrderOps:'Yr 7', decRound:'Yr 7', compareDec:'Yr 7',
   decPlaceValue:'Yr 7', decExpand:'Yr 7–8', decIdentify:'Yr 7', decToFrac:'Yr 7–8', fracToDec:'Yr 7–8',
   // Ratios & Rates
@@ -2715,6 +2731,16 @@ const LEVEL_DEFS = {
     { title:'Level 2 — 2 Decimal Places', desc:'Add or subtract numbers with up to 2 decimal places. Includes regrouping across the decimal point.', examples:['4.37 + 2.85', '9.20 − 3.47', '6.08 + 1.95'] },
     { title:'Level 3 — Mixed Decimals',   desc:'Add or subtract numbers with different numbers of decimal places. Align carefully before computing.', examples:['3.4 + 1.85', '7.2 − 3.45', '12.05 + 4.7'] },
   ],
+  da: [
+    { title:'Level 1 — 1 Decimal Place',  desc:'Add numbers with 1 decimal place. Focus on aligning decimal points correctly.', examples:['3.4 + 2.7', '8.1 + 3.6', '5.5 + 4.8'] },
+    { title:'Level 2 — 2 Decimal Places', desc:'Add numbers with up to 2 decimal places. Includes regrouping across the decimal point.', examples:['4.37 + 2.85', '9.20 + 3.47', '6.08 + 1.95'] },
+    { title:'Level 3 — Mixed Decimals',   desc:'Add numbers with different numbers of decimal places. Align carefully before computing.', examples:['3.4 + 1.85', '7.2 + 3.45', '12.05 + 4.7'] },
+  ],
+  dsu: [
+    { title:'Level 1 — 1 Decimal Place',  desc:'Subtract numbers with 1 decimal place. Focus on aligning decimal points correctly.', examples:['8.1 − 3.6', '5.5 − 2.7', '9.4 − 4.8'] },
+    { title:'Level 2 — 2 Decimal Places', desc:'Subtract numbers with up to 2 decimal places. Includes regrouping across the decimal point.', examples:['9.20 − 3.47', '6.08 − 1.95', '7.34 − 2.85'] },
+    { title:'Level 3 — Mixed Decimals',   desc:'Subtract numbers with different numbers of decimal places. Align carefully before computing.', examples:['7.2 − 3.45', '12.05 − 4.7', '8.4 − 1.85'] },
+  ],
   dmu: [
     { title:'Level 1 — Decimal × Whole',    desc:'Multiply a decimal by a single-digit whole number. Use mental methods or the grid approach.', examples:['0.6 × 4', '1.3 × 5', '2.4 × 3'] },
     { title:'Level 2 — Decimal × Decimal',  desc:'Multiply two decimals together. Count decimal places in factors to place the decimal correctly.', examples:['0.3 × 0.4', '1.2 × 0.5', '2.4 × 1.3'] },
@@ -2724,6 +2750,12 @@ const LEVEL_DEFS = {
     { title:'Level 1 — Decimal ÷ Whole',    desc:'Divide a decimal by a single-digit whole number. Think of sharing into equal parts.', examples:['0.8 ÷ 4', '3.6 ÷ 3', '2.4 ÷ 6'] },
     { title:'Level 2 — Decimal ÷ Decimal',  desc:'Divide by a decimal by converting to an equivalent whole-number division first.', examples:['0.6 ÷ 0.3', '1.8 ÷ 0.6', '2.4 ÷ 0.4'] },
     { title:'Level 3 — Harder Quotients',   desc:'Division with multi-digit decimals. May require rounding to 1 decimal place.', examples:['7.2 ÷ 2.4', '0.36 ÷ 0.09', '4.5 ÷ 1.5'] },
+  ],
+  dp10: [
+    { title:'Level 1 — Multiply by 10, 100, 1000', desc:'Multiply a decimal by 10, 100 or 1000. Every digit shifts LEFT — one place for 10, two for 100, three for 1000.', examples:['3.4 × 10', '0.62 × 100', '5.7 × 1000'] },
+    { title:'Level 2 — Divide by 10, 100, 1000',   desc:'Divide by 10, 100 or 1000. Every digit shifts RIGHT — one place for 10, two for 100, three for 1000.', examples:['34 ÷ 10', '6.2 ÷ 100', '380 ÷ 1000'] },
+    { title:'Level 3 — Mixed × and ÷',             desc:'A random mix of multiplying and dividing by 10, 100 or 1000. Read the sign carefully before you shift the digits.', examples:['4.5 × 100', '80 ÷ 10', '0.9 × 1000'] },
+    { title:'Level 4 — Multiples of 10',           desc:'Multiply and divide by multiples like 20, 50 or 400. Split it up: shift for the power of ten, then multiply or divide by the leading digit.', examples:['3.2 × 40', '84 ÷ 20', '0.5 × 400'] },
   ],
   dsc: [
     { title:'Level 1 — Squares of Decimals',    desc:'Square decimals with 1 decimal place. Remember: answer has twice as many decimal places.', examples:['0.3²', '1.2²', '0.5²'] },
@@ -3000,7 +3032,7 @@ const RECALL_SKILLS = [
   'timesTables','division','addition','subtraction',
   'squares','roots','cubes','cubeRoots',
   'intAddSub','intMultDiv','intSquareCube',
-  'decAddSub','decMultiply','decDivide','decSquareCube',
+  'decAddSub','decAdd','decSub','decMultiply','decDivide','decPow10','decSquareCube',
   'trigExactDeg','trigExactRad',
   // v56: promoted to recall (Fluent-eligible) with Laura's signed-off targets
   'nameShapes','nameAnglesLines','angleRel','angleParallel','pythagoras',
@@ -3028,7 +3060,11 @@ const FLUENCY_TARGET = {
   // v45: squares/roots/cubes/cubeRoots L1 & L2 now match L2 times-tables (30); L3 unchanged.
   squares:[30, 30, 18], roots:[30, 30, 15], cubes:[30, 30, 14], cubeRoots:[30, 30, 13],
   intAddSub:25, intMultDiv:22, intSquareCube:18,
-  decAddSub:18, decMultiply:15, decDivide:14, decSquareCube:14,
+  decAddSub:18, decAdd:18, decSub:18, decMultiply:15, decDivide:14, decSquareCube:14,
+  // v73 (Laura) — Multiply & Divide by 10/100/1000. PROPOSED per-level targets
+  // (correct-per-minute), recalibrate with class data: L1 mult (18), L2 div (16),
+  // L3 mixed (14), L4 multiples like 20/50/400 (10).
+  decPow10:[18, 16, 14, 10],
   // Exact trig values — tap-to-answer, so recall speed is the bottleneck.
   // Per level: first quadrant (core drill) → +quadrant 2 → full circle w/ signs & undefined.
   trigExactDeg:[22, 18, 14],
@@ -3127,8 +3163,11 @@ const METHOD_TIP = {
   intMultDiv:'Work out the numbers as normal, then fix the sign: same signs make a positive, different signs make a negative (− × − = +, − × + = −).',
   intSquareCube:'Squaring always gives a positive: (−3)² = 9. But −(3)² means square first, then make it negative: −9. Cubing keeps the sign: (−2)³ = −8.',
   decAddSub:'Line up the decimal points (and the place columns) before adding or subtracting — fill any gaps with zeros.',
+  decAdd:'Line up the decimal points (and the place columns) before adding — fill any gaps with zeros.',
+  decSub:'Line up the decimal points (and the place columns) before subtracting — fill any gaps with zeros, and regroup (borrow) where you need to.',
   decMultiply:'Ignore the points and multiply as whole numbers, then count the total decimal places in the question and put that many in the answer.',
   decDivide:'Shift the decimal point in BOTH numbers until you are dividing by a whole number, then divide as normal.',
+  decPow10:'Multiplying by 10, 100 or 1000 shifts every digit LEFT (1, 2 or 3 places); dividing shifts them RIGHT the same number of places — fill any gaps with zeros. For a multiple like 20 or 400, split it: ×40 is ×4 then ×10; ÷20 is ÷2 then ÷10.',
   decSquareCube:'Work it out ignoring the point, then place the decimal: squaring doubles the decimal places, cubing triples them. e.g. 0.2² = 0.04.'
 };
 
@@ -6429,8 +6468,11 @@ function nextQ() {
   else if (skill === 'impToMixed')    { genImpToMixed(); }
   else if (skill === 'fracOrderOps')  { genFracOrderOps(); }
   else if (skill === 'decAddSub')     { genDecAddSub(); }
+  else if (skill === 'decAdd')        { genDecAdd(); }
+  else if (skill === 'decSub')        { genDecSub(); }
   else if (skill === 'decMultiply')   { genDecMultiply(); }
   else if (skill === 'decDivide')     { genDecDivide(); }
+  else if (skill === 'decPow10')      { genDecPow10(); }
   else if (skill === 'decSquareCube') { genDecSquareCube(); }
   else if (skill === 'decOrderOps')   { genDecOrderOps(); }
   else if (skill === 'decRound')      { genDecRound(); }
@@ -9162,9 +9204,10 @@ function decColRightHTML(rows, op){
   return decColWrap(lines.join(''));
 }
 
-function genDecAddSub() {
+function genDecAddSub(forceOp) {
   let a, b, ans;
-  const sub = Math.random() < 0.5;
+  // forceOp: 'add' → always +, 'sub' → always −, undefined → random (combined skill).
+  const sub = (forceOp === 'sub') ? true : (forceOp === 'add') ? false : (Math.random() < 0.5);
   if (level === 1) {
     a = dp(rr(10, 99) / 10, 1); b = dp(rr(10, 99) / 10, 1);
   } else if (level === 2) {
@@ -9178,6 +9221,41 @@ function genDecAddSub() {
   // v71: stacked column aligned on the decimal point (blank-align, no padding zeros).
   const op = sub ? '−' : '+';
   id('qBox').innerHTML = decColPointHTML([String(a), String(b)], op);
+}
+
+// Add-only / Subtract-only — same levels, layout and gameplay as the combined skill.
+function genDecAdd() { genDecAddSub('add'); }
+function genDecSub() { genDecAddSub('sub'); }
+
+// Multiply & Divide by 10, 100, 1000 (and, at L4, by multiples like 20/50/400).
+// RECALL / Fluent-eligible. Multiplies compute the answer; divides are BUILT FROM
+// the answer (a = answer × divisor) so every answer stays a clean ≤3 dp decimal.
+function genDecPow10() {
+  const el = id('qText');
+  el.style.fontSize = '2rem';
+  const POW = [10, 100, 1000];
+  // a decimal with a genuine fractional part (1–3 dp, at most 3 significant digits)
+  function decVal() {
+    const d = rr(1, 3);
+    let raw;
+    do { raw = rr(1, 999); } while (raw % 10 === 0);   // non-zero last digit ⇒ exactly d dp
+    return dp(raw / Math.pow(10, d), d);
+  }
+  function doMultiply(m) { const a = decVal();            qData.ans = dp(a * m, 3); return `${a} × ${m}`; }
+  function doDivide(m)   { const q = decVal();            qData.ans = q; return `${dp(q * m, 3)} ÷ ${m}`; }
+
+  let m, txt;
+  if (level === 1) {                      // multiply by a pure power of ten
+    m = POW[rr(0, 2)]; txt = doMultiply(m);
+  } else if (level === 2) {               // divide by a pure power of ten
+    m = POW[rr(0, 2)]; txt = doDivide(m);
+  } else if (level === 3) {               // mixed × / ÷ by a pure power of ten
+    m = POW[rr(0, 2)]; txt = (Math.random() < 0.5) ? doMultiply(m) : doDivide(m);
+  } else {                                // L4: multiples of ten (20, 50, 400, …)
+    m = rr(2, 9) * POW[rr(0, 2)];         // leading digit 2–9 × a power of ten
+    txt = (Math.random() < 0.5) ? doMultiply(m) : doDivide(m);
+  }
+  el.textContent = txt;
 }
 
 function genDecMultiply() {
@@ -10109,7 +10187,7 @@ function kbShow() {
                    'eqOneStepAddSub','eqOneStepMulDiv','eqTwoStep',
                    'eqTwoStepFrac','eqVarDenom','eqBothSides'].includes(skillId)
                   || mode === 'index' || mode === 'sci' || mode === 'algebra' || mode === 'ineq';
-  const decSkillsWithDot = ['sciTo','sciFrom','decAddSub','decMultiply','decDivide','decSquareCube','decOrderOps','decRound','sigFigs',
+  const decSkillsWithDot = ['sciTo','sciFrom','decAddSub','decAdd','decSub','decMultiply','decDivide','decPow10','decSquareCube','decOrderOps','decRound','sigFigs',
                             'rateSimplify','rateConvert','decIdentify','decExpand','fracToDec'];
   const showDot  = (mode === 'sci' || decSkillsWithDot.includes(skillId));
   const showNext = (mode === 'fraction' || mode === 'mixed' || mode === 'index' || mode === 'sci' || mode === 'ratio' || mode === 'algebra' || mode === 'factor');
