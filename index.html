@@ -1,4 +1,4 @@
-<!-- Sandy Fast Facts — v74 (internal v74.6: Decimals additions (Laura) — Add & Subtract Decimals L4 money/bank-balance word problems (negatives allowed); NEW skill Add & Subtract Fractions & Decimals (decFrac mode: type a decimal OR a fraction, recurring answers must be a fraction), 3 levels; Rounding Decimals L3 round-then-estimate (place varies). v74.5: miss reviews now work THIS question's numbers step-by-step instead of a generic rule; Angles-in-Polygons L4 mixes a/2a with plain-number angles; deeper, clearly-concave polygons) -->
+<!-- Sandy Fast Facts — v74 (internal v74.7: more Decimals (Laura) — NEW skills Add & Subtract Decimals (Positive & Negative), Multiply Decimals & Fractions (decFrac), Multiply & Divide Decimals (Positive & Negative), Leading Digit Estimation (round-to-1sf → estimate → BODMAS), Square Roots & Cube Roots of Decimals; NEW word-problem L4 on Multiply Decimals and Divide Decimals; Squares & Cubes of Decimals moved after Multiply Decimals & Fractions. v74.6: Add & Subtract Decimals L4 word problems; Add & Subtract Fractions & Decimals; Rounding Decimals L3 round-then-estimate. v74.5: miss reviews work THIS question's numbers step-by-step; Angles-in-Polygons L4; deeper concave polygons) -->
 <!-- Viewport (v48): dropped `maximum-scale=1.0, user-scalable=no`. iOS ignored it (so pinch worked there anyway) but Android obeyed it, blocking accessibility pinch-zoom. Accidental double-tap-to-zoom is killed per-control via `touch-action: manipulation` instead, which leaves deliberate pinch-zoom intact on every platform. -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -2243,11 +2243,16 @@ const CATS = {
       { id:'decAdd',       name:'Add Decimals',                  inputMode:'number', lvKey:'da'   },
       { id:'decSub',       name:'Subtract Decimals',             inputMode:'number', lvKey:'dsu'  },
       { id:'decAddSub',    name:'Add &amp; Subtract Decimals',   inputMode:'number', lvKey:'das'  },
+      { id:'decAddSubNeg', name:'Add &amp; Subtract Decimals (Positive &amp; Negative)', inputMode:'number', lvKey:'dasn' },
       { id:'fdAddSub',     name:'Add &amp; Subtract Fractions &amp; Decimals', inputMode:'decFrac', lvKey:'fda' },
       { id:'decPow10',     name:'Multiply &amp; Divide by 10, 100, 1000', inputMode:'number', lvKey:'dp10' },
       { id:'decMultiply',  name:'Multiply Decimals',              inputMode:'number', lvKey:'dmu'  },
-      { id:'decDivide',    name:'Divide Decimals',                inputMode:'number', lvKey:'dd'   },
+      { id:'fdMultiply',   name:'Multiply Decimals &amp; Fractions', inputMode:'decFrac', lvKey:'fdm' },
       { id:'decSquareCube',name:'Squares &amp; Cubes of Decimals',inputMode:'number', lvKey:'dsc'  },
+      { id:'decDivide',    name:'Divide Decimals',                inputMode:'number', lvKey:'dd'   },
+      { id:'decMulDivNeg', name:'Multiply &amp; Divide Decimals (Positive &amp; Negative)', inputMode:'number', lvKey:'dmdn' },
+      { id:'decLeadEst',   name:'Leading Digit Estimation',       inputMode:'number', lvKey:'dle'  },
+      { id:'decSqCubeRoot',name:'Square Roots &amp; Cube Roots of Decimals', inputMode:'number', lvKey:'dscr' },
       { id:'decOrderOps',  name:'Order of Operations (Decimals)', inputMode:'number', lvKey:'doo'  },
     ]
   },
@@ -2351,6 +2356,7 @@ const SKILL_YEAR = {
   decAddSub:'', decAdd:'', decSub:'', decMultiply:'Yr 7', decDivide:'Yr 7',
   decPow10:'Yr 7', decSquareCube:'Yr 7–8',
   decOrderOps:'Yr 7', decRound:'Yr 7', compareDec:'Yr 7', fdAddSub:'Yr 8',
+  decAddSubNeg:'Yr 7–8', decMulDivNeg:'Yr 8', fdMultiply:'Yr 8', decLeadEst:'Yr 7–8', decSqCubeRoot:'Yr 8',
   decPlaceValue:'Yr 7', decExpand:'Yr 7–8', decIdentify:'Yr 7', decToFrac:'Yr 7–8', fracToDec:'Yr 7–8',
   // Percentages
   pctIdentify:'Yr 7', pctFDP:'Yr 7–8', pctExpress:'Yr 8', pctOfAmount:'Yr 7–8', pctChange:'Yr 8–9', pctProfitLoss:'Yr 9',
@@ -2510,6 +2516,11 @@ const LEVEL_DEFS = {
     { title:'Level 2 — Quarters, Fifths & Hundredths', desc:'Now with halves, quarters and fifths alongside decimals to hundredths. Convert to the same form first (¼ = 0.25, ⅗ = 0.6). Every answer still stops, so a decimal or a fraction is fine.', examples:['0.25 + 3/4', '4/5 − 0.3', '0.35 + 1/2'] },
     { title:'Level 3 — Mixed & Recurring',       desc:'Harder mixes including thirds, sixths and ninths, with adding and subtracting. Some answers are recurring decimals (they never stop) — for those you MUST give your answer as a fraction.', examples:['0.5 + 1/3', '5/6 − 0.2', '1/3 + 0.25'] },
   ],
+  fdm: [
+    { title:'Level 1 — Tenths',                  desc:'Multiply a decimal by a fraction over 10. Change one to match the other, then multiply. Type your answer as a decimal OR a fraction.', examples:['0.6 × 5/10', '3/10 × 0.4', '0.8 × 7/10'] },
+    { title:'Level 2 — Quarters, Fifths & Halves', desc:'Now with halves, quarters and fifths. Convert to the same form first (¼ = 0.25), then multiply. Every answer still stops, so a decimal or a fraction is fine.', examples:['0.4 × 3/4', '2/5 × 0.5', '0.75 × 1/2'] },
+    { title:'Level 3 — Mixed & Recurring',       desc:'Harder mixes including thirds, sixths and ninths. Some answers are recurring decimals — for those you MUST give your answer as a fraction.', examples:['0.6 × 1/3', '5/6 × 0.4', '2/3 × 0.9'] },
+  ],
   da: [
     { title:'Level 1 — 1 Decimal Place',  desc:'Add numbers with 1 decimal place. Focus on aligning decimal points correctly.', examples:['3.4 + 2.7', '8.1 + 3.6', '5.5 + 4.8'] },
     { title:'Level 2 — 2 Decimal Places', desc:'Add numbers with up to 2 decimal places. Includes regrouping across the decimal point.', examples:['4.37 + 2.85', '9.20 + 3.47', '6.08 + 1.95'] },
@@ -2524,11 +2535,34 @@ const LEVEL_DEFS = {
     { title:'Level 1 — Decimal × Whole',    desc:'Multiply a decimal by a single-digit whole number. Use mental methods or the grid approach.', examples:['0.6 × 4', '1.3 × 5', '2.4 × 3'] },
     { title:'Level 2 — Decimal × Decimal',  desc:'Multiply two decimals together. Count decimal places in factors to place the decimal correctly.', examples:['0.3 × 0.4', '1.2 × 0.5', '2.4 × 1.3'] },
     { title:'Level 3 — Harder Products',    desc:'Multiply decimals with more digits. Demands careful place-value thinking.', examples:['3.6 × 2.5', '0.12 × 0.4', '4.5 × 1.8'] },
+    { title:'Level 4 — Word Problems',      desc:'Real-life multiplying problems — areas, total costs and rates. Pick out the two numbers, multiply, and type the answer.', examples:['A rug is 2.4 m by 3.5 m — what area?', '6 tickets at $12.50 each — total?', 'Petrol is $1.80 a litre — cost of 15 L?'] },
   ],
   dd: [
     { title:'Level 1 — Decimal ÷ Whole',    desc:'Divide a decimal by a single-digit whole number. Think of sharing into equal parts.', examples:['0.8 ÷ 4', '3.6 ÷ 3', '2.4 ÷ 6'] },
     { title:'Level 2 — Decimal ÷ Decimal',  desc:'Divide by a decimal by converting to an equivalent whole-number division first.', examples:['0.6 ÷ 0.3', '1.8 ÷ 0.6', '2.4 ÷ 0.4'] },
     { title:'Level 3 — Harder Quotients',   desc:'Division with multi-digit decimals. May require rounding to 1 decimal place.', examples:['7.2 ÷ 2.4', '0.36 ÷ 0.09', '4.5 ÷ 1.5'] },
+    { title:'Level 4 — Word Problems',      desc:'Real-life dividing problems — sharing, unit price and how-many-fit. Pick out the numbers, divide, and type the answer.', examples:['$45.60 shared among 4 people — each?', '3.6 m of ribbon cut into 0.4 m pieces — how many?', '$7.50 for 5 apples — price of one?'] },
+  ],
+  /* ── NEW DECIMALS SKILLS (v74.7, Laura) ── */
+  dasn: [
+    { title:'Level 1 — 1 Decimal Place',   desc:'Add and subtract positive and negative decimals with 1 decimal place. Adding a negative is subtracting; subtracting a negative is adding.', examples:['−3.4 + 2.7', '5.1 − 6.8', '4.2 + (−1.5)'] },
+    { title:'Level 2 — 2 Decimal Places',  desc:'Now with up to 2 decimal places and both signs. Work out the sign of the answer first, then the size.', examples:['−4.35 + 1.80', '2.06 − 5.47', '−3.20 − 1.65'] },
+    { title:'Level 3 — Mixed Decimals',    desc:'Different numbers of decimal places, positive and negative. Line up the points and mind the signs.', examples:['−7.2 + 3.45', '1.8 − (−2.65)', '−0.9 − 4.25'] },
+  ],
+  dmdn: [
+    { title:'Level 1 — Multiply with Signs',  desc:'Multiply positive and negative decimals. Same signs give a positive, different signs give a negative.', examples:['−0.6 × 4', '0.3 × (−0.5)', '−1.2 × −0.4'] },
+    { title:'Level 2 — Divide with Signs',    desc:'Divide positive and negative decimals. Apply the sign rule, then divide the numbers.', examples:['−1.8 ÷ 0.6', '2.4 ÷ (−0.3)', '−3.6 ÷ −0.4'] },
+    { title:'Level 3 — Mixed × and ÷',        desc:'A random mix of multiplying and dividing signed decimals. Read the operation and the signs carefully.', examples:['−0.8 × 0.5', '4.2 ÷ (−0.7)', '−1.5 × −0.6'] },
+  ],
+  dle: [
+    { title:'Level 1 — Round to the Leading Digit', desc:'Round a decimal to its leading (first) non-zero digit — 1 significant figure. Keep that first digit and make the rest zeros.', examples:['4.83 → 5', '0.062 → 0.06', '27.4 → 30'] },
+    { title:'Level 2 — Estimate a Calculation',     desc:'Round each number to its leading digit, then do the one operation to estimate the answer.', examples:['4.83 × 7.1 → 5 × 7 = 35', '61.2 + 18.7 → 60 + 20 = 80', '0.58 ÷ 0.19 → 0.6 ÷ 0.2 = 3'] },
+    { title:'Level 3 — Estimate with BODMAS',       desc:'Round each number to its leading digit, then estimate a calculation with more than one operation — do × and ÷ before + and −.', examples:['4.83 × 7.1 + 2.2 → 5 × 7 + 2 = 37', '58.4 − 2.1 × 3.6 → 60 − 2 × 4 = 52'] },
+  ],
+  dscr: [
+    { title:'Level 1 — Square Roots',   desc:'Find the square root of a decimal that is a perfect square. Think: what number times itself gives this? The answer has half as many decimal places.', examples:['√0.49 → 0.7', '√0.04 → 0.2', '√1.44 → 1.2'] },
+    { title:'Level 2 — Cube Roots',     desc:'Find the cube root of a decimal that is a perfect cube. Think: what number cubed gives this?', examples:['∛0.008 → 0.2', '∛0.027 → 0.3', '∛0.125 → 0.5'] },
+    { title:'Level 3 — Mixed Roots',    desc:'A random mix of square roots and cube roots of decimals. Read the root symbol carefully.', examples:['√0.81 → 0.9', '∛0.064 → 0.4', '√2.25 → 1.5'] },
   ],
   dp10: [
     { title:'Level 1 — Multiply by 10, 100, 1000', desc:'Multiply a decimal by 10, 100 or 1000. Every digit shifts LEFT — one place for 10, two for 100, three for 1000.', examples:['3.4 × 10', '0.62 × 100', '5.7 × 1000'] },
@@ -2906,6 +2940,10 @@ const LEVEL_REC = {
   das:   { 4: 'challenge' },   // Add & Subtract Decimals — word problems (multi-step)
   dr:    { 3: 'challenge' },   // Rounding Decimals — round then estimate (multi-step)
   fda:   { 3: 'challenge' },   // Add & Subtract Fractions & Decimals — mixed & recurring
+  dmu:   { 4: 'challenge' },   // Multiply Decimals — word problems
+  dd:    { 4: 'challenge' },   // Divide Decimals — word problems
+  dle:   { 3: 'challenge' },   // Leading Digit Estimation — with BODMAS
+  fdm:   { 3: 'challenge' },   // Multiply Decimals & Fractions — mixed & recurring
   aexp:  { 3: 'challenge' },   // Expand Single Brackets — variable multiplier (x²)
   aexp2: { 1: 'challenge', 2: 'challenge', 3: 'practice' }, // Expand & Simplify (Two Brackets)
   amul:  { 4: 'practice' },    // Multiply Terms — three-term, negatives
@@ -2942,14 +2980,16 @@ const RECALL_SKILLS = [
   // v74 (Laura): two Percentages skills as recall / Fluent-eligible (the rest are method)
   'pctIdentify','pctOfAmount',
   // v74.2 (Laura): base-fact skills as recall / Fluent-eligible
-  'factorsMultiples','hcfLcm','roundEst','fracOfAmount','numberBonds'
+  'factorsMultiples','hcfLcm','roundEst','fracOfAmount','numberBonds',
+  // v74.7 (Laura): signed decimal arithmetic + roots of decimals as recall / Fluent-eligible
+  'decAddSubNeg','decMulDivNeg','decSqCubeRoot'
 ];
 function getSkillKind(id) { return RECALL_SKILLS.includes(id) ? 'recall' : 'method'; }
 /* v74 (Laura): a few recall skills are Fluent-eligible on the lower levels but METHOD
    (accuracy-first, no Fluent) on the top level. List those method levels here — the
    skill stays in RECALL_SKILLS (so it still counts as a Fluent skill overall), but the
    listed levels behave as method (no fluency target, 🐆 Cheetah goal, "accuracy first"). */
-const METHOD_LEVEL_OVERRIDE = { pctIdentify:[3], pctOfAmount:[3], decAddSub:[4] };
+const METHOD_LEVEL_OVERRIDE = { pctIdentify:[3], pctOfAmount:[3], decAddSub:[4], decMultiply:[4], decDivide:[4] };
 function getLevelKind(id, lv) {
   if (RECALL_SKILLS.includes(id) && !((METHOD_LEVEL_OVERRIDE[id] || []).includes(lv))) return 'recall';
   return 'method';
@@ -2974,9 +3014,12 @@ const FLUENCY_TARGET = {
   // v45: squares/roots/cubes/cubeRoots L1 & L2 now match L2 times-tables (30); L3 unchanged.
   squares:[30, 30, 18], roots:[30, 30, 15], cubes:[30, 30, 14], cubeRoots:[30, 30, 13],
   intAddSub:25, intMultDiv:22, intSquareCube:18,
-  // decAddSub L1–L3 keep their existing scaled targets (18/15/13); L4 (word problems)
-  // is METHOD (target 0 → no Fluent badge; banded via METHOD_BAND_CEIL + METHOD_LEVEL_OVERRIDE).
-  decAddSub:[18, 15, 13, 0], decAdd:18, decSub:18, decMultiply:15, decDivide:14, decSquareCube:14,
+  // decAddSub / decMultiply / decDivide L1–L3 keep their existing scaled targets; L4 (word
+  // problems) is METHOD (target 0 → no Fluent badge; banded via METHOD_BAND_CEIL + override).
+  decAddSub:[18, 15, 13, 0], decAdd:18, decSub:18,
+  decMultiply:[15, 13, 11, 0], decDivide:[14, 12, 10, 0], decSquareCube:14,
+  // v74.7 (Laura) — signed decimal arithmetic + roots of decimals. PROPOSED placeholders.
+  decAddSubNeg:[16, 14, 12], decMulDivNeg:[14, 12, 10], decSqCubeRoot:[14, 12, 10],
   // v73 (Laura) — Multiply & Divide by 10/100/1000. PROPOSED per-level targets
   // (correct-per-minute), recalibrate with class data: L1 mult (18), L2 div (16),
   // L3 mixed (14), L4 multiples like 20/50/400 (10).
@@ -3141,11 +3184,14 @@ const METHOD_BAND_CEIL = {
   // Rounding Decimals — L1/L2 quick single-step rounding (Lion 20); L3 round-then-estimate
   // is a two-step method, so a lower ceiling. PLACEHOLDER — recalibrate with class data.
   decRound:[20, 20, 12],
-  // Add & Subtract Decimals — only L4 (word problems) is a METHOD level (see METHOD_LEVEL_OVERRIDE);
-  // L1–L3 are recall and read FLUENCY_TARGET, so those slots are ignored. PLACEHOLDER.
-  decAddSub:[18, 18, 18, 6],
-  // Add & Subtract Fractions & Decimals — multi-step convert-then-combine. PLACEHOLDER — recalibrate.
-  fdAddSub:[12, 10, 8],
+  // Add & Subtract / Multiply / Divide Decimals — only L4 (word problems) is a METHOD level
+  // (see METHOD_LEVEL_OVERRIDE); L1–L3 are recall and read FLUENCY_TARGET, so those slots are
+  // ignored. PLACEHOLDER — recalibrate with class data.
+  decAddSub:[18, 18, 18, 6], decMultiply:[15, 15, 15, 5], decDivide:[14, 14, 14, 5],
+  // Add & Subtract / Multiply Fractions & Decimals — multi-step convert-then-combine. PLACEHOLDER.
+  fdAddSub:[12, 10, 8], fdMultiply:[12, 10, 8],
+  // Leading Digit Estimation — round to 1 s.f. then estimate. PLACEHOLDER — recalibrate.
+  decLeadEst:[16, 12, 8],
   // quick single-step — Lion 15, Cheetah 23
   eqOneStepAddSub:15, eqOneStepMulDiv:15, fracSimplify:15,
   // remaining single-step method — Lion 8, Cheetah 12  (PENDING Laura's "rest of row 1")
@@ -6612,7 +6658,12 @@ function nextQ() {
   else if (skill === 'impToMixed')    { genImpToMixed(); }
   else if (skill === 'fracOrderOps')  { genFracOrderOps(); }
   else if (skill === 'decAddSub')     { genDecAddSub(); }
+  else if (skill === 'decAddSubNeg')  { genDecAddSubNeg(); }
   else if (skill === 'fdAddSub')      { genFracDecAddSub(); }
+  else if (skill === 'fdMultiply')    { genFracDecMultiply(); }
+  else if (skill === 'decMulDivNeg')  { genDecMulDivNeg(); }
+  else if (skill === 'decLeadEst')    { genDecLeadEst(); }
+  else if (skill === 'decSqCubeRoot') { genDecSqCubeRoot(); }
   else if (skill === 'decAdd')        { genDecAdd(); }
   else if (skill === 'decSub')        { genDecSub(); }
   else if (skill === 'decMultiply')   { genDecMultiply(); }
@@ -9678,6 +9729,156 @@ function genDecWordProblem() {
   el.textContent = text;
 }
 
+/* ── v74.7 helpers & generators ─────────────────────────────────────────── */
+function decMinus(x){ return String(x).replace('-', '−'); }   // display a real minus sign
+function signedDec(dpn){ const m = Math.pow(10, dpn); let n; do { n = rr(-(m*10 - 1), m*10 - 1); } while (n === 0); return dp(n / m, dpn); }
+function signedInt(lo, hi){ return (Math.random() < 0.5 ? -1 : 1) * rr(lo, hi); }
+// Round to the leading (first non-zero) digit — 1 significant figure.
+function leadRound(x){ if (x === 0) return 0; const s = x < 0 ? -1 : 1; const a = Math.abs(x); const e = Math.floor(Math.log10(a) + 1e-9); const f = Math.pow(10, e); return dp(s * Math.round(a / f) * f, 6); }
+
+/* Add & Subtract Decimals (Positive & Negative) — number answers, may be negative. */
+function genDecAddSubNeg(){
+  const el = id('qText'); el.style.fontSize = '2.2rem';
+  let a, b;
+  if (level === 1) { a = signedDec(1); b = signedDec(1); }
+  else if (level === 2) { a = signedDec(2); b = signedDec(2); }
+  else { a = signedDec(1); b = signedDec(2); }
+  const sub = Math.random() < 0.5;
+  const ans = dp(sub ? a - b : a + b, 3);
+  const op = sub ? '−' : '+';
+  const bShown = b < 0 ? `(${decMinus(b)})` : decMinus(b);
+  let hint = '';
+  if (!sub && b < 0) hint = ' Adding a negative is the same as subtracting.';
+  else if (sub && b < 0) hint = ' Subtracting a negative is the same as adding.';
+  qData.ans = ans; qData.ansDisplay = decMinus(ans);
+  qData.workSteps = `${decMinus(a)} ${op} ${bShown} = <b>${decMinus(ans)}</b>.${hint}`;
+  el.textContent = `${decMinus(a)} ${op} ${bShown}`;
+}
+
+/* Multiply & Divide Decimals (Positive & Negative) — number answers, may be negative. */
+function genDecMulDivNeg(){
+  const el = id('qText'); el.style.fontSize = '2.2rem';
+  const doMul = (level === 1) ? true : (level === 2) ? false : (Math.random() < 0.5);
+  let a, b, ans, op;
+  if (doMul) {
+    a = signedDec(1);
+    b = (Math.random() < 0.5) ? signedInt(2, 9) : signedDec(1);
+    ans = dp(a * b, 2); op = '×';
+  } else {
+    b = signedDec(1); ans = signedDec(1); a = dp(ans * b, 2); op = '÷';
+  }
+  const bShown = b < 0 ? `(${decMinus(b)})` : decMinus(b);
+  const same = (a < 0) === (b < 0);
+  qData.ans = ans; qData.ansDisplay = decMinus(ans);
+  qData.workSteps = `${doMul ? 'Multiply' : 'Divide'} the numbers, then decide the sign: ${dp(Math.abs(a),2)} ${op} ${Math.abs(b)} = ${Math.abs(ans)}. ${same ? 'Same signs → positive' : 'Different signs → negative'}, so <b>${decMinus(ans)}</b>.`;
+  el.textContent = `${decMinus(a)} ${op} ${bShown}`;
+}
+
+/* Multiply / Divide Decimals — Level 4 word problems (mixed real-life contexts). */
+function genDecMulDivWord(kind){
+  const el = id('qText'); el.style.fontSize = '1.2rem'; el.style.lineHeight = '1.5'; el.style.textAlign = 'left';
+  function cash(loC, hiC){ return dp(rr(loC, hiC) / 100, 2); }
+  let text, ans, work, disp;
+  if (kind === 'mul') {
+    const t = ri(3);
+    if (t === 0) {
+      const x = dp(rr(15, 60) / 10, 1), y = dp(rr(15, 60) / 10, 1); ans = dp(x * y, 2);
+      text = `A rug measures ${x} m by ${y} m. What is its area, in m²?`;
+      work = `Area = length × width: ${x} × ${y} = <b>${ans} m²</b>.`; disp = `${ans} m²`;
+    } else if (t === 1) {
+      const n = rr(3, 9), p = cash(120, 1500); ans = dp(n * p, 2);
+      text = `${n} tickets cost ${money(p)} each. What is the total cost?`;
+      work = `Multiply the price by how many: ${n} × ${money(p)} = <b>${money(ans)}</b>.`; disp = money(ans);
+    } else {
+      const r = dp(rr(120, 220) / 100, 2), l = rr(5, 40); ans = dp(r * l, 2);
+      text = `Petrol costs ${money(r)} per litre. How much does ${l} litres cost?`;
+      work = `Multiply the rate by the litres: ${money(r)} × ${l} = <b>${money(ans)}</b>.`; disp = money(ans);
+    }
+  } else {
+    const t = ri(3);
+    if (t === 0) {
+      const n = rr(3, 8), each = cash(150, 900), total = dp(each * n, 2); ans = each;
+      text = `${money(total)} is shared equally among ${n} people. How much does each person get?`;
+      work = `Divide the total by the number of people: ${money(total)} ÷ ${n} = <b>${money(each)}</b>.`; disp = money(each);
+    } else if (t === 1) {
+      const n = rr(3, 8), each = cash(80, 400), total = dp(each * n, 2); ans = each;
+      text = `${n} identical items cost ${money(total)} altogether. What is the price of one?`;
+      work = `Divide the total by how many: ${money(total)} ÷ ${n} = <b>${money(each)}</b>.`; disp = money(each);
+    } else {
+      const piece = dp(rr(2, 9) / 10, 1), count = rr(4, 12), total = dp(piece * count, 2); ans = count;
+      text = `A ${total} m length of ribbon is cut into ${piece} m pieces. How many pieces are there?`;
+      work = `Divide the length by the piece size: ${total} ÷ ${piece} = <b>${count} pieces</b>.`; disp = `${count} pieces`;
+    }
+  }
+  qData.ans = ans; qData.ansDisplay = disp; qData.workSteps = work; el.textContent = text;
+}
+
+/* Leading Digit Estimation — round to 1 significant figure, then estimate. */
+function genDecLeadEst(){
+  const el = id('qText'); el.style.fontSize = '1.7rem';
+  const opWord = o => ({'+':'add','−':'subtract','×':'multiply','÷':'divide'})[o];
+  function sigVal(){ const d = rr(1, 9), e = rr(-2, 1); return dp(d * Math.pow(10, e), 4); }
+  function messyFor(t){
+    const e = (t === 0) ? 0 : Math.floor(Math.log10(Math.abs(t)) + 1e-9);
+    const step = Math.pow(10, e);
+    let v, guard = 0;
+    do { v = dp(t + (Math.random() - 0.5) * 0.9 * step, Math.max(0, e) + 2); guard++; } while ((leadRound(v) !== t || v <= 0) && guard < 60);
+    if (leadRound(v) !== t) v = t;
+    return v;
+  }
+  if (level === 1) {
+    const t = sigVal(), x = messyFor(t);
+    qData.ans = t; qData.ansDisplay = String(t);
+    qData.workSteps = `Keep the first non-zero digit and make the rest zeros: ${x} → <b>${t}</b>.`;
+    el.textContent = `Round ${x} to its leading digit`;
+    return;
+  }
+  if (level === 2) {
+    const roll = ri(4);
+    let op, ta, tb, ans;
+    if (roll === 3) {
+      const q = rr(2, 9); let db, eb; do { db = rr(1, 4); eb = rr(-2, 1); } while (q * db > 9);
+      tb = dp(db * Math.pow(10, eb), 4); ta = dp(q * db * Math.pow(10, eb), 4); op = '÷'; ans = q;
+    } else if (roll === 2) { op = '×'; ta = sigVal(); tb = sigVal(); ans = dp(ta * tb, 6); }
+    else if (roll === 1) { op = '−'; ta = sigVal(); tb = sigVal(); if (tb > ta) { const s = ta; ta = tb; tb = s; } ans = dp(ta - tb, 6); }
+    else { op = '+'; ta = sigVal(); tb = sigVal(); ans = dp(ta + tb, 6); }
+    const x = messyFor(ta), y = messyFor(tb);
+    qData.ans = ans; qData.ansDisplay = String(ans);
+    qData.workSteps = `Round each to its leading digit, then ${opWord(op)}: ${x} ${op} ${y} → ${ta} ${op} ${tb} = <b>${ans}</b>.`;
+    el.textContent = `Estimate:  ${x} ${op} ${y}`;
+    el.style.fontSize = '1.6rem';
+    return;
+  }
+  // Level 3 — leading digit with BODMAS (× before + / −)
+  const pat = ri(3);
+  let ta = sigVal(), tb = sigVal(), tc = sigVal(), ans, exprR, exprX;
+  const x = () => messyFor(ta), y = () => messyFor(tb), z = () => messyFor(tc);
+  const mx = x(), my = y(), mz = z();
+  if (pat === 0) { ans = dp(ta * tb + tc, 6); exprX = `${mx} × ${my} + ${mz}`; exprR = `${ta} × ${tb} + ${tc}`; }
+  else if (pat === 1) { ans = dp(ta + tb * tc, 6); exprX = `${mx} + ${my} × ${mz}`; exprR = `${ta} + ${tb} × ${tc}`; }
+  else {
+    const prod = dp(ta * tb, 6); let g = 0; while (tc >= prod && g++ < 60) tc = sigVal();
+    if (tc >= prod) tc = leadRound(prod / 2) || dp(prod / 2, 4);
+    const mz2 = messyFor(tc);
+    ans = dp(prod - tc, 6); exprX = `${mx} × ${my} − ${mz2}`; exprR = `${ta} × ${tb} − ${tc}`;
+  }
+  qData.ans = ans; qData.ansDisplay = String(ans);
+  qData.workSteps = `Round each to its leading digit, then use BODMAS (× before + and −): ${exprX} → ${exprR} = <b>${ans}</b>.`;
+  el.textContent = `Estimate:  ${exprX}`;
+  el.style.fontSize = '1.5rem';
+}
+
+/* Square Roots & Cube Roots of Decimals — number answers (clean decimals). */
+function genDecSqCubeRoot(){
+  const el = id('qText'); el.style.fontSize = '2.4rem';
+  function sqRoot(){ const r = dp(rr(1, 15) / 10, 1); return { sym: '√', val: dp(r * r, 2), ans: r, verb: 'squared', prod: `${r} × ${r}` }; }
+  function cbRoot(){ const r = dp(rr(1, 12) / 10, 1); return { sym: '∛', val: dp(r * r * r, 3), ans: r, verb: 'cubed', prod: `${r} × ${r} × ${r}` }; }
+  const q = (level === 1) ? sqRoot() : (level === 2) ? cbRoot() : (Math.random() < 0.5 ? sqRoot() : cbRoot());
+  qData.ans = q.ans; qData.ansDisplay = String(q.ans);
+  qData.workSteps = `Which number ${q.verb} gives ${q.val}?  ${q.prod} = ${q.val}, so <b>${q.ans}</b>.`;
+  el.textContent = `${q.sym}${q.val}`;
+}
+
 /* ── Add & Subtract Fractions & Decimals (decFrac mode) ──────────────────────
    One operand is a decimal, the other a fraction; combine them. The answer may be
    typed as EITHER a decimal or a fraction (parsed by decFracParse). When the exact
@@ -9743,6 +9944,35 @@ function genFracDecAddSub() {
   el.textContent = `${aDisp} ${op} ${bDisp}`;
 }
 
+/* Multiply Decimals & Fractions (decFrac mode) — same input as the add/subtract skill:
+   type a decimal OR a fraction, and a recurring answer must be given as a fraction. */
+function genFracDecMultiply() {
+  const el = id('qText');
+  el.style.fontSize = '2.2rem';
+  let decNum, decDen, decDisp, fn, fd;
+  if (level === 1) {
+    decNum = rr(1, 9); decDen = 10; decDisp = String(dp(decNum / 10, 1));
+    fn = rr(1, 9); fd = 10;
+  } else if (level === 2) {
+    fd = [2, 4, 5][ri(3)]; fn = rr(1, fd - 1);
+    const dc = rr(1, 19) * 5; decNum = dc; decDen = 100; decDisp = String(dp(dc / 100, 2));
+  } else {
+    fd = [3, 6, 9, 8, 4, 5][ri(6)]; fn = rr(1, fd - 1);
+    if (Math.random() < 0.6) { decNum = rr(1, 9); decDen = 10; decDisp = String(dp(decNum / 10, 1)); }
+    else { const dc = rr(1, 19) * 5; decNum = dc; decDen = 100; decDisp = String(dp(dc / 100, 2)); }
+  }
+  const [rn, rd] = fdReduce(decNum * fn, decDen * fd);
+  const terminates = fdTerminates(rd);
+  qData.ansNum = rn; qData.ansDen = rd; qData.terminates = terminates;
+  const finalDisp = terminates ? String(dp(rn / rd, 6)) : (rn + '/' + rd);
+  qData.ansDisplay = finalDisp;
+  const decFirst = (level === 1) || Math.random() < 0.5;
+  const aDisp = decFirst ? decDisp : (fn + '/' + fd), bDisp = decFirst ? (fn + '/' + fd) : decDisp;
+  qData.workSteps = `Convert to the same type, then multiply: ${aDisp} × ${bDisp} = <b>${finalDisp}</b>.`
+    + (terminates ? '' : ' It is a recurring decimal, so leave the answer as a fraction.');
+  el.textContent = `${aDisp} × ${bDisp}`;
+}
+
 // Multiply & Divide by 10, 100, 1000 (and, at L4, by multiples like 20/50/400).
 // RECALL / Fluent-eligible. Multiplies compute the answer; divides are BUILT FROM
 // the answer (a = answer × divisor) so every answer stays a clean ≤3 dp decimal.
@@ -9775,6 +10005,7 @@ function genDecPow10() {
 }
 
 function genDecMultiply() {
+  if (level === 4) { genDecMulDivWord('mul'); return; }   // L4 word problems
   let a, b, ans;
   if (level === 1) {
     a = dp(rr(10, 99) / 10, 1); b = rr(2, 9);
@@ -9798,6 +10029,7 @@ function genDecMultiply() {
 }
 
 function genDecDivide() {
+  if (level === 4) { genDecMulDivWord('div'); return; }   // L4 word problems
   let a, b, ans;
   if (level === 1) {
     // dividend / whole = nice decimal
@@ -11524,8 +11756,10 @@ function kbShow() {
                    'eqOneStepAddSub','eqOneStepMulDiv','eqTwoStep',
                    'eqTwoStepFrac','eqVarDenom','eqBothSides'].includes(skillId)
                   || mode === 'index' || mode === 'sci' || mode === 'algebra' || mode === 'ineq'
-                  || (skillId === 'decAddSub' && level === 4);   // word-problem balances can be negative
+                  || (skillId === 'decAddSub' && level === 4)   // word-problem balances can be negative
+                  || skillId === 'decAddSubNeg' || skillId === 'decMulDivNeg';   // signed decimals
   const decSkillsWithDot = ['sciTo','sciFrom','decAddSub','decAdd','decSub','decMultiply','decDivide','decPow10','decSquareCube','decOrderOps','decRound','sigFigs',
+                            'decAddSubNeg','decMulDivNeg','decLeadEst','decSqCubeRoot',
                             'rateSimplify','rateConvert','decIdentify','decExpand','fracToDec',
                             // v74 — percentages can have decimal answers
                             'pctIdentify','pctExpress','pctOfAmount','pctChange','pctProfitLoss'];
