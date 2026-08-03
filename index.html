@@ -1,4 +1,4 @@
-<!-- Sandy Fast Facts — v74 (internal v74.7: more Decimals (Laura) — NEW skills Add & Subtract Decimals (Positive & Negative), Multiply Decimals & Fractions (decFrac), Multiply & Divide Decimals (Positive & Negative), Leading Digit Estimation (round-to-1sf → estimate → BODMAS), Square Roots & Cube Roots of Decimals; NEW word-problem L4 on Multiply Decimals and Divide Decimals; Squares & Cubes of Decimals moved after Multiply Decimals & Fractions. v74.6: Add & Subtract Decimals L4 word problems; Add & Subtract Fractions & Decimals; Rounding Decimals L3 round-then-estimate. v74.5: miss reviews work THIS question's numbers step-by-step; Angles-in-Polygons L4; deeper concave polygons) -->
+<!-- Sandy Fast Facts — v74 (internal v74.9: band cut-offs revised across the whole program from Laura's reviewed spreadsheet — 95 skill-levels re-banded via explicit per-level BAND_OVERRIDE entries (app matches the sheet on all 330 rows). v74.8: Decimals band targets LOWERED (Laura) so quick+accurate students reach higher animals — Identify/Expanded Form/Convert D→F −2; Rounding & Add/Subtract Decimals −3; all ×/÷ decimal operations (Multiply, Divide, ×÷ by 10/100/1000, Squares & Cubes, Square/Cube Roots, signed ×÷, ×fractions) −4. Display-only/storage-safe; .bas regenerated. v74.7: more Decimals (Laura) — NEW skills Add & Subtract Decimals (Positive & Negative), Multiply Decimals & Fractions (decFrac), Multiply & Divide Decimals (Positive & Negative), Leading Digit Estimation (round-to-1sf → estimate → BODMAS), Square Roots & Cube Roots of Decimals; NEW word-problem L4 on Multiply Decimals and Divide Decimals; Squares & Cubes of Decimals moved after Multiply Decimals & Fractions. v74.6: Add & Subtract Decimals L4 word problems; Add & Subtract Fractions & Decimals; Rounding Decimals L3 round-then-estimate. v74.5: miss reviews work THIS question's numbers step-by-step; Angles-in-Polygons L4; deeper concave polygons) -->
 <!-- Viewport (v48): dropped `maximum-scale=1.0, user-scalable=no`. iOS ignored it (so pinch worked there anyway) but Android obeyed it, blocking accessibility pinch-zoom. Accidental double-tap-to-zoom is killed per-control via `touch-action: manipulation` instead, which leaves deliberate pinch-zoom intact on every platform. -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -3014,16 +3014,14 @@ const FLUENCY_TARGET = {
   // v45: squares/roots/cubes/cubeRoots L1 & L2 now match L2 times-tables (30); L3 unchanged.
   squares:[30, 30, 18], roots:[30, 30, 15], cubes:[30, 30, 14], cubeRoots:[30, 30, 13],
   intAddSub:25, intMultDiv:22, intSquareCube:18,
-  // decAddSub / decMultiply / decDivide L1–L3 keep their existing scaled targets; L4 (word
-  // problems) is METHOD (target 0 → no Fluent badge; banded via METHOD_BAND_CEIL + override).
-  decAddSub:[18, 15, 13, 0], decAdd:18, decSub:18,
-  decMultiply:[15, 13, 11, 0], decDivide:[14, 12, 10, 0], decSquareCube:14,
-  // v74.7 (Laura) — signed decimal arithmetic + roots of decimals. PROPOSED placeholders.
-  decAddSubNeg:[16, 14, 12], decMulDivNeg:[14, 12, 10], decSqCubeRoot:[14, 12, 10],
-  // v73 (Laura) — Multiply & Divide by 10/100/1000. PROPOSED per-level targets
-  // (correct-per-minute), recalibrate with class data: L1 mult (18), L2 div (16),
-  // L3 mixed (14), L4 multiples like 20/50/400 (10).
-  decPow10:[18, 16, 14, 10],
+  // v74.8 (Laura): band targets lowered so quick, accurate students reach higher animals.
+  // Add/Subtract Decimals −3; all ×/÷ decimal operations −4. L4 (word problems) stays METHOD.
+  decAddSub:[15, 12, 10, 0], decAdd:[15, 12, 10], decSub:[15, 12, 10],
+  decMultiply:[11, 9, 7, 0], decDivide:[10, 8, 6, 0], decSquareCube:[10, 8, 6],
+  // v74.7 signed decimal arithmetic + roots of decimals; ×/÷ family lowered −4 in v74.8.
+  decAddSubNeg:[16, 14, 12], decMulDivNeg:[10, 8, 6], decSqCubeRoot:[10, 8, 6],
+  // Multiply & Divide by 10/100/1000 — lowered −4 in v74.8 (was [18,16,14,10]).
+  decPow10:[14, 12, 10, 6],
   // Exact trig values — tap-to-answer, so recall speed is the bottleneck.
   // Per level: first quadrant (core drill) → +quadrant 2 → full circle w/ signs & undefined.
   trigExactDeg:[22, 18, 14],
@@ -3045,9 +3043,11 @@ const FLUENCY_TARGET = {
   //   Expanded: L1/L2 tap-read (16), L3 type (14) · Identify: read+type (15/15/12)
   //   Convert: slower two-step conversion (12/10/8)
   decPlaceValue:[18, 12, 15],
-  decExpand:[16, 16, 14],
-  decIdentify:[15, 15, 12],
-  decToFrac:[12, 10, 8],   // decimal → fraction (num/den boxes)
+  // v74.8 (Laura): Identify / Expanded Form / Convert D→F lowered −2 (students were landing
+  // on Greyhound/Kangaroo while quick and accurate). Convert F→D (fracToDec) left as-is.
+  decExpand:[14, 14, 12],
+  decIdentify:[13, 13, 10],
+  decToFrac:[10, 8, 6],    // decimal → fraction (num/den boxes)
   fracToDec:[14, 12, 10],   // fraction → decimal (typing a decimal is a touch quicker)
   // v74 (Laura) — Percentages recall skills. L1/L2 are Fluent-eligible; L3 is METHOD
   // (target 0 → no fluency badge; banded via BAND_OVERRIDE + METHOD_LEVEL_OVERRIDE).
@@ -3181,15 +3181,14 @@ const ANIMALS = [
 const METHOD_BAND_CEIL = {
   // very quick single-step method — Lion 20, Cheetah 30
   algLikeTerms:20, algParts:20, sigFigs:20,
-  // Rounding Decimals — L1/L2 quick single-step rounding (Lion 20); L3 round-then-estimate
-  // is a two-step method, so a lower ceiling. PLACEHOLDER — recalibrate with class data.
-  decRound:[20, 20, 12],
+  // Rounding Decimals — lowered −3 in v74.8 (Laura); was [20,20,12].
+  decRound:[17, 17, 9],
   // Add & Subtract / Multiply / Divide Decimals — only L4 (word problems) is a METHOD level
   // (see METHOD_LEVEL_OVERRIDE); L1–L3 are recall and read FLUENCY_TARGET, so those slots are
   // ignored. PLACEHOLDER — recalibrate with class data.
   decAddSub:[18, 18, 18, 6], decMultiply:[15, 15, 15, 5], decDivide:[14, 14, 14, 5],
-  // Add & Subtract / Multiply Fractions & Decimals — multi-step convert-then-combine. PLACEHOLDER.
-  fdAddSub:[12, 10, 8], fdMultiply:[12, 10, 8],
+  // Add & Subtract Fractions & Decimals; Multiply Decimals & Fractions lowered −4 in v74.8.
+  fdAddSub:[12, 10, 8], fdMultiply:[8, 6, 4],
   // Leading Digit Estimation — round to 1 s.f. then estimate. PLACEHOLDER — recalibrate.
   decLeadEst:[16, 12, 8],
   // quick single-step — Lion 15, Cheetah 23
@@ -3262,6 +3261,113 @@ const BAND_OVERRIDE = {
   pctFDP_L2: [3, 6, 9, 13],         // Antelope at 10
   pctFDP_L3: [2, 4, 6, 9],          // Antelope at 7
 };
+/* v74.9 (Laura) — band cut-offs revised from the reviewed spreadsheet (min-to-reach −1 →
+   [Kangaroo max, Greyhound max, Lion max, Antelope max]; Cheetah = Antelope max + 1).
+   Applied as explicit per-level overrides so each row matches Laura's sheet exactly. */
+Object.assign(BAND_OVERRIDE, {
+  // 🔢 Number
+  numberBonds_L2: [10, 20, 30, 44],   // Number Bonds L2
+  timesTables_L1: [9, 19, 29, 44],   // Times Tables L1
+  timesTables_L2: [9, 19, 29, 44],   // Times Tables L2
+  division_L1: [9, 19, 29, 44],   // Division L1
+  division_L2: [9, 19, 29, 44],   // Division L2
+  factorsMultiples_L1: [10, 20, 30, 44],   // Factors, Multiples & Primes L1
+  factorsMultiples_L2: [10, 20, 30, 44],   // Factors, Multiples & Primes L2
+  factorsMultiples_L3: [9, 19, 29, 44],   // Factors, Multiples & Primes L3
+  primeFactor_L2: [3, 5, 8, 11],   // Prime Factorisation L2
+  roundEst_L2: [6, 12, 18, 26],   // Rounding & Estimation L2
+  sigFigs_L1: [6, 12, 18, 26],   // Significant Figures L1
+  sigFigs_L2: [6, 12, 18, 26],   // Significant Figures L2
+  // ± Integers
+  intAddSub_L1: [7, 14, 21, 31],   // Add / Subtract Integers L1
+  intMultDiv_L2: [7, 15, 22, 32],   // Multiply / Divide Integers L2
+  intMultDiv_L3: [7, 15, 22, 32],   // Multiply / Divide Integers L3
+  intSquareCube_L1: [9, 19, 29, 44],   // Squares & Cubes of Integers L1
+  intSquareCube_L2: [7, 15, 22, 32],   // Squares & Cubes of Integers L2
+  // x² Exponents
+  squares_L1: [9, 19, 29, 44],   // Square Numbers L1
+  squares_L2: [9, 19, 29, 44],   // Square Numbers L2
+  squares_L3: [9, 19, 29, 44],   // Square Numbers L3
+  roots_L1: [9, 19, 29, 44],   // Square Roots L1
+  roots_L2: [9, 19, 29, 44],   // Square Roots L2
+  roots_L3: [7, 15, 22, 32],   // Square Roots L3
+  cubes_L3: [7, 15, 22, 32],   // Cube Numbers L3
+  cubeRoots_L3: [7, 15, 22, 32],   // Cube Roots L3
+  indexMult_L1: [9, 19, 29, 44],   // Index Law (Multiplication Law) L1
+  indexMult_L2: [7, 15, 22, 32],   // Index Law (Multiplication Law) L2
+  indexMult_L3: [6, 12, 18, 26],   // Index Law (Multiplication Law) L3
+  indexDiv_L1: [9, 19, 29, 44],   // Index Law (Division Law) L1
+  indexDiv_L2: [7, 15, 22, 32],   // Index Law (Division Law) L2
+  indexDiv_L3: [6, 12, 18, 26],   // Index Law (Division Law) L3
+  indexPow_L1: [9, 19, 29, 44],   // Index Law (Power of a Power) L1
+  indexPow_L2: [7, 15, 22, 32],   // Index Law (Power of a Power) L2
+  indexPow_L3: [6, 12, 18, 26],   // Index Law (Power of a Power) L3
+  negIndices_L1: [7, 15, 22, 32],   // Negative & Zero Indices L1
+  negIndices_L2: [7, 15, 22, 32],   // Negative & Zero Indices L2
+  negIndices_L3: [7, 15, 22, 32],   // Negative & Zero Indices L3
+  sciTo_L1: [6, 12, 18, 26],   // Number → Scientific Notation L1
+  sciTo_L2: [6, 12, 18, 26],   // Number → Scientific Notation L2
+  sciTo_L3: [6, 12, 18, 26],   // Number → Scientific Notation L3
+  sciFrom_L1: [6, 12, 18, 26],   // Scientific Notation → Number L1
+  sciFrom_L2: [6, 12, 18, 26],   // Scientific Notation → Number L2
+  sciFrom_L3: [6, 12, 18, 26],   // Scientific Notation → Number L3
+  surdAddSub_L1: [6, 12, 18, 26],   // Add & Subtract Surds L1
+  surdMultiply_L1: [6, 12, 18, 26],   // Multiply Surds L1
+  surdDivide_L1: [6, 12, 18, 26],   // Divide Surds L1
+  // ½ Fractions
+  fracAddSub_L1: [6, 12, 18, 26],   // Add & Subtract Fractions L1
+  fracMultiply_L1: [6, 12, 18, 26],   // Multiply Fractions L1
+  fracDivide_L1: [6, 12, 18, 26],   // Divide Fractions L1
+  // 0.1 Decimals
+  decPlaceValue_L2: [6, 12, 18, 26],   // Decimal Place Value L2
+  decPlaceValue_L3: [6, 12, 18, 26],   // Decimal Place Value L3
+  decIdentify_L1: [2, 3, 5, 7],   // Identify Decimals L1
+  decIdentify_L2: [2, 3, 5, 7],   // Identify Decimals L2
+  decIdentify_L3: [2, 3, 5, 7],   // Identify Decimals L3
+  decExpand_L1: [2, 3, 5, 7],   // Expanded Form of Decimals L1
+  decExpand_L2: [2, 3, 5, 7],   // Expanded Form of Decimals L2
+  decExpand_L3: [2, 3, 5, 7],   // Expanded Form of Decimals L3
+  decToFrac_L1: [2, 3, 5, 7],   // Convert Decimals to Fractions L1
+  decToFrac_L2: [2, 3, 5, 7],   // Convert Decimals to Fractions L2
+  fracToDec_L1: [4, 8, 12, 17],   // Convert Fractions to Decimals L1
+  compareDec_L4: [2, 4, 6, 8],   // Compare & Order Decimals L4
+  compareDec_L5: [2, 4, 6, 8],   // Compare & Order Decimals L5
+  decAddSubNeg_L1: [4, 8, 12, 17],   // Add & Subtract Decimals (Positive & Negative) L1
+  decAddSubNeg_L2: [4, 8, 12, 17],   // Add & Subtract Decimals (Positive & Negative) L2
+  decPow10_L2: [5, 9, 14, 20],   // Multiply & Divide by 10, 100, 1000 L2
+  decPow10_L3: [5, 9, 14, 20],   // Multiply & Divide by 10, 100, 1000 L3
+  decMultiply_L1: [2, 4, 6, 8],   // Multiply Decimals L1
+  decMultiply_L2: [2, 4, 6, 8],   // Multiply Decimals L2
+  decMultiply_L3: [2, 4, 6, 8],   // Multiply Decimals L3
+  fdMultiply_L1: [2, 4, 6, 8],   // Multiply Decimals & Fractions L1
+  decSquareCube_L1: [2, 4, 6, 8],   // Squares & Cubes of Decimals L1
+  decSquareCube_L2: [2, 4, 6, 8],   // Squares & Cubes of Decimals L2
+  decDivide_L1: [2, 4, 6, 8],   // Divide Decimals L1
+  decDivide_L2: [1, 3, 4, 5],   // Divide Decimals L2
+  decDivide_L3: [1, 3, 4, 5],   // Divide Decimals L3
+  decDivide_L4: [1, 3, 4, 5],   // Divide Decimals L4
+  decLeadEst_L1: [6, 12, 18, 26],   // Leading Digit Estimation L1
+  // % Percentages
+  pctIdentify_L1: [2, 3, 5, 7],   // Identify Percentages L1
+  pctIdentify_L2: [2, 3, 5, 7],   // Identify Percentages L2
+  pctIdentify_L3: [2, 3, 5, 7],   // Identify Percentages L3
+  pctFDP_L1: [3, 6, 9, 13],   // Convert Fractions, Decimals & Percentages L1
+  pctOfAmount_L1: [3, 6, 9, 13],   // Finding a Percentage of an Amount L1
+  pctReverse_L1: [1, 3, 4, 5],   // Reverse Percentages L1
+  pctReverse_L2: [1, 3, 4, 5],   // Reverse Percentages L2
+  pctProfitLoss_L1: [1, 3, 4, 5],   // Profit & Loss L1
+  // △ Geometry
+  nameShapes_L1: [8, 17, 25, 37],   // Naming 2D & 3D Shapes L1
+  nameShapes_L2: [8, 17, 25, 37],   // Naming 2D & 3D Shapes L2
+  nameShapes_L3: [8, 17, 25, 37],   // Naming 2D & 3D Shapes L3
+  nameShapes_L4: [8, 17, 25, 37],   // Naming 2D & 3D Shapes L4
+  nameShapes_L5: [8, 17, 25, 37],   // Naming 2D & 3D Shapes L5
+  nameAnglesLines_L1: [8, 17, 25, 37],   // Naming Angles, Lines & Triangles L1
+  nameAnglesLines_L2: [8, 17, 25, 37],   // Naming Angles, Lines & Triangles L2
+  nameAnglesLines_L3: [8, 17, 25, 37],   // Naming Angles, Lines & Triangles L3
+  angleRel_L1: [8, 17, 25, 37],   // Angle Relationships L1
+  angleParallel_L1: [8, 17, 25, 37],   // Angles on Parallel Lines L1
+});
 const DEFAULT_METHOD_CEIL = 5;
 
 /* The Lion ceiling T for a skill+level. Recall → FLUENCY_TARGET; method → map
