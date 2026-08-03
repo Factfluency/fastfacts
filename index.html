@@ -1,4 +1,4 @@
-<!-- Sandy Fast Facts — v74 (internal v74.5: miss reviews now work THIS question's numbers step-by-step (fractions, decimals, integers, indices, ratios, algebra, order-of-ops, etc.) instead of a generic rule; Angles-in-Polygons L4 mixes a/2a with plain-number angles; deeper, clearly-concave polygons) -->
+<!-- Sandy Fast Facts — v74 (internal v74.6: Decimals additions (Laura) — Add & Subtract Decimals L4 money/bank-balance word problems (negatives allowed); NEW skill Add & Subtract Fractions & Decimals (decFrac mode: type a decimal OR a fraction, recurring answers must be a fraction), 3 levels; Rounding Decimals L3 round-then-estimate (place varies). v74.5: miss reviews now work THIS question's numbers step-by-step instead of a generic rule; Angles-in-Polygons L4 mixes a/2a with plain-number angles; deeper, clearly-concave polygons) -->
 <!-- Viewport (v48): dropped `maximum-scale=1.0, user-scalable=no`. iOS ignored it (so pinch worked there anyway) but Android obeyed it, blocking accessibility pinch-zoom. Accidental double-tap-to-zoom is killed per-control via `touch-action: manipulation` instead, which leaves deliberate pinch-zoom intact on every platform. -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -2031,6 +2031,12 @@ body {
       <button class="kb-key kb-sym" id="kbSqrtBtn" onclick="kbPress('√')">√</button>
     </div>
 
+    <!-- Fraction-slash row — shown only for the decFrac mode (Add & Subtract Fractions
+         & Decimals), so a fraction answer like 5/6 can be typed alongside a decimal. -->
+    <div class="kb-row" id="kbFracSlashRow" style="display:none">
+      <button class="kb-key kb-sym" id="kbFracSlashBtn" onclick="kbPress('/')">/</button>
+    </div>
+
     <!-- Inequality symbol row (v51) — shown only for the inequalities skill.
          The variable, the four comparison signs, and / for fractional answers. -->
     <div class="kb-row" id="kbIneqRow" style="display:none">
@@ -2237,6 +2243,7 @@ const CATS = {
       { id:'decAdd',       name:'Add Decimals',                  inputMode:'number', lvKey:'da'   },
       { id:'decSub',       name:'Subtract Decimals',             inputMode:'number', lvKey:'dsu'  },
       { id:'decAddSub',    name:'Add &amp; Subtract Decimals',   inputMode:'number', lvKey:'das'  },
+      { id:'fdAddSub',     name:'Add &amp; Subtract Fractions &amp; Decimals', inputMode:'decFrac', lvKey:'fda' },
       { id:'decPow10',     name:'Multiply &amp; Divide by 10, 100, 1000', inputMode:'number', lvKey:'dp10' },
       { id:'decMultiply',  name:'Multiply Decimals',              inputMode:'number', lvKey:'dmu'  },
       { id:'decDivide',    name:'Divide Decimals',                inputMode:'number', lvKey:'dd'   },
@@ -2343,7 +2350,7 @@ const SKILL_YEAR = {
   // Decimals  (decAddSub/decAdd/decSub are foundational — no year chip)
   decAddSub:'', decAdd:'', decSub:'', decMultiply:'Yr 7', decDivide:'Yr 7',
   decPow10:'Yr 7', decSquareCube:'Yr 7–8',
-  decOrderOps:'Yr 7', decRound:'Yr 7', compareDec:'Yr 7',
+  decOrderOps:'Yr 7', decRound:'Yr 7', compareDec:'Yr 7', fdAddSub:'Yr 8',
   decPlaceValue:'Yr 7', decExpand:'Yr 7–8', decIdentify:'Yr 7', decToFrac:'Yr 7–8', fracToDec:'Yr 7–8',
   // Percentages
   pctIdentify:'Yr 7', pctFDP:'Yr 7–8', pctExpress:'Yr 8', pctOfAmount:'Yr 7–8', pctChange:'Yr 8–9', pctProfitLoss:'Yr 9',
@@ -2496,6 +2503,12 @@ const LEVEL_DEFS = {
     { title:'Level 1 — 1 Decimal Place',  desc:'Add or subtract numbers with 1 decimal place. Focus on aligning decimal points correctly.', examples:['3.4 + 2.7', '8.1 − 3.6', '5.5 + 4.8'] },
     { title:'Level 2 — 2 Decimal Places', desc:'Add or subtract numbers with up to 2 decimal places. Includes regrouping across the decimal point.', examples:['4.37 + 2.85', '9.20 − 3.47', '6.08 + 1.95'] },
     { title:'Level 3 — Mixed Decimals',   desc:'Add or subtract numbers with different numbers of decimal places. Align carefully before computing.', examples:['3.4 + 1.85', '7.2 − 3.45', '12.05 + 4.7'] },
+    { title:'Level 4 — Word Problems',    desc:'Real-life money and bank-balance problems. Pick out the numbers, decide whether to add or subtract, and type the answer. Balances can finish below zero — use the − key for a negative amount.', examples:['A book costs $4.20 and a pen costs $3.50 — total?', 'Balance −$24.75, deposit $56.80, then withdraw $18.95 — new balance?', 'You have $50 and spend $18.65 and $12.40 — how much is left?'] },
+  ],
+  fda: [
+    { title:'Level 1 — Tenths',                  desc:'Add or subtract a decimal and a fraction over 10. Change one to match the other — either turn the fraction into a decimal (7/10 = 0.7) or the decimal into tenths — then combine. Type your answer as a decimal OR a fraction.', examples:['0.3 + 7/10', '9/10 − 0.4', '0.6 + 3/10'] },
+    { title:'Level 2 — Quarters, Fifths & Hundredths', desc:'Now with halves, quarters and fifths alongside decimals to hundredths. Convert to the same form first (¼ = 0.25, ⅗ = 0.6). Every answer still stops, so a decimal or a fraction is fine.', examples:['0.25 + 3/4', '4/5 − 0.3', '0.35 + 1/2'] },
+    { title:'Level 3 — Mixed & Recurring',       desc:'Harder mixes including thirds, sixths and ninths, with adding and subtracting. Some answers are recurring decimals (they never stop) — for those you MUST give your answer as a fraction.', examples:['0.5 + 1/3', '5/6 − 0.2', '1/3 + 0.25'] },
   ],
   da: [
     { title:'Level 1 — 1 Decimal Place',  desc:'Add numbers with 1 decimal place. Focus on aligning decimal points correctly.', examples:['3.4 + 2.7', '8.1 + 3.6', '5.5 + 4.8'] },
@@ -2544,6 +2557,7 @@ const LEVEL_DEFS = {
   dr: [
     { title:'Level 1 — Round to 1 d.p.',       desc:'Round a decimal to 1 decimal place. Look at the second decimal place to decide.', examples:['3.47 → 3.5', '8.23 → 8.2', '6.75 → 6.8'] },
     { title:'Level 2 — Round to 1 or 2 d.p.',  desc:'A mix of rounding to 1 or 2 decimal places. The question tells you how many.', examples:['3.467 to 2 d.p.', '8.235 to 1 d.p.', '12.744 to 2 d.p.'] },
+    { title:'Level 3 — Round then Estimate',   desc:'Round BOTH numbers to the place shown in the brackets, then add or subtract the rounded values to estimate the answer. The bracket tells you the place — whole number, tenths or hundredths.', examples:['4.81 + 3.2231 (tenths) → 4.8 + 3.2 = 8', '7.36 − 2.91 (whole) → 7 − 3 = 4', '5.267 + 1.482 (hundredths) → 5.27 + 1.48 = 6.75'] },
   ],
 
   dpv: [
@@ -2889,6 +2903,9 @@ const LEVEL_REC = {
   ioo:   { 3: 'challenge' },   // Order of Operations (Integers)
   foo:   { 3: 'challenge' },   // Order of Operations (Fractions)
   doo:   { 3: 'challenge' },   // Order of Operations (Decimals)
+  das:   { 4: 'challenge' },   // Add & Subtract Decimals — word problems (multi-step)
+  dr:    { 3: 'challenge' },   // Rounding Decimals — round then estimate (multi-step)
+  fda:   { 3: 'challenge' },   // Add & Subtract Fractions & Decimals — mixed & recurring
   aexp:  { 3: 'challenge' },   // Expand Single Brackets — variable multiplier (x²)
   aexp2: { 1: 'challenge', 2: 'challenge', 3: 'practice' }, // Expand & Simplify (Two Brackets)
   amul:  { 4: 'practice' },    // Multiply Terms — three-term, negatives
@@ -2932,7 +2949,7 @@ function getSkillKind(id) { return RECALL_SKILLS.includes(id) ? 'recall' : 'meth
    (accuracy-first, no Fluent) on the top level. List those method levels here — the
    skill stays in RECALL_SKILLS (so it still counts as a Fluent skill overall), but the
    listed levels behave as method (no fluency target, 🐆 Cheetah goal, "accuracy first"). */
-const METHOD_LEVEL_OVERRIDE = { pctIdentify:[3], pctOfAmount:[3] };
+const METHOD_LEVEL_OVERRIDE = { pctIdentify:[3], pctOfAmount:[3], decAddSub:[4] };
 function getLevelKind(id, lv) {
   if (RECALL_SKILLS.includes(id) && !((METHOD_LEVEL_OVERRIDE[id] || []).includes(lv))) return 'recall';
   return 'method';
@@ -2957,7 +2974,9 @@ const FLUENCY_TARGET = {
   // v45: squares/roots/cubes/cubeRoots L1 & L2 now match L2 times-tables (30); L3 unchanged.
   squares:[30, 30, 18], roots:[30, 30, 15], cubes:[30, 30, 14], cubeRoots:[30, 30, 13],
   intAddSub:25, intMultDiv:22, intSquareCube:18,
-  decAddSub:18, decAdd:18, decSub:18, decMultiply:15, decDivide:14, decSquareCube:14,
+  // decAddSub L1–L3 keep their existing scaled targets (18/15/13); L4 (word problems)
+  // is METHOD (target 0 → no Fluent badge; banded via METHOD_BAND_CEIL + METHOD_LEVEL_OVERRIDE).
+  decAddSub:[18, 15, 13, 0], decAdd:18, decSub:18, decMultiply:15, decDivide:14, decSquareCube:14,
   // v73 (Laura) — Multiply & Divide by 10/100/1000. PROPOSED per-level targets
   // (correct-per-minute), recalibrate with class data: L1 mult (18), L2 div (16),
   // L3 mixed (14), L4 multiples like 20/50/400 (10).
@@ -3118,7 +3137,15 @@ const ANIMALS = [
    Display-only, storage-safe — edit freely. */
 const METHOD_BAND_CEIL = {
   // very quick single-step method — Lion 20, Cheetah 30
-  algLikeTerms:20, algParts:20, sigFigs:20, decRound:20,
+  algLikeTerms:20, algParts:20, sigFigs:20,
+  // Rounding Decimals — L1/L2 quick single-step rounding (Lion 20); L3 round-then-estimate
+  // is a two-step method, so a lower ceiling. PLACEHOLDER — recalibrate with class data.
+  decRound:[20, 20, 12],
+  // Add & Subtract Decimals — only L4 (word problems) is a METHOD level (see METHOD_LEVEL_OVERRIDE);
+  // L1–L3 are recall and read FLUENCY_TARGET, so those slots are ignored. PLACEHOLDER.
+  decAddSub:[18, 18, 18, 6],
+  // Add & Subtract Fractions & Decimals — multi-step convert-then-combine. PLACEHOLDER — recalibrate.
+  fdAddSub:[12, 10, 8],
   // quick single-step — Lion 15, Cheetah 23
   eqOneStepAddSub:15, eqOneStepMulDiv:15, fracSimplify:15,
   // remaining single-step method — Lion 8, Cheetah 12  (PENDING Laura's "rest of row 1")
@@ -6496,6 +6523,8 @@ function nextQ() {
   }
   const el = id('qText');
   el.style.fontSize = '2.8rem';
+  el.style.textAlign = '';   // reset any per-skill override (e.g. word problems)
+  el.style.lineHeight = '';
 
   qData = {};
 
@@ -6583,6 +6612,7 @@ function nextQ() {
   else if (skill === 'impToMixed')    { genImpToMixed(); }
   else if (skill === 'fracOrderOps')  { genFracOrderOps(); }
   else if (skill === 'decAddSub')     { genDecAddSub(); }
+  else if (skill === 'fdAddSub')      { genFracDecAddSub(); }
   else if (skill === 'decAdd')        { genDecAdd(); }
   else if (skill === 'decSub')        { genDecSub(); }
   else if (skill === 'decMultiply')   { genDecMultiply(); }
@@ -7316,6 +7346,13 @@ document.addEventListener('DOMContentLoaded', () => {
       // and spaces. ≤ / ≥ can't be typed on a physical keyboard — students type <= / >=.
       const extra = ['x','X','<','>','=','/',' ','≤','≥'];
       if (allowed.includes(e.key) || extra.includes(e.key) || (e.key >= '0' && e.key <= '9')) return;
+      if (e.ctrlKey || e.metaKey) return;
+      e.preventDefault();
+      return;
+    }
+    if (getInputMode() === 'decFrac') {
+      // Add & Subtract Fractions & Decimals: allow digits, a decimal point and / for fractions.
+      if (allowed.includes(e.key) || e.key === '/' || (e.key >= '0' && e.key <= '9')) return;
       if (e.ctrlKey || e.metaKey) return;
       e.preventDefault();
       return;
@@ -8441,7 +8478,7 @@ function readUserAnswer(mode) {
       return parts.length ? parts.join(' + ') : '—';
     }
     if (mode === 'algType' || mode === 'algProd' || mode === 'algPoly' || mode === 'algFactored') return g('algTypeInput') || '—';
-    if (mode === 'surd' || mode === 'ineq') return g('ansInput') || '—';
+    if (mode === 'surd' || mode === 'ineq' || mode === 'decFrac') return g('ansInput') || '—';
     if (mode === 'choice') {
       if (qData.chosen == null) return '—';
       if (qData.choiceText) return qData.choiceText[qData.chosen] || '—';
@@ -8484,7 +8521,7 @@ function checkAns() {
     // Tolerance for decimal floating-point (e.g. 0.1+0.2 = 0.30000000001)
     const tol = 0.0001;
     correct = Math.abs(val - qData.ans) <= tol;
-    if (!correct) feedbackStr = `Answer: ${qData.ans}`;
+    if (!correct) feedbackStr = `Answer: ${qData.ansDisplay != null ? qData.ansDisplay : qData.ans}`;
     id('ansInput').classList.remove('ok','bad');
     id('ansInput').classList.add(correct ? 'ok' : 'bad');
   }
@@ -8858,6 +8895,26 @@ function checkAns() {
     ['plProfitBtn','plLossBtn'].forEach(function(b){ id(b).classList.remove('sel'); });
     id(qData.plChosen === 'profit' ? 'plProfitBtn' : 'plLossBtn').classList.add(dirOk ? 'ok' : 'bad');
     if (!dirOk) id(qData.plDir === 'profit' ? 'plProfitBtn' : 'plLossBtn').classList.add('ok');
+  }
+  else if (mode === 'decFrac') {
+    // Add & Subtract Fractions & Decimals — accept a decimal OR a fraction. A
+    // recurring-decimal answer can ONLY be given as a fraction (a decimal is
+    // rejected with a nudge). Empty / unparseable entries don't count as an attempt.
+    const raw = id('ansInput').value.trim();
+    const p = decFracParse(raw);
+    if (p === null) { attempts--; id('ansInput').focus(); return; }
+    if (p.kind === 'frac') {
+      correct = (p.num * qData.ansDen === qData.ansNum * p.den);   // equal value, any equivalent fraction
+      if (!correct) feedbackStr = `Answer: ${qData.ansDisplay}`;
+    } else if (qData.terminates) {
+      correct = Math.abs(p.dec - qData.ansNum / qData.ansDen) < 1e-9;
+      if (!correct) feedbackStr = `Answer: ${qData.ansDisplay}`;
+    } else {
+      correct = false;
+      feedbackStr = `This decimal doesn't stop — give your answer as a fraction: ${qData.ansDisplay}`;
+    }
+    id('ansInput').classList.remove('ok','bad');
+    id('ansInput').classList.add(correct ? 'ok' : 'bad');
   }
 
   // Scoring — pctTable awards 1 point per correct box (attsThis boxes); all other
@@ -9543,6 +9600,8 @@ function decColRightHTML(rows, op){
 }
 
 function genDecAddSub(forceOp) {
+  // L4 (combined skill only) — real-life money / bank-balance word problems.
+  if (forceOp === undefined && level === 4) { genDecWordProblem(); return; }
   let a, b, ans;
   // forceOp: 'add' → always +, 'sub' → always −, undefined → random (combined skill).
   const sub = (forceOp === 'sub') ? true : (forceOp === 'add') ? false : (Math.random() < 0.5);
@@ -9565,6 +9624,124 @@ function genDecAddSub(forceOp) {
 // Add-only / Subtract-only — same levels, layout and gameplay as the combined skill.
 function genDecAdd() { genDecAddSub('add'); }
 function genDecSub() { genDecAddSub('sub'); }
+
+/* Add & Subtract Decimals — Level 4: real-life money & bank-balance word problems.
+   Answers are plain numbers (dollars); balance problems can finish negative (the − key
+   is switched on for this level). Answer shown money-formatted in feedback/review. */
+function money(n){ n = dp(n, 2); return (n < 0 ? '−$' : '$') + Math.abs(n).toFixed(2); }
+function genDecWordProblem() {
+  const el = id('qText');
+  el.style.fontSize = '1.2rem';
+  el.style.lineHeight = '1.5';
+  el.style.textAlign = 'left';
+  const items = ['book','pen','pencil','ruler','drink','sandwich','magazine','notebook',
+                 'water bottle','sticker pack','comic','poster','muffin','apple'];
+  function item(){ return items[ri(items.length)]; }
+  function cash(loC, hiC){ return dp(rr(loC, hiC) / 100, 2); }   // cents range → dollars, 2 d.p.
+  const type = ri(5);
+  let text, ans, work;
+  if (type === 0) {
+    const i1 = item(); let i2 = item(); while (i2 === i1) i2 = item();
+    const a = cash(150, 950), b = cash(150, 950);
+    ans = dp(a + b, 2);
+    text = `A ${i1} costs ${money(a)} and a ${i2} costs ${money(b)}. What is the total cost?`;
+    work = `Add the two prices: ${money(a)} + ${money(b)} = <b>${money(ans)}</b>.`;
+  } else if (type === 1) {
+    const a = cash(120, 600), b = cash(120, 600), c = cash(120, 600);
+    ans = dp(a + b + c, 2);
+    text = `At the canteen you buy three items costing ${money(a)}, ${money(b)} and ${money(c)}. How much do you spend altogether?`;
+    work = `Add the three amounts: ${money(a)} + ${money(b)} + ${money(c)} = <b>${money(ans)}</b>.`;
+  } else if (type === 2) {
+    const note = [20, 50, 100][ri(3)];
+    const cap = note * 100 / 2 - 100;
+    const a = cash(150, cap), b = cash(150, cap);
+    ans = dp(note - a - b, 2);
+    text = `You have ${money(note)} and spend ${money(a)}, then ${money(b)}. How much money do you have left?`;
+    work = `Start with ${money(note)} and subtract what you spend: ${money(note)} − ${money(a)} − ${money(b)} = <b>${money(ans)}</b>.`;
+  } else if (type === 3) {
+    let a = cash(200, 950), b = cash(200, 950); while (a === b) b = cash(200, 950);
+    const hi = Math.max(a, b), lo = Math.min(a, b);
+    ans = dp(hi - lo, 2);
+    text = `A ${item()} costs ${money(hi)} and a ${item()} costs ${money(lo)}. How much more expensive is the dearer one?`;
+    work = `Find the difference: ${money(hi)} − ${money(lo)} = <b>${money(ans)}</b>.`;
+  } else {
+    const start = -cash(500, 4000);     // negative starting balance
+    const dep = cash(2000, 7000);       // deposit
+    const wdr = cash(500, 6000);        // withdrawal
+    ans = dp(start + dep - wdr, 2);
+    text = `A bank account balance is ${money(start)}. A deposit of ${money(dep)} is made, then ${money(wdr)} is withdrawn. What is the new balance?`;
+    work = `Work through it in order: ${money(start)} + ${money(dep)} − ${money(wdr)} = <b>${money(ans)}</b>.`;
+  }
+  qData.ans = ans;
+  qData.ansDisplay = money(ans);   // money-formatted answer for feedback + review
+  qData.workSteps = work;
+  el.textContent = text;
+}
+
+/* ── Add & Subtract Fractions & Decimals (decFrac mode) ──────────────────────
+   One operand is a decimal, the other a fraction; combine them. The answer may be
+   typed as EITHER a decimal or a fraction (parsed by decFracParse). When the exact
+   answer is a recurring decimal it can only be given as a fraction — a decimal is
+   rejected with a nudge. Levels: L1 tenths · L2 quarters/fifths & hundredths ·
+   L3 mixed incl. thirds/sixths/ninths (recurring). */
+function decFracParse(raw){
+  if (raw == null) return null;
+  let s = String(raw).replace(/\s+/g, '').replace(/^\+/, '');
+  if (s === '' || s === '-' || s === '.' || s === '/') return null;
+  let m;
+  if ((m = s.match(/^(-?\d+)\/(-?\d+)$/))){
+    let num = parseInt(m[1], 10), den = parseInt(m[2], 10);
+    if (den === 0 || isNaN(num) || isNaN(den)) return null;
+    if (den < 0){ num = -num; den = -den; }
+    return { kind:'frac', num: num, den: den };
+  }
+  if (/^-?\d+$/.test(s)) return { kind:'dec', dec: parseInt(s, 10) };
+  if (/^-?\d*\.\d+$/.test(s)) return { kind:'dec', dec: parseFloat(s) };
+  return null;
+}
+function fdReduce(n, d){ if (d < 0){ n = -n; d = -d; } const g = gcd(Math.abs(n), Math.abs(d)) || 1; return [n / g, d / g]; }
+function fdTerminates(d){ d = Math.abs(d); if (d === 0) return true; while (d % 2 === 0) d /= 2; while (d % 5 === 0) d /= 5; return d === 1; }
+function genFracDecAddSub() {
+  const el = id('qText');
+  el.style.fontSize = '2.2rem';
+  // Build the decimal operand and the fraction operand for the current level.
+  let decNum, decDen, decDisp, fn, fd;
+  if (level === 1) {
+    decNum = rr(1, 9); decDen = 10; decDisp = String(dp(decNum / 10, 1));
+    fn = rr(1, 9); fd = 10;
+  } else if (level === 2) {
+    fd = [2, 4, 5][ri(3)]; fn = rr(1, fd - 1);
+    const dc = rr(1, 19) * 5;                 // 5..95 cents, i.e. multiples of 0.05
+    decNum = dc; decDen = 100; decDisp = String(dp(dc / 100, 2));
+  } else {
+    fd = [3, 6, 9, 8, 4, 5][ri(6)]; fn = rr(1, fd - 1);
+    if (Math.random() < 0.6) { decNum = rr(1, 9); decDen = 10; decDisp = String(dp(decNum / 10, 1)); }
+    else { const dc = rr(1, 19) * 5; decNum = dc; decDen = 100; decDisp = String(dp(dc / 100, 2)); }
+  }
+  const sub = Math.random() < 0.5;
+  const decVal = decNum / decDen, frVal = fn / fd;
+  // Order operands so subtraction never goes negative; addition keeps decimal first.
+  let aDisp, aN, aD, bDisp, bN, bD;
+  const decOp  = { disp: decDisp, n: decNum, d: decDen };
+  const fracOp = { disp: fn + '/' + fd, n: fn, d: fd };
+  let first, second;
+  if (!sub) { first = decOp; second = fracOp; }
+  else if (decVal >= frVal) { first = decOp; second = fracOp; }
+  else { first = fracOp; second = decOp; }
+  aDisp = first.disp; aN = first.n; aD = first.d;
+  bDisp = second.disp; bN = second.n; bD = second.d;
+  const op = sub ? '−' : '+';
+  const combined = sub ? [aN * bD - bN * aD, aD * bD] : [aN * bD + bN * aD, aD * bD];
+  const [rn, rd] = fdReduce(combined[0], combined[1]);
+  const terminates = fdTerminates(rd);
+  qData.ansNum = rn; qData.ansDen = rd;
+  qData.terminates = terminates;
+  const finalDisp = terminates ? String(dp(rn / rd, 6)) : (rn + '/' + rd);
+  qData.ansDisplay = finalDisp;
+  qData.workSteps = `Convert to the same type, then ${sub ? 'subtract' : 'add'}: ${aDisp} ${op} ${bDisp} = <b>${finalDisp}</b>.`
+    + (terminates ? '' : ' It is a recurring decimal, so leave the answer as a fraction.');
+  el.textContent = `${aDisp} ${op} ${bDisp}`;
+}
 
 // Multiply & Divide by 10, 100, 1000 (and, at L4, by multiples like 20/50/400).
 // RECALL / Fluent-eligible. Multiplies compute the answer; divides are BUILT FROM
@@ -9710,6 +9887,8 @@ function genDecOrderOps() {
 function genDecRound() {
   const el = id('qText');
   el.style.fontSize = '1.9rem';
+  // Level 3 — round each of two numbers to the named place, then estimate.
+  if (level === 3) { genDecRoundEstimate(el); return; }
   // Generate a decimal then ask student to round it
   let num, places, ans;
   if (level === 1) {
@@ -9726,6 +9905,33 @@ function genDecRound() {
   const nextDigit = Math.floor(num * Math.pow(10, places + 1)) % 10;
   qData.workSteps = `Rounding ${num} to ${places} d.p. — look at the next digit, ${nextDigit}: ${nextDigit >= 5 ? '5 or more → round up' : 'less than 5 → round down'}, giving <b>${ans}</b>.`;
   el.textContent = `${num} to ${places} d.p.`;
+}
+
+/* Rounding Decimals — Level 3: round BOTH numbers to the place named in the
+   brackets (whole number / tenths / hundredths), then add or subtract the rounded
+   values to estimate. The estimate is the typed answer; kept ≥ 0 for subtraction. */
+function genDecRoundEstimate(el) {
+  el.style.fontSize = '1.7rem';
+  const place = ri(3);                         // 0 whole · 1 tenths · 2 hundredths
+  const placeName  = place === 0 ? 'whole number' : place === 1 ? 'tenths' : 'hundredths';
+  const bracketLbl = place === 0 ? 'whole' : placeName;
+  const P = Math.pow(10, place);
+  function operand(){
+    const d = place + 1 + ri(2);               // more decimal places than `place`
+    const D = Math.pow(10, d);
+    return dp(rr(D, 10 * D - 1) / D, d);        // ~1.0 … 9.9…, exactly d d.p.
+  }
+  const roundTo = x => dp(Math.round(x * P) / P, place);
+  let a = operand(), b = operand();
+  let ra = roundTo(a), rb = roundTo(b);
+  const sub = Math.random() < 0.5;
+  if (sub && rb > ra) { [a, b] = [b, a]; [ra, rb] = [rb, ra]; }   // keep the estimate ≥ 0
+  const est = dp(sub ? ra - rb : ra + rb, place);
+  const op = sub ? '−' : '+';
+  qData.ans = est;
+  qData.ansDisplay = String(est);
+  qData.workSteps = `Round each to the ${placeName}: ${a} → ${ra}, ${b} → ${rb}. Then estimate: ${ra} ${op} ${rb} = <b>${est}</b>.`;
+  el.textContent = `${a} ${op} ${b}  (${bracketLbl})`;
 }
 
 /* ═══════════════════════════════════════════════
@@ -11216,6 +11422,9 @@ function kbPress(char) {
   /* Dot: only allow one, only for sci coeff */
   if (char === '.' && cur.includes('.')) return; // only one dot allowed
 
+  /* Fraction slash: only allow one (decFrac mode) */
+  if (char === '/' && cur.includes('/')) return;
+
   /* Negative: in number modes only at start; in algText / ineq it's placed freely */
   if (char === '-' && !freeMinus) {
     if (cur.startsWith('-')) { kbTarget.value = cur.slice(1); kbRefreshDisplay(); return; }
@@ -11314,12 +11523,13 @@ function kbShow() {
   const showNeg = ['intAddSub','intMultDiv','intSquareCube','indexDiv','indexMult','indexPow','sciTo','sciFrom',
                    'eqOneStepAddSub','eqOneStepMulDiv','eqTwoStep',
                    'eqTwoStepFrac','eqVarDenom','eqBothSides'].includes(skillId)
-                  || mode === 'index' || mode === 'sci' || mode === 'algebra' || mode === 'ineq';
+                  || mode === 'index' || mode === 'sci' || mode === 'algebra' || mode === 'ineq'
+                  || (skillId === 'decAddSub' && level === 4);   // word-problem balances can be negative
   const decSkillsWithDot = ['sciTo','sciFrom','decAddSub','decAdd','decSub','decMultiply','decDivide','decPow10','decSquareCube','decOrderOps','decRound','sigFigs',
                             'rateSimplify','rateConvert','decIdentify','decExpand','fracToDec',
                             // v74 — percentages can have decimal answers
                             'pctIdentify','pctExpress','pctOfAmount','pctChange','pctProfitLoss'];
-  const showDot  = (mode === 'sci' || mode === 'pctTable' || mode === 'plToggle' || decSkillsWithDot.includes(skillId));
+  const showDot  = (mode === 'sci' || mode === 'pctTable' || mode === 'plToggle' || mode === 'decFrac' || decSkillsWithDot.includes(skillId));
   const showNext = (mode === 'fraction' || mode === 'mixed' || mode === 'index' || mode === 'sci' || mode === 'ratio' || mode === 'algebra' || mode === 'factor' || mode === 'pctTable');
 
   const negBtn  = document.getElementById('kbNegBtn');
@@ -11334,6 +11544,10 @@ function kbShow() {
   // v50: surd (exact-value) row — a single √ key, shown only for surd mode.
   const surdRow = document.getElementById('kbSurdRow');
   if (surdRow) surdRow.style.display = (mode === 'surd') ? 'flex' : 'none';
+
+  // Fraction-slash row — a single / key, shown only for the decFrac mode.
+  const fracSlashRow = document.getElementById('kbFracSlashRow');
+  if (fracSlashRow) fracSlashRow.style.display = (mode === 'decFrac') ? 'flex' : 'none';
 
   // v51: inequality row — x and the four comparison signs + a fraction slash.
   const ineqRow = document.getElementById('kbIneqRow');
