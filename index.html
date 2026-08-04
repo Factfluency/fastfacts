@@ -1,4 +1,4 @@
-<!-- Sandy Fast Facts — v74 (internal v74.9: band cut-offs revised across the whole program from Laura's reviewed spreadsheet — 95 skill-levels re-banded via explicit per-level BAND_OVERRIDE entries (app matches the sheet on all 330 rows). v74.8: Decimals band targets LOWERED (Laura) so quick+accurate students reach higher animals — Identify/Expanded Form/Convert D→F −2; Rounding & Add/Subtract Decimals −3; all ×/÷ decimal operations (Multiply, Divide, ×÷ by 10/100/1000, Squares & Cubes, Square/Cube Roots, signed ×÷, ×fractions) −4. Display-only/storage-safe; .bas regenerated. v74.7: more Decimals (Laura) — NEW skills Add & Subtract Decimals (Positive & Negative), Multiply Decimals & Fractions (decFrac), Multiply & Divide Decimals (Positive & Negative), Leading Digit Estimation (round-to-1sf → estimate → BODMAS), Square Roots & Cube Roots of Decimals; NEW word-problem L4 on Multiply Decimals and Divide Decimals; Squares & Cubes of Decimals moved after Multiply Decimals & Fractions. v74.6: Add & Subtract Decimals L4 word problems; Add & Subtract Fractions & Decimals; Rounding Decimals L3 round-then-estimate. v74.5: miss reviews work THIS question's numbers step-by-step; Angles-in-Polygons L4; deeper concave polygons) -->
+<!-- Sandy Fast Facts — v75 (internal v75.0: NEW Percentages skills — Convert Percentages & Decimals (pctDecConv, both directions, number box) and Convert Fractions & Percentages (fracPctConv: L1–2 fraction→% number box, L3–4 %→fraction box; direction fixed per level via levelModes). Both single-question (not the FDP fill-in table), placed before Convert FDP; recall/Fluent-eligible with PLACEHOLDER bands (recalibrate with class data). Recurring values (33⅓% etc.) accepted within a per-question tolerance via qData.ansTol. Storage-safe additive change. v74.9: band cut-offs revised across the whole program from Laura's reviewed spreadsheet — 95 skill-levels re-banded via explicit per-level BAND_OVERRIDE entries (app matches the sheet on all 330 rows). v74.8: Decimals band targets LOWERED (Laura) so quick+accurate students reach higher animals — Identify/Expanded Form/Convert D→F −2; Rounding & Add/Subtract Decimals −3; all ×/÷ decimal operations (Multiply, Divide, ×÷ by 10/100/1000, Squares & Cubes, Square/Cube Roots, signed ×÷, ×fractions) −4. Display-only/storage-safe; .bas regenerated. v74.7: more Decimals (Laura) — NEW skills Add & Subtract Decimals (Positive & Negative), Multiply Decimals & Fractions (decFrac), Multiply & Divide Decimals (Positive & Negative), Leading Digit Estimation (round-to-1sf → estimate → BODMAS), Square Roots & Cube Roots of Decimals; NEW word-problem L4 on Multiply Decimals and Divide Decimals; Squares & Cubes of Decimals moved after Multiply Decimals & Fractions. v74.6: Add & Subtract Decimals L4 word problems; Add & Subtract Fractions & Decimals; Rounding Decimals L3 round-then-estimate. v74.5: miss reviews work THIS question's numbers step-by-step; Angles-in-Polygons L4; deeper concave polygons) -->
 <!-- Viewport (v48): dropped `maximum-scale=1.0, user-scalable=no`. iOS ignored it (so pinch worked there anyway) but Android obeyed it, blocking accessibility pinch-zoom. Accidental double-tap-to-zoom is killed per-control via `touch-action: manipulation` instead, which leaves deliberate pinch-zoom intact on every platform. -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -2260,6 +2260,8 @@ const CATS = {
     label: '% Percentages',
     skills: [
       { id:'pctIdentify',  name:'Identify Percentages',                inputMode:'number',   lvKey:'pid' },
+      { id:'pctDecConv',   name:'Convert Percentages &amp; Decimals',   inputMode:'number',   lvKey:'pdc' },
+      { id:'fracPctConv',  name:'Convert Fractions &amp; Percentages',  inputMode:'number',   lvKey:'fpc', levelModes:{3:'fraction',4:'fraction'} },
       { id:'pctFDP',       name:'Convert Fractions, Decimals &amp; Percentages', inputMode:'pctTable', lvKey:'pfdp' },
       { id:'pctOfAmount',  name:'Finding a Percentage of an Amount',    inputMode:'number',   lvKey:'poa' },
       { id:'pctExpress',   name:'One Amount as a Percentage of Another', inputMode:'number',  lvKey:'pex' },
@@ -2359,7 +2361,7 @@ const SKILL_YEAR = {
   decAddSubNeg:'Yr 7–8', decMulDivNeg:'Yr 8', fdMultiply:'Yr 8', decLeadEst:'Yr 7–8', decSqCubeRoot:'Yr 8',
   decPlaceValue:'Yr 7', decExpand:'Yr 7–8', decIdentify:'Yr 7', decToFrac:'Yr 7–8', fracToDec:'Yr 7–8',
   // Percentages
-  pctIdentify:'Yr 7', pctFDP:'Yr 7–8', pctExpress:'Yr 8', pctOfAmount:'Yr 7–8', pctChange:'Yr 8–9', pctProfitLoss:'Yr 9',
+  pctIdentify:'Yr 7', pctDecConv:'Yr 7–8', fracPctConv:'Yr 7–8', pctFDP:'Yr 7–8', pctExpress:'Yr 8', pctOfAmount:'Yr 7–8', pctChange:'Yr 8–9', pctProfitLoss:'Yr 9',
   pctReverse:'Yr 9–10',
   // Ratios & Rates
   ratioSimplify:'Yr 7–8', ratioEquiv:'Yr 7–8', ratioShare:'Yr 7–8',
@@ -2625,6 +2627,17 @@ const LEVEL_DEFS = {
     { title:'Level 1 — Tens &amp; Hundreds Grids', desc:'Read the percentage shaded on a 100-square grid or a strip of ten. Type your answer as a percentage.', examples:['37 of 100 shaded → 37%', '4 of 10 shaded → 40%', '80 of 100 → 80%'] },
     { title:'Level 2 — Factor Grids', desc:'Grids whose size divides into 10 or 100 (5, 20, 25, 50 parts). Every answer is a whole percentage.', examples:['3 of 5 → 60%', '9 of 20 → 45%', '13 of 25 → 52%'] },
     { title:'Level 3 — Other Grids', desc:'Grids of other sizes (eighths, fortieths, …) — answers can go to one or two decimal places.', examples:['3 of 8 → 37.5%', '5 of 16 → 31.25%', '7 of 40 → 17.5%'] },
+  ],
+  pdc: [
+    { title:'Level 1 — Nice Values', desc:'Convert between a percentage and a decimal for friendly values. Each question goes one way — read the prompt. Type the number only (no % sign).', examples:['25% → 0.25', '0.4 → 40%', '75% → 0.75'] },
+    { title:'Level 2 — Any Whole Percent', desc:'Trickier whole percentages and two-place decimals, both directions. To go %→decimal move the point two places left; decimal→% move it two places right.', examples:['16% → 0.16', '0.37 → 37%', '8% → 0.08'] },
+    { title:'Level 3 — Thirds &amp; Over 100%', desc:'Recurring values like 33⅓% (a rounded decimal such as 0.33 is fine) and amounts over 100%.', examples:['33⅓% → 0.33…', '120% → 1.2', '2.5 → 250%'] },
+  ],
+  fpc: [
+    { title:'Level 1 — Fractions → Percentages', desc:'Write a fraction as a percentage. Divide top by bottom, then × 100. Type the number only (no % sign).', examples:['½ → 50%', '3/5 → 60%', '4/25 → 16%'] },
+    { title:'Level 2 — Fractions → Percentages: Thirds &amp; Over 100%', desc:'Recurring fractions like ⅓ (33⅓% — a rounded 33.3% is fine), eighths, and fractions over 1.', examples:['⅓ → 33⅓%', '3/8 → 37.5%', '5/4 → 125%'] },
+    { title:'Level 3 — Percentages → Fractions', desc:'Write a percentage as a fraction in simplest form. Put it over 100 and cancel down.', examples:['25% → ¼', '60% → 3/5', '16% → 4/25'] },
+    { title:'Level 4 — Percentages → Fractions: Thirds &amp; Over 100%', desc:'Recurring percentages like 33⅓% → ⅓, eighths like 12.5% → ⅛, and percentages over 100%.', examples:['33⅓% → ⅓', '12.5% → ⅛', '150% → 3/2'] },
   ],
   pfdp: [
     { title:'Level 1 — Nice Values', desc:'Fill the blanks in the table. Convert between fraction, decimal and percentage for friendly values. You score 1 point for every box you fill in correctly.', examples:['½ = 0.5 = 50%', '¼ = 0.25 = 25%', '1/5 = 0.2 = 20%'] },
@@ -2979,6 +2992,8 @@ const RECALL_SKILLS = [
   'decPlaceValue','decExpand','decIdentify','decToFrac','fracToDec',
   // v74 (Laura): two Percentages skills as recall / Fluent-eligible (the rest are method)
   'pctIdentify','pctOfAmount',
+  // v75 (Laura): the single-question conversion skills as recall / Fluent-eligible
+  'pctDecConv','fracPctConv',
   // v74.2 (Laura): base-fact skills as recall / Fluent-eligible
   'factorsMultiples','hcfLcm','roundEst','fracOfAmount','numberBonds',
   // v74.7 (Laura): signed decimal arithmetic + roots of decimals as recall / Fluent-eligible
@@ -3055,6 +3070,12 @@ const FLUENCY_TARGET = {
   //   Finding % of amount: L1 15/min · L2 10/min · L3 method
   pctIdentify:[12, 7, 0],
   pctOfAmount:[15, 10, 0],
+  // v75 (Laura): single-question conversion skills. PLACEHOLDER per-level targets
+  // (correct-per-minute) — recalibrate with class data via the CPM method.
+  //   %⇄decimal: quick two-step. Fractions & Percentages: L1 frac→% (fast), L2 frac→% thirds
+  //   (slower), L3 %→fraction num/den boxes, L4 %→fraction thirds (slowest).
+  pctDecConv:[16, 13, 9],
+  fracPctConv:[14, 9, 11, 6],
   // v74.2 (Laura): base-fact recall skills. PROPOSED per-level targets — recalibrate with class data.
   factorsMultiples:[20, 15, 12],   // L1 prime? (fast tap) · L2 factor? · L3 multiples (typed)
   hcfLcm:[12, 10, 8],              // L1 HCF · L2 LCM · L3 harder
@@ -6785,6 +6806,8 @@ function nextQ() {
   else if (skill === 'fracToDec')     { genFracToDec(el); }
   else if (skill === 'compareDec')    { genCompareDec(el); }
   else if (skill === 'pctIdentify')   { genPctIdentify(el); }
+  else if (skill === 'pctDecConv')    { genPctDecConv(el); }
+  else if (skill === 'fracPctConv')   { genFracPctConv(el); }
   else if (skill === 'pctFDP')        { genPctFDP(el); }
   else if (skill === 'pctExpress')    { genPctExpress(el); }
   else if (skill === 'pctOfAmount')   { genPctOfAmount(el); }
@@ -8675,8 +8698,10 @@ function checkAns() {
     // Always parseFloat — safe for integers (parseFloat('7') === 7) and decimals
     const val = parseFloat(raw);
     if (isNaN(val)) { attempts--; id('ansInput').focus(); return; }
-    // Tolerance for decimal floating-point (e.g. 0.1+0.2 = 0.30000000001)
-    const tol = 0.0001;
+    // Tolerance for decimal floating-point (e.g. 0.1+0.2 = 0.30000000001).
+    // Recurring-value conversions set qData.ansTol (e.g. ±0.2 on a %, ±0.01 on a
+    // decimal) so a sensibly rounded answer like 33.3% or 0.33 is accepted (v75).
+    const tol = (qData.ansTol != null) ? qData.ansTol : 0.0001;
     correct = Math.abs(val - qData.ans) <= tol;
     if (!correct) feedbackStr = `Answer: ${qData.ansDisplay != null ? qData.ansDisplay : qData.ans}`;
     id('ansInput').classList.remove('ok','bad');
@@ -10587,8 +10612,11 @@ function genCompareDec(el){
 }
 
 /* ═══════════════════════════════════════════════
-   PERCENTAGES (v74, Laura sign-off)
+   PERCENTAGES (v74, Laura sign-off; v75 conversion skills added)
    pctIdentify   — read a shaded grid (RECALL, typed %)
+   pctDecConv    — convert % ⇄ decimal, single answer (v75, RECALL, number box)
+   fracPctConv   — convert fraction ⇄ % , single answer (v75, RECALL; L1–2 fraction→%
+                   number box, L3–4 %→fraction box; direction fixed per level)
    pctFDP        — fill-the-blanks Fraction/Decimal/Percentage table
                    (METHOD, bespoke 'pctTable' mode, 1 point per box)
    pctExpress    — one amount as a percentage of another (METHOD, typed %)
@@ -10624,6 +10652,101 @@ function genPctIdentify(el){
   qData.ans = pct;
   qData.workSteps = sh + ' of ' + n + ' shaded = ' + sh + '/' + n + ' = ' + String(pct) + '%.';
   el.innerHTML = '<div style="' + A_LBL + '">What percentage is shaded? (' + n + ' equal parts)</div>' + svg;
+}
+
+/* ── Convert Percentages ⇄ Decimals (v75, Laura) — single answer, number box ──
+   Both directions live in one skill because both answers are plain numbers. Each
+   question randomly asks %→decimal or decimal→%. L3 recurring rows are shown as a
+   nice percentage (33⅓%) and answered as a decimal, accepted to ±0.01 (qData.ansTol). */
+const PDC_L1   = [5, 10, 15, 20, 25, 30, 40, 50, 60, 70, 75, 80, 90];
+const PDC_OVER = [120, 125, 150, 175, 225, 240, 250];
+const PDC_REC  = [{disp:'33⅓%', v:1/3}, {disp:'66⅔%', v:2/3}, {disp:'16⅔%', v:1/6}, {disp:'83⅓%', v:5/6}];
+function genPctDecConv(el){
+  el.style.fontSize = '1.7rem';
+  let promptTop, promptMain;
+  if(level === 3 && Math.random() < 0.45){
+    // recurring — percentage GIVEN, decimal answer (a 2-place decimal is fine)
+    const r = PDC_REC[ri(PDC_REC.length)];
+    qData.ans = r.v; qData.ansTol = 0.01;
+    qData.ansDisplay = dp(r.v, 3) + '… (accept ' + dp(r.v, 2) + ')';
+    qData.workSteps = r.disp + ' = ' + r.disp.replace('%','') + ' ÷ 100 = ' + dp(r.v, 3) + '… — one or two decimal places is fine.';
+    promptTop  = 'Write the percentage as a decimal. A rounded decimal (2 places) is fine.';
+    promptMain = 'Write ' + r.disp + ' as a decimal.';
+  } else {
+    let pct;
+    if(level === 1) pct = PDC_L1[ri(PDC_L1.length)];
+    else if(level === 2){ do { pct = rr(1, 99); } while(pct % 10 === 0); }   // "less nice"
+    else pct = PDC_OVER[ri(PDC_OVER.length)];
+    const dec = dp(pct / 100, 4);
+    if(Math.random() < 0.5){                 // percentage → decimal
+      qData.ans = dec; qData.ansDisplay = String(dec);
+      qData.workSteps = pct + '% ÷ 100 = ' + dec + ' (move the point two places left).';
+      promptTop  = 'Write the percentage as a decimal.';
+      promptMain = 'Write ' + pct + '% as a decimal.';
+    } else {                                 // decimal → percentage
+      qData.ans = pct; qData.ansDisplay = pct + '%';
+      qData.workSteps = dec + ' × 100 = ' + pct + '% (move the point two places right).';
+      promptTop  = 'Write the decimal as a percentage. Type the number only (no % sign).';
+      promptMain = 'Write ' + dec + ' as a percentage.';
+    }
+  }
+  el.innerHTML = '<div style="' + A_LBL + '">' + promptTop + '</div>'
+    + '<div style="text-align:center;margin:12px 0;font-weight:900;">' + promptMain + '</div>';
+}
+
+/* ── Convert Fractions & Percentages (v75, Laura) — ONE skill, both directions ──
+   The answer panel is fixed per LEVEL (a skill can't safely swap keypad per question),
+   so the two directions live on separate levels via levelModes {3:'fraction',4:'fraction'}:
+     L1 fraction → % (number box, friendly)      L2 fraction → % (number box, thirds & >100%)
+     L3 % → fraction (fraction box, friendly)    L4 % → fraction (fraction box, thirds & >100%)
+   Recurring % answers accept ±0.2 (qData.ansTol); recurring fraction answers are exact. */
+const F2P_EASY  = [[1,2],[1,4],[3,4],[1,5],[2,5],[3,5],[4,5],[1,10],[3,10],[7,10],[9,10],[1,20],[3,20],[7,20],
+                   [4,25],[6,25],[9,25],[11,25],[13,25],[16,25],[21,25],[9,20],[11,20],[13,50],[21,50],[7,50],[29,50]];
+const F2P_REC   = [[1,3,'33⅓%'],[2,3,'66⅔%'],[1,6,'16⅔%'],[5,6,'83⅓%']];
+const F2P_TERM  = [[3,8],[5,8],[7,8],[1,8],[6,5],[5,4],[3,2],[9,4],[7,4],[12,5],[9,5]];
+const P2F_EASY  = [[10,'10%'],[20,'20%'],[25,'25%'],[40,'40%'],[50,'50%'],[60,'60%'],[75,'75%'],[80,'80%'],[5,'5%'],[15,'15%'],[30,'30%'],[70,'70%'],[90,'90%'],
+                   [8,'8%'],[12,'12%'],[16,'16%'],[24,'24%'],[35,'35%'],[36,'36%'],[44,'44%'],[52,'52%'],[64,'64%'],[72,'72%'],[88,'88%'],[4,'4%'],[6,'6%']];
+const P2F_REC   = [['33⅓%',1,3],['66⅔%',2,3],['16⅔%',1,6],['83⅓%',5,6]];
+const P2F_TERM  = [['12.5%',1,8],['37.5%',3,8],['62.5%',5,8],['87.5%',7,8],['120%',6,5],['125%',5,4],['150%',3,2],['175%',7,4],['225%',9,4],['240%',12,5]];
+function genFracPctConv(el){
+  el.style.fontSize = '2.0rem';
+  if(level <= 2){
+    // Fractions → Percentages (number box)
+    let n, d, isRec = false, recDisp = '';
+    if(level === 1){ const p = F2P_EASY[ri(F2P_EASY.length)]; n = p[0]; d = p[1]; }
+    else {
+      if(Math.random() < 0.45){ const p = F2P_REC[ri(F2P_REC.length)]; n = p[0]; d = p[1]; isRec = true; recDisp = p[2]; }
+      else { const p = F2P_TERM[ri(F2P_TERM.length)]; n = p[0]; d = p[1]; }
+    }
+    const pctExact = 100 * n / d;
+    if(isRec){
+      qData.ans = pctExact; qData.ansTol = 0.2;
+      qData.ansDisplay = recDisp + ' (accept ' + dp(pctExact, 1) + ')';
+      qData.workSteps = n + '/' + d + ' × 100 = ' + recDisp + ' — a rounded ' + dp(pctExact, 1) + '% is fine.';
+    } else {
+      qData.ans = dp(pctExact, 2); qData.ansDisplay = fmtNum(qData.ans) + '%';
+      qData.workSteps = n + ' ÷ ' + d + ' × 100 = ' + fmtNum(qData.ans) + '%.';
+    }
+    el.innerHTML = '<div style="' + A_LBL + '">Write this fraction as a percentage. Type the number only (no % sign).</div>'
+      + '<div style="text-align:center;margin:14px 0;">' + fracHTML(n, d) + '</div>';
+  } else {
+    // Percentages → Fractions (fraction box; default marking requires lowest terms)
+    let disp, sn, sd, note;
+    if(level === 3){
+      const pick = P2F_EASY[ri(P2F_EASY.length)];
+      const g = gcd(pick[0], 100); sn = pick[0] / g; sd = 100 / g; disp = pick[1];
+      note = disp + ' = ' + pick[0] + '/100 = ' + sn + '/' + sd + ' (simplest form).';
+    } else {
+      const rec = Math.random() < 0.45;
+      const pick = rec ? P2F_REC[ri(P2F_REC.length)] : P2F_TERM[ri(P2F_TERM.length)];
+      disp = pick[0]; sn = pick[1]; sd = pick[2];
+      note = disp + ' = ' + sn + '/' + sd + (rec ? ' (a recurring percentage — its exact fraction).' : ' (over 100, then simplified).');
+    }
+    qData.ansNum = sn; qData.ansDen = sd;
+    qData.workSteps = note;
+    el.innerHTML = '<div style="' + A_LBL + '">Write this percentage as a fraction in simplest form.</div>'
+      + '<div style="text-align:center;margin:14px 0;font-weight:900;font-size:2.4rem;">' + disp + '</div>';
+  }
 }
 
 /* ── Convert Fractions / Decimals / Percentages — fill-the-blanks table ──
