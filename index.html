@@ -1,4 +1,4 @@
-<!-- Sandy Fast Facts — v75 (internal v75.0: NEW Percentages skills — Convert Percentages & Decimals (pctDecConv, both directions, number box) and Convert Fractions & Percentages (fracPctConv: L1–2 fraction→% number box, L3–4 %→fraction box; direction fixed per level via levelModes). Both single-question (not the FDP fill-in table), placed before Convert FDP; recall/Fluent-eligible with PLACEHOLDER bands (recalibrate with class data). Recurring values (33⅓% etc.) accepted within a per-question tolerance via qData.ansTol. Storage-safe additive change. v74.9: band cut-offs revised across the whole program from Laura's reviewed spreadsheet — 95 skill-levels re-banded via explicit per-level BAND_OVERRIDE entries (app matches the sheet on all 330 rows). v74.8: Decimals band targets LOWERED (Laura) so quick+accurate students reach higher animals — Identify/Expanded Form/Convert D→F −2; Rounding & Add/Subtract Decimals −3; all ×/÷ decimal operations (Multiply, Divide, ×÷ by 10/100/1000, Squares & Cubes, Square/Cube Roots, signed ×÷, ×fractions) −4. Display-only/storage-safe; .bas regenerated. v74.7: more Decimals (Laura) — NEW skills Add & Subtract Decimals (Positive & Negative), Multiply Decimals & Fractions (decFrac), Multiply & Divide Decimals (Positive & Negative), Leading Digit Estimation (round-to-1sf → estimate → BODMAS), Square Roots & Cube Roots of Decimals; NEW word-problem L4 on Multiply Decimals and Divide Decimals; Squares & Cubes of Decimals moved after Multiply Decimals & Fractions. v74.6: Add & Subtract Decimals L4 word problems; Add & Subtract Fractions & Decimals; Rounding Decimals L3 round-then-estimate. v74.5: miss reviews work THIS question's numbers step-by-step; Angles-in-Polygons L4; deeper concave polygons) -->
+<!-- Sandy Fast Facts — v76 (internal v76.0: Congruence & Similarity now distinguish "provably false" from "unknown". L3 adds a 6th button "Not similar" (sides given but not in a constant ratio — the case a student CAN disprove, e.g. 5,8,11 vs 10,18,22); L2 adds a 6th button "Not congruent" via a new DIFF scenario that labels side lengths that don't all match. "Not enough information" now means only the genuinely undetermined cases (SSA, AAA-for-congruence, one angle, two sides). csSimilarityVerdict/csCongruenceVerdict extended; fixed 6-button order; storage-safe (no skill/level renamed or reordered). v75.0: NEW Percentages skills — Convert Percentages & Decimals (pctDecConv, both directions, number box) and Convert Fractions & Percentages (fracPctConv: L1–2 fraction→% number box, L3–4 %→fraction box; direction fixed per level via levelModes). Both single-question (not the FDP fill-in table), placed before Convert FDP; recall/Fluent-eligible with PLACEHOLDER bands (recalibrate with class data). Recurring values (33⅓% etc.) accepted within a per-question tolerance via qData.ansTol. Storage-safe additive change. v74.9: band cut-offs revised across the whole program from Laura's reviewed spreadsheet — 95 skill-levels re-banded via explicit per-level BAND_OVERRIDE entries (app matches the sheet on all 330 rows). v74.8: Decimals band targets LOWERED (Laura) so quick+accurate students reach higher animals — Identify/Expanded Form/Convert D→F −2; Rounding & Add/Subtract Decimals −3; all ×/÷ decimal operations (Multiply, Divide, ×÷ by 10/100/1000, Squares & Cubes, Square/Cube Roots, signed ×÷, ×fractions) −4. Display-only/storage-safe; .bas regenerated. v74.7: more Decimals (Laura) — NEW skills Add & Subtract Decimals (Positive & Negative), Multiply Decimals & Fractions (decFrac), Multiply & Divide Decimals (Positive & Negative), Leading Digit Estimation (round-to-1sf → estimate → BODMAS), Square Roots & Cube Roots of Decimals; NEW word-problem L4 on Multiply Decimals and Divide Decimals; Squares & Cubes of Decimals moved after Multiply Decimals & Fractions. v74.6: Add & Subtract Decimals L4 word problems; Add & Subtract Fractions & Decimals; Rounding Decimals L3 round-then-estimate. v74.5: miss reviews work THIS question's numbers step-by-step; Angles-in-Polygons L4; deeper concave polygons) -->
 <!-- Viewport (v48): dropped `maximum-scale=1.0, user-scalable=no`. iOS ignored it (so pinch worked there anyway) but Android obeyed it, blocking accessibility pinch-zoom. Accidental double-tap-to-zoom is killed per-control via `touch-action: manipulation` instead, which leaves deliberate pinch-zoom intact on every platform. -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -2925,8 +2925,8 @@ const LEVEL_DEFS = {
   ],
   cs: [
     { title:'Level 1 — Congruent, Similar or Neither', desc:'Tap whether the two shapes are congruent (identical size and shape), similar (same shape, scaled) or neither. Judge from the labelled measurements — congruent is the answer even though congruent shapes are also similar.', examples:['same side lengths → congruent', 'sides in a constant ratio → similar', 'ratios differ → neither'] },
-    { title:'Level 2 — Congruence Test', desc:'Two triangles are marked (tick marks = equal sides, arcs = equal angles, a square = a right angle). Tap the test that proves them congruent: SSS, SAS, AAS or RHS — or "Not enough information" (e.g. AAA or SSA).', examples:['3 equal sides → SSS', 'right angle + hyp + side → RHS', 'AAA → not enough'] },
-    { title:'Level 3 — Similarity Test', desc:'Two triangles carry equal-angle arcs and/or side lengths in a constant ratio. Tap the test that proves them similar: SSS, AAA, SAS or RHS — or "Not enough information" (e.g. two sides with a non-included angle).', examples:['two equal angles → AAA', 'sides in equal ratio → SSS', 'not proportional → not enough'] },
+    { title:'Level 2 — Congruence Test', desc:'Two triangles are marked (tick marks = equal sides, arcs = equal angles, a square = a right angle). Tap the test that proves them congruent: SSS, SAS, AAS or RHS — "Not congruent" if the given side lengths differ, or "Not enough information" (e.g. AAA or SSA).', examples:['3 equal sides → SSS', 'right angle + hyp + side → RHS', 'side lengths differ → not congruent', 'AAA → not enough'] },
+    { title:'Level 3 — Similarity Test', desc:'Two triangles carry equal-angle arcs and/or side lengths in a constant ratio. Tap the test that proves them similar: SSS, AAA, SAS or RHS — "Not similar" if the sides aren\'t in a constant ratio, or "Not enough information" (e.g. two sides with a non-included angle).', examples:['two equal angles → AAA', 'sides in equal ratio → SSS', 'ratios differ → not similar', 'one angle only → not enough'] },
     { title:'Level 4 — Find x', desc:'The two triangles are congruent or similar (the question tells you which). Find the missing side using the scale factor, or the missing angle from matching equal angles. Whole-number answers.', examples:['similar, factor 2, side 7 → 14', 'congruent, matching side 9 → 9', 'matching angle 58° → 58'] },
   ],
   tdeg: [
@@ -5853,23 +5853,27 @@ function genNameAnglesLines(el){
    L1 [choice]: identify Congruent / Similar / Neither from a pair of
        shapes (triangles + rectangles + regular polygons), judged from
        the labelled measurements. CONGRUENT TRUMPS SIMILAR.
-   L2 [choice, fixed 5-button order]: name the congruence test that
-       proves the marked pair congruent — SSS / SAS / AAS / RHS — or
+   L2 [choice, fixed 6-button order]: name the congruence test that
+       proves the marked pair congruent — SSS / SAS / AAS / RHS —
+       "Not congruent" (v76: given side lengths that don't match), or
        "Not enough information" (catches AAA and SSA).
-   L3 [choice, fixed 5-button order]: name the similarity test —
-       SSS / AAA / SAS / RHS — or "Not enough information" (catches
-       SSA-similar, lone facts, and non-proportional sides).
+   L3 [choice, fixed 6-button order]: name the similarity test —
+       SSS / AAA / SAS / RHS — "Not similar" (v76: sides given but not
+       in a constant ratio), or "Not enough information" (catches
+       SSA-similar and lone facts).
    L4 [number]: find a missing side or angle in a congruent / similar
        pair. Integers only.
    ── Conventions ──
    Matching tick counts = equal sides; matching arc counts = equal
-   angles; small square = right angle; numeric side labels on BOTH
-   triangles = a known side ratio (similarity). Diagrams are schematic
-   ("Not to scale") — the marks and numbers are authoritative.
+   angles; small square = right angle. Numeric side labels on BOTH
+   triangles carry actual lengths: at L3 they establish a side ratio
+   (proportional → similar; not → "Not similar"); at L2 the DIFF case
+   shows lengths that don't match (→ "Not congruent"). Diagrams are
+   schematic ("Not to scale") — the marks and numbers are authoritative.
    The correct answer for L2/L3 is re-derived independently by
    csCongruenceVerdict / csSimilarityVerdict from the stored mark plan,
-   so EXACTLY ONE test (or "none") can ever be right. Asserted in
-   test_congrusimilar.js.
+   so EXACTLY ONE option (a test, "notsim/notcong", or "none") can ever
+   be right. Asserted in test_congrusimilar.js.
 ═══════════════════════════════════════════════ */
 /* Edge i joins vertex i and (i+1)%3. Angle at vertex i lies between edges
    i and (i+2)%3. Hypotenuse (right angle at r) is the opposite edge (r+1)%3. */
@@ -5877,7 +5881,18 @@ function csEdgeVerts(i){ return [i, (i+1)%3]; }
 function csSharedVertex(i,j){ const a=csEdgeVerts(i), b=csEdgeVerts(j); for(const v of a){ if(b.indexOf(v)>=0) return v; } return -1; }
 
 /* ── independent verdicts (also called by the test suite) ── */
-function csCongruenceVerdict(sideTicks, angArcs, angRight){
+function csCongruenceVerdict(sideTicks, angArcs, angRight, sideA, sideB){
+  /* v76: numeric side lengths given on BOTH triangles let us DISPROVE congruence.
+     If every known matching side is equal we fall through to the marks-based tests;
+     if any known matching side differs, the triangles cannot be congruent. */
+  if(sideA && sideB){
+    const known=[]; for(let i=0;i<3;i++){ if(sideA[i]!=null && sideB[i]!=null) known.push(i); }
+    if(known.length>=1){
+      const allEqual=known.every(function(i){ return sideA[i]===sideB[i]; });
+      if(!allEqual) return 'notcong';
+      if(known.length===3) return 'SSS';
+    }
+  }
   const S=[],Aarc=[],R=[];
   for(let i=0;i<3;i++){ if(sideTicks[i]) S.push(i); if(angArcs[i]) Aarc.push(i); if(angRight[i]) R.push(i); }
   const nAng=Aarc.length+R.length;
@@ -5892,6 +5907,9 @@ function csSimilarityVerdict(A, B, eqAngles, rightV){
   let ratiosEqual=false;
   if(ratioIdx.length>=1){ const ks=ratioIdx.map(function(i){return B[i]/A[i];}); ratiosEqual=ks.every(function(k){return Math.abs(k-ks[0])<1e-9;}); }
   const eq=eqAngles.slice(); if(rightV>=0) eq.push(rightV);
+  /* v76: two or more known matching side-pairs that are NOT in a constant ratio
+     DISPROVE similarity — the scale factor isn't the same. */
+  if(ratioIdx.length>=2 && !ratiosEqual) return 'notsim';
   if(eqAngles.length>=2) return 'AAA';
   if(ratioIdx.length===3 && ratiosEqual) return 'SSS';
   if(ratioIdx.length===2 && ratiosEqual){ const sv=csSharedVertex(ratioIdx[0],ratioIdx[1]); if(eq.indexOf(sv)>=0) return 'SAS'; }
@@ -6091,9 +6109,10 @@ function genCongruSimilar(el){
 
   /* ───────── L2 (congruence test) ───────── */
   if(lv===2){
-    const scen=['SSS','SAS','AAS','RHS','SSA','AAA','AA','SS'][ri(8)];
+    const scen=['SSS','SAS','AAS','RHS','SSA','AAA','AA','SS','DIFF'][ri(9)];
     const sideTicks=[0,0,0], angArcs=[0,0,0], angRight=[false,false,false];
-    let right=false;
+    let sideA=[null,null,null], sideB=[null,null,null];   // v76: numeric side lengths (DIFF only)
+    let right=false, planA=null, planB=null;
     if(scen==='SSS'){ sideTicks[0]=1; sideTicks[1]=2; sideTicks[2]=3; }
     else if(scen==='SAS'){ const v=ri(3); const e1=v, e2=(v+2)%3; sideTicks[e1]=1; sideTicks[e2]=2; angArcs[v]=1; }
     else if(scen==='AAS'){ const va=ri(3); let vb; do{ vb=ri(3); }while(vb===va); angArcs[va]=1; angArcs[vb]=2; const se=(Math.random()<0.5?va:vb+1)%3; sideTicks[se]=1; }
@@ -6101,21 +6120,30 @@ function genCongruSimilar(el){
     else if(scen==='SSA'){ sideTicks[0]=1; sideTicks[1]=2; angArcs[(Math.random()<0.5?0:2)]=1; }  // non-included (share V1)
     else if(scen==='AAA'){ angArcs[0]=1; angArcs[1]=2; angArcs[2]=3; }
     else if(scen==='AA'){ const va=ri(3); let vb; do{ vb=ri(3);}while(vb===va); angArcs[va]=1; angArcs[vb]=2; }
-    else { sideTicks[0]=1; sideTicks[1]=2; }   // SS
-    const ans=csCongruenceVerdict(sideTicks,angArcs,angRight);
+    else if(scen==='SS'){ sideTicks[0]=1; sideTicks[1]=2; }   // SS
+    else { // DIFF: three side lengths on each, at least one matching side different → not congruent
+      let sA,g=0; do{ sA=[6+ri(8),6+ri(8),6+ri(8)]; g++; }
+      while(g<60 && !(sA[0]+sA[1]>sA[2] && sA[1]+sA[2]>sA[0] && sA[0]+sA[2]>sA[1]));
+      let sB,h=0; do{ sB=sA.slice(); const j=ri(3); sB[j]+=(Math.random()<0.5?1:-1)*(1+ri(3)); h++; }
+      while(h<60 && !((sB[0]!==sA[0]||sB[1]!==sA[1]||sB[2]!==sA[2]) && sB[0]+sB[1]>sB[2] && sB[1]+sB[2]>sB[0] && sB[0]+sB[2]>sB[1]));
+      sideA=sA.slice(); sideB=sB.slice();
+      planA={sideLbl:sA.slice()}; planB={sideLbl:sB.slice()};
+    }
+    const ans=csCongruenceVerdict(sideTicks,angArcs,angRight,sideA,sideB);
     const base=csBaseTri(right), deg=-28+ri(57);
-    const plan={sideTicks:sideTicks,angArcs:angArcs,angRight:angRight};
-    const svg=csTriPairSVG(base, plan, plan, deg);
-    const order=['SSS','SAS','AAS','RHS','none'], names={SSS:'SSS',SAS:'SAS',AAS:'AAS',RHS:'RHS',none:'Not enough information'};
+    if(!planA){ planA={sideTicks:sideTicks,angArcs:angArcs,angRight:angRight}; planB=planA; }
+    const svg=csTriPairSVG(base, planA, planB, deg);
+    const order=['SSS','SAS','AAS','RHS','notcong','none'], names={SSS:'SSS',SAS:'SAS',AAS:'AAS',RHS:'RHS',notcong:'Not congruent',none:'Not enough information'};
     qData.choiceAns=ans; qData.choices=order.map(function(c){return {code:c,html:names[c]};});
     qData.choiceText={}; order.forEach(function(c){qData.choiceText[c]=names[c];});
-    qData.csLevel=2; qData.csScenario=scen; qData.csPlan={level:2,sideTicks:sideTicks,angArcs:angArcs,angRight:angRight};
+    qData.csLevel=2; qData.csScenario=scen; qData.csPlan={level:2,sideTicks:sideTicks,angArcs:angArcs,angRight:angRight,sideA:sideA,sideB:sideB};
     qData.workSteps=({
       SSS:'All three pairs of sides are marked equal → <b>SSS</b>.',
       SAS:'Two pairs of sides and the angle between them are equal → <b>SAS</b>.',
       AAS:'Two pairs of angles and a matching side are equal → <b>AAS</b>.',
       RHS:'A right angle, the hypotenuse and one leg are equal → <b>RHS</b>.',
-      none:'The marked facts don’t match any test (e.g. AAA or SSA proves nothing), so <b>not enough information</b>.'
+      notcong:'The side lengths given don’t all match, so the triangles are a different size → <b>not congruent</b>.',
+      none:'The marked facts aren’t enough to prove the triangles are identical, so <b>not enough information</b>.'
     })[ans] || '';
     el.innerHTML='<div style="'+A_LBL+'">Which test shows these two triangles are congruent?</div>'+svg;
     return;
@@ -6139,7 +6167,7 @@ function genCongruSimilar(el){
     const ans=csSimilarityVerdict(A,B,eqAngles,rightV);
     const deg=-28+ri(57);
     const svg=csSimPairSVG(scen, A, B, deg);
-    const order=['SSS','AAA','SAS','RHS','none'], names={SSS:'SSS',AAA:'AAA',SAS:'SAS',RHS:'RHS',none:'Not enough information'};
+    const order=['SSS','AAA','SAS','RHS','notsim','none'], names={SSS:'SSS',AAA:'AAA',SAS:'SAS',RHS:'RHS',notsim:'Not similar',none:'Not enough information'};
     qData.choiceAns=ans; qData.choices=order.map(function(c){return {code:c,html:names[c]};});
     qData.choiceText={}; order.forEach(function(c){qData.choiceText[c]=names[c];});
     qData.csLevel=3; qData.csScenario=scen; qData.csPlan={level:3,A:A,B:B,eqAngles:eqAngles,rightV:rightV};
@@ -6148,7 +6176,8 @@ function genCongruSimilar(el){
       AAA:'Two pairs of angles are equal (so all three are) → <b>AAA</b>.',
       SAS:'Two pairs of sides in the same ratio with an equal angle between them → <b>SAS</b>.',
       RHS:'A right angle with the hypotenuse and one side in the same ratio → <b>RHS</b>.',
-      none:'The marked facts don’t prove the triangles are the same shape, so <b>not enough information</b>.'
+      notsim:'The sides given aren’t in a constant ratio (the scale factor isn’t the same), so the triangles are <b>not similar</b>.',
+      none:'The marked facts aren’t enough to prove the triangles are the same shape, so <b>not enough information</b>.'
     })[ans] || '';
     el.innerHTML='<div style="'+A_LBL+'">Which test shows these two triangles are similar?</div>'+svg;
     return;
