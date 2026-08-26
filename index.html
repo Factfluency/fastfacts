@@ -529,6 +529,16 @@ body {
    whole row still fits a phone without wrapping mid-answer. */
 .gap-row.gap-many { font-size: 1.15rem; gap: 3px; }
 .gap-row.gap-many .gap-box { width: 56px; font-size: 1.05rem; padding: 8px 3px; }
+/* v78 (Laura): a literal that is nothing but a <sup> is an EXPONENT on the box
+   before it. The row is a flex box with align-items:center, so a superscript
+   sitting in its own flex item was being vertically centred against a 40px-tall
+   answer box — it read as "× ▢ + n − 1" rather than "× ▢ⁿ⁻¹". Pin it to the top
+   of the row and pull it against the box so it reads as a power. */
+.gap-row .gap-pow {
+  align-self: flex-start; margin-left: -2px; padding-top: 2px;
+  font-size: 0.62em; font-weight: 900; white-space: pre;
+}
+.gap-row .gap-pow sup { font-size: 1em; vertical-align: baseline; }
 
 /* Multi-select (tick every set that applies) — v77 */
 .ms-grid {
@@ -2414,7 +2424,7 @@ const CATS = {
          the id stays 'sequences' and the lvKey stays 'seq', so every Personal Best,
          streak, .bas row and share-line is untouched. Laura keeps it because it is
          the higher-order one — the student has to decide WHICH kind it is. */
-      { id:'seqWords',  name:'Sequence Rules in Words', inputMode:'number', lvKey:'sqw', levelModes:{2:'choice',3:'gapFill',4:'gapFill'} },
+      { id:'seqWords',  name:'Sequence Rules in Words', inputMode:'number', lvKey:'sqw', levelModes:{2:'choice',4:'gapFill',5:'gapFill'} },
       { id:'arithSeq',  name:'Arithmetic Sequences',    inputMode:'number', lvKey:'ase', levelModes:{2:'gapFill',3:'gapFill'} },
       { id:'geoSeq',    name:'Geometric Sequences',     inputMode:'number', lvKey:'gse', levelModes:{2:'gapFill',3:'gapFill'} },
       { id:'sequences',      name:'Arithmetic &amp; Geometric Sequences', inputMode:'number', lvKey:'seq',  levelModes:{1:'choice',3:'gapFill',4:'gapFill'} },
@@ -2565,9 +2575,9 @@ const LEVEL_DEFS = {
   sqw: [
     { title:'Level 1 — First Term',          desc:'Write down the first term of the sequence.', examples:['18, 24, 30, 36, … → 18'] },
     { title:'Level 2 — The Rule in Words',   desc:'Choose the term-to-term rule in words: add, subtract, multiply, divide — or square numbers.', examples:['18, 24, 30, 36 → Add 6'] },
-    { title:'Level 3 — Next Two Terms',      desc:'Work out the rule, then fill in the next two terms.', examples:['18, 24, 30, 36, ▢, ▢ → 42, 48'] },
-    { title:'Level 4 — First Five Terms',    desc:'You are given a starting value and a rule in words. Write down the first five terms.', examples:['Start at 5, add 3 → 5, 8, 11, 14, 17'] },
-    { title:'Level 5 — Term Notation',       desc:'aₙ means the nth term. Read the term the question asks for straight off the sequence.', examples:['5, 8, 11, 14, 17 → a₃ = 11'] },
+    { title:'Level 3 — Term Notation',       desc:'aₙ means the nth term. Read the term the question asks for straight off the sequence.', examples:['5, 8, 11, 14, 17 → a₃ = 11'] },
+    { title:'Level 4 — Next Two Terms',      desc:'Work out the rule, then fill in the next two terms.', examples:['18, 24, 30, 36, ▢, ▢ → 42, 48'] },
+    { title:'Level 5 — First Five Terms',    desc:'You are given a starting value and a rule in words. Write down the first five terms.', examples:['Start at 5, add 3 → 5, 8, 11, 14, 17'] },
   ],
   ase: [
     { title:'Level 1 — Common Difference (d)', desc:'Subtract any term from the one after it to find the common difference d.', examples:['5, 8, 11, 14 → d = 3'] },
@@ -3190,7 +3200,7 @@ const LEVEL_REC = {
   fdep:  { 4: 'practice', 5: 'practice', 6: 'practice' },
   seq:   { 3: 'practice', 4: 'practice' },
   // v78 — the write-out-five-terms and use-the-rule levels are steadier work.
-  sqw:   { 4: 'practice' },
+  sqw:   { 5: 'practice' },
   ase:   { 4: 'practice' },
   gse:   { 2: 'practice', 4: 'practice' },
   rec:   { 1: 'practice', 2: 'challenge' },
@@ -3453,7 +3463,7 @@ const METHOD_BAND_CEIL = {
   simpleInterest:[10, 9, 8, 6, 5, 6],  // L3 = new "read it off the rule" level
   sequences:[12, 10, 6, 6],
   // v78 — PLACEHOLDERS. seqWords L1/L5 are quick reads, L4 writes five terms.
-  seqWords:[20, 16, 10, 6, 16],
+  seqWords:[20, 16, 16, 10, 6],   // v78.1: L3 and L5 swapped, so the ceilings swap with them
   arithSeq:[14, 8, 8, 6],
   geoSeq:[12, 7, 7, 5],
   recurrence:[7, 6],
@@ -4793,7 +4803,8 @@ function buildGapFill() {
       if (b) { b.value = ''; b.disabled = false; b.classList.remove('ok','bad','kb-focused'); row.appendChild(b); }
     } else {
       const sp = document.createElement('span');
-      sp.className = 'gap-lit';
+      // v78: a literal made up entirely of a <sup> is a POWER on the preceding box.
+      sp.className = /^\s*<sup[\s>][\s\S]*<\/sup>\s*$/i.test(tok) ? 'gap-lit gap-pow' : 'gap-lit';
       sp.innerHTML = tok;
       row.appendChild(sp);
     }
@@ -12586,7 +12597,7 @@ function genSequences(el){
   }
   // Level 4 — geometric rule
   const s = seqGeo();
-  qData.gapTemplate = ['t<sub>n</sub> = ', 0, ' × ', 1, '<sup>&nbsp;n − 1</sup>'];
+  qData.gapTemplate = ['t<sub>n</sub> = ', 0, ' × ', 1, '<sup>n − 1</sup>'];
   qData.gapAns = [s.a, s.r];
   qData.gapHint = 'Fill in the first term a and the common ratio r.';
   qData.gapAnsText = 'tₙ = ' + sgnNum(s.a) + ' × ' + sgnNum(s.r) + '^(n − 1)';
@@ -12620,21 +12631,49 @@ function swShow(terms, blanks){
 
 /* ── A worded-rule pattern. Add/Subtract keep a POSITIVE step so the rule in
    words is unambiguous ("add −4" and "subtract 4" would both be right);
-   the TERMS still go negative freely, and Multiply carries the negatives. ── */
+   the TERMS still go negative freely, and Multiply carries the negatives.
+
+   v78.1 (Laura): every family is now built to a CEILING so the arithmetic stays
+   mental. "×3 is fine, but not when they have to do 54 × 3" — so the first term
+   is chosen from the ceiling BACKWARDS (a1 ≤ cap ÷ r^(n−1)) rather than picked
+   freely and allowed to run away. opts.shortGeo also drops multiply/divide runs
+   by one term, because a geometric run of six is what forces the big numbers:
+   1, 3, 9, 27, 81 keeps ×3 available, 1, 3, 9, 27, 81, 243 does not. ── */
 function swPattern(n, opts){
   opts = opts || {};
+  var cap = opts.cap || 200;
   var kinds = ['add','sub','mul','div'];
   if (opts.allowSquare) kinds.push('square');
-  if (opts.only) kinds = opts.only;
+  if (opts.only) kinds = opts.only.slice();
   var kind = ffPick(kinds), a, k, t = [], i;
-  if (kind === 'add')  { k = rr(2, 12);  a = rr(-20, 30);  for (i = 0; i < n; i++) t.push(a + i * k); }
-  else if (kind === 'sub') { k = rr(2, 12); a = rr(-5, 60); for (i = 0; i < n; i++) t.push(a - i * k); }
-  else if (kind === 'mul') { k = ffPick([2, 3, 4, 5, -2, -3]); a = ffPick([1, 2, 3, 4, 5, 6, -1, -2, -3]);
-                             for (i = 0; i < n; i++) t.push(a * Math.pow(k, i)); }
-  else if (kind === 'div') { k = ffPick([2, 3, 4, 5]); var m = rr(1, 3);
-                             a = m * Math.pow(k, n - 1);
-                             for (i = 0; i < n; i++) t.push(a / Math.pow(k, i)); }
-  else { var st = rr(1, 5); for (i = 0; i < n; i++) t.push(Math.pow(st + i, 2)); k = null; a = t[0]; }
+  // a geometric run of n terms spans r^(n-1); one term shorter keeps ×3 usable
+  var len = (opts.shortGeo && (kind === 'mul' || kind === 'div')) ? n - 1 : n;
+
+  if (kind === 'add')  { k = rr(2, 12);  a = rr(-20, 30);  for (i = 0; i < len; i++) t.push(a + i * k); }
+  else if (kind === 'sub') { k = rr(2, 12); a = rr(20, 70); for (i = 0; i < len; i++) t.push(a - i * k); }
+  else if (kind === 'mul') {
+    k = ffPick(opts.ratios || [2, 3, -2, -3]);
+    var reach = Math.pow(Math.abs(k), len - 1);
+    if (reach > cap) { k = k < 0 ? -2 : 2; reach = Math.pow(2, len - 1); }
+    var maxA = Math.max(1, Math.min(6, Math.floor(cap / reach)));
+    a = rr(1, maxA) * (Math.random() < 0.25 ? -1 : 1);
+    for (i = 0; i < len; i++) t.push(a * Math.pow(k, i));
+  }
+  else if (kind === 'div') {
+    k = ffPick(opts.ratios ? opts.ratios.filter(function(x){ return x > 1; }) : [2, 3, 4, 5]);
+    if (!k) k = 2;
+    var span = Math.pow(k, len - 1);
+    if (span > cap) { k = 2; span = Math.pow(2, len - 1); }
+    var m = rr(1, Math.max(1, Math.min(6, Math.floor(cap / span))));
+    a = m * span;
+    for (i = 0; i < len; i++) t.push(a / Math.pow(k, i));
+  }
+  else {
+    var top = Math.max(1, Math.floor(Math.sqrt(cap)) - (len - 1));
+    var st = rr(1, Math.min(5, top));
+    for (i = 0; i < len; i++) t.push(Math.pow(st + i, 2));
+    k = null; a = t[0];
+  }
   return { kind: kind, a: a, k: k, terms: t, words: swWords(kind, k) };
 }
 function swWords(kind, k){
@@ -12677,7 +12716,7 @@ function genSeqWords(el){
   el.style.fontSize = '1.1rem';
 
   if (level === 1) {                       // first term of the sequence
-    var s1 = swPattern(5, { allowSquare: true });
+    var s1 = swPattern(5, { allowSquare: true, shortGeo: true, cap: 120 });
     qData.ans = s1.terms[0];
     qData.ansDisplay = sgnNum(s1.terms[0]);
     qData.workSteps = 'The <b>first term</b> is simply the number the sequence starts at: <b>'
@@ -12687,7 +12726,7 @@ function genSeqWords(el){
   }
 
   if (level === 2) {                       // the term-to-term rule, in words
-    var s2 = swPattern(5, { allowSquare: true });
+    var s2 = swPattern(5, { allowSquare: true, shortGeo: true, cap: 120 });
     var opts = swDistractors(s2).concat([s2.words]);
     qData.workSteps = s2.kind === 'square'
       ? 'The terms are 1², 2², 3², … — they are the <b>square numbers</b>.'
@@ -12698,44 +12737,50 @@ function genSeqWords(el){
     return;
   }
 
-  if (level === 3) {                       // the next TWO terms
-    var s3 = swPattern(6, { allowSquare: true });
-    var shown = s3.terms.slice(0, 4);
-    qData.gapTemplate = [0, ',&nbsp;&nbsp;&nbsp;', 1];
-    qData.gapAns = [s3.terms[4], s3.terms[5]];
+  /* Level 3 — read a term off the sequence using aₙ notation.
+     v78.1 (Laura): this was L5. Identifying a term you can see is easier than
+     working out the next ones, so it now comes before them. */
+  if (level === 3) {
+    var s3 = swPattern(6, { allowSquare: true, shortGeo: true, cap: 120 });
+    var nn = rr(2, s3.terms.length);
+    qData.ans = s3.terms[nn - 1];
+    qData.ansDisplay = sgnNum(s3.terms[nn - 1]);
+    qData.workSteps = swSubN(nn) + ' means the <b>' + nn + 'th term</b> — count along the sequence: <b>'
+      + sgnNum(s3.terms[nn - 1]) + '</b>.';
+    el.innerHTML = '<div style="' + A_LBL + '">a<sub>n</sub> means the nth term of the sequence.</div>'
+      + swShow(s3.terms)
+      + '<div style="font-size:1.5rem;font-weight:900;color:var(--accent);">' + swSubN(nn) + ' = ?</div>';
+    return;
+  }
+
+  /* Level 4 — the next TWO terms (was L3).
+     Capped at 100 so the step itself is the work, not the multiplication. */
+  if (level === 4) {
+    var s4 = swPattern(6, { allowSquare: true, shortGeo: true, cap: 100 });
+    var t4 = s4.terms, last = t4.length;
+    var shown = t4.slice(0, last - 2), ans4 = [t4[last - 2], t4[last - 1]];
+    qData.gapTemplate = [0, '&nbsp;&nbsp;&nbsp;', 1];
+    qData.gapAns = ans4;
     qData.gapHint = 'Work out the rule, then fill in the next two terms.';
-    qData.gapAnsText = sgnNum(s3.terms[4]) + ', ' + sgnNum(s3.terms[5]);
-    qData.workSteps = 'The rule is <b>' + s3.words + '</b>, so the next two terms are <b>'
-      + sgnNum(s3.terms[4]) + '</b> and <b>' + sgnNum(s3.terms[5]) + '</b>.';
+    qData.gapAnsText = ans4.map(sgnNum).join(', ');
+    qData.workSteps = 'The rule is <b>' + s4.words + '</b>, so the next two terms are <b>'
+      + sgnNum(ans4[0]) + '</b> and <b>' + sgnNum(ans4[1]) + '</b>.';
     el.innerHTML = '<div style="' + A_LBL + '">Find the rule, then write the next two terms.</div>' + swShow(shown, 2);
     return;
   }
 
-  if (level === 4) {                       // first five terms from a start value + worded rule
-    var s4 = swPattern(5, { only: ['add', 'sub', 'mul', 'div'] });
-    qData.gapTemplate = [0, ',&nbsp;', 1, ',&nbsp;', 2, ',&nbsp;', 3, ',&nbsp;', 4];
-    qData.gapAns = s4.terms.slice(0, 5);
-    qData.gapHint = 'Write the five terms in order, starting with the starting value.';
-    qData.gapAnsText = s4.terms.slice(0, 5).map(sgnNum).join(', ');
-    var ph4 = swPhrase(s4.kind, s4.k);
-    qData.workSteps = 'Start at <b>' + sgnNum(s4.terms[0]) + '</b>, then ' + ph4
-      + ': ' + s4.terms.slice(0, 5).map(sgnNum).join(', ') + '.';
-    el.innerHTML = '<div style="' + A_LBL + '">Write down the first five terms of the sequence.</div>'
-      + '<div style="font-size:1.25rem;font-weight:900;margin:12px 0;line-height:1.5;">Starting value: '
-      + sgnNum(s4.terms[0]) + '<br>Rule: &lsquo;' + ph4 + '&rsquo;</div>';
-    return;
-  }
-
-  /* Level 5 — read a term off the sequence using aₙ notation */
-  var s5 = swPattern(6, { allowSquare: true });
-  var nn = rr(2, 6);
-  qData.ans = s5.terms[nn - 1];
-  qData.ansDisplay = sgnNum(s5.terms[nn - 1]);
-  qData.workSteps = swSubN(nn) + ' means the <b>' + nn + 'th term</b> — count along the sequence: <b>'
-    + sgnNum(s5.terms[nn - 1]) + '</b>.';
-  el.innerHTML = '<div style="' + A_LBL + '">a<sub>n</sub> means the nth term of the sequence.</div>'
-    + swShow(s5.terms)
-    + '<div style="font-size:1.5rem;font-weight:900;color:var(--accent);">' + swSubN(nn) + ' = ?</div>';
+  /* Level 5 — the first five terms from a start value + a worded rule (was L4). */
+  var s5 = swPattern(5, { only: ['add', 'sub', 'mul', 'div'], cap: 150 });
+  var ph5 = swPhrase(s5.kind, s5.k);
+  qData.gapTemplate = [0, ',&nbsp;', 1, ',&nbsp;', 2, ',&nbsp;', 3, ',&nbsp;', 4];
+  qData.gapAns = s5.terms.slice(0, 5);
+  qData.gapHint = 'Write the five terms in order, starting with the starting value.';
+  qData.gapAnsText = s5.terms.slice(0, 5).map(sgnNum).join(', ');
+  qData.workSteps = 'Start at <b>' + sgnNum(s5.terms[0]) + '</b>, then ' + ph5
+    + ': ' + s5.terms.slice(0, 5).map(sgnNum).join(', ') + '.';
+  el.innerHTML = '<div style="' + A_LBL + '">Write down the first five terms of the sequence.</div>'
+    + '<div style="font-size:1.25rem;font-weight:900;margin:12px 0;line-height:1.5;">Starting value: '
+    + sgnNum(s5.terms[0]) + '<br>Rule: &lsquo;' + ph5 + '&rsquo;</div>';
 }
 
 /* ═════════ Arithmetic Sequences (Yr 7–8) ═════════ */
@@ -12797,9 +12842,20 @@ function genArithSeq(el){
 }
 
 /* ═════════ Geometric Sequences (Yr 8–9) ═════════ */
-function gsMake(n, ratios, firsts){
+/* v78.1 (Laura): same principle as the worded-rule skill — pick the first term
+   from the CEILING backwards, so a geometric run never ends in a multiplication
+   the student can't do in their head. cap is the biggest term allowed. */
+function gsMake(n, ratios, firsts, cap){
   var r = ffPick(ratios || [2, 3, 4, 5, 10, -2, -3]);
-  var a1 = ffPick(firsts || [1, 2, 3, 4, 5, 6, -1, -2, -3]);
+  var pool = firsts || [1, 2, 3, 4, 5, 6, -1, -2, -3];
+  if (cap) {
+    var reach = Math.pow(Math.abs(r), n - 1);
+    var fits = pool.filter(function(v){ return Math.abs(v) * reach <= cap; });
+    if (!fits.length) { r = r < 0 ? -2 : 2; reach = Math.pow(2, n - 1);
+      fits = pool.filter(function(v){ return Math.abs(v) * reach <= cap; }); }
+    pool = fits.length ? fits : [1];
+  }
+  var a1 = ffPick(pool);
   var t = []; for (var i = 0; i < n; i++) t.push(a1 * Math.pow(r, i));
   return { a1: a1, r: r, terms: t };
 }
@@ -12817,7 +12873,7 @@ function genGeoSeq(el){
   }
 
   if (level === 2) {                       // next three terms (keep the numbers readable)
-    var s2 = gsMake(6, [2, 3, -2, -3], [1, 2, 3, 4, -1, -2]);
+    var s2 = gsMake(6, [2, 3, -2, -3], [1, 2, 3, 4, -1, -2], 250);
     qData.gapTemplate = [0, ',&nbsp;&nbsp;', 1, ',&nbsp;&nbsp;', 2];
     qData.gapAns = [s2.terms[3], s2.terms[4], s2.terms[5]];
     qData.gapHint = 'Keep multiplying by the common ratio. Fill in the next three terms.';
@@ -12830,7 +12886,7 @@ function genGeoSeq(el){
 
   if (level === 3) {                       // write the nth term rule
     var s3 = gsMake(4, [2, 3, 4, 5, -2, -3]);
-    qData.gapTemplate = ['a<sub>n</sub> = ', 0, ' × ', 1, '<sup>&nbsp;n − 1</sup>'];
+    qData.gapTemplate = ['a<sub>n</sub> = ', 0, ' × ', 1, '<sup>n − 1</sup>'];
     qData.gapAns = [s3.a1, s3.r];
     qData.gapHint = 'Fill in a₁ (the first term) and r (the common ratio).';
     qData.gapAnsText = 'aₙ = ' + sgnNum(s3.a1) + ' × ' + sgnNum(s3.r) + '^(n − 1)';
@@ -12845,7 +12901,7 @@ function genGeoSeq(el){
      stays a number a student can reasonably write down. */
   var s4 = gsMake(4, [2, 3, -2], [1, 2, 3, -1, -2]), n4 = rr(5, 9);
   var want = s4.a1 * Math.pow(s4.r, n4 - 1);
-  while (Math.abs(want) > 200000) { n4--; want = s4.a1 * Math.pow(s4.r, n4 - 1); }
+  while (Math.abs(want) > 20000 && n4 > 5) { n4--; want = s4.a1 * Math.pow(s4.r, n4 - 1); }
   qData.ans = want;
   qData.ansDisplay = sgnNum(want);
   qData.workSteps = 'a<sub>1</sub> = ' + sgnNum(s4.a1) + ', r = ' + sgnNum(s4.r) + '.<br>a<sub>n</sub> = a<sub>1</sub> × r<sup>n−1</sup> = '
