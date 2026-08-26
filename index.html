@@ -1,4 +1,4 @@
-<!-- Sandy Fast Facts — v78 (internal v78.2: 📈 COORDINATE GEOMETRY grows (Laura). The Cartesian Plane gains L4 — three corners of a rectangle, square or labelled parallelogram ABCD are plotted and the student writes the coordinates of the fourth. NEW skill Table of Values (Yr 7–8: L1 build a linear table from a rule · L2 PLOT that table on the plane · L3 build a non-linear table (x², x³, 2ˣ) · L4 plot a non-linear table). x- and y-Intercepts gains a new L2 — read both intercepts off a table of values — pushing y-int/x-int/both down to L3/L4/L5 (safe: no student has played Coordinate Geometry yet). NEW INPUT MODE plotPts: the drawn Cartesian plane itself is the answer surface — every lattice point carries an invisible tap target, tap to place or remove a marker, all-or-nothing marking, and the marking is drawn back onto the grid. internal v78.0: Yr 7–9 SEQUENCES in 💰 Finance & Patterns (Laura). NEW Sequence Rules in Words (Yr 7: L1 first term · L2 the term-to-term rule in words as a 4-way tap (add / subtract / multiply / divide / square numbers) · L3 next two terms · L4 write the first five terms from a starting value and a worded rule · L5 read a term off the sequence from aₙ notation). NEW Arithmetic Sequences (Yr 7–8: L1 common difference d · L2 next three terms · L3 fill a₁ and d into aₙ = a₁ + (n − 1)d · L4 use the rule to find a required term). NEW Geometric Sequences (Yr 8–9: L1 common ratio r · L2 next three terms · L3 fill a₁ and r into aₙ = a₁ × rⁿ⁻¹ · L4 use the rule to find a required term). The existing Sequences skill is RENAMED "Arithmetic & Geometric Sequences" and otherwise untouched (id, lvKey, levels and bands all unchanged) — it stays as the higher-order one where the student decides which kind it is. gapFill grows from four boxes to FIVE (gap4), with narrower boxes on a five-box row. All new bands are PLACEHOLDERS pending class data. internal v77.0: THREE NEW CATEGORIES and one new Number skill. ◡ Quadratics — Verify Solutions to Quadratic Equations (L1 x²=k · L2 factorised · L3 trinomial, Yes/No) and Solve Quadratic Equations (L1 x²=k · L2 exact values/fractions as multiple choice · L3 Null Factor Law · L4 monic trinomials). 📈 Coordinate Geometry — The Cartesian Plane (quadrant · read a plotted coordinate), Linear or Non-Linear (from a graph · from an equation), x- and y-Intercepts (y-int · x-int · both from ax+by=c) and Gradient of a Line Segment (whole · from a diagram · fractions & negatives). 💰 Finance & Patterns — GST (10%: added · price incl · removed), Simple Interest (5 levels on Vn = V0 + nD, D = r/100 × V0), Sequences (classify · next term · arithmetic rule · geometric rule), Recurrence Relations (write · use) and Flat Rate Depreciation (5 levels on Vn = V0 − nD). Number gains Number Classification (rational/irrational · tick every set). TWO NEW INPUT MODES: gapFill (a rendered rule/coordinate/solution template with up to five numeric boxes, all-or-nothing, optional order-free marking) and multiSel (tick every box that applies, all-or-nothing). Purely additive — no existing skill, level, id or band changed; all new bands are PLACEHOLDERS pending class data. internal v76.0: Congruence & Similarity now distinguish "provably false" from "unknown". L3 adds a 6th button "Not similar" (sides given but not in a constant ratio — the case a student CAN disprove, e.g. 5,8,11 vs 10,18,22); L2 adds a 6th button "Not congruent" via a new DIFF scenario that labels side lengths that don't all match. "Not enough information" now means only the genuinely undetermined cases (SSA, AAA-for-congruence, one angle, two sides). csSimilarityVerdict/csCongruenceVerdict extended; fixed 6-button order; storage-safe (no skill/level renamed or reordered). v75.0: NEW Percentages skills — Convert Percentages & Decimals (pctDecConv, both directions, number box) and Convert Fractions & Percentages (fracPctConv: L1–2 fraction→% number box, L3–4 %→fraction box; direction fixed per level via levelModes). Both single-question (not the FDP fill-in table), placed before Convert FDP; recall/Fluent-eligible with PLACEHOLDER bands (recalibrate with class data). Recurring values (33⅓% etc.) accepted within a per-question tolerance via qData.ansTol. Storage-safe additive change. v74.9: band cut-offs revised across the whole program from Laura's reviewed spreadsheet — 95 skill-levels re-banded via explicit per-level BAND_OVERRIDE entries (app matches the sheet on all 330 rows). v74.8: Decimals band targets LOWERED (Laura) so quick+accurate students reach higher animals — Identify/Expanded Form/Convert D→F −2; Rounding & Add/Subtract Decimals −3; all ×/÷ decimal operations (Multiply, Divide, ×÷ by 10/100/1000, Squares & Cubes, Square/Cube Roots, signed ×÷, ×fractions) −4. Display-only/storage-safe; .bas regenerated. v74.7: more Decimals (Laura) — NEW skills Add & Subtract Decimals (Positive & Negative), Multiply Decimals & Fractions (decFrac), Multiply & Divide Decimals (Positive & Negative), Leading Digit Estimation (round-to-1sf → estimate → BODMAS), Square Roots & Cube Roots of Decimals; NEW word-problem L4 on Multiply Decimals and Divide Decimals; Squares & Cubes of Decimals moved after Multiply Decimals & Fractions. v74.6: Add & Subtract Decimals L4 word problems; Add & Subtract Fractions & Decimals; Rounding Decimals L3 round-then-estimate. v74.5: miss reviews work THIS question's numbers step-by-step; Angles-in-Polygons L4; deeper concave polygons) -->
+<!-- Sandy Fast Facts — v78 (internal v78.4 FIXES: (1) TYPING WAS DEAD on any narrow screen — the "is this a phone" test was window width ALONE, so a laptop with a narrow window (or the app in a preview pane) got the readonly-input trick meant to suppress a phone keyboard, with no way to type. A phone must now ALSO have a coarse primary pointer, and the first real key press from a physical keyboard unlocks every box and hides the keypad for the rest of the session. (2) THE PLOT GRID WAS SQUASHED — #qBox is a flex container and plotRender was handing it two or three children, so the prompt, story and grid became columns; wrapped in a single .q-text child, and the plot/graph SVGs now scale to the available width (up to 460px) instead of sitting at a fixed 300px. (3) DISTANCE-TIME JOURNEYS CAN NOW RETURN HOME — a stage may head back towards home so the graph comes down, and some journeys finish at 0 km; the line can never go below 0, "fastest" and "speed" compare magnitudes, and the story says "back towards home" / "the last N km home". internal v78.3: NEW CATEGORY 🧩 OTHER (Laura) — the practical, everyday-maths corner, placed last: Converting Units of Time (Yr 7: sec/min/hour · hour/day/week · week/month/year · compound times both ways), Train & Bus Timetables (Yr 7: read the table · trip length in minutes · latest service that still arrives in time · minutes until the next service, with 24-hour and 12-hour clocks mixed) and Distance-Time Graphs (Yr 7–8: read the distance · which stage is stationary/fastest · BUILD or finish the graph by tapping the corner of each stage · speed of a labelled stage). Coordinate Geometry gains Applications of Linear Graphs (Yr 8–9: rate or starting amount from P = −35 + 4c · write y = a + bx from a story · build its table · write ax + by = d from a two-item total). The plotPts mode is now axis-agnostic and can mark an ORDERED path, which is what the distance-time construct level uses. Purely additive — no existing skill, level, id or band changed. internal v78.2: 📈 COORDINATE GEOMETRY grows (Laura). The Cartesian Plane gains L4 — three corners of a rectangle, square or labelled parallelogram ABCD are plotted and the student writes the coordinates of the fourth. NEW skill Table of Values (Yr 7–8: L1 build a linear table from a rule · L2 PLOT that table on the plane · L3 build a non-linear table (x², x³, 2ˣ) · L4 plot a non-linear table). x- and y-Intercepts gains a new L2 — read both intercepts off a table of values — pushing y-int/x-int/both down to L3/L4/L5 (safe: no student has played Coordinate Geometry yet). NEW INPUT MODE plotPts: the drawn Cartesian plane itself is the answer surface — every lattice point carries an invisible tap target, tap to place or remove a marker, all-or-nothing marking, and the marking is drawn back onto the grid. internal v78.0: Yr 7–9 SEQUENCES in 💰 Finance & Patterns (Laura). NEW Sequence Rules in Words (Yr 7: L1 first term · L2 the term-to-term rule in words as a 4-way tap (add / subtract / multiply / divide / square numbers) · L3 next two terms · L4 write the first five terms from a starting value and a worded rule · L5 read a term off the sequence from aₙ notation). NEW Arithmetic Sequences (Yr 7–8: L1 common difference d · L2 next three terms · L3 fill a₁ and d into aₙ = a₁ + (n − 1)d · L4 use the rule to find a required term). NEW Geometric Sequences (Yr 8–9: L1 common ratio r · L2 next three terms · L3 fill a₁ and r into aₙ = a₁ × rⁿ⁻¹ · L4 use the rule to find a required term). The existing Sequences skill is RENAMED "Arithmetic & Geometric Sequences" and otherwise untouched (id, lvKey, levels and bands all unchanged) — it stays as the higher-order one where the student decides which kind it is. gapFill grows from four boxes to FIVE (gap4), with narrower boxes on a five-box row. All new bands are PLACEHOLDERS pending class data. internal v77.0: THREE NEW CATEGORIES and one new Number skill. ◡ Quadratics — Verify Solutions to Quadratic Equations (L1 x²=k · L2 factorised · L3 trinomial, Yes/No) and Solve Quadratic Equations (L1 x²=k · L2 exact values/fractions as multiple choice · L3 Null Factor Law · L4 monic trinomials). 📈 Coordinate Geometry — The Cartesian Plane (quadrant · read a plotted coordinate), Linear or Non-Linear (from a graph · from an equation), x- and y-Intercepts (y-int · x-int · both from ax+by=c) and Gradient of a Line Segment (whole · from a diagram · fractions & negatives). 💰 Finance & Patterns — GST (10%: added · price incl · removed), Simple Interest (5 levels on Vn = V0 + nD, D = r/100 × V0), Sequences (classify · next term · arithmetic rule · geometric rule), Recurrence Relations (write · use) and Flat Rate Depreciation (5 levels on Vn = V0 − nD). Number gains Number Classification (rational/irrational · tick every set). TWO NEW INPUT MODES: gapFill (a rendered rule/coordinate/solution template with up to five numeric boxes, all-or-nothing, optional order-free marking) and multiSel (tick every box that applies, all-or-nothing). Purely additive — no existing skill, level, id or band changed; all new bands are PLACEHOLDERS pending class data. internal v76.0: Congruence & Similarity now distinguish "provably false" from "unknown". L3 adds a 6th button "Not similar" (sides given but not in a constant ratio — the case a student CAN disprove, e.g. 5,8,11 vs 10,18,22); L2 adds a 6th button "Not congruent" via a new DIFF scenario that labels side lengths that don't all match. "Not enough information" now means only the genuinely undetermined cases (SSA, AAA-for-congruence, one angle, two sides). csSimilarityVerdict/csCongruenceVerdict extended; fixed 6-button order; storage-safe (no skill/level renamed or reordered). v75.0: NEW Percentages skills — Convert Percentages & Decimals (pctDecConv, both directions, number box) and Convert Fractions & Percentages (fracPctConv: L1–2 fraction→% number box, L3–4 %→fraction box; direction fixed per level via levelModes). Both single-question (not the FDP fill-in table), placed before Convert FDP; recall/Fluent-eligible with PLACEHOLDER bands (recalibrate with class data). Recurring values (33⅓% etc.) accepted within a per-question tolerance via qData.ansTol. Storage-safe additive change. v74.9: band cut-offs revised across the whole program from Laura's reviewed spreadsheet — 95 skill-levels re-banded via explicit per-level BAND_OVERRIDE entries (app matches the sheet on all 330 rows). v74.8: Decimals band targets LOWERED (Laura) so quick+accurate students reach higher animals — Identify/Expanded Form/Convert D→F −2; Rounding & Add/Subtract Decimals −3; all ×/÷ decimal operations (Multiply, Divide, ×÷ by 10/100/1000, Squares & Cubes, Square/Cube Roots, signed ×÷, ×fractions) −4. Display-only/storage-safe; .bas regenerated. v74.7: more Decimals (Laura) — NEW skills Add & Subtract Decimals (Positive & Negative), Multiply Decimals & Fractions (decFrac), Multiply & Divide Decimals (Positive & Negative), Leading Digit Estimation (round-to-1sf → estimate → BODMAS), Square Roots & Cube Roots of Decimals; NEW word-problem L4 on Multiply Decimals and Divide Decimals; Squares & Cubes of Decimals moved after Multiply Decimals & Fractions. v74.6: Add & Subtract Decimals L4 word problems; Add & Subtract Fractions & Decimals; Rounding Decimals L3 round-then-estimate. v74.5: miss reviews work THIS question's numbers step-by-step; Angles-in-Polygons L4; deeper concave polygons) -->
 <!-- Viewport (v48): dropped `maximum-scale=1.0, user-scalable=no`. iOS ignored it (so pinch worked there anyway) but Android obeyed it, blocking accessibility pinch-zoom. Accidental double-tap-to-zoom is killed per-control via `touch-action: manipulation` instead, which leaves deliberate pinch-zoom intact on every platform. -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -551,6 +551,15 @@ body {
   font-size: 1.05rem; min-width: 34px;
 }
 .tov-table th { background: var(--border); color: var(--text); }
+/* Timetable (v78.3) — a stop per row, a service per column. */
+.tt-table { border-collapse: collapse; margin: 10px auto; font-weight: 800; }
+.tt-table th, .tt-table td {
+  border: 1px solid var(--border); padding: 4px 7px; text-align: center;
+  font-size: 0.86rem; white-space: nowrap;
+}
+.tt-table th { background: var(--border); color: var(--text); font-weight: 900; }
+.tt-table td.tt-stop { text-align: left; font-weight: 900; }
+.tt-table td.tt-hi { background: var(--accent); color: #fff; }
 
 /* Multi-select (tick every set that applies) — v77 */
 .ms-grid {
@@ -1731,6 +1740,11 @@ body {
       <div class="cat-name">Geometry</div>
       <div class="cat-desc">Naming shapes, angles, Euler's rule &amp; congruence</div>
     </div>
+    <div class="cat-card" onclick="openCat('other')">
+      <span class="cat-icon">🧩</span>
+      <div class="cat-name">Other</div>
+      <div class="cat-desc">Units of time, timetables &amp; distance-time graphs</div>
+    </div>
 
   </div>
 
@@ -2436,6 +2450,8 @@ const CATS = {
       { id:'tableValues',     name:'Table of Values',                     inputMode:'gapFill',  lvKey:'tov',  levelModes:{2:'plotPts',4:'plotPts'} },
       { id:'intercepts',      name:'x- and y-Intercepts of Linear Graphs', inputMode:'number',  lvKey:'xyint', levelModes:{1:'gapFill',5:'gapFill'} },
       { id:'gradientSeg',     name:'Gradient of a Line Segment',          inputMode:'fraction', lvKey:'grad', levelModes:{1:'choice'} },
+      // v78.3 (Laura) — the modelling half of linear relationships
+      { id:'linearApps',      name:'Applications of Linear Graphs',       inputMode:'number',   lvKey:'lap',  levelModes:{2:'gapFill',3:'gapFill',4:'gapFill'} },
     ]
   },
   financepatterns: {
@@ -2476,6 +2492,16 @@ const CATS = {
       { id:'angleQuad', name:'Angles in Quadrilaterals', inputMode:'number', lvKey:'aqd' },
       { id:'anglePoly', name:'Angles in Polygons', inputMode:'number', lvKey:'apoly' },
       { id:'congruSimilar', name:'Congruence &amp; Similarity', inputMode:'number', lvKey:'cs', levelModes:{1:'choice',2:'choice',3:'choice'} },
+    ]
+  },
+  /* v78.3 (Laura) — a home for the practical, everyday-maths skills that don't
+     belong to any of the strands above. Deliberately last in the menu. */
+  other: {
+    label: '🧩 Other',
+    skills: [
+      { id:'timeConvert', name:'Converting Units of Time',   inputMode:'number', lvKey:'tcv', levelModes:{4:'gapFill'} },
+      { id:'timetables',  name:'Train &amp; Bus Timetables', inputMode:'number', lvKey:'ttb', levelModes:{1:'choice',3:'choice'} },
+      { id:'distTime',    name:'Distance-Time Graphs',       inputMode:'number', lvKey:'dtg', levelModes:{2:'choice',3:'plotPts'} },
     ]
   }
 };
@@ -2536,6 +2562,8 @@ const SKILL_YEAR = {
   cartesian:'Yr 7', linearNonlinear:'Yr 7–8', intercepts:'Yr 8–9', gradientSeg:'Yr 8–9',
   // v78.2 — Table of Values
   tableValues:'Yr 7–8',
+  // v78.3
+  linearApps:'Yr 8–9', timeConvert:'Yr 7', timetables:'Yr 7', distTime:'Yr 7–8',
   // v77 — Finance & Patterns
   gst:'Yr 8–9', simpleInterest:'Yr 9–10', sequences:'Yr 10', recurrence:'Yr 10', flatDep:'Yr 10',
   // v78 — Yr 7–9 sequence work
@@ -2585,6 +2613,32 @@ const LEVEL_DEFS = {
     { title:'Level 3 — y-Intercept',         desc:'The y-intercept is where x = 0. In y = mx + c it is simply c.', examples:['y = 3x − 7 → −7'] },
     { title:'Level 4 — x-Intercept',         desc:'The x-intercept is where y = 0. Set y to zero and solve for x.', examples:['y = 2x − 8 → 4'] },
     { title:'Level 5 — Both, from ax + by = c', desc:'Find both intercepts from the general form. Let y = 0 for one, x = 0 for the other.', examples:['3x + 2y = 12 → x = 4, y = 6'] },
+  ],
+  /* ── v78.3 — Applications of Linear Graphs ── */
+  lap: [
+    { title:'Level 1 — Rate or Starting Amount?', desc:'In P = a + bc, a is the starting amount and b is the rate — the number multiplying the variable.', examples:['P = −35 + 4c → rate 4, start −35'] },
+    { title:'Level 2 — Write the Rule',           desc:'Turn a worded situation into y = a + bx. Starting amount first, then the rate.', examples:['starts 15 km away, rides 12 km/h → d = 15 + 12h'] },
+    { title:'Level 3 — Build the Table',          desc:'Substitute 0, 1, 2, 3, 4 into the rule for the situation and fill in the table.', examples:['C = 20 + 5h → 20, 25, 30, 35, 40'] },
+    { title:'Level 4 — Two Items: ax + by = d',   desc:'Two things with different prices and one total. Write the equation in ax + by = d form.', examples:['pens $8, pencils $3, total $88 → 8x + 3y = 88'] },
+  ],
+  /* ── v78.3 — 🧩 Other ── */
+  tcv: [
+    { title:'Level 1 — Seconds, Minutes & Hours', desc:'60 seconds in a minute, 60 minutes in an hour. Going to a smaller unit multiplies; to a bigger unit divides.', examples:['4 minutes → 240 seconds', '180 minutes → 3 hours'] },
+    { title:'Level 2 — Hours, Days & Weeks',      desc:'24 hours in a day, 7 days in a week.', examples:['3 days → 72 hours', '35 days → 5 weeks'] },
+    { title:'Level 3 — Weeks, Months & Years',    desc:'12 months, 52 weeks and 365 days in a year.', examples:['4 years → 48 months', '104 weeks → 2 years'] },
+    { title:'Level 4 — Both Units at Once',       desc:'Swap between a single number and a compound time such as 3 hours 25 minutes.', examples:['2 h 45 min → 165 min', '200 min → 3 h 20 min'] },
+  ],
+  ttb: [
+    { title:'Level 1 — Read the Timetable',   desc:'Find the right stop row and the right service column, and read off the time.', examples:['Train 2 at Hampton → 8:19 am'] },
+    { title:'Level 2 — How Long Is the Trip?',desc:'Subtract the departure time from the arrival time. Answer in minutes.', examples:['leaves 8:05, arrives 8:32 → 27 minutes'] },
+    { title:'Level 3 — Which Service?',       desc:'You must arrive by a certain time. Find the latest service that still gets you there.', examples:['must arrive by 9:10 → leave at 8:35'] },
+    { title:'Level 4 — How Long to Wait?',    desc:'You arrive at the stop at a given time. How many minutes until the next service?', examples:['you arrive 8:12, next is 8:20 → 8 minutes'] },
+  ],
+  dtg: [
+    { title:'Level 1 — Distance Travelled', desc:'Read up from the time axis to the line, then across to the distance axis.', examples:['after 3 hours → 40 km'] },
+    { title:'Level 2 — Which Stage?',       desc:'A flat section means stationary. The steepest section is the fastest.', examples:['flat stage → stationary', 'steepest stage → fastest'] },
+    { title:'Level 3 — Build the Graph',    desc:'Read the journey, then tap the corner at the end of each stage in order.', examples:['30 km in 1 h, rests 1 h, 20 km in 2 h'] },
+    { title:'Level 4 — Speed of a Stage',   desc:'speed = distance ÷ time. Use just the one labelled stage.', examples:['30 km in 2 hours → 15 km/h'] },
   ],
   grad: [
     { title:'Level 1 — Positive, Negative, Zero or Undefined?', desc:'Just the sign. Uphill left-to-right is positive, downhill is negative, flat is zero, and a vertical line is undefined.', examples:['↗ → Positive', '↘ → Negative', '— → Zero', '| → Undefined'] },
@@ -3244,6 +3298,10 @@ const LEVEL_REC = {
   // v78.2
   cart:  { 4: 'practice' },
   tov:   { 1: 'practice', 2: 'practice', 3: 'practice', 4: 'practice' },
+  // v78.3
+  lap:   { 2: 'practice', 3: 'practice', 4: 'challenge' },
+  ttb:   { 3: 'challenge' },
+  dtg:   { 3: 'practice', 4: 'challenge' },
   gst:   { 3: 'challenge' },
 };
 function getLevelRec(key, lv) {
@@ -3273,6 +3331,8 @@ const RECALL_SKILLS = [
   'decAddSubNeg','decMulDivNeg','decSqCubeRoot',
   // v77 — quick classification / plane-reading skills are Fluent-eligible
   'numClass','cartesian','linearNonlinear',
+  // v78.3 — unit-of-time conversion is a quick recall job
+  'timeConvert',
   // v77.1 (Laura) — Verify Solutions is Fluent-eligible on L1/L2 (L3 stays method)
   'quadVerify'
 ];
@@ -3287,7 +3347,9 @@ const METHOD_LEVEL_OVERRIDE = { pctIdentify:[3], pctOfAmount:[3], decAddSub:[4],
   // v77.1 (Laura) — Verify Solutions L3 (substitute into a trinomial) stays accuracy-first
   quadVerify:[3],
   // v78.2 — The Cartesian Plane L4 (find the missing corner) is reasoning, not recall
-  cartesian:[4] };
+  cartesian:[4],
+  // v78.3 — compound times (3 h 25 min) are a two-step method, not a single recall
+  timeConvert:[4] };
 function getLevelKind(id, lv) {
   if (RECALL_SKILLS.includes(id) && !((METHOD_LEVEL_OVERRIDE[id] || []).includes(lv))) return 'recall';
   return 'method';
@@ -3370,6 +3432,9 @@ const FLUENCY_TARGET = {
   numClass:[18, 7],          // L1 rational/irrational tap · L2 is a METHOD level (see METHOD_LEVEL_OVERRIDE)
   quadVerify:[18, 18, 9],    // L1 x²=k · L2 factorised · L3 is a METHOD level
   cartesian:[20, 20, 12],    // L1 quadrant from a picture · L2 read a coordinate · L3 quadrant from a coordinate
+  // v78.3 — Converting Units of Time is a recall skill; L4 (compound times) is its
+  // method level. PLACEHOLDERS.
+  timeConvert:[16, 14, 12, 6],
   linearNonlinear:[18, 18]   // L1 from a graph · L2 from an equation
 };
 const FLUENT_ACC = 0.90;   // accuracy floor to count as fluent
@@ -3505,6 +3570,12 @@ const METHOD_BAND_CEIL = {
   // v78.2 — Table of Values. Building a five-value table and tapping five points on a
   // grid are both slow, deliberate jobs. PLACEHOLDERS.
   tableValues:[6, 5, 5, 4],
+  // v78.3 — PLACEHOLDERS. Reading a timetable and reading a graph are quick;
+  // building a graph or an equation is not.
+  linearApps:[10, 7, 5, 5],
+  timeConvert:[16, 14, 12, 6],   // only L4 is read (L1-L3 are recall — see FLUENCY_TARGET)
+  timetables:[10, 8, 6, 8],
+  distTime:[12, 12, 4, 8],
   gradientSeg:[15, 7, 8, 5],         // L1 sign only · L2 diagram · L3 two points · L4 fractions
   gst:[10, 10, 6],
   simpleInterest:[10, 9, 8, 6, 5, 6],  // L3 = new "read it off the rule" level
@@ -7314,6 +7385,11 @@ function nextQ() {
   else if (skill === 'quadSolve')       { genQuadSolve(el); }
   else if (skill === 'cartesian')       { genCartesian(el); }
   else if (skill === 'tableValues')     { genTableValues(el); }   // v78.2
+  // v78.3
+  else if (skill === 'linearApps')      { genLinearApps(el); }
+  else if (skill === 'timeConvert')     { genTimeConvert(el); }
+  else if (skill === 'timetables')      { genTimetables(el); }
+  else if (skill === 'distTime')        { genDistTime(el); }
   else if (skill === 'linearNonlinear') { genLinearNonlinear(el); }
   else if (skill === 'intercepts')      { genIntercepts(el); }
   else if (skill === 'gradientSeg')     { genGradientSeg(el); }
@@ -9639,8 +9715,14 @@ function checkAns() {
     const want = qData.plotAns || [];
     if (!chosen.length) { attempts--; id('feedback').style.color = 'var(--amber)'; setText('feedback', 'Tap the grid to plot a point'); return; }
     const key = function(p){ return p[0] + ',' + p[1]; };
-    const wantKeys = want.map(key);
-    correct = chosen.length === want.length && wantKeys.every(function(k){ return chosen.some(function(c){ return key(c) === k; }); });
+    if (qData.plotOrdered) {
+      // a path: the same corners in the wrong ORDER is a different journey
+      correct = chosen.length === want.length
+        && want.every(function(p, i){ return key(chosen[i]) === key(p); });
+    } else {
+      const wantKeys = want.map(key);
+      correct = chosen.length === want.length && wantKeys.every(function(k){ return chosen.some(function(c){ return key(c) === k; }); });
+    }
     qData.plotMarked = true;
     if (!correct) feedbackStr = 'Answer: ' + want.map(function(p){ return '(' + sgnNum(p[0]) + ', ' + sgnNum(p[1]) + ')'; }).join(' ');
     plotRender();            // re-draw showing right/wrong/missed
@@ -10895,7 +10977,7 @@ const DPV_PLACES = [
   {code:'thousandths',    name:'Thousandths',     den:1000},
   {code:'tenthousandths', name:'Ten-thousandths', den:10000},
 ];
-function decSvg(inner, h){ h=h||150; return '<svg width="300" height="'+h+'" viewBox="0 0 300 '+h+'" role="img" style="display:block;margin:8px auto 0;max-width:100%">'+inner+'</svg>'; }
+function decSvg(inner, h, maxW){ h=h||150; return '<svg width="300" height="'+h+'" viewBox="0 0 300 '+h+'" role="img" style="display:block;margin:8px auto 0;max-width:'+(maxW?maxW+'px':'100%')+';'+(maxW?'width:100%;height:auto;':'')+'">'+inner+'</svg>'; }
 function SUP(i){ return ({1:'',2:'²',3:'³',4:'⁴'})[i] || ''; }
 // v69 (Laura): render "d × 1/10^k" as a real stacked fraction so the powers-of-ten
 // expanded form reads clearly instead of as confusing inline "1/10²" text.
@@ -12351,7 +12433,31 @@ function f(x)        { return x<0?`(${x})`:String(x); }
    - Adapts key layout per skill mode (kbMode)
 ════════════════════════════════════════════════════════════ */
 
-const IS_MOBILE = () => window.innerWidth < 768;
+/* ── v78.4 (Laura: "it's not letting typing happen in any box") ──────────────
+   On a narrow screen every answer box is made readonly on purpose, so the phone's
+   native keyboard stays down and the app's own keypad drives the boxes. The test
+   for "narrow" was window width ALONE — which is wrong, because a laptop with a
+   narrow window, a split screen, or the app running inside a preview pane is not
+   a phone. Those users got readonly boxes AND no reason to look for the on-screen
+   keypad: typing simply did nothing.
+
+   Two changes:
+     1. A phone must have a COARSE primary pointer (i.e. a finger) as well as a
+        narrow window. If matchMedia is missing or lies, we fall through to
+        "not mobile", which is the safe direction — the worst case is a student
+        gets their native keyboard instead of ours, not a dead input.
+     2. An escape hatch. The first real key press from a physical keyboard turns
+        the readonly trick OFF for the rest of the session and hides the keypad,
+        so a tablet with a keyboard case, or anything the pointer test gets wrong,
+        recovers by itself the moment the student tries to type.               */
+let kbPhysical = false;
+function kbHasCoarsePointer() {
+  try {
+    if (window.matchMedia) return window.matchMedia('(pointer: coarse)').matches;
+  } catch (e) {}
+  return ('ontouchstart' in window) || (navigator.maxTouchPoints || 0) > 0;
+}
+const IS_MOBILE = () => !kbPhysical && window.innerWidth < 768 && kbHasCoarsePointer();
 
 let kbTarget = null;   // the currently "focused" input element
 let kbMode   = 'num';  // 'num' | 'numNeg' | 'numNegDot' | 'frac' | 'idx' | 'sci'
@@ -13275,14 +13381,25 @@ function cgSvg(inner){ return decSvg(cgGrid() + inner, CG_H); }
      qData.plotAbove  — HTML rendered above the grid (the table of values)
      qData.plotMarked — set once checked, so the re-draw shows the marking
    All-or-nothing: every required point plotted and none extra.              */
+/* v78.3: the plot surface is no longer hard-wired to the −5…5 Cartesian plane.
+   A question supplies a GEOMETRY — where the tappable lattice points are, how to
+   map them to pixels, and how to draw the axes — so the same tap-and-check
+   machinery drives both "plot this table" and "build this distance–time graph".  */
+function cgGeom(){
+  const xs = [], ys = [];
+  for (let i = -CG_R; i <= CG_R; i++) { xs.push(i); ys.push(i); }
+  return { px: cgX, py: cgY, xs: xs, ys: ys, grid: cgGrid, h: CG_H, r: 10 };
+}
+function plotGeom(){ return qData.plotGeom || cgGeom(); }
 function cgHitLayer(){
+  const G = plotGeom();
   let s = '';
-  for (let x = -CG_R; x <= CG_R; x++) {
-    for (let y = -CG_R; y <= CG_R; y++) {
-      s += '<circle class="cg-hit" cx="' + cgX(x) + '" cy="' + cgY(y) + '" r="10" '
+  G.xs.forEach(function(x){
+    G.ys.forEach(function(y){
+      s += '<circle class="cg-hit" cx="' + G.px(x) + '" cy="' + G.py(y) + '" r="' + (G.r || 10) + '" '
         + 'data-px="' + x + '" data-py="' + y + '" onclick="plotTap(' + x + ',' + y + ')"/>';
-    }
-  }
+    });
+  });
   return s;
 }
 function plotHas(x, y){
@@ -13297,9 +13414,28 @@ function plotTap(x, y){
 }
 function plotRender(){
   const el = id('qBox'); if (!el) return;
+  const G = plotGeom();
   const want = qData.plotAns || [], chosen = qData.plotChosen || [];
   const same = function(p, q){ return p[0] === q[0] && p[1] === q[1]; };
+  const cgX = G.px, cgY = G.py;      // shadow the Cartesian mappers for this render
   let marks = '';
+  /* An ORDERED question is a path, not a set: join the taps up as they are made so
+     the student sees the journey take shape. Drawn under the markers. */
+  if (qData.plotOrdered) {
+    /* qData.plotPre is the part of the path that is ALREADY drawn for the student
+       (the "finish the graph" variant). It is drawn in muted grey so it reads as
+       given rather than as something they did, and their taps continue from its
+       last point. */
+    const pre = qData.plotPre || (qData.plotStart ? [qData.plotStart] : []);
+    if (pre.length > 1) marks += '<polyline points="'
+      + pre.map(function(p){ return cgX(p[0]) + ',' + cgY(p[1]); }).join(' ')
+      + '" fill="none" stroke="var(--muted)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>';
+    pre.forEach(function(p){ marks += '<circle cx="' + cgX(p[0]) + '" cy="' + cgY(p[1]) + '" r="5" fill="var(--muted)"/>'; });
+    const path = (pre.length ? [pre[pre.length - 1]] : []).concat(chosen);
+    if (path.length > 1) marks += '<polyline points="'
+      + path.map(function(p){ return cgX(p[0]) + ',' + cgY(p[1]); }).join(' ')
+      + '" fill="none" stroke="var(--accent)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>';
+  }
   if (qData.plotMarked) {
     // green where they were right, red where they plotted something that isn't a
     // point of the table, and a hollow green ring on anything they missed
@@ -13316,10 +13452,24 @@ function plotRender(){
     chosen.forEach(function(p){
       marks += '<circle cx="' + cgX(p[0]) + '" cy="' + cgY(p[1]) + '" r="6" fill="var(--accent)"/>';
     });
-    setText('plotCount', chosen.length + ' of ' + want.length + ' plotted');
+    setText('plotCount', chosen.length + ' of ' + want.length
+      + (qData.plotOrdered ? ' corners placed' : ' plotted'));
   }
-  el.innerHTML = (qData.plotAbove || '')
-    + decSvg(cgGrid() + marks + (qData.plotMarked ? '' : cgHitLayer()), CG_H);
+  /* #qBox is display:flex — it must be given exactly ONE child, or the prompt, the
+     story and the grid line up as columns and the graph is squeezed to nothing.
+     Every other generator wraps its output in a .q-text div; so does this one now. */
+  el.innerHTML = '<div class="q-text" id="qText" style="font-size:1.05rem;width:100%;white-space:normal;">'
+    + (qData.plotAbove || '')
+    + plotSvg(G.grid() + marks + (qData.plotMarked ? '' : cgHitLayer()), G)
+    + '</div>';
+}
+/* The plot surface scales to the width it is given (up to a sensible cap) rather
+   than sitting at a fixed 300px, so the grid — and every tap target on it — is as
+   big as the screen allows. */
+function plotSvg(inner, G){
+  return '<svg width="300" height="' + G.h + '" viewBox="0 0 300 ' + G.h + '" role="img" '
+    + 'style="display:block;margin:10px auto 0;width:100%;max-width:' + (G.maxW || 430) + 'px;height:auto;">'
+    + inner + '</svg>';
 }
 function buildPlotPts(){
   qData.plotChosen = [];
@@ -13778,6 +13928,522 @@ function genGradientSeg(el){
     + sgnNum(x2) + ', ' + sgnNum(y2) + ')</div>';
 }
 
+/* ══════════════════════════════════════════════════════════════════════════
+   v78.3 — 🧩 OTHER (Laura): the practical, everyday-maths corner.
+     timeConvert  Converting Units of Time      Yr 7
+     timetables   Train & Bus Timetables        Yr 7
+     distTime     Distance–Time Graphs          Yr 7–8
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ═════════ Converting Units of Time ═════════
+   Only the conversions that are actually EXACT are used. Months are related to
+   years (12) and to nothing else — "how many days in 3 months" has no single
+   right answer, so it never appears. A year is 365 days and 52 weeks, which is
+   the school convention and is stated in the level card.                      */
+const TIME_UNITS = {
+  sec:  { one: 'second', many: 'seconds' },
+  min:  { one: 'minute', many: 'minutes' },
+  hour: { one: 'hour',   many: 'hours'   },
+  day:  { one: 'day',    many: 'days'    },
+  week: { one: 'week',   many: 'weeks'   },
+  month:{ one: 'month',  many: 'months'  },
+  year: { one: 'year',   many: 'years'   }
+};
+const TIME_PAIRS = {
+  1: [['min','sec',60], ['hour','min',60]],
+  2: [['day','hour',24], ['week','day',7], ['hour','min',60]],
+  3: [['year','month',12], ['year','week',52], ['year','day',365], ['week','day',7]]
+};
+function timeWord(n, u){ return n + ' ' + (Math.abs(n) === 1 ? TIME_UNITS[u].one : TIME_UNITS[u].many); }
+function genTimeConvert(el){
+  el.style.fontSize = '1.15rem';
+
+  if (level <= 3) {
+    const pair = ffPick(TIME_PAIRS[level]);
+    const big = pair[0], small = pair[1], k = pair[2];
+    const down = Math.random() < 0.55;          // big → small, or small → big
+    const n = down ? rr(2, 9) : rr(2, 9) * k;
+    const from = down ? big : small, to = down ? small : big;
+    qData.ans = down ? n * k : n / k;
+    qData.ansDisplay = String(qData.ans);
+    qData.workSteps = down
+      ? 'There are <b>' + k + '</b> ' + TIME_UNITS[small].many + ' in 1 ' + TIME_UNITS[big].one
+        + ', so <b>multiply</b>.<br>' + n + ' × ' + k + ' = <b>' + qData.ans + '</b>.'
+      : 'There are <b>' + k + '</b> ' + TIME_UNITS[small].many + ' in 1 ' + TIME_UNITS[big].one
+        + ', so <b>divide</b>.<br>' + n + ' ÷ ' + k + ' = <b>' + qData.ans + '</b>.';
+    el.innerHTML = '<div style="' + A_LBL + '">Convert to ' + TIME_UNITS[to].many + '.</div>'
+      + '<div style="font-size:1.9rem;font-weight:900;margin:12px 0;">' + timeWord(n, from) + '</div>'
+      + '<span style="color:var(--accent);font-weight:900;">' + TIME_UNITS[to].many + ' = ?</span>';
+    return;
+  }
+
+  /* Level 4 — compound times, both directions */
+  const toCompound = Math.random() < 0.5;
+  const pair2 = ffPick([['hour','min',60], ['min','sec',60], ['day','hour',24], ['week','day',7]]);
+  const bigU = pair2[0], smallU = pair2[1], k2 = pair2[2];
+  const wholes = rr(1, 6), rem = rr(1, k2 - 1);
+  const total = wholes * k2 + rem;
+  if (toCompound) {
+    qData.gapTemplate = [0, '&nbsp;' + TIME_UNITS[bigU].many + '&nbsp;&nbsp;', 1, '&nbsp;' + TIME_UNITS[smallU].many];
+    qData.gapAns = [wholes, rem];
+    qData.gapHint = 'Write it as whole ' + TIME_UNITS[bigU].many + ' and the ' + TIME_UNITS[smallU].many + ' left over.';
+    qData.gapAnsText = timeWord(wholes, bigU) + ' ' + timeWord(rem, smallU);
+    qData.workSteps = total + ' ÷ ' + k2 + ' = ' + wholes + ' remainder ' + rem + '.<br>So '
+      + total + ' ' + TIME_UNITS[smallU].many + ' = <b>' + timeWord(wholes, bigU) + ' ' + timeWord(rem, smallU) + '</b>.';
+    el.innerHTML = '<div style="' + A_LBL + '">Write this using both units.</div>'
+      + '<div style="font-size:1.9rem;font-weight:900;margin:12px 0;">' + timeWord(total, smallU) + '</div>';
+  } else {
+    /* The other direction. NOTE: an input mode is fixed per LEVEL, not per question,
+       so this cannot fall back to the plain number box — it uses a one-box gap-fill
+       with the unit printed after it, which reads better here anyway. */
+    qData.gapTemplate = [0, '&nbsp;' + TIME_UNITS[smallU].many];
+    qData.gapAns = [total];
+    qData.gapHint = 'Convert the whole ' + TIME_UNITS[bigU].many + ' first, then add the '
+      + TIME_UNITS[smallU].many + ' left over.';
+    qData.gapAnsText = timeWord(total, smallU);
+    qData.workSteps = wholes + ' ' + TIME_UNITS[bigU].many + ' = ' + wholes + ' × ' + k2 + ' = '
+      + (wholes * k2) + ' ' + TIME_UNITS[smallU].many + '.<br>Then add the ' + rem + ': <b>' + total + '</b>.';
+    el.innerHTML = '<div style="' + A_LBL + '">Convert to ' + TIME_UNITS[smallU].many + '.</div>'
+      + '<div style="font-size:1.9rem;font-weight:900;margin:12px 0;">'
+      + timeWord(wholes, bigU) + ' ' + timeWord(rem, smallU) + '</div>';
+  }
+}
+
+/* ═════════ Train & Bus Timetables ═════════
+   A timetable is generated as MINUTES SINCE MIDNIGHT and only formatted at the
+   last moment, so every duration is plain subtraction and the 12-/24-hour choice
+   is display-only — the same question works either way.                       */
+function ttFmt(mins, h12){
+  const h = Math.floor(mins / 60) % 24, m = mins % 60;
+  if (!h12) return (h < 10 ? '0' : '') + h + ':' + (m < 10 ? '0' : '') + m;
+  const ap = h < 12 ? 'am' : 'pm';
+  let hh = h % 12; if (hh === 0) hh = 12;
+  return hh + ':' + (m < 10 ? '0' : '') + m + ' ' + ap;
+}
+const TT_LINES = [
+  { mode: 'Train', stops: ['Sandringham', 'Hampton', 'Brighton Beach', 'Elsternwick', 'Windsor', 'Flinders Street'] },
+  { mode: 'Train', stops: ['Frankston', 'Mordialloc', 'Cheltenham', 'Bentleigh', 'Caulfield', 'Richmond'] },
+  { mode: 'Bus',   stops: ['Southland', 'Cheltenham', 'Highett', 'Moorabbin', 'Bentleigh'] },
+  { mode: 'Bus',   stops: ['Chadstone', 'Oakleigh', 'Clayton', 'Monash Uni'] }
+];
+function ttBuild(){
+  const line = ffPick(TT_LINES);
+  const nStops = Math.min(line.stops.length, rr(4, 5));
+  const stops = line.stops.slice(0, nStops);
+  const h12 = Math.random() < 0.5;
+  // leg times between consecutive stops, in whole minutes
+  const legs = []; for (let i = 1; i < stops.length; i++) legs.push(rr(3, 14));
+  const gap = ffPick([15, 20, 30]);           // services every gap minutes
+  const first = rr(6, 9) * 60 + ffPick([0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50]);
+  const nServ = 4;
+  const times = [];                            // times[service][stop]
+  for (let s = 0; s < nServ; s++) {
+    const row = [first + s * gap];
+    legs.forEach(function(L){ row.push(row[row.length - 1] + L); });
+    times.push(row);
+  }
+  return { line: line, stops: stops, times: times, h12: h12, gap: gap, nServ: nServ };
+}
+function ttTable(T, hiRow, hiCol){
+  let h = '<table class="tt-table"><tr><th>' + T.line.mode + '</th>';
+  for (let s = 0; s < T.nServ; s++) h += '<th>' + (s + 1) + '</th>';
+  h += '</tr>';
+  T.stops.forEach(function(st, i){
+    h += '<tr><td class="tt-stop">' + st + '</td>';
+    for (let s = 0; s < T.nServ; s++) {
+      const on = (hiRow === i && hiCol === s);
+      h += '<td' + (on ? ' class="tt-hi"' : '') + '>' + ttFmt(T.times[s][i], T.h12) + '</td>';
+    }
+    h += '</tr>';
+  });
+  return h + '</table>';
+}
+function genTimetables(el){
+  el.style.fontSize = '1rem';
+  const T = ttBuild();
+  const lastStop = T.stops.length - 1;
+
+  if (level === 1) {                 // read a time straight off the table
+    const s = ri(T.nServ), i = rr(1, lastStop);
+    const rightT = T.times[s][i];
+    const wrong = [];
+    const pool = [T.times[(s + 1) % T.nServ][i], T.times[s][i - 1],
+                  T.times[(s + 2) % T.nServ][i], T.times[s][Math.min(i + 1, lastStop)]];
+    pool.forEach(function(v){ if (v !== rightT && wrong.indexOf(v) < 0 && wrong.length < 3) wrong.push(v); });
+    while (wrong.length < 3) { const v = rightT + rr(1, 9); if (wrong.indexOf(v) < 0) wrong.push(v); }
+    qData.workSteps = 'Find the row for <b>' + T.stops[i] + '</b>, then read down to column <b>'
+      + (s + 1) + '</b>: <b>' + ttFmt(rightT, T.h12) + '</b>.';
+    decSetChoice(el, '<div style="' + A_LBL + '">What time does ' + T.line.mode.toLowerCase() + ' <b>'
+      + (s + 1) + '</b> reach <b>' + T.stops[i] + '</b>?</div>' + ttTable(T),
+      wrong.concat([rightT]).map(function(v){ return ttFmt(v, T.h12); }), ttFmt(rightT, T.h12));
+    return;
+  }
+
+  if (level === 2) {                 // how long does the trip take
+    const s = ri(T.nServ);
+    let i = ri(lastStop), j;
+    do { j = rr(i + 1, lastStop); } while (j <= i);
+    const mins = T.times[s][j] - T.times[s][i];
+    qData.ans = mins;
+    qData.ansDisplay = String(mins);
+    qData.workSteps = 'Leaves ' + T.stops[i] + ' at <b>' + ttFmt(T.times[s][i], T.h12) + '</b> and reaches '
+      + T.stops[j] + ' at <b>' + ttFmt(T.times[s][j], T.h12) + '</b>.<br>That is <b>' + mins + ' minutes</b>.';
+    el.innerHTML = '<div style="' + A_LBL + '">How many MINUTES does ' + T.line.mode.toLowerCase() + ' '
+      + (s + 1) + ' take from <b>' + T.stops[i] + '</b> to <b>' + T.stops[j] + '</b>?</div>' + ttTable(T);
+    return;
+  }
+
+  if (level === 3) {                 // which service gets you there in time
+    const i = 0, j = lastStop;
+    const s = rr(0, T.nServ - 1);
+    const deadline = T.times[s][j] + rr(1, Math.min(T.gap - 1, 9));   // just after this service arrives
+    qData.workSteps = 'You must arrive by <b>' + ttFmt(deadline, T.h12) + '</b>. Service <b>' + (s + 1)
+      + '</b> arrives at ' + ttFmt(T.times[s][j], T.h12) + ' — in time — and it is the LAST one that is.<br>'
+      + 'It leaves ' + T.stops[i] + ' at <b>' + ttFmt(T.times[s][i], T.h12) + '</b>.';
+    decSetChoice(el, '<div style="' + A_LBL + '">You must be at <b>' + T.stops[j] + '</b> by <b>'
+      + ttFmt(deadline, T.h12) + '</b>.<br>What is the LATEST you can leave ' + T.stops[i] + '?</div>' + ttTable(T),
+      T.times.map(function(row){ return ttFmt(row[i], T.h12); }), ttFmt(T.times[s][i], T.h12), true);
+    return;
+  }
+
+  /* Level 4 — you turn up at the stop; how long until the next service? */
+  const i4 = ri(T.stops.length);
+  const s4 = rr(0, T.nServ - 2);
+  const wait = rr(2, T.gap - 1);
+  const arriveAt = T.times[s4][i4] - wait;      // you get there `wait` minutes early
+  qData.ans = wait;
+  qData.ansDisplay = String(wait);
+  qData.workSteps = 'The next ' + T.line.mode.toLowerCase() + ' from <b>' + T.stops[i4] + '</b> is service <b>'
+    + (s4 + 1) + '</b> at <b>' + ttFmt(T.times[s4][i4], T.h12) + '</b>.<br>'
+    + ttFmt(T.times[s4][i4], T.h12) + ' − ' + ttFmt(arriveAt, T.h12) + ' = <b>' + wait + ' minutes</b>.';
+  el.innerHTML = '<div style="' + A_LBL + '">You get to <b>' + T.stops[i4] + '</b> at <b>'
+    + ttFmt(arriveAt, T.h12) + '</b>.<br>How many MINUTES until the next ' + T.line.mode.toLowerCase() + '?</div>'
+    + ttTable(T);
+}
+
+/* ═════════ Distance–Time Graphs (Yr 7–8, Laura) ═════════
+   Its own first-quadrant geometry: hours across, kilometres up. The lattice is
+   deliberately coarse (1 h × 10 km) so tapping a corner on a phone is easy —
+   7 × 7 targets about 40px apart, rather than the 22px cells of the Cartesian
+   plane. Journeys are built stage by stage so every corner lands ON the grid.  */
+const DT_TMAX = 6, DT_DMAX = 60, DT_DSTEP = 10;
+const DT_L = 42, DT_RGT = 288, DT_T = 18, DT_B = 202, DT_H = 240;
+function dtX(t){ return DT_L + (t / DT_TMAX) * (DT_RGT - DT_L); }
+function dtY(d){ return DT_B - (d / DT_DMAX) * (DT_B - DT_T); }
+function dtGrid(){
+  let s = '';
+  for (let t = 0; t <= DT_TMAX; t++)
+    s += '<line x1="' + dtX(t) + '" y1="' + DT_T + '" x2="' + dtX(t) + '" y2="' + DT_B + '" stroke="var(--border)" stroke-width="1"/>';
+  for (let d = 0; d <= DT_DMAX; d += DT_DSTEP)
+    s += '<line x1="' + DT_L + '" y1="' + dtY(d) + '" x2="' + DT_RGT + '" y2="' + dtY(d) + '" stroke="var(--border)" stroke-width="1"/>';
+  s += '<line x1="' + DT_L + '" y1="' + DT_B + '" x2="' + DT_RGT + '" y2="' + DT_B + '" stroke="var(--text)" stroke-width="2"/>';
+  s += '<line x1="' + DT_L + '" y1="' + DT_T + '" x2="' + DT_L + '" y2="' + DT_B + '" stroke="var(--text)" stroke-width="2"/>';
+  for (let t = 0; t <= DT_TMAX; t++)
+    s += '<text x="' + dtX(t) + '" y="' + (DT_B + 13) + '" font-family="Nunito,sans-serif" font-weight="700" font-size="9" fill="var(--muted)" text-anchor="middle">' + t + '</text>';
+  for (let d = 0; d <= DT_DMAX; d += DT_DSTEP)
+    s += '<text x="' + (DT_L - 5) + '" y="' + dtY(d) + '" font-family="Nunito,sans-serif" font-weight="700" font-size="9" fill="var(--muted)" text-anchor="end" dominant-baseline="central">' + d + '</text>';
+  s += '<text x="' + ((DT_L + DT_RGT) / 2) + '" y="' + (DT_B + 26) + '" font-family="Nunito,sans-serif" font-weight="900" font-size="10" fill="var(--text)" text-anchor="middle">Time (hours)</text>';
+  s += '<text x="10" y="' + ((DT_T + DT_B) / 2) + '" font-family="Nunito,sans-serif" font-weight="900" font-size="10" fill="var(--text)" text-anchor="middle" transform="rotate(-90 10 ' + ((DT_T + DT_B) / 2) + ')">Distance (km)</text>';
+  return s;
+}
+function dtGeom(){
+  const xs = [], ys = [];
+  for (let t = 0; t <= DT_TMAX; t++) xs.push(t);
+  for (let d = 0; d <= DT_DMAX; d += DT_DSTEP) ys.push(d);
+  return { px: dtX, py: dtY, xs: xs, ys: ys, grid: dtGrid, h: DT_H, r: 13, maxW: 460 };
+}
+/* A journey: 3 or 4 stages, at least one of them stationary, every corner on the
+   grid, and no two moving stages the same SPEED (so "which was fastest" has one
+   answer — speed is compared as a magnitude, since a return leg is just as fast
+   going the other way).
+
+   v78.4 (Laura): a stage can now be a RETURN — travelling back towards home, so
+   the graph comes down. Distance is measured FROM HOME, so a return leg is a
+   negative change and the line can only fall as far as 0. Roughly a third of
+   journeys include one, and half of those finish back at 0 km ("arrives home").
+   Returns corners [[t,d], …] starting at (0, 0).                              */
+function dtJourney(nStages){
+  const n = nStages || rr(3, 4);
+  let stages, corners, guard = 0, ok = false;
+  do {
+    guard++;
+    stages = [];
+    const wantReturn = Math.random() < 0.35;
+    const wantHome = wantReturn && Math.random() < 0.5;   // finish back at 0 km
+    let t = 0, d = 0, restUsed = false, backUsed = false;
+    for (let i = 0; i < n; i++) {
+      const last = (i === n - 1);
+      const rest = i > 0 && !restUsed && (Math.random() < 0.4 || (last && !backUsed && !wantReturn));
+      const dur = rr(1, 2);
+      let km = 0, back = false;
+      if (rest) { restUsed = true; }
+      else if (wantReturn && !backUsed && i > 0 && (last || Math.random() < 0.6) && d > 0) {
+        // come back towards home — never further than home itself
+        back = true; backUsed = true;
+        km = (wantHome && last) ? -d : -ffPick([10, 20, 30]);
+        if (d + km < 0) km = -d;
+      } else {
+        km = ffPick([10, 20, 30, 40]);
+      }
+      stages.push({ dur: dur, km: km, rest: rest, back: back });
+      t += dur; d += km;
+    }
+    corners = [[0, 0]];
+    let tt = 0, dd = 0, lowest = 0, highest = 0;
+    stages.forEach(function(sg){ tt += sg.dur; dd += sg.km; corners.push([tt, dd]);
+      if (dd < lowest) lowest = dd; if (dd > highest) highest = dd; });
+    const speeds = stages.filter(function(sg){ return !sg.rest; })
+                         .map(function(sg){ return Math.abs(sg.km) / sg.dur; });
+    ok = tt <= DT_TMAX && highest <= DT_DMAX && lowest >= 0 && highest > 0
+      && stages.some(function(sg){ return sg.rest; })
+      && stages.some(function(sg){ return !sg.rest; })
+      && stages.every(function(sg){ return sg.rest || sg.km !== 0; })
+      && new Set(speeds).size === speeds.length;      // one clear fastest stage
+  } while (guard < 300 && !ok);
+  if (!ok) {   // guaranteed simple fallback, so the generator can never spin
+    stages = [{ dur:1, km:20, rest:false, back:false },
+              { dur:1, km:0,  rest:true,  back:false },
+              { dur:2, km:-20, rest:false, back:true }];
+    corners = [[0,0],[1,20],[2,20],[4,0]];
+  }
+  return { stages: stages, corners: corners };
+}
+const DT_LABELS = ['A', 'B', 'C', 'D'];
+function dtDraw(J, opts){
+  opts = opts || {};
+  const c = J.corners;
+  let s = '<polyline points="' + c.map(function(p){ return dtX(p[0]) + ',' + dtY(p[1]); }).join(' ')
+    + '" fill="none" stroke="var(--accent)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>';
+  c.forEach(function(p){ s += '<circle cx="' + dtX(p[0]) + '" cy="' + dtY(p[1]) + '" r="4" fill="var(--accent)"/>'; });
+  if (opts.labels) {
+    for (let i = 1; i < c.length; i++) {
+      const mx = (dtX(c[i - 1][0]) + dtX(c[i][0])) / 2, my = (dtY(c[i - 1][1]) + dtY(c[i][1])) / 2;
+      s += '<text x="' + mx + '" y="' + (my - 8) + '" font-family="Nunito,sans-serif" font-weight="900" font-size="13" fill="var(--text)" text-anchor="middle">'
+        + DT_LABELS[i - 1] + '</text>';
+    }
+  }
+  return s;
+}
+function dtStory(J, who){
+  const bits = [];
+  let running = 0;
+  J.stages.forEach(function(sg){
+    running += sg.km;
+    if (sg.rest) bits.push('rests for ' + timeWord(sg.dur, 'hour'));
+    else if (sg.back) bits.push(running === 0
+      ? 'travels the last ' + (-sg.km) + ' km home in ' + timeWord(sg.dur, 'hour')
+      : 'travels ' + (-sg.km) + ' km back towards home in ' + timeWord(sg.dur, 'hour'));
+    else bits.push('travels ' + sg.km + ' km in ' + timeWord(sg.dur, 'hour'));
+  });
+  return who + ' ' + bits.join(', then ') + '.';
+}
+const DT_WHO = ['Amara', 'Ben', 'Chloe', 'Dev', 'Eli', 'Farrah'];
+
+function genDistTime(el){
+  el.style.fontSize = '1.05rem';
+
+  if (level === 1) {                 // read the distance off the graph
+    const J = dtJourney();
+    const c = J.corners;
+    const k = rr(1, c.length - 1);
+    qData.ans = c[k][1];
+    qData.ansDisplay = String(c[k][1]);
+    qData.workSteps = 'Go up from <b>' + timeWord(c[k][0], 'hour') + '</b> on the time axis to the line, '
+      + 'then across to the distance axis: <b>' + c[k][1] + ' km</b>.<br>'
+      + 'The axis is distance <b>from home</b> — a line coming down means heading back.';
+    el.innerHTML = '<div style="' + A_LBL + '">How far from home were they after ' + timeWord(c[k][0], 'hour') + '?</div>'
+      + decSvg(dtGrid() + dtDraw(J), DT_H, 460)
+      + '<div style="font-size:0.9rem;font-weight:900;color:var(--accent);">distance from home in km = ?</div>';
+    return;
+  }
+
+  if (level === 2) {                 // which stage is stationary / fastest
+    const J = dtJourney();
+    const n = J.stages.length;
+    const askRest = Math.random() < 0.5;
+    let idx;
+    if (askRest) idx = J.stages.findIndex(function(sg){ return sg.rest; });
+    else {
+      let best = -1, bi = 0;
+      J.stages.forEach(function(sg, i){ const v = Math.abs(sg.km) / sg.dur; if (v > best) { best = v; bi = i; } });
+      idx = bi;
+    }
+    qData.workSteps = askRest
+      ? 'A <b>flat</b> section means the distance is not changing — they are stationary. That is stage <b>'
+        + DT_LABELS[idx] + '</b>.'
+      : 'The <b>steepest</b> section is the fastest — uphill or downhill, steepness is speed. Stage <b>'
+        + DT_LABELS[idx] + '</b> covers ' + Math.abs(J.stages[idx].km) + ' km in '
+        + timeWord(J.stages[idx].dur, 'hour') + ' = <b>'
+        + (Math.abs(J.stages[idx].km) / J.stages[idx].dur) + ' km/h</b>.';
+    decSetChoice(el, '<div style="' + A_LBL + '">During which stage were they '
+      + (askRest ? '<b>stationary</b>' : 'travelling <b>fastest</b>') + '?</div>'
+      + decSvg(dtGrid() + dtDraw(J, { labels: true }), DT_H, 460),
+      DT_LABELS.slice(0, n), DT_LABELS[idx], true);
+    return;
+  }
+
+  if (level === 3) {                 // build the graph from the story
+    const J = dtJourney();
+    const who = ffPick(DT_WHO);
+    const c = J.corners;
+    // sometimes the first stage is already drawn — "finish the graph"
+    const preDrawn = Math.random() < 0.45 ? 1 : 0;
+    const start = c[preDrawn];
+    qData.plotGeom = dtGeom();
+    qData.plotOrdered = true;
+    qData.plotPre = c.slice(0, preDrawn + 1);   // the stage(s) already drawn
+    qData.plotStart = start;
+    qData.plotAns = c.slice(preDrawn + 1);
+    qData.plotInstr = preDrawn
+      ? 'The first stage is drawn. Tap the corner at the end of each remaining stage, in order.'
+      : 'Tap the corner at the end of each stage, in order. Tap a corner again to undo it.';
+    qData.plotAbove = '<div style="' + A_LBL + '">'
+      + (preDrawn ? 'Finish the distance–time graph.' : 'Build the distance–time graph.') + '</div>'
+      + '<div style="font-size:1rem;font-weight:800;margin:8px 4px;line-height:1.45;">' + dtStory(J, who) + '</div>';
+    qData.workSteps = 'Each stage ends at a corner:<br>'
+      + c.map(function(p){ return '(' + p[0] + ' h, ' + p[1] + ' km)'; }).join(' → ')
+      + '<br>A rest is a <b>flat</b> section — time moves on but distance does not.';
+    el.innerHTML = '';
+    return;
+  }
+
+  /* Level 4 — speed of one labelled stage */
+  const J4 = dtJourney();
+  const moving = [];
+  J4.stages.forEach(function(sg, i){ if (!sg.rest) moving.push(i); });
+  const pick = ffPick(moving);
+  const sg4 = J4.stages[pick];
+  qData.ans = Math.abs(sg4.km) / sg4.dur;
+  qData.ansDisplay = String(qData.ans);
+  qData.workSteps = 'speed = distance ÷ time.<br>Stage <b>' + DT_LABELS[pick] + '</b> covers <b>'
+    + Math.abs(sg4.km) + ' km</b>' + (sg4.back ? ' (heading back home)' : '') + ' in <b>'
+    + timeWord(sg4.dur, 'hour') + '</b>.<br>' + Math.abs(sg4.km) + ' ÷ ' + sg4.dur
+    + ' = <b>' + qData.ans + ' km/h</b>.';
+  el.innerHTML = '<div style="' + A_LBL + '">What was the speed during stage <b>' + DT_LABELS[pick] + '</b>?</div>'
+    + decSvg(dtGrid() + dtDraw(J4, { labels: true }), DT_H, 460)
+    + '<div style="font-size:0.9rem;font-weight:900;color:var(--accent);">speed in km/h = ?</div>';
+}
+
+/* ═════════ Applications of Linear Graphs (Yr 8–9, Laura) ═════════
+   The modelling half of linear relationships: read a rate and a starting amount
+   out of a real-world rule, write the rule from a story, build its table, and
+   write a two-item cost equation in ax + by = d form.
+
+   Everything is written in the y = a + bx order Laura uses (P = −35 + 4c), i.e.
+   the starting amount FIRST and the rate second — deliberately not the y = mx + c
+   order the intercept skills use, because that is the form the application
+   questions come in.                                                          */
+const LAP_SCEN = [
+  { story: 'A stall pays $A to hire a table and makes $B profit on every cake sold.',
+    v: 'P', w: 'c', vName: 'the profit in dollars', wName: 'the number of cakes sold',
+    aWord: 'the hire cost', bWord: 'the profit per cake', neg: true,
+    make: function(a, b){ return 'A cake stall costs $' + (-a) + ' to set up and makes $' + b
+      + ' profit on every cake sold.'; } },
+  { story: 'A cyclist starts A km from home and rides away at B km/h.',
+    v: 'd', w: 'h', vName: 'the distance from home in km', wName: 'the number of hours',
+    aWord: 'the starting distance', bWord: 'the speed', neg: false,
+    make: function(a, b){ return 'A cyclist begins cycling ' + a + ' km from home and rides away from home at '
+      + b + ' km/h.'; } },
+  { story: 'A tank holds A litres and is filled at B litres per minute.',
+    v: 'V', w: 't', vName: 'the volume in litres', wName: 'the number of minutes',
+    aWord: 'the starting volume', bWord: 'the filling rate', neg: false,
+    make: function(a, b){ return 'A tank already holds ' + a + ' litres and is filled at ' + b
+      + ' litres per minute.'; } },
+  { story: 'A phone plan costs $A a month plus $B per gigabyte.',
+    v: 'C', w: 'g', vName: 'the cost in dollars', wName: 'the number of gigabytes',
+    aWord: 'the monthly fee', bWord: 'the cost per gigabyte', neg: false,
+    make: function(a, b){ return 'A phone plan costs $' + a + ' a month plus $' + b + ' for each gigabyte used.'; } },
+  { story: 'A plumber charges $A to come out plus $B an hour.',
+    v: 'C', w: 'h', vName: 'the cost in dollars', wName: 'the number of hours',
+    aWord: 'the call-out fee', bWord: 'the hourly rate', neg: false,
+    make: function(a, b){ return 'A plumber charges $' + a + ' to come out, plus $' + b + ' for each hour worked.'; } }
+];
+const LAP_ITEMS = [
+  ['pens', 'pencils'], ['muffins', 'cookies'], ['adult tickets', 'child tickets'],
+  ['T-shirts', 'caps'], ['pizzas', 'drinks']
+];
+function lapRule(sc, a, b){
+  return sc.v + ' = ' + sgnNum(a) + ' + ' + b + sc.w;
+}
+function genLinearApps(el){
+  el.style.fontSize = '1.1rem';
+  const sc = LAP_SCEN[ri(LAP_SCEN.length)];
+  const a = sc.neg ? -rr(2, 12) * 5 : rr(3, 40);
+  const b = rr(2, 12);
+
+  if (level === 1) {                 // read the rate or the starting amount off the rule
+    const askRate = Math.random() < 0.5;
+    qData.ans = askRate ? b : a;
+    qData.ansDisplay = sgnNum(qData.ans);
+    qData.workSteps = 'In ' + sc.v + ' = a + b' + sc.w + ', <b>a</b> is the starting amount and <b>b</b> is the '
+      + 'rate — the number multiplying ' + sc.w + '.<br>Here a = <b>' + sgnNum(a) + '</b> and b = <b>' + b + '</b>.';
+    el.innerHTML = '<div style="' + A_LBL + '">' + (askRate
+        ? 'What is the <b>rate</b> (the amount per ' + sc.w + ')?'
+        : 'What is the <b>starting amount</b>?') + '</div>'
+      + '<div style="font-size:1.8rem;font-weight:900;margin:10px 0;">' + lapRule(sc, a, b) + '</div>'
+      + '<div style="font-size:0.88rem;font-weight:800;color:var(--muted);line-height:1.5;">'
+      + sc.v + ' is ' + sc.vName + '<br>' + sc.w + ' is ' + sc.wName + '</div>';
+    return;
+  }
+
+  if (level === 2) {                 // write the rule from the story
+    qData.gapTemplate = [sc.v + ' = ', 0, ' + ', 1, sc.w];
+    qData.gapAns = [a, b];
+    qData.gapHint = 'Starting amount first, then the rate.';
+    qData.gapAnsText = lapRule(sc, a, b);
+    qData.workSteps = 'The <b>starting amount</b> is there before anything happens: <b>' + sgnNum(a) + '</b>.<br>'
+      + 'The <b>rate</b> is what changes per ' + sc.w + ': <b>' + b + '</b>.<br>So ' + lapRule(sc, a, b) + '.';
+    el.innerHTML = '<div style="' + A_LBL + '">Write the rule in the form ' + sc.v + ' = a + b' + sc.w + '.</div>'
+      + '<div style="font-size:1.05rem;font-weight:800;margin:10px 4px;line-height:1.5;">' + sc.make(a, b) + '</div>'
+      + '<div style="font-size:0.88rem;font-weight:800;color:var(--muted);line-height:1.5;">'
+      + sc.v + ' is ' + sc.vName + '<br>' + sc.w + ' is ' + sc.wName + '</div>';
+    return;
+  }
+
+  if (level === 3) {                 // build the table from the application
+    const b3 = rr(2, 9), a3 = sc.neg ? -rr(2, 8) * 5 : rr(3, 30);
+    const xs = [0, 1, 2, 3, 4];
+    const ys = xs.map(function(x){ return a3 + b3 * x; });
+    qData.gapTemplate = [0, '&nbsp;', 1, '&nbsp;', 2, '&nbsp;', 3, '&nbsp;', 4];
+    qData.gapAns = ys;
+    qData.gapHint = 'Fill in the ' + sc.v + ' row, left to right.';
+    qData.gapAnsText = ys.map(sgnNum).join(', ');
+    qData.workSteps = 'Substitute each ' + sc.w + ' into ' + lapRule(sc, a3, b3) + ':<br>'
+      + xs.map(function(x, i){ return sc.w + ' = ' + x + ' → ' + sc.v + ' = ' + sgnNum(ys[i]); }).join('<br>');
+    el.innerHTML = '<div style="' + A_LBL + '">Complete the table of values.</div>'
+      + '<div style="font-size:1rem;font-weight:800;margin:8px 4px;line-height:1.45;">' + sc.make(a3, b3) + '</div>'
+      + '<div style="font-size:1.35rem;font-weight:900;margin:6px 0;">' + lapRule(sc, a3, b3) + '</div>'
+      + lapTable(sc, xs, ys);
+    return;
+  }
+
+  /* Level 4 — two items, a total: write ax + by = d */
+  const it = LAP_ITEMS[ri(LAP_ITEMS.length)];
+  const ca = rr(2, 12), cb = rr(2, 12);
+  const na = rr(2, 9), nb = rr(2, 9);
+  const total = ca * na + cb * nb;
+  qData.gapTemplate = [0, 'x&nbsp;+&nbsp;', 1, 'y&nbsp;=&nbsp;', 2];
+  qData.gapAns = [ca, cb, total];
+  qData.gapHint = 'Cost of one ' + it[0].replace(/s$/, '') + ', then one ' + it[1].replace(/s$/, '') + ', then the total.';
+  qData.gapAnsText = ca + 'x + ' + cb + 'y = ' + total;
+  qData.workSteps = 'x ' + it[0] + ' at $' + ca + ' each cost <b>' + ca + 'x</b>.<br>'
+    + 'y ' + it[1] + ' at $' + cb + ' each cost <b>' + cb + 'y</b>.<br>'
+    + 'Together they come to $' + total + ', so <b>' + ca + 'x + ' + cb + 'y = ' + total + '</b>.';
+  el.innerHTML = '<div style="' + A_LBL + '">Write an equation in the form ax + by = d.</div>'
+    + '<div style="font-size:1.05rem;font-weight:800;margin:10px 4px;line-height:1.5;">'
+    + it[0].charAt(0).toUpperCase() + it[0].slice(1) + ' cost <b>$' + ca + '</b> each and ' + it[1]
+    + ' cost <b>$' + cb + '</b> each.<br>Altogether they cost <b>$' + total + '</b>.</div>'
+    + '<div style="font-size:0.88rem;font-weight:800;color:var(--muted);line-height:1.5;">'
+    + 'x is the number of ' + it[0] + '<br>y is the number of ' + it[1] + '</div>';
+}
+/* The table for L3 uses the application's own variable names, not x and y. */
+function lapTable(sc, xs, ys){
+  let top = '<tr><th>' + sc.w + '</th>', bot = '<tr><th>' + sc.v + '</th>';
+  xs.forEach(function(x){ top += '<td>' + sgnNum(x) + '</td>'; });
+  ys.forEach(function(){ bot += '<td>▢</td>'; });
+  return '<table class="tov-table">' + top + '</tr>' + bot + '</tr></table>';
+}
+
 const KB_INPUTS = ['ansInput','fracNum','fracDen','mixedWhole','mixedNum','mixedDen',
                    'idxCoeff','idxExp','idxExpB','idxExpC','sciCoeff','sciExp',
                    'ratioA','ratioB',
@@ -13791,7 +14457,40 @@ const KB_INPUTS = ['ansInput','fracNum','fracDen','mixedWhole','mixedNum','mixed
                    'gap0','gap1','gap2','gap3','gap4'];
 
 /* ── Setup: called once on load ── */
+/* The inputmode each box was authored with, captured BEFORE the keypad overwrites
+   it, so unlocking can put back "decimal"/"text" rather than guessing. */
+const KB_ORIG_IM = {};
+function kbCaptureOriginals() {
+  KB_INPUTS.forEach(inputId => {
+    if (Object.prototype.hasOwnProperty.call(KB_ORIG_IM, inputId)) return;
+    const el = document.getElementById(inputId);
+    if (el) KB_ORIG_IM[inputId] = el.getAttribute('inputmode') || '';
+  });
+}
+/* Hand every box back to the physical keyboard. */
+function kbUnlockInputs() {
+  KB_INPUTS.forEach(inputId => {
+    const el = document.getElementById(inputId);
+    if (!el) return;
+    el.removeAttribute('readonly');
+    const orig = KB_ORIG_IM[inputId];
+    if (orig) el.setAttribute('inputmode', orig); else el.removeAttribute('inputmode');
+  });
+}
 function kbSetup() {
+  kbCaptureOriginals();
+  /* Watch for a real keyboard however the pointer test came out. Capture phase and
+     keyDOWN, so readonly is gone before the character would be inserted — the
+     keystroke that triggers the switch is not swallowed. */
+  document.addEventListener('keydown', function(e){
+    if (kbPhysical) return;
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    if (!(String(e.key).length === 1 || e.key === 'Backspace' || e.key === 'Enter')) return;
+    kbPhysical = true;
+    kbUnlockInputs();
+    kbHide();
+  }, true);
+
   if (!IS_MOBILE()) return;
 
   KB_INPUTS.forEach(inputId => {
@@ -14009,7 +14708,7 @@ function kbShow() {
                   // v78 — the Yr 7-9 sequence skills all have negative terms, differences and ratios
                   || ['seqWords','arithSeq','geoSeq'].includes(skillId)
                   // v78.2 — table-of-values y rows and intercepts off a table go negative
-                  || skillId === 'tableValues';
+                  || ['tableValues','linearApps'].includes(skillId);   // v78.2 / v78.3
   const decSkillsWithDot = ['sciTo','sciFrom','decAddSub','decAdd','decSub','decMultiply','decDivide','decPow10','decSquareCube','decOrderOps','decRound','sigFigs',
                             'decAddSubNeg','decMulDivNeg','decLeadEst','decSqCubeRoot',
                             'rateSimplify','rateConvert','decIdentify','decExpand','fracToDec',
