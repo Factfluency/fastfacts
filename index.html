@@ -1,4 +1,4 @@
-<!-- Sandy Fast Facts — v79 (Laura). 🧩 OTHER IS RENAMED 🔄 TIME & TRANSFORMATIONS — display only: the CATS key stays 'other', so every stored Personal Best, streak and share line is untouched, and the dashboard .bas keys on SKILL names so it is unaffected too. SIX NEW TRANSFORMATION SKILLS, all built on one engine: every transformation in the program is an affine map whose matrix has exactly one non-zero entry per row, so applying one is two lines, COMPOSING two stays in the same family (which is what lets the Combinations skill print a single mapping for a chain), and the mapping notation is rendered straight off the matrix so the words and the notation can never drift apart. Translations (L1 one-axis slide · L2 two-axis · L3 describe it from the drawn points · L4 read the mapping · L5 apply the mapping · L6 find the pre-image), Reflections (same six; L1 the axes, L2 adds y = x), Dilations from the Origin (ONE apply level per Laura — a dilation from the origin is always a single step — then the same four; factors 2, 3, 4, ½ and ⅓ on a ±10 window because a factor of 4 leaves the −5…5 box immediately), Rotations about the Origin (L1 half turns only, L2 the quarter turns clockwise and anticlockwise; the describe-it levels are restricted to the three CANONICAL names because 90° clockwise and 270° anticlockwise are the SAME map and would otherwise be two right answers), Combinations of Transformations (NO describe-in-words level, per Laura — two points can be joined by any number of chains — so L1/L2 apply a chain of two then three, and the mapping levels survive because a mapping IS the composite), and Transformations of 2D Shapes (Yr 7–8: translate, reflect, identify, dilate, rotate and un-transform a whole shape by TAPPING its image corners, on a coarser −4…4 grid so a corner is an easy tap on a phone). One subtle guard worth remembering: two DIFFERENT transformations can still agree on ONE point — (2, −2) goes to (−2, 2) under both a half turn and a reflection in y = x — so a describe-it distractor is only safe if it fails on THAT point, not merely if it is a different map. Purely additive apart from the category label: no existing skill, level, id or band changed. All new bands are PLACEHOLDERS pending class data. internal v78.4 FIXES: (1) TYPING WAS DEAD on any narrow screen — the "is this a phone" test was window width ALONE, so a laptop with a narrow window (or the app in a preview pane) got the readonly-input trick meant to suppress a phone keyboard, with no way to type. A phone must now ALSO have a coarse primary pointer, and the first real key press from a physical keyboard unlocks every box and hides the keypad for the rest of the session. (2) THE PLOT GRID WAS SQUASHED — #qBox is a flex container and plotRender was handing it two or three children, so the prompt, story and grid became columns; wrapped in a single .q-text child, and the plot/graph SVGs now scale to the available width (up to 460px) instead of sitting at a fixed 300px. (3) DISTANCE-TIME JOURNEYS CAN NOW RETURN HOME — a stage may head back towards home so the graph comes down, and some journeys finish at 0 km; the line can never go below 0, "fastest" and "speed" compare magnitudes, and the story says "back towards home" / "the last N km home". internal v78.3: NEW CATEGORY 🧩 OTHER (Laura) — the practical, everyday-maths corner, placed last: Converting Units of Time (Yr 7: sec/min/hour · hour/day/week · week/month/year · compound times both ways), Train & Bus Timetables (Yr 7: read the table · trip length in minutes · latest service that still arrives in time · minutes until the next service, with 24-hour and 12-hour clocks mixed) and Distance-Time Graphs (Yr 7–8: read the distance · which stage is stationary/fastest · BUILD or finish the graph by tapping the corner of each stage · speed of a labelled stage). Coordinate Geometry gains Applications of Linear Graphs (Yr 8–9: rate or starting amount from P = −35 + 4c · write y = a + bx from a story · build its table · write ax + by = d from a two-item total). The plotPts mode is now axis-agnostic and can mark an ORDERED path, which is what the distance-time construct level uses. Purely additive — no existing skill, level, id or band changed. internal v78.2: 📈 COORDINATE GEOMETRY grows (Laura). The Cartesian Plane gains L4 — three corners of a rectangle, square or labelled parallelogram ABCD are plotted and the student writes the coordinates of the fourth. NEW skill Table of Values (Yr 7–8: L1 build a linear table from a rule · L2 PLOT that table on the plane · L3 build a non-linear table (x², x³, 2ˣ) · L4 plot a non-linear table). x- and y-Intercepts gains a new L2 — read both intercepts off a table of values — pushing y-int/x-int/both down to L3/L4/L5 (safe: no student has played Coordinate Geometry yet). NEW INPUT MODE plotPts: the drawn Cartesian plane itself is the answer surface — every lattice point carries an invisible tap target, tap to place or remove a marker, all-or-nothing marking, and the marking is drawn back onto the grid. internal v78.0: Yr 7–9 SEQUENCES in 💰 Finance & Patterns (Laura). NEW Sequence Rules in Words (Yr 7: L1 first term · L2 the term-to-term rule in words as a 4-way tap (add / subtract / multiply / divide / square numbers) · L3 next two terms · L4 write the first five terms from a starting value and a worded rule · L5 read a term off the sequence from aₙ notation). NEW Arithmetic Sequences (Yr 7–8: L1 common difference d · L2 next three terms · L3 fill a₁ and d into aₙ = a₁ + (n − 1)d · L4 use the rule to find a required term). NEW Geometric Sequences (Yr 8–9: L1 common ratio r · L2 next three terms · L3 fill a₁ and r into aₙ = a₁ × rⁿ⁻¹ · L4 use the rule to find a required term). The existing Sequences skill is RENAMED "Arithmetic & Geometric Sequences" and otherwise untouched (id, lvKey, levels and bands all unchanged) — it stays as the higher-order one where the student decides which kind it is. gapFill grows from four boxes to FIVE (gap4), with narrower boxes on a five-box row. All new bands are PLACEHOLDERS pending class data. internal v77.0: THREE NEW CATEGORIES and one new Number skill. ◡ Quadratics — Verify Solutions to Quadratic Equations (L1 x²=k · L2 factorised · L3 trinomial, Yes/No) and Solve Quadratic Equations (L1 x²=k · L2 exact values/fractions as multiple choice · L3 Null Factor Law · L4 monic trinomials). 📈 Coordinate Geometry — The Cartesian Plane (quadrant · read a plotted coordinate), Linear or Non-Linear (from a graph · from an equation), x- and y-Intercepts (y-int · x-int · both from ax+by=c) and Gradient of a Line Segment (whole · from a diagram · fractions & negatives). 💰 Finance & Patterns — GST (10%: added · price incl · removed), Simple Interest (5 levels on Vn = V0 + nD, D = r/100 × V0), Sequences (classify · next term · arithmetic rule · geometric rule), Recurrence Relations (write · use) and Flat Rate Depreciation (5 levels on Vn = V0 − nD). Number gains Number Classification (rational/irrational · tick every set). TWO NEW INPUT MODES: gapFill (a rendered rule/coordinate/solution template with up to five numeric boxes, all-or-nothing, optional order-free marking) and multiSel (tick every box that applies, all-or-nothing). Purely additive — no existing skill, level, id or band changed; all new bands are PLACEHOLDERS pending class data. internal v76.0: Congruence & Similarity now distinguish "provably false" from "unknown". L3 adds a 6th button "Not similar" (sides given but not in a constant ratio — the case a student CAN disprove, e.g. 5,8,11 vs 10,18,22); L2 adds a 6th button "Not congruent" via a new DIFF scenario that labels side lengths that don't all match. "Not enough information" now means only the genuinely undetermined cases (SSA, AAA-for-congruence, one angle, two sides). csSimilarityVerdict/csCongruenceVerdict extended; fixed 6-button order; storage-safe (no skill/level renamed or reordered). v75.0: NEW Percentages skills — Convert Percentages & Decimals (pctDecConv, both directions, number box) and Convert Fractions & Percentages (fracPctConv: L1–2 fraction→% number box, L3–4 %→fraction box; direction fixed per level via levelModes). Both single-question (not the FDP fill-in table), placed before Convert FDP; recall/Fluent-eligible with PLACEHOLDER bands (recalibrate with class data). Recurring values (33⅓% etc.) accepted within a per-question tolerance via qData.ansTol. Storage-safe additive change. v74.9: band cut-offs revised across the whole program from Laura's reviewed spreadsheet — 95 skill-levels re-banded via explicit per-level BAND_OVERRIDE entries (app matches the sheet on all 330 rows). v74.8: Decimals band targets LOWERED (Laura) so quick+accurate students reach higher animals — Identify/Expanded Form/Convert D→F −2; Rounding & Add/Subtract Decimals −3; all ×/÷ decimal operations (Multiply, Divide, ×÷ by 10/100/1000, Squares & Cubes, Square/Cube Roots, signed ×÷, ×fractions) −4. Display-only/storage-safe; .bas regenerated. v74.7: more Decimals (Laura) — NEW skills Add & Subtract Decimals (Positive & Negative), Multiply Decimals & Fractions (decFrac), Multiply & Divide Decimals (Positive & Negative), Leading Digit Estimation (round-to-1sf → estimate → BODMAS), Square Roots & Cube Roots of Decimals; NEW word-problem L4 on Multiply Decimals and Divide Decimals; Squares & Cubes of Decimals moved after Multiply Decimals & Fractions. v74.6: Add & Subtract Decimals L4 word problems; Add & Subtract Fractions & Decimals; Rounding Decimals L3 round-then-estimate. v74.5: miss reviews work THIS question's numbers step-by-step; Angles-in-Polygons L4; deeper concave polygons) -->
+<!-- Sandy Fast Facts — v83 (Laura). 🔍 DESKTOP SIZING, SPLIT THE DIFFERENCE: v82 over-reserved vertical space (420px) so diagrams came out smaller than they had to; the budget is now calc(100vh - 330px) and the cap 460px. Question CONTENT also scales on a big screen — A_LBL now reads its size from --qlbl (a CSS variable, because a media query cannot override an inline style) and the timetable from --qtbl, so prompts and tables grow with the column instead of staying at phone size. v82 notes follow. internal v82: 📏 TIGHTER GAME HEADER ON DESKTOP: the back link / stats / progress / nudge strip is trimmed from ~170px to ~105px and diagrams are capped at calc(100vh - 420px), so the tall coordinate-grid and plot questions fit without scrolling. CSS only, ≥900px only. v81 notes follow. internal v81: 🎯 START BUTTON IS ALWAYS REACHABLE: #levelStartBtn is position:sticky at every width, so on a 6-level skill it rides the bottom of the window instead of hiding below the cards, and settles into the flow once the list fits. On desktop the level grid is now auto-fill minmax(300px) — 3 across on a 1080px frame — so even the worst case (six levels) needs no scrolling. CSS only. v80 notes follow. internal v80: 🖥 DESKTOP LAYOUT: additive CSS in one @media (min-width:900px) block plus two harmless wrapper divs on the home screen (.home-top, .home-foot). The frame widens to 1080px, categories go 3-across, skills and levels 2-across, and the GAME screen becomes two columns (question left, answering right) via grid auto-placement — no JS, no ids, no question logic touched. Under 900px every rule is unchanged, so all phone layouts are byte-identical to v79. v79 notes follow. internal v79: 🧩 OTHER IS RENAMED 🔄 TIME & TRANSFORMATIONS — display only: the CATS key stays 'other', so every stored Personal Best, streak and share line is untouched, and the dashboard .bas keys on SKILL names so it is unaffected too. SIX NEW TRANSFORMATION SKILLS, all built on one engine: every transformation in the program is an affine map whose matrix has exactly one non-zero entry per row, so applying one is two lines, COMPOSING two stays in the same family (which is what lets the Combinations skill print a single mapping for a chain), and the mapping notation is rendered straight off the matrix so the words and the notation can never drift apart. Translations (L1 one-axis slide · L2 two-axis · L3 describe it from the drawn points · L4 read the mapping · L5 apply the mapping · L6 find the pre-image), Reflections (same six; L1 the axes, L2 adds y = x), Dilations from the Origin (ONE apply level per Laura — a dilation from the origin is always a single step — then the same four; factors 2, 3, 4, ½ and ⅓ on a ±10 window because a factor of 4 leaves the −5…5 box immediately), Rotations about the Origin (L1 half turns only, L2 the quarter turns clockwise and anticlockwise; the describe-it levels are restricted to the three CANONICAL names because 90° clockwise and 270° anticlockwise are the SAME map and would otherwise be two right answers), Combinations of Transformations (NO describe-in-words level, per Laura — two points can be joined by any number of chains — so L1/L2 apply a chain of two then three, and the mapping levels survive because a mapping IS the composite), and Transformations of 2D Shapes (Yr 7–8: translate, reflect, identify, dilate, rotate and un-transform a whole shape by TAPPING its image corners, on a coarser −4…4 grid so a corner is an easy tap on a phone). One subtle guard worth remembering: two DIFFERENT transformations can still agree on ONE point — (2, −2) goes to (−2, 2) under both a half turn and a reflection in y = x — so a describe-it distractor is only safe if it fails on THAT point, not merely if it is a different map. Purely additive apart from the category label: no existing skill, level, id or band changed. All new bands are PLACEHOLDERS pending class data. internal v78.4 FIXES: (1) TYPING WAS DEAD on any narrow screen — the "is this a phone" test was window width ALONE, so a laptop with a narrow window (or the app in a preview pane) got the readonly-input trick meant to suppress a phone keyboard, with no way to type. A phone must now ALSO have a coarse primary pointer, and the first real key press from a physical keyboard unlocks every box and hides the keypad for the rest of the session. (2) THE PLOT GRID WAS SQUASHED — #qBox is a flex container and plotRender was handing it two or three children, so the prompt, story and grid became columns; wrapped in a single .q-text child, and the plot/graph SVGs now scale to the available width (up to 460px) instead of sitting at a fixed 300px. (3) DISTANCE-TIME JOURNEYS CAN NOW RETURN HOME — a stage may head back towards home so the graph comes down, and some journeys finish at 0 km; the line can never go below 0, "fastest" and "speed" compare magnitudes, and the story says "back towards home" / "the last N km home". internal v78.3: NEW CATEGORY 🧩 OTHER (Laura) — the practical, everyday-maths corner, placed last: Converting Units of Time (Yr 7: sec/min/hour · hour/day/week · week/month/year · compound times both ways), Train & Bus Timetables (Yr 7: read the table · trip length in minutes · latest service that still arrives in time · minutes until the next service, with 24-hour and 12-hour clocks mixed) and Distance-Time Graphs (Yr 7–8: read the distance · which stage is stationary/fastest · BUILD or finish the graph by tapping the corner of each stage · speed of a labelled stage). Coordinate Geometry gains Applications of Linear Graphs (Yr 8–9: rate or starting amount from P = −35 + 4c · write y = a + bx from a story · build its table · write ax + by = d from a two-item total). The plotPts mode is now axis-agnostic and can mark an ORDERED path, which is what the distance-time construct level uses. Purely additive — no existing skill, level, id or band changed. internal v78.2: 📈 COORDINATE GEOMETRY grows (Laura). The Cartesian Plane gains L4 — three corners of a rectangle, square or labelled parallelogram ABCD are plotted and the student writes the coordinates of the fourth. NEW skill Table of Values (Yr 7–8: L1 build a linear table from a rule · L2 PLOT that table on the plane · L3 build a non-linear table (x², x³, 2ˣ) · L4 plot a non-linear table). x- and y-Intercepts gains a new L2 — read both intercepts off a table of values — pushing y-int/x-int/both down to L3/L4/L5 (safe: no student has played Coordinate Geometry yet). NEW INPUT MODE plotPts: the drawn Cartesian plane itself is the answer surface — every lattice point carries an invisible tap target, tap to place or remove a marker, all-or-nothing marking, and the marking is drawn back onto the grid. internal v78.0: Yr 7–9 SEQUENCES in 💰 Finance & Patterns (Laura). NEW Sequence Rules in Words (Yr 7: L1 first term · L2 the term-to-term rule in words as a 4-way tap (add / subtract / multiply / divide / square numbers) · L3 next two terms · L4 write the first five terms from a starting value and a worded rule · L5 read a term off the sequence from aₙ notation). NEW Arithmetic Sequences (Yr 7–8: L1 common difference d · L2 next three terms · L3 fill a₁ and d into aₙ = a₁ + (n − 1)d · L4 use the rule to find a required term). NEW Geometric Sequences (Yr 8–9: L1 common ratio r · L2 next three terms · L3 fill a₁ and r into aₙ = a₁ × rⁿ⁻¹ · L4 use the rule to find a required term). The existing Sequences skill is RENAMED "Arithmetic & Geometric Sequences" and otherwise untouched (id, lvKey, levels and bands all unchanged) — it stays as the higher-order one where the student decides which kind it is. gapFill grows from four boxes to FIVE (gap4), with narrower boxes on a five-box row. All new bands are PLACEHOLDERS pending class data. internal v77.0: THREE NEW CATEGORIES and one new Number skill. ◡ Quadratics — Verify Solutions to Quadratic Equations (L1 x²=k · L2 factorised · L3 trinomial, Yes/No) and Solve Quadratic Equations (L1 x²=k · L2 exact values/fractions as multiple choice · L3 Null Factor Law · L4 monic trinomials). 📈 Coordinate Geometry — The Cartesian Plane (quadrant · read a plotted coordinate), Linear or Non-Linear (from a graph · from an equation), x- and y-Intercepts (y-int · x-int · both from ax+by=c) and Gradient of a Line Segment (whole · from a diagram · fractions & negatives). 💰 Finance & Patterns — GST (10%: added · price incl · removed), Simple Interest (5 levels on Vn = V0 + nD, D = r/100 × V0), Sequences (classify · next term · arithmetic rule · geometric rule), Recurrence Relations (write · use) and Flat Rate Depreciation (5 levels on Vn = V0 − nD). Number gains Number Classification (rational/irrational · tick every set). TWO NEW INPUT MODES: gapFill (a rendered rule/coordinate/solution template with up to five numeric boxes, all-or-nothing, optional order-free marking) and multiSel (tick every box that applies, all-or-nothing). Purely additive — no existing skill, level, id or band changed; all new bands are PLACEHOLDERS pending class data. internal v76.0: Congruence & Similarity now distinguish "provably false" from "unknown". L3 adds a 6th button "Not similar" (sides given but not in a constant ratio — the case a student CAN disprove, e.g. 5,8,11 vs 10,18,22); L2 adds a 6th button "Not congruent" via a new DIFF scenario that labels side lengths that don't all match. "Not enough information" now means only the genuinely undetermined cases (SSA, AAA-for-congruence, one angle, two sides). csSimilarityVerdict/csCongruenceVerdict extended; fixed 6-button order; storage-safe (no skill/level renamed or reordered). v75.0: NEW Percentages skills — Convert Percentages & Decimals (pctDecConv, both directions, number box) and Convert Fractions & Percentages (fracPctConv: L1–2 fraction→% number box, L3–4 %→fraction box; direction fixed per level via levelModes). Both single-question (not the FDP fill-in table), placed before Convert FDP; recall/Fluent-eligible with PLACEHOLDER bands (recalibrate with class data). Recurring values (33⅓% etc.) accepted within a per-question tolerance via qData.ansTol. Storage-safe additive change. v74.9: band cut-offs revised across the whole program from Laura's reviewed spreadsheet — 95 skill-levels re-banded via explicit per-level BAND_OVERRIDE entries (app matches the sheet on all 330 rows). v74.8: Decimals band targets LOWERED (Laura) so quick+accurate students reach higher animals — Identify/Expanded Form/Convert D→F −2; Rounding & Add/Subtract Decimals −3; all ×/÷ decimal operations (Multiply, Divide, ×÷ by 10/100/1000, Squares & Cubes, Square/Cube Roots, signed ×÷, ×fractions) −4. Display-only/storage-safe; .bas regenerated. v74.7: more Decimals (Laura) — NEW skills Add & Subtract Decimals (Positive & Negative), Multiply Decimals & Fractions (decFrac), Multiply & Divide Decimals (Positive & Negative), Leading Digit Estimation (round-to-1sf → estimate → BODMAS), Square Roots & Cube Roots of Decimals; NEW word-problem L4 on Multiply Decimals and Divide Decimals; Squares & Cubes of Decimals moved after Multiply Decimals & Fractions. v74.6: Add & Subtract Decimals L4 word problems; Add & Subtract Fractions & Decimals; Rounding Decimals L3 round-then-estimate. v74.5: miss reviews work THIS question's numbers step-by-step; Angles-in-Polygons L4; deeper concave polygons) -->
 <!-- Viewport (v48): dropped `maximum-scale=1.0, user-scalable=no`. iOS ignored it (so pinch worked there anyway) but Android obeyed it, blocking accessibility pinch-zoom. Accidental double-tap-to-zoom is killed per-control via `touch-action: manipulation` instead, which leaves deliberate pinch-zoom intact on every platform. -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -554,8 +554,8 @@ body {
 /* Timetable (v78.3) — a stop per row, a service per column. */
 .tt-table { border-collapse: collapse; margin: 10px auto; font-weight: 800; }
 .tt-table th, .tt-table td {
-  border: 1px solid var(--border); padding: 4px 7px; text-align: center;
-  font-size: 0.86rem; white-space: nowrap;
+  border: 1px solid var(--border); padding: var(--qtblpad, 4px 7px); text-align: center;
+  font-size: var(--qtbl, 0.86rem); white-space: nowrap;
 }
 .tt-table th { background: var(--border); color: var(--text); font-weight: 900; }
 .tt-table td.tt-stop { text-align: left; font-weight: 900; }
@@ -1592,6 +1592,209 @@ body {
     padding-top: 16px; padding-bottom: 16px; min-height: 0;
   }
 }
+
+/* ══════════════════════════════════════════════════════════════════
+   v81 (Laura): "WHERE IS THE START BUTTON?"  — ALL WIDTHS
+   Students kept asking, because on a 6-level skill (Translations,
+   Reflections, Rotations, Simple Interest, Depreciation, 2D Shapes)
+   the Start button sat below six stacked cards, off the bottom of
+   the screen. Sizing the cards to fit helps (see the desktop block
+   below) but can't guarantee it — a short laptop window, a large
+   accessibility font, or a future 7th level puts it back off-screen.
+
+   position: sticky is the guarantee: while the level list is longer
+   than the window the button rides the bottom edge, and once the
+   list fits it drops back into its normal place at the end. Nothing
+   is permanently hidden underneath it, because at the foot of the
+   page it settles into the flow.
+══════════════════════════════════════════════════════════════════ */
+#levelStartBtn {
+  position: sticky;
+  bottom: 12px;
+  z-index: 30;
+  /* The 14px ring of page colour is a mask, not decoration: while the button
+     floats it would otherwise have level cards showing through around its
+     rounded corners. var(--bg) means it follows dark mode automatically. */
+  box-shadow: 0 0 0 14px var(--bg), 0 10px 26px -8px rgba(0, 0, 0, 0.40);
+}
+/* Breathing room so a card never sits flush under the floating button. */
+#s-levels .level-cards { margin-bottom: 18px; }
+#s-levels { padding-bottom: 10px; }
+
+/* ══════════════════════════════════════════════════════════════════
+   v80 (Laura): DESKTOP LAYOUT  (≥ 900px)
+   The app was built phone-first at a fixed 520px column, which on a
+   laptop left two thirds of the screen empty. This block is PURELY
+   ADDITIVE and scoped to ≥900px — every phone/tablet layout below
+   that width is byte-for-byte unchanged, so nothing that was tested
+   on a phone can regress.
+
+   Three ideas:
+   1. The frame widens to 1080px, so browse screens get real columns.
+   2. The game screen becomes two columns — question on the left,
+      answering on the right — which also fixes the old laptop
+      problem of a diagram pushing the answer boxes below the fold.
+   3. Screens that are one column of reading (welcome, results,
+      backup, mix, bests, today) stay centred and narrow. Stretching
+      a results card to 1080px would look worse, not better.
+══════════════════════════════════════════════════════════════════ */
+@media (min-width: 900px) {
+
+  body { padding: 24px 28px 56px; }
+  .app { max-width: 1080px; }
+
+  /* ── Single-column reading screens stay centred ── */
+  #s-welcome, #s-onboard, #s-results, #s-backup, #s-mix, #s-lb, #s-today {
+    max-width: 620px;
+    margin: 0 auto;
+  }
+
+  /* ── HOME ── */
+  .home-header { padding: 34px 0 22px; }
+  .greeting { font-size: 1.7rem; }
+  .greeting-sub { font-size: 0.9rem; }
+
+  /* Streak card and Daily Mix side by side — both are "what should I do
+     today" prompts, so they belong on the same line rather than stacked. */
+  .home-top {
+    display: grid;
+    grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+    gap: 14px;
+    align-items: stretch;
+    margin-bottom: 18px;
+  }
+  .home-top .habit-card { margin-bottom: 0; }
+  .home-top .mix-btn {
+    margin-bottom: 0;
+    font-size: 1.1rem;
+  }
+
+  /* A segmented control stretched to 1080px reads as three separate bars,
+     so it keeps a sensible width and centres. */
+  .sess-toggle { max-width: 640px; margin: 0 auto 26px; }
+  .sess-toggle button { font-size: 0.95rem; padding: 14px 6px; }
+
+  /* Three category cards per row: 15 categories read as a tidy 5×3 board
+     instead of an eight-scroll list. */
+  .cat-grid { grid-template-columns: repeat(3, 1fr); gap: 14px; }
+
+  /* Footer links sit in a row instead of three full-width stacked bars. */
+  .home-foot { display: flex; gap: 12px; align-items: stretch; }
+  .home-foot .btn-ghost { flex: 1; margin: 0; }
+  .home-foot > div { display: none; }   /* the 8px mobile spacers */
+
+  /* ── SKILL + LEVEL PICKERS ── */
+  .skill-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+  /* v81: sized for the WORST case — the 6-level skills. auto-fill at 300px
+     gives 3 across on a 1080px frame, so six levels are two tidy rows and
+     the Start button stays on screen without scrolling. Three- and
+     four-level skills (107 of the 131) fit in one or two rows too. */
+  .level-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 14px;
+    align-items: start;
+  }
+  .level-screen-header { padding: 4px 0 14px; }
+  #s-levels .lv-card { padding: 16px 18px; }
+  #s-levels .lv-card .lv-desc { margin-bottom: 8px; }
+
+  /* ══ GAME: two columns ══
+     Auto-placement does the work — every child defaults to the right
+     column, the status strip spans both, and #qBox is pinned to the
+     left column spanning the rows the answer side occupies, so the
+     question sits centred beside the answer area no matter which of
+     the ~12 answer panels is showing. */
+  #s-game.active {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    column-gap: 32px;
+    row-gap: 0;
+    align-items: start;
+  }
+  #s-game.active > * { grid-column: 2; }
+  #s-game.active > .back-btn,
+  #s-game.active > .game-stats,
+  #s-game.active > .prog-wrap,
+  #s-game.active > .pb-nudge { grid-column: 1 / -1; }
+  #s-game.active > .q-box {
+    grid-column: 1;
+    grid-row: span 60;          /* reserves the rows the answer stack uses */
+    align-self: start;          /* sized by the question, not by the answers */
+    margin-bottom: 0;
+    min-height: 170px;
+    padding: 32px 24px;
+  }
+  /* Status pills read as a group in the middle rather than three items
+     flung to the far corners of a 1080px row. */
+  #s-game.active > .game-stats { justify-content: center; gap: 14px; }
+
+  /* v82 (Laura): tighten the strip above the question. On a laptop the
+     back link, stats, progress bar and nudge line were eating ~170px of
+     vertical space before the question even started, which is what pushed
+     the tall coordinate-grid questions off the bottom. Now ~105px. */
+  #s-game.active > .back-btn { padding: 4px 0 6px; }
+  #s-game.active > .game-stats { padding: 6px 0 8px; }
+  #s-game.active > .prog-wrap { margin-bottom: 8px; }
+  #s-game.active > .pb-nudge { margin-bottom: 4px; min-height: 0; }
+  #s-game.active > .q-box { padding: 24px 26px; }
+  #s-game.active .q-text { font-size: 3.1rem; }
+  #s-game.active > .ctrl-row { margin-top: 20px; }
+
+  /* Diagrams get their own column now, so they no longer have to be squashed
+     to keep the answers on screen (this supersedes the v57 200px cap). */
+  /* #qBox is a flex row, so its child is shrink-to-fit — without this the
+     diagram can never grow past its natural 300px inside the wide column. */
+  #s-game.active > .q-box > * { width: 100%; }
+  /* v82/v83: a diagram may never be taller than the space actually left on
+     screen. The SVGs keep their default preserveAspectRatio, so clamping
+     the box height letterboxes them — it never distorts the picture.
+     v83: the reserved 420px was too pessimistic — the header strip is only
+     ~105px and the answer side rarely needs more than ~200px — so diagrams
+     came out smaller than they needed to be. 330px is the real budget. */
+  #s-game.active #qBox svg {
+    width: 100%; height: auto;
+    max-width: 460px;
+    max-height: calc(100vh - 330px);
+  }
+
+  /* v83: question CONTENT scales up on a big screen, not just the box around
+     it. --qlbl drives every generated prompt (A_LBL), --qtbl the timetable. */
+  #s-game.active .q-box { --qlbl: 1.12rem; --qtbl: 1.02rem; --qtblpad: 8px 13px; }
+  /* The answer-side hint lines are inline-styled in the HTML at 0.82rem, which
+     a media query cannot override without !important. */
+  #s-game.active #idxInstruction,
+  #s-game.active #algInstruction,
+  #s-game.active #algTypeHint,
+  #s-game.active #factorHint,
+  #s-game.active #gapHint,
+  #s-game.active #msInstr,
+  #s-game.active #plotInstr,
+  #s-game.active .arrange-instr,
+  #s-game.active .simplify-notice { font-size: 0.98rem !important; }
+  /* Note: the plot/coordinate SVGs set their own max-width inline (430–460px),
+     which wins over the 400px above — deliberate, they need the room. The
+     height cap still applies to them, because it is not set inline. */
+  #s-game.choice-active .q-box { padding-top: 32px; padding-bottom: 32px; }
+
+  /* Answer controls fill the right column instead of hugging a 360px core. */
+  #s-game.active .choice-grid,
+  #s-game.active .choice-grid.wide,
+  #s-game.active .arrange-answer,
+  #s-game.active .arrange-pool,
+  #s-game.active .arrange-ctrls { max-width: 100%; }
+  #s-game.active .ans-input { font-size: 2.4rem; }
+}
+
+/* Very large monitors: cap the question column so the two halves don't
+   drift so far apart that the eye has to travel between them. */
+@media (min-width: 1400px) {
+  .app { max-width: 1180px; }
+}
 </style>
 </head>
 <body>
@@ -1657,9 +1860,10 @@ body {
     <span class="ob-replay-btn" onclick="openBackup()" style="font-size:0.75rem">💾 Backup</span>
   </div>
 
-  <div class="habit-card" id="habitCard"></div>
-
-  <button class="mix-btn" onclick="openDailyMix()">🎲 Daily Mix <span>— 4 skills picked for you</span></button>
+  <div class="home-top">
+    <div class="habit-card" id="habitCard"></div>
+    <button class="mix-btn" onclick="openDailyMix()">🎲 Daily Mix <span>— 4 skills picked for you</span></button>
+  </div>
 
   <div class="sess-toggle">
     <button id="btn-fluency"   onclick="setMode('fluency')">⏱ Fluency<br>60s</button>
@@ -1748,11 +1952,13 @@ body {
 
   </div>
 
-  <button class="btn-ghost" onclick="goLeaderboard()">🏆  Personal Bests</button>
-  <div style="height:8px"></div>
-  <button class="btn-ghost" onclick="goToday()" id="todayBtn" style="border-color:var(--accent);color:var(--accent)">📋  Today's Sessions &amp; Share</button>
-  <div style="height:8px"></div>
-  <button class="btn-ghost" onclick="replayTutorial()" style="font-size:0.85rem;padding:10px">📖  Replay Tutorial</button>
+  <div class="home-foot">
+    <button class="btn-ghost" onclick="goLeaderboard()">🏆  Personal Bests</button>
+    <div style="height:8px"></div>
+    <button class="btn-ghost" onclick="goToday()" id="todayBtn" style="border-color:var(--accent);color:var(--accent)">📋  Today's Sessions &amp; Share</button>
+    <div style="height:8px"></div>
+    <button class="btn-ghost" onclick="replayTutorial()" style="font-size:0.85rem;padding:10px">📖  Replay Tutorial</button>
+  </div>
 </div>
 
 <!-- ══════════════ DAILY MIX ══════════════ -->
@@ -8379,7 +8585,10 @@ function algAnswerStr(slots) {
 /* v25: format a standalone signed integer with a proper minus (−) for worked steps */
 function sgnNum(n) { return n < 0 ? '−' + Math.abs(n) : String(n); }
 
-const A_LBL = 'font-size:0.95rem;font-weight:800;color:var(--muted);margin-bottom:8px;';
+/* v83: the size is a CSS variable so the desktop stylesheet can scale every
+   question prompt at once. Inline styles can't be overridden by a media query,
+   and this label is used by 170+ generators. Falls back to 0.95rem (phone). */
+const A_LBL = 'font-size:var(--qlbl,0.95rem);font-weight:800;color:var(--muted);margin-bottom:8px;';
 
 /* Parse a typed linear answer like "7x", "8x + 2y", "3x - 6", "x", "-x + 4"
    into a map {variable: coefficient} ('' key = constant). Returns null if the
