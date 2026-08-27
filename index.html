@@ -1,4 +1,4 @@
-<!-- Sandy Fast Facts — v83 (Laura). 🔍 DESKTOP SIZING, SPLIT THE DIFFERENCE: v82 over-reserved vertical space (420px) so diagrams came out smaller than they had to; the budget is now calc(100vh - 330px) and the cap 460px. Question CONTENT also scales on a big screen — A_LBL now reads its size from --qlbl (a CSS variable, because a media query cannot override an inline style) and the timetable from --qtbl, so prompts and tables grow with the column instead of staying at phone size. v82 notes follow. internal v82: 📏 TIGHTER GAME HEADER ON DESKTOP: the back link / stats / progress / nudge strip is trimmed from ~170px to ~105px and diagrams are capped at calc(100vh - 420px), so the tall coordinate-grid and plot questions fit without scrolling. CSS only, ≥900px only. v81 notes follow. internal v81: 🎯 START BUTTON IS ALWAYS REACHABLE: #levelStartBtn is position:sticky at every width, so on a 6-level skill it rides the bottom of the window instead of hiding below the cards, and settles into the flow once the list fits. On desktop the level grid is now auto-fill minmax(300px) — 3 across on a 1080px frame — so even the worst case (six levels) needs no scrolling. CSS only. v80 notes follow. internal v80: 🖥 DESKTOP LAYOUT: additive CSS in one @media (min-width:900px) block plus two harmless wrapper divs on the home screen (.home-top, .home-foot). The frame widens to 1080px, categories go 3-across, skills and levels 2-across, and the GAME screen becomes two columns (question left, answering right) via grid auto-placement — no JS, no ids, no question logic touched. Under 900px every rule is unchanged, so all phone layouts are byte-identical to v79. v79 notes follow. internal v79: 🧩 OTHER IS RENAMED 🔄 TIME & TRANSFORMATIONS — display only: the CATS key stays 'other', so every stored Personal Best, streak and share line is untouched, and the dashboard .bas keys on SKILL names so it is unaffected too. SIX NEW TRANSFORMATION SKILLS, all built on one engine: every transformation in the program is an affine map whose matrix has exactly one non-zero entry per row, so applying one is two lines, COMPOSING two stays in the same family (which is what lets the Combinations skill print a single mapping for a chain), and the mapping notation is rendered straight off the matrix so the words and the notation can never drift apart. Translations (L1 one-axis slide · L2 two-axis · L3 describe it from the drawn points · L4 read the mapping · L5 apply the mapping · L6 find the pre-image), Reflections (same six; L1 the axes, L2 adds y = x), Dilations from the Origin (ONE apply level per Laura — a dilation from the origin is always a single step — then the same four; factors 2, 3, 4, ½ and ⅓ on a ±10 window because a factor of 4 leaves the −5…5 box immediately), Rotations about the Origin (L1 half turns only, L2 the quarter turns clockwise and anticlockwise; the describe-it levels are restricted to the three CANONICAL names because 90° clockwise and 270° anticlockwise are the SAME map and would otherwise be two right answers), Combinations of Transformations (NO describe-in-words level, per Laura — two points can be joined by any number of chains — so L1/L2 apply a chain of two then three, and the mapping levels survive because a mapping IS the composite), and Transformations of 2D Shapes (Yr 7–8: translate, reflect, identify, dilate, rotate and un-transform a whole shape by TAPPING its image corners, on a coarser −4…4 grid so a corner is an easy tap on a phone). One subtle guard worth remembering: two DIFFERENT transformations can still agree on ONE point — (2, −2) goes to (−2, 2) under both a half turn and a reflection in y = x — so a describe-it distractor is only safe if it fails on THAT point, not merely if it is a different map. Purely additive apart from the category label: no existing skill, level, id or band changed. All new bands are PLACEHOLDERS pending class data. internal v78.4 FIXES: (1) TYPING WAS DEAD on any narrow screen — the "is this a phone" test was window width ALONE, so a laptop with a narrow window (or the app in a preview pane) got the readonly-input trick meant to suppress a phone keyboard, with no way to type. A phone must now ALSO have a coarse primary pointer, and the first real key press from a physical keyboard unlocks every box and hides the keypad for the rest of the session. (2) THE PLOT GRID WAS SQUASHED — #qBox is a flex container and plotRender was handing it two or three children, so the prompt, story and grid became columns; wrapped in a single .q-text child, and the plot/graph SVGs now scale to the available width (up to 460px) instead of sitting at a fixed 300px. (3) DISTANCE-TIME JOURNEYS CAN NOW RETURN HOME — a stage may head back towards home so the graph comes down, and some journeys finish at 0 km; the line can never go below 0, "fastest" and "speed" compare magnitudes, and the story says "back towards home" / "the last N km home". internal v78.3: NEW CATEGORY 🧩 OTHER (Laura) — the practical, everyday-maths corner, placed last: Converting Units of Time (Yr 7: sec/min/hour · hour/day/week · week/month/year · compound times both ways), Train & Bus Timetables (Yr 7: read the table · trip length in minutes · latest service that still arrives in time · minutes until the next service, with 24-hour and 12-hour clocks mixed) and Distance-Time Graphs (Yr 7–8: read the distance · which stage is stationary/fastest · BUILD or finish the graph by tapping the corner of each stage · speed of a labelled stage). Coordinate Geometry gains Applications of Linear Graphs (Yr 8–9: rate or starting amount from P = −35 + 4c · write y = a + bx from a story · build its table · write ax + by = d from a two-item total). The plotPts mode is now axis-agnostic and can mark an ORDERED path, which is what the distance-time construct level uses. Purely additive — no existing skill, level, id or band changed. internal v78.2: 📈 COORDINATE GEOMETRY grows (Laura). The Cartesian Plane gains L4 — three corners of a rectangle, square or labelled parallelogram ABCD are plotted and the student writes the coordinates of the fourth. NEW skill Table of Values (Yr 7–8: L1 build a linear table from a rule · L2 PLOT that table on the plane · L3 build a non-linear table (x², x³, 2ˣ) · L4 plot a non-linear table). x- and y-Intercepts gains a new L2 — read both intercepts off a table of values — pushing y-int/x-int/both down to L3/L4/L5 (safe: no student has played Coordinate Geometry yet). NEW INPUT MODE plotPts: the drawn Cartesian plane itself is the answer surface — every lattice point carries an invisible tap target, tap to place or remove a marker, all-or-nothing marking, and the marking is drawn back onto the grid. internal v78.0: Yr 7–9 SEQUENCES in 💰 Finance & Patterns (Laura). NEW Sequence Rules in Words (Yr 7: L1 first term · L2 the term-to-term rule in words as a 4-way tap (add / subtract / multiply / divide / square numbers) · L3 next two terms · L4 write the first five terms from a starting value and a worded rule · L5 read a term off the sequence from aₙ notation). NEW Arithmetic Sequences (Yr 7–8: L1 common difference d · L2 next three terms · L3 fill a₁ and d into aₙ = a₁ + (n − 1)d · L4 use the rule to find a required term). NEW Geometric Sequences (Yr 8–9: L1 common ratio r · L2 next three terms · L3 fill a₁ and r into aₙ = a₁ × rⁿ⁻¹ · L4 use the rule to find a required term). The existing Sequences skill is RENAMED "Arithmetic & Geometric Sequences" and otherwise untouched (id, lvKey, levels and bands all unchanged) — it stays as the higher-order one where the student decides which kind it is. gapFill grows from four boxes to FIVE (gap4), with narrower boxes on a five-box row. All new bands are PLACEHOLDERS pending class data. internal v77.0: THREE NEW CATEGORIES and one new Number skill. ◡ Quadratics — Verify Solutions to Quadratic Equations (L1 x²=k · L2 factorised · L3 trinomial, Yes/No) and Solve Quadratic Equations (L1 x²=k · L2 exact values/fractions as multiple choice · L3 Null Factor Law · L4 monic trinomials). 📈 Coordinate Geometry — The Cartesian Plane (quadrant · read a plotted coordinate), Linear or Non-Linear (from a graph · from an equation), x- and y-Intercepts (y-int · x-int · both from ax+by=c) and Gradient of a Line Segment (whole · from a diagram · fractions & negatives). 💰 Finance & Patterns — GST (10%: added · price incl · removed), Simple Interest (5 levels on Vn = V0 + nD, D = r/100 × V0), Sequences (classify · next term · arithmetic rule · geometric rule), Recurrence Relations (write · use) and Flat Rate Depreciation (5 levels on Vn = V0 − nD). Number gains Number Classification (rational/irrational · tick every set). TWO NEW INPUT MODES: gapFill (a rendered rule/coordinate/solution template with up to five numeric boxes, all-or-nothing, optional order-free marking) and multiSel (tick every box that applies, all-or-nothing). Purely additive — no existing skill, level, id or band changed; all new bands are PLACEHOLDERS pending class data. internal v76.0: Congruence & Similarity now distinguish "provably false" from "unknown". L3 adds a 6th button "Not similar" (sides given but not in a constant ratio — the case a student CAN disprove, e.g. 5,8,11 vs 10,18,22); L2 adds a 6th button "Not congruent" via a new DIFF scenario that labels side lengths that don't all match. "Not enough information" now means only the genuinely undetermined cases (SSA, AAA-for-congruence, one angle, two sides). csSimilarityVerdict/csCongruenceVerdict extended; fixed 6-button order; storage-safe (no skill/level renamed or reordered). v75.0: NEW Percentages skills — Convert Percentages & Decimals (pctDecConv, both directions, number box) and Convert Fractions & Percentages (fracPctConv: L1–2 fraction→% number box, L3–4 %→fraction box; direction fixed per level via levelModes). Both single-question (not the FDP fill-in table), placed before Convert FDP; recall/Fluent-eligible with PLACEHOLDER bands (recalibrate with class data). Recurring values (33⅓% etc.) accepted within a per-question tolerance via qData.ansTol. Storage-safe additive change. v74.9: band cut-offs revised across the whole program from Laura's reviewed spreadsheet — 95 skill-levels re-banded via explicit per-level BAND_OVERRIDE entries (app matches the sheet on all 330 rows). v74.8: Decimals band targets LOWERED (Laura) so quick+accurate students reach higher animals — Identify/Expanded Form/Convert D→F −2; Rounding & Add/Subtract Decimals −3; all ×/÷ decimal operations (Multiply, Divide, ×÷ by 10/100/1000, Squares & Cubes, Square/Cube Roots, signed ×÷, ×fractions) −4. Display-only/storage-safe; .bas regenerated. v74.7: more Decimals (Laura) — NEW skills Add & Subtract Decimals (Positive & Negative), Multiply Decimals & Fractions (decFrac), Multiply & Divide Decimals (Positive & Negative), Leading Digit Estimation (round-to-1sf → estimate → BODMAS), Square Roots & Cube Roots of Decimals; NEW word-problem L4 on Multiply Decimals and Divide Decimals; Squares & Cubes of Decimals moved after Multiply Decimals & Fractions. v74.6: Add & Subtract Decimals L4 word problems; Add & Subtract Fractions & Decimals; Rounding Decimals L3 round-then-estimate. v74.5: miss reviews work THIS question's numbers step-by-step; Angles-in-Polygons L4; deeper concave polygons) -->
+<!-- Sandy Fast Facts — v84 (Laura). 📊 NEW CATEGORY: DATA ANALYSIS (Release 1 of 3). Four reusable display engines — daDotPlot, daStemHtml, daHistogram, daBoxPlot — each driven by DATA and working out its own scale, so Release 2 (mean/mode/median/range) re-uses them unchanged. Three skills: Classifying Data, Frequency Tables (read · from a raw list · grouped class intervals · percentage frequency, with totals restricted to 20/25/50 so every percentage is exact) and Reading Data Displays (one level per display, so every engine is student-tested now rather than sitting unused until Release 2). All bands are PLACEHOLDERS and every level is METHOD (accuracy-first, no Fluent badge) until class data exists. Purely additive: no existing skill, level, id or band changed. v83 notes follow. internal v83: 🔍 DESKTOP SIZING, SPLIT THE DIFFERENCE: v82 over-reserved vertical space (420px) so diagrams came out smaller than they had to; the budget is now calc(100vh - 330px) and the cap 460px. Question CONTENT also scales on a big screen — A_LBL now reads its size from --qlbl (a CSS variable, because a media query cannot override an inline style) and the timetable from --qtbl, so prompts and tables grow with the column instead of staying at phone size. v82 notes follow. internal v82: 📏 TIGHTER GAME HEADER ON DESKTOP: the back link / stats / progress / nudge strip is trimmed from ~170px to ~105px and diagrams are capped at calc(100vh - 420px), so the tall coordinate-grid and plot questions fit without scrolling. CSS only, ≥900px only. v81 notes follow. internal v81: 🎯 START BUTTON IS ALWAYS REACHABLE: #levelStartBtn is position:sticky at every width, so on a 6-level skill it rides the bottom of the window instead of hiding below the cards, and settles into the flow once the list fits. On desktop the level grid is now auto-fill minmax(300px) — 3 across on a 1080px frame — so even the worst case (six levels) needs no scrolling. CSS only. v80 notes follow. internal v80: 🖥 DESKTOP LAYOUT: additive CSS in one @media (min-width:900px) block plus two harmless wrapper divs on the home screen (.home-top, .home-foot). The frame widens to 1080px, categories go 3-across, skills and levels 2-across, and the GAME screen becomes two columns (question left, answering right) via grid auto-placement — no JS, no ids, no question logic touched. Under 900px every rule is unchanged, so all phone layouts are byte-identical to v79. v79 notes follow. internal v79: 🧩 OTHER IS RENAMED 🔄 TIME & TRANSFORMATIONS — display only: the CATS key stays 'other', so every stored Personal Best, streak and share line is untouched, and the dashboard .bas keys on SKILL names so it is unaffected too. SIX NEW TRANSFORMATION SKILLS, all built on one engine: every transformation in the program is an affine map whose matrix has exactly one non-zero entry per row, so applying one is two lines, COMPOSING two stays in the same family (which is what lets the Combinations skill print a single mapping for a chain), and the mapping notation is rendered straight off the matrix so the words and the notation can never drift apart. Translations (L1 one-axis slide · L2 two-axis · L3 describe it from the drawn points · L4 read the mapping · L5 apply the mapping · L6 find the pre-image), Reflections (same six; L1 the axes, L2 adds y = x), Dilations from the Origin (ONE apply level per Laura — a dilation from the origin is always a single step — then the same four; factors 2, 3, 4, ½ and ⅓ on a ±10 window because a factor of 4 leaves the −5…5 box immediately), Rotations about the Origin (L1 half turns only, L2 the quarter turns clockwise and anticlockwise; the describe-it levels are restricted to the three CANONICAL names because 90° clockwise and 270° anticlockwise are the SAME map and would otherwise be two right answers), Combinations of Transformations (NO describe-in-words level, per Laura — two points can be joined by any number of chains — so L1/L2 apply a chain of two then three, and the mapping levels survive because a mapping IS the composite), and Transformations of 2D Shapes (Yr 7–8: translate, reflect, identify, dilate, rotate and un-transform a whole shape by TAPPING its image corners, on a coarser −4…4 grid so a corner is an easy tap on a phone). One subtle guard worth remembering: two DIFFERENT transformations can still agree on ONE point — (2, −2) goes to (−2, 2) under both a half turn and a reflection in y = x — so a describe-it distractor is only safe if it fails on THAT point, not merely if it is a different map. Purely additive apart from the category label: no existing skill, level, id or band changed. All new bands are PLACEHOLDERS pending class data. internal v78.4 FIXES: (1) TYPING WAS DEAD on any narrow screen — the "is this a phone" test was window width ALONE, so a laptop with a narrow window (or the app in a preview pane) got the readonly-input trick meant to suppress a phone keyboard, with no way to type. A phone must now ALSO have a coarse primary pointer, and the first real key press from a physical keyboard unlocks every box and hides the keypad for the rest of the session. (2) THE PLOT GRID WAS SQUASHED — #qBox is a flex container and plotRender was handing it two or three children, so the prompt, story and grid became columns; wrapped in a single .q-text child, and the plot/graph SVGs now scale to the available width (up to 460px) instead of sitting at a fixed 300px. (3) DISTANCE-TIME JOURNEYS CAN NOW RETURN HOME — a stage may head back towards home so the graph comes down, and some journeys finish at 0 km; the line can never go below 0, "fastest" and "speed" compare magnitudes, and the story says "back towards home" / "the last N km home". internal v78.3: NEW CATEGORY 🧩 OTHER (Laura) — the practical, everyday-maths corner, placed last: Converting Units of Time (Yr 7: sec/min/hour · hour/day/week · week/month/year · compound times both ways), Train & Bus Timetables (Yr 7: read the table · trip length in minutes · latest service that still arrives in time · minutes until the next service, with 24-hour and 12-hour clocks mixed) and Distance-Time Graphs (Yr 7–8: read the distance · which stage is stationary/fastest · BUILD or finish the graph by tapping the corner of each stage · speed of a labelled stage). Coordinate Geometry gains Applications of Linear Graphs (Yr 8–9: rate or starting amount from P = −35 + 4c · write y = a + bx from a story · build its table · write ax + by = d from a two-item total). The plotPts mode is now axis-agnostic and can mark an ORDERED path, which is what the distance-time construct level uses. Purely additive — no existing skill, level, id or band changed. internal v78.2: 📈 COORDINATE GEOMETRY grows (Laura). The Cartesian Plane gains L4 — three corners of a rectangle, square or labelled parallelogram ABCD are plotted and the student writes the coordinates of the fourth. NEW skill Table of Values (Yr 7–8: L1 build a linear table from a rule · L2 PLOT that table on the plane · L3 build a non-linear table (x², x³, 2ˣ) · L4 plot a non-linear table). x- and y-Intercepts gains a new L2 — read both intercepts off a table of values — pushing y-int/x-int/both down to L3/L4/L5 (safe: no student has played Coordinate Geometry yet). NEW INPUT MODE plotPts: the drawn Cartesian plane itself is the answer surface — every lattice point carries an invisible tap target, tap to place or remove a marker, all-or-nothing marking, and the marking is drawn back onto the grid. internal v78.0: Yr 7–9 SEQUENCES in 💰 Finance & Patterns (Laura). NEW Sequence Rules in Words (Yr 7: L1 first term · L2 the term-to-term rule in words as a 4-way tap (add / subtract / multiply / divide / square numbers) · L3 next two terms · L4 write the first five terms from a starting value and a worded rule · L5 read a term off the sequence from aₙ notation). NEW Arithmetic Sequences (Yr 7–8: L1 common difference d · L2 next three terms · L3 fill a₁ and d into aₙ = a₁ + (n − 1)d · L4 use the rule to find a required term). NEW Geometric Sequences (Yr 8–9: L1 common ratio r · L2 next three terms · L3 fill a₁ and r into aₙ = a₁ × rⁿ⁻¹ · L4 use the rule to find a required term). The existing Sequences skill is RENAMED "Arithmetic & Geometric Sequences" and otherwise untouched (id, lvKey, levels and bands all unchanged) — it stays as the higher-order one where the student decides which kind it is. gapFill grows from four boxes to FIVE (gap4), with narrower boxes on a five-box row. All new bands are PLACEHOLDERS pending class data. internal v77.0: THREE NEW CATEGORIES and one new Number skill. ◡ Quadratics — Verify Solutions to Quadratic Equations (L1 x²=k · L2 factorised · L3 trinomial, Yes/No) and Solve Quadratic Equations (L1 x²=k · L2 exact values/fractions as multiple choice · L3 Null Factor Law · L4 monic trinomials). 📈 Coordinate Geometry — The Cartesian Plane (quadrant · read a plotted coordinate), Linear or Non-Linear (from a graph · from an equation), x- and y-Intercepts (y-int · x-int · both from ax+by=c) and Gradient of a Line Segment (whole · from a diagram · fractions & negatives). 💰 Finance & Patterns — GST (10%: added · price incl · removed), Simple Interest (5 levels on Vn = V0 + nD, D = r/100 × V0), Sequences (classify · next term · arithmetic rule · geometric rule), Recurrence Relations (write · use) and Flat Rate Depreciation (5 levels on Vn = V0 − nD). Number gains Number Classification (rational/irrational · tick every set). TWO NEW INPUT MODES: gapFill (a rendered rule/coordinate/solution template with up to five numeric boxes, all-or-nothing, optional order-free marking) and multiSel (tick every box that applies, all-or-nothing). Purely additive — no existing skill, level, id or band changed; all new bands are PLACEHOLDERS pending class data. internal v76.0: Congruence & Similarity now distinguish "provably false" from "unknown". L3 adds a 6th button "Not similar" (sides given but not in a constant ratio — the case a student CAN disprove, e.g. 5,8,11 vs 10,18,22); L2 adds a 6th button "Not congruent" via a new DIFF scenario that labels side lengths that don't all match. "Not enough information" now means only the genuinely undetermined cases (SSA, AAA-for-congruence, one angle, two sides). csSimilarityVerdict/csCongruenceVerdict extended; fixed 6-button order; storage-safe (no skill/level renamed or reordered). v75.0: NEW Percentages skills — Convert Percentages & Decimals (pctDecConv, both directions, number box) and Convert Fractions & Percentages (fracPctConv: L1–2 fraction→% number box, L3–4 %→fraction box; direction fixed per level via levelModes). Both single-question (not the FDP fill-in table), placed before Convert FDP; recall/Fluent-eligible with PLACEHOLDER bands (recalibrate with class data). Recurring values (33⅓% etc.) accepted within a per-question tolerance via qData.ansTol. Storage-safe additive change. v74.9: band cut-offs revised across the whole program from Laura's reviewed spreadsheet — 95 skill-levels re-banded via explicit per-level BAND_OVERRIDE entries (app matches the sheet on all 330 rows). v74.8: Decimals band targets LOWERED (Laura) so quick+accurate students reach higher animals — Identify/Expanded Form/Convert D→F −2; Rounding & Add/Subtract Decimals −3; all ×/÷ decimal operations (Multiply, Divide, ×÷ by 10/100/1000, Squares & Cubes, Square/Cube Roots, signed ×÷, ×fractions) −4. Display-only/storage-safe; .bas regenerated. v74.7: more Decimals (Laura) — NEW skills Add & Subtract Decimals (Positive & Negative), Multiply Decimals & Fractions (decFrac), Multiply & Divide Decimals (Positive & Negative), Leading Digit Estimation (round-to-1sf → estimate → BODMAS), Square Roots & Cube Roots of Decimals; NEW word-problem L4 on Multiply Decimals and Divide Decimals; Squares & Cubes of Decimals moved after Multiply Decimals & Fractions. v74.6: Add & Subtract Decimals L4 word problems; Add & Subtract Fractions & Decimals; Rounding Decimals L3 round-then-estimate. v74.5: miss reviews work THIS question's numbers step-by-step; Angles-in-Polygons L4; deeper concave polygons) -->
 <!-- Viewport (v48): dropped `maximum-scale=1.0, user-scalable=no`. iOS ignored it (so pinch worked there anyway) but Android obeyed it, blocking accessibility pinch-zoom. Accidental double-tap-to-zoom is killed per-control via `touch-action: manipulation` instead, which leaves deliberate pinch-zoom intact on every platform. -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -63,6 +63,14 @@ body.dark {
 button, a, input, textarea, select, label, [onclick], .kb-key {
   touch-action: manipulation;
 }
+/* v86 (Laura): double-tap-to-zoom came back, because the rule above only covers
+   controls — a double tap on the PAGE (the question card, a diagram, the gap
+   between buttons) still zoomed, and during a fast drill that is most of the
+   screen. `manipulation` on the root disables the double-tap gesture while
+   LEAVING PINCH-ZOOM INTACT (that is the difference between `manipulation` and
+   `none`), so the accessibility requirement from v48 still holds. */
+html, body { touch-action: manipulation; }
+#s-game, #s-game * { touch-action: manipulation; }
 
 body {
   font-family: 'Nunito', sans-serif;
@@ -560,6 +568,20 @@ body {
 .tt-table th { background: var(--border); color: var(--text); font-weight: 900; }
 .tt-table td.tt-stop { text-align: left; font-weight: 900; }
 .tt-table td.tt-hi { background: var(--accent); color: #fff; }
+
+/* Data Analysis tables (v84) — frequency tables and stem-and-leaf plots.
+   Sizes read the same --qtbl / --qtblpad variables as the timetable, so they
+   stay phone-sized on a phone and scale up on a desktop (see v83). */
+.da-table { border-collapse: collapse; margin: 12px auto 0; font-weight: 800; }
+.da-table th, .da-table td {
+  border: 1px solid var(--border); padding: var(--qtblpad, 5px 12px); text-align: center;
+  font-size: var(--qtbl, 0.9rem); white-space: nowrap;
+}
+.da-table th { background: var(--border); color: var(--text); font-weight: 900; }
+.da-table td.da-lbl { text-align: left; font-weight: 900; }
+.da-stem td.da-stem-st { font-weight: 900; color: var(--accent); }
+.da-stem td.da-leaf { text-align: left; letter-spacing: 2px; min-width: 120px; }
+.da-key { font-size: var(--qtbl, 0.82rem); color: var(--muted); font-weight: 800; margin-top: 8px; text-align: center; }
 
 /* Multi-select (tick every set that applies) — v77 */
 .ms-grid {
@@ -1505,6 +1527,27 @@ body {
   }
   .q-text { font-size: 2rem; }
 
+  /* ── v86 (Laura): TALL QUESTIONS vs THE KEYPAD ──
+     The question box is sticky at the top and sized to its content. On a
+     coordinate-plane question that content is a ~300px grid, so with the
+     keypad pinned at the bottom the answer box was squeezed into — or right
+     under — the gap between them, and the student could not see what they had
+     typed. While the keypad is open the diagram is capped at 34vh and the whole
+     card at 46vh, which always leaves a clear band for the answer. The cap is
+     only applied WITH the keypad open (body.kb-open), so tap-to-answer
+     questions — plotPts, multiple choice — keep the full-size grid they need. */
+  body.kb-open #s-game #qBox svg { max-height: var(--qsvgcap, 30vh); width: 100%; height: auto; }
+  body.kb-open #s-game .q-box    { max-height: var(--qcap, 40vh); overflow-y: auto; }
+
+  /* ── v86 (Laura): rule / recurrence templates stay on ONE line ──
+     A template that wrapped mid-expression ("aₙ = a₁ + (n − 1)" / "d") reads as
+     two different things. The row no longer wraps; if it is still too wide for
+     the phone, gapFitOneLine() scales it down to fit. */
+  .gap-row { flex-wrap: nowrap; font-size: 1.2rem; gap: 3px; }
+  .gap-row .gap-box { width: 62px; font-size: 1.1rem; padding: 8px 3px; }
+  .gap-row.gap-many { font-size: 1.02rem; }
+  .gap-row.gap-many .gap-box { width: 46px; font-size: 0.95rem; padding: 8px 2px; }
+
   /* ── Fraction input: smaller boxes ── */
   .frac-num-input,
   .frac-den-input {
@@ -1948,6 +1991,11 @@ body {
       <span class="cat-icon">🔄</span>
       <div class="cat-name">Time &amp; Transformations</div>
       <div class="cat-desc">Time, timetables, distance-time graphs &amp; transformations</div>
+    </div>
+    <div class="cat-card" onclick="openCat('data')">
+      <span class="cat-icon">📊</span>
+      <div class="cat-name">Data Analysis</div>
+      <div class="cat-desc">Classify data, frequency tables, dot plots, stem plots, histograms &amp; box plots</div>
     </div>
 
   </div>
@@ -2722,6 +2770,18 @@ const CATS = {
       { id:'combine',     name:'Combinations of Transformations',inputMode:'gapFill', lvKey:'cmb', levelModes:{3:'choice'} },
       { id:'shapeTrans',  name:'Transformations of 2D Shapes',   inputMode:'plotPts', lvKey:'stf', levelModes:{3:'choice'} },
     ]
+  },
+  /* v84 (Laura) — 📊 DATA ANALYSIS, Release 1: the display engines plus the two
+     skills that need no calculation, and one skill that reads a value off each
+     display. Mean / mode / median / range / shape / outliers follow in later
+     releases and re-use these same engines. */
+  data: {
+    label: '📊 Data Analysis',
+    skills: [
+      { id:'dataClassify', name:'Classifying Data',      inputMode:'choice', lvKey:'dcl' },
+      { id:'freqTables',   name:'Frequency Tables',      inputMode:'number', lvKey:'fqt', levelModes:{3:'choice'} },
+      { id:'dataRead',     name:'Reading Data Displays', inputMode:'number', lvKey:'drd' },
+    ]
   }
 };
 
@@ -2786,6 +2846,8 @@ const SKILL_YEAR = {
   // v79 — transformations
   translate:'Yr 7–8', reflect:'Yr 7–8', dilate:'Yr 8–9', rotate:'Yr 8',
   combine:'Yr 8–9', shapeTrans:'Yr 7–8',
+  // v84 — Data Analysis
+  dataClassify:'Yr 7–8', freqTables:'Yr 7–9', dataRead:'Yr 7–10',
   // v77 — Finance & Patterns
   gst:'Yr 8–9', simpleInterest:'Yr 9–10', sequences:'Yr 10', recurrence:'Yr 10', flatDep:'Yr 10',
   // v78 — Yr 7–9 sequence work
@@ -3290,9 +3352,12 @@ const LEVEL_DEFS = {
     { title:'Level 3 — Harder', desc:'Larger numbers; simplify each surd, then combine.', examples:['√50 + √8 → 7√2', '√75 − √12 → 3√3', '√20 + √45 → 5√5'] },
   ],
   smul: [
-    { title:'Level 1 — Multiply Roots', desc:'√a × √b = √(ab). Simplify your answer.', examples:['√3 × √6 → 3√2', '√2 × √5 → √10', '√6 × √2 → 2√3'] },
-    { title:'Level 2 — With Coefficients', desc:'Multiply the numbers in front and the roots separately, then simplify.', examples:['2√3 × 4√2 → 8√6', '3√2 × √6 → 6√3', '2√5 × 3√5 → 30'] },
-    { title:'Level 3 — Harder', desc:'Bigger numbers; the answer may simplify to a whole number.', examples:['√8 × √6 → 4√3', '2√6 × 3√8 → 24√3', '√12 × √3 → 6'] },
+    /* v86 (Laura): L1 is the RULE ONLY — nothing here ever simplifies, so a
+       student can master √a × √b = √(ab) before meeting square factors. */
+    { title:'Level 1 — The Rule Only', desc:'√a × √b = √(ab). These answers never simplify — except when the roots match, where √k × √k = k.', examples:['√5 × √2 → √10', '2√3 × 3√5 → 6√15', '3√2 × 2√2 → 12'] },
+    { title:'Level 2 — Multiply & Simplify', desc:'√a × √b = √(ab). Now the answer may have a square factor — simplify it.', examples:['√3 × √6 → 3√2', '√2 × √5 → √10', '√6 × √2 → 2√3'] },
+    { title:'Level 3 — With Coefficients', desc:'Multiply the numbers in front and the roots separately, then simplify.', examples:['2√3 × 4√2 → 8√6', '3√2 × √6 → 6√3', '2√5 × 3√5 → 30'] },
+    { title:'Level 4 — Harder', desc:'Bigger numbers; the answer may simplify to a whole number.', examples:['√8 × √6 → 4√3', '2√6 × 3√8 → 24√3', '√12 × √3 → 6'] },
   ],
   sdiv: [
     { title:'Level 1 — Divide Roots', desc:'√a ÷ √b = √(a÷b). Simplify your answer.', examples:['√18 ÷ √2 → 3', '√12 ÷ √3 → 2', '√20 ÷ √5 → 2'] },
@@ -3521,6 +3586,25 @@ const LEVEL_DEFS = {
     { title:'Level 1 — First Quadrant', desc:'Exact values for 0, π/6, π/4, π/3, π/2 (radians). Tap the correct value.', examples:['sin(π/6)', 'cos(π/3)', 'tan(π/4)'] },
     { title:'Level 2 — Up to π', desc:'Adds 2π/3, 3π/4, 5π/6, π, where some values become negative.', examples:['cos(2π/3)', 'sin(3π/4)', 'tan(5π/6)'] },
     { title:'Level 3 — Full Circle', desc:'All special angles to 2π, including negative values and tan being undefined.', examples:['sin(7π/6)', 'tan(3π/2)', 'cos(5π/3)'] },
+  ],
+  /* ── v84 — Data Analysis (Release 1) ── */
+  dcl: [
+    { title:'Level 1 — Categorical or Numerical?', desc:'Categorical data is labels or names. Numerical data is counts or measurements.', examples:['eye colour → Categorical', 'number of pets → Numerical'] },
+    { title:'Level 2 — Nominal or Ordinal?',       desc:'Both are categorical. Ordinal categories have a natural ORDER; nominal ones do not.', examples:['favourite sport → Nominal', 'T-shirt size → Ordinal'] },
+    { title:'Level 3 — Discrete or Continuous?',   desc:'Both are numerical. Discrete data is counted in whole numbers; continuous data is measured.', examples:['number of goals → Discrete', 'height in cm → Continuous'] },
+    { title:'Level 4 — Name the Type',             desc:'All four types together. Decide categorical or numerical first, then the sub-type.', examples:['time to run 100 m → Continuous'] },
+  ],
+  fqt: [
+    { title:'Level 1 — Read a Frequency Table', desc:'Read a frequency straight off the table, find the total, or compare two categories.', examples:['How many chose Netball?', 'How many were surveyed?'] },
+    { title:'Level 2 — Frequency from a List',  desc:'Count how many times a value appears in a raw list of data.', examples:['frequency of 3 in the list'] },
+    { title:'Level 3 — Grouped Data',           desc:'Data grouped into class intervals. Decide which interval a value belongs to.', examples:['27 → the 20–29 interval'] },
+    { title:'Level 4 — Percentage Frequency',   desc:'What percentage of the group chose this category? frequency ÷ total × 100.', examples:['9 out of 25 → 36%'] },
+  ],
+  drd: [
+    { title:'Level 1 — Dot Plots',        desc:'Each dot is one data value. Count the dots above a value, or count them all.', examples:['How many scored 4?'] },
+    { title:'Level 2 — Stem-and-Leaf Plots', desc:'Each leaf is one value — always read the KEY first, because it sets the place value.', examples:['key 3 | 7 means 37', 'key 4 | 7 means 4.7'] },
+    { title:'Level 3 — Histograms & Column Graphs', desc:'Read a bar height off the frequency axis. Grouped data touches (a histogram); single values are separated (a column graph).', examples:['the 15–19 bar → 6'] },
+    { title:'Level 4 — Box Plots',        desc:'Read the five-number summary: minimum, Q1, median, Q3 and maximum.', examples:['the line in the box → the median'] },
   ],
 };
 
@@ -3866,6 +3950,14 @@ const METHOD_BAND_CEIL = {
      The point skills are quick two-number jobs; the shape skill involves three or
      four taps a question, so it is banded much lower — closer to Table of Values
      L2/L4 than to anything typed. */
+  /* v84 — Data Analysis, Release 1. ALL PLACEHOLDERS: recalibrate with class
+     data (CPM method). Every level here is METHOD (accuracy-first, no Fluent
+     badge) on purpose — inventing a fluency target would tell a student they
+     are "fluent" against a number nobody has measured. Promote the quick
+     levels to RECALL_SKILLS once a class has run them. */
+  dataClassify:[16, 14, 14, 10],
+  freqTables:[12, 10, 10, 8],
+  dataRead:[14, 12, 12, 10],
   translate:[14, 11, 12, 12, 12, 8],
   reflect:[14, 11, 12, 12, 12, 8],
   dilate:[12, 12, 12, 11, 8],
@@ -3930,7 +4022,11 @@ const METHOD_BAND_CEIL = {
   // v74.2 (Laura) — new METHOD skills. PROPOSED placeholders — recalibrate with class data.
   fracCompare:[12, 6, 5],          // L1 sign-tap · L2 order asc · L3 order desc (mirrors Compare Decimals)
   negIndices:[10, 8, 6],           // evaluate zero/negative indices
-  surdSimplify:[10, 8, 6], surdAddSub:[8, 6, 5], surdMultiply:[8, 6, 5], surdDivide:[8, 6, 5],
+  surdSimplify:[10, 8, 6], surdAddSub:[8, 6, 5],
+  /* v86: Multiply Surds gained a new L1 (rule only, no simplifying), so the old
+     three ceilings shift down one and the new level takes an easier one.
+     PLACEHOLDER for the new L1 — recalibrate with class data. */
+  surdMultiply:[12, 8, 6, 5], surdDivide:[8, 6, 5],
   pctReverse:[6, 5, 4],            // reverse percentages (multi-step)
   bestBuy:[6, 5, 4],               // unit price / best buy
   // v74.3 (Laura) — the final three skills. PROPOSED placeholders — recalibrate with class data.
@@ -4015,7 +4111,11 @@ Object.assign(BAND_OVERRIDE, {
   sciFrom_L2: [6, 12, 18, 26],   // Scientific Notation → Number L2
   sciFrom_L3: [6, 12, 18, 26],   // Scientific Notation → Number L3
   surdAddSub_L1: [6, 12, 18, 26],   // Add & Subtract Surds L1
-  surdMultiply_L1: [6, 12, 18, 26],   // Multiply Surds L1
+  /* v86: what was Multiply Surds L1 is now L2 — the override moves with it, so
+     the banding of that exact question type is unchanged. The new L1 is easier,
+     so it gets a slightly higher set of cut-offs. PLACEHOLDER. */
+  surdMultiply_L1: [8, 15, 22, 30],   // Multiply Surds L1 (NEW — rule only)
+  surdMultiply_L2: [6, 12, 18, 26],   // Multiply Surds L2 (was L1)
   surdDivide_L1: [6, 12, 18, 26],   // Divide Surds L1
   // ½ Fractions
   fracAddSub_L1: [6, 12, 18, 26],   // Add & Subtract Fractions L1
@@ -5238,6 +5338,28 @@ function buildGapFill() {
   const first = id('gap0'); if (first) first.focus();
   kbActivateInputs();
   kbShow();
+  gapFitOneLine();
+}
+
+/* v86 (Laura): keep a rule / recurrence template on ONE line on a phone.
+   The row is nowrap below 768px (see the mobile CSS), so scrollWidth is the
+   true single-line width; if that overflows, scale the row down to fit. A
+   transform only changes what is PAINTED, so the boxes keep their layout and
+   stay tappable — and the browser maps taps through the transform. */
+function gapFitOneLine() {
+  const row = id('gapRow'); if (!row) return;
+  row.style.transform = ''; row.style.transformOrigin = '';
+  if (window.innerWidth >= 768) return;
+  /* The row is a shrink-to-fit flex box, so its own clientWidth IS its content
+     width — comparing the two would never detect an overflow. Measure against
+     the space the row actually has: its parent panel, less the page padding. */
+  const parent = row.parentElement;
+  const avail = Math.max(0, (parent ? parent.clientWidth : window.innerWidth) - 8);
+  const need = row.scrollWidth;
+  if (avail > 0 && need > avail) {
+    row.style.transform = 'scale(' + Math.max(0.6, avail / need).toFixed(3) + ')';
+    row.style.transformOrigin = 'center center';
+  }
 }
 
 /* ── Multi-select (v77) — tick every set the number belongs to ──
@@ -7712,6 +7834,10 @@ function nextQ() {
   else if (skill === 'geoSeq')          { genGeoSeq(el); }
   else if (skill === 'recurrence')      { genRecurrence(el); }
   else if (skill === 'flatDep')         { genFlatDep(el); }
+  // v84 — Data Analysis
+  else if (skill === 'dataClassify')    { genDataClassify(el); }
+  else if (skill === 'freqTables')      { genFreqTables(el); }
+  else if (skill === 'dataRead')        { genDataRead(el); }
 
   enableInputs();
 }
@@ -8376,7 +8502,20 @@ function genFracDivide() {
    CHECK ANSWER
 ═══════════════════════════════════════════════ */
 // Keyboard listeners
-document.addEventListener('DOMContentLoaded', () => {
+/* v85 FIX (Laura): this whole keyboard layer used to be attached inside a
+   DOMContentLoaded listener. When the app is opened in a context where the
+   document has ALREADY finished parsing before the script runs — a preview
+   pane, an injected iframe, srcdoc, "open in new tab" from some viewers —
+   that event never fires again, so NONE of these listeners were attached:
+   no Enter to submit, no digit filtering, no keypad setup. Multiple-choice
+   questions still worked, because those are inline onclick attributes, which
+   is exactly the symptom that was reported (taps fine, Enter dead).
+   ffInitInputs() now runs immediately when the document is already parsed,
+   and is guarded so it can never attach twice. */
+let ffInputsReady = false;
+function ffInitInputs() {
+  if (ffInputsReady) return;
+  ffInputsReady = true;
   // Keypad setup — must run before any input interactions
   kbSetup();
 
@@ -8526,7 +8665,12 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!el.disabled) checkAns();
     });
   });
-});
+}
+/* NOTE: ffInitInputs() is CALLED from the BOOT block at the very end of this
+   script, not here. kbSetup() reads module-level `let`s (kbTarget, kbMode)
+   that are declared further down the file, so calling it at this point throws
+   "Cannot access 'kbTarget' before initialization" — function declarations
+   hoist, the `let`s they use do not. The late-init test caught exactly that. */
 
 /* ═══════════════════════════════════════════════
    ALGEBRA GENERATORS (v23)
@@ -12102,8 +12246,42 @@ function genSurdAddSub(el){
 }
 function genSurdMultiply(el){
   el.style.fontSize = '1.4rem';
-  if(level === 1){ const a = SURD_SQFREE[ri(6)], b = SURD_SQFREE[ri(6)]; surdSetAns(1, a*b, 'Multiply', '√' + a + ' × √' + b, '√' + a + ' × √' + b + ' = √' + (a*b) + ' = ' + surdFmt(surdSimplify(1, a*b)) + '.'); }
-  else if(level === 2){ const c = rr(2, 4), d = rr(2, 4), a = SURD_SQFREE[ri(6)], b = SURD_SQFREE[ri(6)]; surdSetAns(c*d, a*b, 'Multiply', surdTerm(c, a) + ' × ' + surdTerm(d, b), surdTerm(c, a) + ' × ' + surdTerm(d, b) + ' = ' + (c*d) + '√' + (a*b) + ' = ' + surdFmt(surdSimplify(c*d, a*b)) + '.'); }
+  /* v86 (Laura) — NEW LEVEL 1: the rule only, never the simplifying.
+     Every radicand here is a product of two DISTINCT PRIMES, which is
+     square-free by construction, so √a × √b = √(ab) can never simplify further
+     and the student is only tested on the rule. The one exception is the
+     same-root case (3√2 × 2√2), where √2 × √2 = 2 collapses to a whole number —
+     that is the other half of the rule, not a simplification step, so it
+     belongs here too. Levels 2-4 are the old L1-L3, unchanged. */
+  if(level === 1){
+    /* Primes only (and only small ones): a product of two DISTINCT primes is
+       square-free, and keeping them under 10 means the radicand stays friendly
+       (√6, √10, √14, √15, √21, √35) instead of √143. */
+    const P = [2, 3, 5, 7];
+    const kind = ri(3);
+    if (kind === 2){                       // same root → whole number
+      const k = P[ri(P.length)], c = rr(2, 4), d = rr(2, 4);
+      surdSetAns(c * d * k, 1, 'Multiply', surdTerm(c, k) + ' × ' + surdTerm(d, k),
+        surdTerm(c, k) + ' × ' + surdTerm(d, k) + ' = ' + (c * d) + ' × √' + k + ' × √' + k
+        + ' = ' + (c * d) + ' × ' + k + ' = <b>' + (c * d * k) + '</b>.');
+    } else {
+      let a = P[ri(P.length)], b = P[ri(P.length)], t = 0;
+      while (b === a && t++ < 25) b = P[ri(P.length)];
+      if (b === a) b = (a === 2) ? 3 : 2;
+      const c = (kind === 1) ? rr(2, 4) : 1, d = (kind === 1) ? rr(2, 4) : 1;
+      surdSetAns(c * d, a * b, 'Multiply',
+        (c === 1 ? '√' + a : surdTerm(c, a)) + ' × ' + (d === 1 ? '√' + b : surdTerm(d, b)),
+        (c > 1 || d > 1)
+          ? 'Multiply the numbers in front, and multiply under the roots: ' + c + ' × ' + d + ' = '
+            + (c * d) + ' and √' + a + ' × √' + b + ' = √' + (a * b) + ', giving <b>'
+            + surdFmt({ c: c * d, r: a * b }) + '</b>. It does not simplify — ' + (a * b)
+            + ' has no square factor.'
+          : '√' + a + ' × √' + b + ' = √(' + a + ' × ' + b + ') = <b>√' + (a * b)
+            + '</b>. It does not simplify — ' + (a * b) + ' has no square factor.');
+    }
+  }
+  else if(level === 2){ const a = SURD_SQFREE[ri(6)], b = SURD_SQFREE[ri(6)]; surdSetAns(1, a*b, 'Multiply', '√' + a + ' × √' + b, '√' + a + ' × √' + b + ' = √' + (a*b) + ' = ' + surdFmt(surdSimplify(1, a*b)) + '.'); }
+  else if(level === 3){ const c = rr(2, 4), d = rr(2, 4), a = SURD_SQFREE[ri(6)], b = SURD_SQFREE[ri(6)]; surdSetAns(c*d, a*b, 'Multiply', surdTerm(c, a) + ' × ' + surdTerm(d, b), surdTerm(c, a) + ' × ' + surdTerm(d, b) + ' = ' + (c*d) + '√' + (a*b) + ' = ' + surdFmt(surdSimplify(c*d, a*b)) + '.'); }
   else { const S = [2,3,5,6,7,10,14,15]; const a = S[ri(S.length)], b = S[ri(S.length)], c = rr(1, 3), d = rr(1, 3); surdSetAns(c*d, a*b, 'Multiply', surdTerm(c, a) + ' × ' + surdTerm(d, b), surdTerm(c, a) + ' × ' + surdTerm(d, b) + ' = ' + surdFmt(surdSimplify(c*d, a*b)) + '.'); }
 }
 function genSurdDivide(el){
@@ -15585,6 +15763,7 @@ function kbShow() {
   const pad = document.getElementById('mobileKeypad');
   if (!pad) return;
   pad.style.display = 'block';
+  document.body.classList.add('kb-open');   // v86: lets CSS cap tall question cards
 
   const mode = getInputMode();
   const skillId = (typeof skill !== 'undefined') ? skill : '';
@@ -15708,15 +15887,34 @@ function syncKeypadClearance() {
   const pad = document.getElementById('mobileKeypad');
   if (!IS_MOBILE() || !pad || pad.style.display === 'none') {
     document.body.style.paddingBottom = '';
+    syncQuestionCap(null);
     return;
   }
   const h = pad.offsetHeight || 0;
   if (h > 0) document.body.style.paddingBottom = (h + 24) + 'px';
+  syncQuestionCap(pad);
+}
+
+/* v86 (Laura): cap the question card against the keypad that is ACTUALLY on
+   screen, not a guessed fraction of the viewport. The algebra keypad is two
+   rows taller than the numeric one, and phones differ by 200px of height, so a
+   fixed vh value is wrong somewhere — a coordinate-plane question ended up with
+   its answer boxes underneath the keypad.
+     reserve 220px = game header (~110) + the answer row (~60) + margins.
+   The cap is published as CSS variables so the layout stays in the stylesheet;
+   JS only supplies the number it cannot know at author time. */
+function syncQuestionCap(pad) {
+  const root = document.documentElement;
+  if (!pad) { root.style.removeProperty('--qcap'); root.style.removeProperty('--qsvgcap'); return; }
+  const cap = Math.max(140, window.innerHeight - (pad.offsetHeight || 0) - 220);
+  root.style.setProperty('--qcap', cap + 'px');
+  root.style.setProperty('--qsvgcap', Math.max(90, cap - 74) + 'px');
 }
 
 function kbHide() {
   const pad = document.getElementById('mobileKeypad');
   if (pad) pad.style.display = 'none';
+  document.body.classList.remove('kb-open');   // v86
   kbTarget = null;
   /* v48: drop the measured reserve so non-game screens don't keep a tall pad. */
   document.body.style.paddingBottom = '';
@@ -16141,9 +16339,570 @@ function markAllSent() {
   goToday();      // re-show today screen with updated sent state
 }
 
+
+/* ══════════════════════════════════════════════════════════════════════════
+   📊 DATA ANALYSIS  (v84, Laura) — RELEASE 1
+   ──────────────────────────────────────────────────────────────────────────
+   Release 1 is the FOUNDATION: the four display engines every later statistics
+   skill will draw with, plus the two skills that don't need a calculation —
+   Classifying Data and Frequency Tables — and one skill that reads a value
+   straight off each display.
+
+   The engines (daDotPlot, daStemHtml, daHistogram, daBoxPlot) are deliberately
+   built to be driven by DATA, never by a hard-coded picture: each one takes a
+   list of values (or a five-number summary) and works out its own scale. That
+   is what lets Release 2 (mean / mode / median / range) re-use them without a
+   rewrite — the same dot plot that asks "how many scored 4?" here will ask
+   "what is the median?" there, from the identical call.
+
+   Two conventions worth keeping:
+   • Colours are CSS variables, never literals, so every display follows dark
+     mode with no second code path.
+   • Table text sizes read --qtbl / --qtblpad (see v83), so displays scale up
+     on a desktop and stay phone-sized on a phone.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ---------- shared SVG frame ---------- */
+function daSvg(inner, h){
+  return '<svg viewBox="0 0 320 ' + h + '" role="img" '
+    + 'style="display:block;margin:10px auto 0;width:100%;max-width:460px;height:auto;">'
+    + inner + '</svg>';
+}
+/* Build a frequency map over a fixed value range. */
+function daCounts(values, lo, hi){
+  const c = [];
+  for (let v = lo; v <= hi; v++) c.push(values.filter(function(x){ return x === v; }).length);
+  return c;
+}
+function daSum(a){ return a.reduce(function(s,x){ return s + x; }, 0); }
+
+/* ---------- 1. DOT PLOT ----------
+   values: raw list of integers.  lo..hi: the axis range (inclusive). */
+function daDotPlot(values, lo, hi, axisLabel){
+  const counts = daCounts(values, lo, hi);
+  const maxC   = Math.max.apply(null, counts.concat([1]));
+  const x0 = 26, x1 = 300, n = Math.max(1, hi - lo), step = (x1 - x0) / n;
+  /* Room for: dots, the axis, the tick numbers (axisY + 18) and the axis label
+     below them. The label sat only 8px under the numbers before v84.1 and
+     collided with them on the middle ticks. */
+  const H  = 26 + maxC * 13 + 40;   // 22px of air above the tallest stack
+  const axisY = H - 46;
+  let s = '<line x1="' + x0 + '" y1="' + axisY + '" x2="' + x1 + '" y2="' + axisY
+        + '" stroke="var(--text)" stroke-width="2"/>';
+  for (let i = 0; i <= n; i++){
+    const x = x0 + i * step;
+    s += '<line x1="' + x + '" y1="' + axisY + '" x2="' + x + '" y2="' + (axisY + 5)
+       + '" stroke="var(--text)" stroke-width="1.5"/>'
+       + '<text x="' + x + '" y="' + (axisY + 18) + '" text-anchor="middle" font-family="Nunito,sans-serif"'
+       + ' font-weight="800" font-size="11" fill="var(--text)">' + (lo + i) + '</text>';
+    for (let k = 0; k < counts[i]; k++){
+      s += '<circle cx="' + x + '" cy="' + (axisY - 11 - k * 13) + '" r="4.6" fill="var(--accent)"/>';
+    }
+  }
+  if (axisLabel){
+    s += '<text x="163" y="' + (H - 6) + '" text-anchor="middle" font-family="Nunito,sans-serif"'
+       + ' font-weight="800" font-size="11" fill="var(--muted)">' + axisLabel + '</text>';
+  }
+  return daSvg(s, H);
+}
+
+/* ---------- 2. STEM-AND-LEAF (HTML table) ----------
+   Text data in a text element: an SVG would fight the leaf spacing for no gain. */
+function daStemHtml(values, opts){
+  /* values are always held as INTEGERS; opts.dp = 1 renders them as tenths
+     (47 → 4.7). The KEY is what tells the reader the place value, so it is
+     built from the same setting — "4 | 7 means 4.7" for decimal data and
+     "4 | 7 means 47" for whole numbers. A stem plot without a matching key is
+     ambiguous, which is why the key is never optional here. */
+  const dp = (opts && opts.dp) ? opts.dp : 0;
+  const fmt = function(v){ return dp ? (v / 10).toFixed(1) : String(v); };
+  const sorted = values.slice().sort(function(a,b){ return a - b; });
+  const stems  = {};
+  sorted.forEach(function(v){
+    const st = Math.floor(v / 10), lf = v % 10;
+    (stems[st] = stems[st] || []).push(lf);
+  });
+  const keys = Object.keys(stems).map(Number).sort(function(a,b){ return a - b; });
+  /* No gaps: an empty stem inside the range must still show, or the shape lies. */
+  let rows = '';
+  for (let st = keys[0]; st <= keys[keys.length - 1]; st++){
+    rows += '<tr><td class="da-stem-st">' + st + '</td><td class="da-leaf">'
+          + ((stems[st] || []).join(' ') || '&nbsp;') + '</td></tr>';
+  }
+  const k0 = keys[0], l0 = stems[k0][0];
+  return '<table class="da-table da-stem"><tr><th>Stem</th><th>Leaf</th></tr>' + rows + '</table>'
+       + '<div class="da-key">Key: ' + k0 + ' | ' + l0 + ' means ' + fmt(k0 * 10 + l0)
+       + ((opts && opts.label) ? ' ' + opts.label : '') + '</div>';
+}
+
+/* ---------- 3. HISTOGRAM ----------
+   bins: [{label, f}].  Works for single-value bars ('0','1','2') and for
+   grouped intervals ('0–4','5–9'); only the labels differ. */
+function daHistogram(bins, axisLabel, sep, bounds){
+  /* sep=true draws the bars with gaps. That is not decoration: grouped
+     (continuous) data is a HISTOGRAM and its bars touch, while single-value
+     (discrete) data is a COLUMN GRAPH and its bars must be separated. Drawing
+     discrete data as a touching histogram teaches the wrong convention.
+     bounds = the n+1 class boundaries. When supplied they are printed at the
+     bar CORNERS, which is how a grouped histogram is set out — the boundary
+     belongs to the edge between two bars, not to the middle of one. */
+  const maxF = Math.max.apply(null, bins.map(function(b){ return b.f; }).concat([1]));
+  const x0 = 34, x1 = 306, top = 16, base = 150;
+  const bw = (x1 - x0) / bins.length;
+  const inset = sep ? bw * 0.16 : 0;   // grouped classes must TOUCH — a gap says the data is discrete
+  const scale = (base - top) / maxF;
+  const stepF = maxF > 8 ? 2 : 1;
+  let s = '';
+  for (let v = 0; v <= maxF; v += stepF){
+    const y = base - v * scale;
+    s += '<line x1="' + x0 + '" y1="' + y + '" x2="' + x1 + '" y2="' + y
+       + '" stroke="var(--border)" stroke-width="1"/>'
+       + '<text x="' + (x0 - 6) + '" y="' + (y + 4) + '" text-anchor="end" font-family="Nunito,sans-serif"'
+       + ' font-weight="800" font-size="10" fill="var(--text)">' + v + '</text>';
+  }
+  bins.forEach(function(b, i){
+    const h = b.f * scale, x = x0 + i * bw;
+    if (h > 0){
+      s += '<rect x="' + (x + inset) + '" y="' + (base - h) + '" width="' + (bw - 2 * inset) + '" height="' + h
+         + '" fill="var(--accent)" fill-opacity="0.75" stroke="var(--accent)" stroke-width="1.5"/>';
+    }
+    if (!bounds){
+      s += '<text x="' + (x + bw / 2) + '" y="' + (base + 15) + '" text-anchor="middle"'
+         + ' font-family="Nunito,sans-serif" font-weight="800" font-size="10.5" fill="var(--text)">'
+         + b.label + '</text>';
+    }
+  });
+  if (bounds){
+    bounds.forEach(function(v, i){
+      const x = x0 + i * bw;
+      s += '<line x1="' + x + '" y1="' + base + '" x2="' + x + '" y2="' + (base + 4)
+         + '" stroke="var(--text)" stroke-width="1.5"/>'
+         + '<text x="' + x + '" y="' + (base + 16) + '" text-anchor="middle" font-family="Nunito,sans-serif"'
+         + ' font-weight="800" font-size="10.5" fill="var(--text)">' + v + '</text>';
+    });
+  }
+  s += '<line x1="' + x0 + '" y1="' + base + '" x2="' + x1 + '" y2="' + base + '" stroke="var(--text)" stroke-width="2"/>'
+     + '<line x1="' + x0 + '" y1="' + top + '" x2="' + x0 + '" y2="' + base + '" stroke="var(--text)" stroke-width="2"/>'
+     + '<text x="' + (x0 - 24) + '" y="' + ((top + base) / 2) + '" text-anchor="middle" font-family="Nunito,sans-serif"'
+     + ' font-weight="800" font-size="11" fill="var(--muted)" transform="rotate(-90 ' + (x0 - 24) + ' ' + ((top + base) / 2) + ')">Frequency</text>';
+  if (axisLabel){
+    s += '<text x="170" y="' + (base + 32) + '" text-anchor="middle" font-family="Nunito,sans-serif"'
+       + ' font-weight="800" font-size="11" fill="var(--muted)">' + axisLabel + '</text>';
+  }
+  return daSvg(s, base + 42);
+}
+
+/* ---------- 4. BOX PLOT ----------
+   fv: {min, q1, med, q3, max}. Axis is drawn from a round lo/hi with ticks, so
+   every one of the five values can actually be READ off the scale — the whole
+   point of the display. */
+function daBoxPlot(fv, lo, hi, tick, axisLabel){
+  const x0 = 24, x1 = 300;
+  const px = function(v){ return x0 + (v - lo) / (hi - lo) * (x1 - x0); };
+  const boxTop = 30, boxBot = 74, mid = (boxTop + boxBot) / 2, axisY = 116;
+  let s = '<line x1="' + px(fv.min) + '" y1="' + mid + '" x2="' + px(fv.q1) + '" y2="' + mid + '" stroke="var(--text)" stroke-width="2"/>'
+        + '<line x1="' + px(fv.q3) + '" y1="' + mid + '" x2="' + px(fv.max) + '" y2="' + mid + '" stroke="var(--text)" stroke-width="2"/>'
+        + '<line x1="' + px(fv.min) + '" y1="' + (boxTop + 6) + '" x2="' + px(fv.min) + '" y2="' + (boxBot - 6) + '" stroke="var(--text)" stroke-width="2.5"/>'
+        + '<line x1="' + px(fv.max) + '" y1="' + (boxTop + 6) + '" x2="' + px(fv.max) + '" y2="' + (boxBot - 6) + '" stroke="var(--text)" stroke-width="2.5"/>'
+        + '<rect x="' + px(fv.q1) + '" y="' + boxTop + '" width="' + (px(fv.q3) - px(fv.q1)) + '" height="' + (boxBot - boxTop)
+        + '" fill="var(--accent)" fill-opacity="0.18" stroke="var(--accent)" stroke-width="2.5"/>'
+        + '<line x1="' + px(fv.med) + '" y1="' + boxTop + '" x2="' + px(fv.med) + '" y2="' + boxBot + '" stroke="var(--accent)" stroke-width="3.5"/>'
+        + '<line x1="' + x0 + '" y1="' + axisY + '" x2="' + x1 + '" y2="' + axisY + '" stroke="var(--text)" stroke-width="2"/>';
+  for (let v = lo; v <= hi; v += tick){
+    s += '<line x1="' + px(v) + '" y1="' + axisY + '" x2="' + px(v) + '" y2="' + (axisY + 5) + '" stroke="var(--text)" stroke-width="1.5"/>'
+       + '<text x="' + px(v) + '" y="' + (axisY + 18) + '" text-anchor="middle" font-family="Nunito,sans-serif"'
+       + ' font-weight="800" font-size="10.5" fill="var(--text)">' + v + '</text>';
+  }
+  if (axisLabel){
+    s += '<text x="163" y="' + (axisY + 34) + '" text-anchor="middle" font-family="Nunito,sans-serif"'
+       + ' font-weight="800" font-size="11" fill="var(--muted)">' + axisLabel + '</text>';
+  }
+  return daSvg(s, axisY + 42);
+}
+
+/* ---------- 5. FREQUENCY TABLE (HTML) ---------- */
+function daFreqTable(headers, rows){
+  let h = '<table class="da-table"><tr>';
+  headers.forEach(function(t){ h += '<th>' + t + '</th>'; });
+  h += '</tr>';
+  rows.forEach(function(r){
+    h += '<tr><td class="da-lbl">' + r[0] + '</td>';
+    for (let i = 1; i < r.length; i++) h += '<td>' + r[i] + '</td>';
+    h += '</tr>';
+  });
+  return h + '</table>';
+}
+
+/* ══════════ CONTEXT BANK ══════════
+   Shared by every Data Analysis skill so the wording stays consistent. */
+const DA_CTX = [
+  { who:'students in 7B', what:'goals scored',          unit:'goals',    unit1:'goal',    axis:'Goals scored' },
+  { who:'students in 8A', what:'pets at home',          unit:'pets',     unit1:'pet',     axis:'Number of pets' },
+  { who:'students in 9C', what:'siblings',              unit:'siblings', unit1:'sibling', axis:'Number of siblings' },
+  { who:'students',       what:'books read last month', unit:'books',    unit1:'book',    axis:'Books read' },
+  { who:'players',        what:'points scored',         unit:'points',   unit1:'point',   axis:'Points scored' },
+];
+/* "1 points" reads as a typo to a student and undermines trust in the question. */
+function daUnit(ctx, n){ return n === 1 ? ctx.unit1 : ctx.unit; }
+/* Grouped data is set out the way Sandringham sets it out: 150 < h ≤ 160.
+   The variable letter and the units come from the context, and the ≤ on the
+   UPPER end is what decides where a boundary value goes — which is the whole
+   point of the level. */
+const DA_GROUPS = [
+  { name:'Height',       sym:'h', unit:'cm',      start:150, width:10 },
+  { name:'Mass',         sym:'m', unit:'kg',      start:40,  width:5  },
+  { name:'Time taken',   sym:'t', unit:'seconds', start:10,  width:5  },
+  { name:'Test score',   sym:'s', unit:'%',       start:50,  width:10 },
+  { name:'Plant height', sym:'h', unit:'cm',      start:0,   width:10 },
+];
+function daIntervalHtml(g, a, b){ return a + ' &lt; ' + g.sym + ' ≤ ' + b; }
+function daIntervalText(g, a, b){ return a + ' < ' + g.sym + ' ≤ ' + b; }
+/* Build n equal classes from a context. */
+function daBuildClasses(g, n){
+  const out = [];
+  for (let i = 0; i < n; i++){
+    const a = g.start + i * g.width;
+    out.push({ a: a, b: a + g.width, html: daIntervalHtml(g, a, a + g.width), text: daIntervalText(g, a, a + g.width) });
+  }
+  return out;
+}
+/* Grouped intervals need contexts whose values are plausibly in the tens —
+   "20–29 pets" is nonsense, "20–29 points" is not. */
+const DA_CTX_BIG = [
+  { who:'a Year 9 class',    what:'points scored',       axis:'Points scored' },
+  { who:'a Year 8 class',    what:'test scores (%)',     axis:'Test score (%)' },
+  { who:'the people asked',  what:'minutes of exercise', axis:'Minutes of exercise' },
+  { who:'the visitors',      what:'ages of visitors',    axis:'Age (years)' },
+];
+
+/* ══════════ SKILL 1 — CLASSIFYING DATA ══════════
+   Categorical splits into nominal / ordinal; numerical into discrete /
+   continuous. The bank stores the FULL classification of each variable, so one
+   list drives all four levels. */
+const DA_VARS = [
+  // nominal — labels with no natural order
+  { t:'nom', v:'the colour of a student’s eyes' },
+  { t:'nom', v:'a student’s favourite sport' },
+  { t:'nom', v:'the brand of a family’s car' },
+  { t:'nom', v:'the suburb a student lives in' },
+  { t:'nom', v:'the type of pet someone owns' },
+  { t:'nom', v:'a person’s blood type' },
+  { t:'nom', v:'the language spoken at home' },
+  // ordinal — labels that DO have a natural order
+  { t:'ord', v:'T-shirt size (S, M, L, XL)' },
+  { t:'ord', v:'a movie rating (1 to 5 stars)' },
+  { t:'ord', v:'finishing position in a race (1st, 2nd, 3rd)' },
+  { t:'ord', v:'an exam grade (A, B, C, D, E)' },
+  { t:'ord', v:'spiciness of a curry (mild, medium, hot)' },
+  { t:'ord', v:'level of agreement (disagree, neutral, agree)' },
+  // discrete — counted in whole numbers
+  { t:'dis', v:'the number of siblings a student has' },
+  { t:'dis', v:'the number of pets in a household' },
+  { t:'dis', v:'the number of goals scored in a match' },
+  { t:'dis', v:'the number of students in a class' },
+  { t:'dis', v:'the number of cars in a driveway' },
+  { t:'dis', v:'the number of text messages sent in a day' },
+  // continuous — measured, any value in a range
+  { t:'con', v:'the height of a student, in centimetres' },
+  { t:'con', v:'the mass of a dog, in kilograms' },
+  { t:'con', v:'the time taken to run 100 m, in seconds' },
+  { t:'con', v:'the temperature at noon, in °C' },
+  { t:'con', v:'the volume of water in a bottle, in millilitres' },
+  { t:'con', v:'the length of a leaf, in millimetres' },
+];
+const DA_TYPE_NAME = { nom:'Nominal', ord:'Ordinal', dis:'Discrete', con:'Continuous' };
+const DA_WHY = {
+  nom:'These are <b>names or labels</b> with no natural order, so the data is <b>categorical — nominal</b>.',
+  ord:'These are labels that <b>do have a natural order</b>, so the data is <b>categorical — ordinal</b>.',
+  dis:'You <b>count</b> these in whole numbers — there is nothing in between — so the data is <b>numerical — discrete</b>.',
+  con:'These are <b>measured</b> and can take any value in a range (including decimals), so the data is <b>numerical — continuous</b>.',
+};
+function genDataClassify(el){
+  el.style.fontSize = '1.1rem';
+  const pool = (level === 2) ? DA_VARS.filter(function(d){ return d.t === 'nom' || d.t === 'ord'; })
+             : (level === 3) ? DA_VARS.filter(function(d){ return d.t === 'dis' || d.t === 'con'; })
+             : DA_VARS;
+  const d = ffPick(pool);
+  const big = '<div style="font-size:1.5rem;font-weight:900;margin:14px 0;line-height:1.3;">' + d.v + '</div>';
+  const isCat = (d.t === 'nom' || d.t === 'ord');
+  qData.workSteps = DA_WHY[d.t];
+  if (level === 1){
+    decSetChoice(el, '<div style="' + A_LBL + '">Is this data categorical or numerical?</div>' + big,
+                 ['Categorical', 'Numerical'], isCat ? 'Categorical' : 'Numerical', true);
+  } else if (level === 2){
+    decSetChoice(el, '<div style="' + A_LBL + '">This data is <b>categorical</b>. Is it nominal or ordinal?</div>' + big,
+                 ['Nominal', 'Ordinal'], DA_TYPE_NAME[d.t], true);
+  } else if (level === 3){
+    decSetChoice(el, '<div style="' + A_LBL + '">This data is <b>numerical</b>. Is it discrete or continuous?</div>' + big,
+                 ['Discrete', 'Continuous'], DA_TYPE_NAME[d.t], true);
+  } else {
+    decSetChoice(el, '<div style="' + A_LBL + '">Classify this data as fully as you can.</div>' + big,
+                 ['Nominal', 'Ordinal', 'Discrete', 'Continuous'], DA_TYPE_NAME[d.t], true);
+  }
+}
+
+/* ══════════ SKILL 2 — FREQUENCY TABLES ══════════ */
+const DA_CATS_BANK = [
+  { q:'favourite sport',  items:['Soccer','Netball','Cricket','AFL'] },
+  { q:'favourite colour', items:['Blue','Green','Red','Yellow'] },
+  { q:'how they travel to school', items:['Walk','Bus','Car','Bike'] },
+  { q:'favourite fruit',  items:['Apple','Banana','Mango','Pear'] },
+  { q:'type of pet',      items:['Dog','Cat','Fish','Bird'] },
+];
+function genFreqTables(el){
+  el.style.fontSize = '1.05rem';
+
+  if (level === 1){                       // categorical table — read and total
+    const b = ffPick(DA_CATS_BANK);
+    const f = b.items.map(function(){ return rr(2, 12); });
+    const total = daSum(f);
+    const rows = b.items.map(function(it, i){ return [it, f[i]]; });
+    const tbl = daFreqTable(['Category', 'Frequency'], rows);
+    const kind = ri(3);
+    let prompt;
+    if (kind === 0){
+      const i = ri(b.items.length);
+      qData.ans = f[i];
+      prompt = 'How many chose <b>' + b.items[i] + '</b>?';
+      qData.workSteps = 'Find the <b>' + b.items[i] + '</b> row and read its frequency: <b>' + f[i] + '</b>.';
+    } else if (kind === 1){
+      qData.ans = total;
+      prompt = 'How many people were surveyed altogether?';
+      qData.workSteps = 'The total is the sum of every frequency: ' + f.join(' + ') + ' = <b>' + total + '</b>.';
+    } else {
+      let i = ri(b.items.length), j = ri(b.items.length);
+      if (f[i] < f[j]) { const t = i; i = j; j = t; }
+      if (i === j) { j = (j + 1) % b.items.length; if (f[i] < f[j]) { const t = i; i = j; j = t; } }
+      qData.ans = f[i] - f[j];
+      prompt = 'How many more chose <b>' + b.items[i] + '</b> than <b>' + b.items[j] + '</b>?';
+      qData.workSteps = f[i] + ' − ' + f[j] + ' = <b>' + (f[i] - f[j]) + '</b>.';
+    }
+    el.innerHTML = '<div style="' + A_LBL + '">' + b.items.length + ' options were offered for ' + b.q + '.<br>' + prompt + '</div>' + tbl;
+    return;
+  }
+
+  if (level === 2){                       // build the frequency from a raw list
+    const ctx = ffPick(DA_CTX);
+    const lo = 0, hi = rr(4, 6);
+    const vals = [];
+    const n = rr(12, 18);
+    for (let i = 0; i < n; i++) vals.push(rr(lo, hi));
+    const target = rr(lo, hi);
+    const count = vals.filter(function(v){ return v === target; }).length;
+    const asTotal = Math.random() < 0.3;
+    qData.ans = asTotal ? vals.length : count;
+    qData.workSteps = asTotal
+      ? 'Count every value in the list: <b>' + vals.length + '</b>.'
+      : 'Count how many <b>' + target + '</b>s are in the list: <b>' + count + '</b>.';
+    const listHtml = '<div style="font-size:1.25rem;font-weight:900;line-height:1.7;margin:12px 4px 0;">'
+      + vals.join(' &nbsp; ') + '</div>';
+    el.innerHTML = '<div style="' + A_LBL + '">' + ctx.what.charAt(0).toUpperCase() + ctx.what.slice(1)
+      + ' for ' + ctx.who + ':<br>'
+      + (asTotal ? 'How many values are in the data set?' : 'What is the <b>frequency of ' + target + '</b>?')
+      + '</div>' + listHtml;
+    return;
+  }
+
+  if (level === 3){                       // grouped intervals — which class?
+    const g = ffPick(DA_GROUPS);
+    const cls = daBuildClasses(g, 4);
+    const bi = ri(cls.length);
+    /* A third of the questions land exactly ON an upper boundary. That is the
+       point of the notation: 160 belongs to 150 < h ≤ 160, NOT to the class
+       above it. A level that never tests the boundary never teaches it. */
+    const onBoundary = Math.random() < 0.34;
+    const v = onBoundary ? cls[bi].b : rr(cls[bi].a + 1, cls[bi].b - 1);
+    qData.workSteps = onBoundary
+      ? '<b>' + v + '</b> sits on a boundary. The ≤ is on the upper end, so ' + v
+        + ' belongs to <b>' + cls[bi].text + '</b> — not to the class above it.'
+      : v + ' is between ' + cls[bi].a + ' and ' + cls[bi].b + ', so it belongs to <b>' + cls[bi].text + '</b>.';
+    decSetChoice(el, '<div style="' + A_LBL + '">' + g.name + ' is grouped into these class intervals.<br>'
+      + 'Which interval does <b>' + v + ' ' + g.unit + '</b> belong to?</div>'
+      + daFreqTable([g.name + ', ' + g.sym + ' (' + g.unit + ')', 'Frequency'],
+                    cls.map(function(c){ return [c.html, rr(2, 9)]; })),
+      cls.map(function(c){ return c.html; }), cls[bi].html, true);
+    return;
+  }
+
+  // Level 4 — percentage frequency.
+  // Totals are restricted to 20, 25 and 50 because those are exactly the totals
+  // for which EVERY whole-number count gives a whole-number percentage
+  // (×5, ×4, ×2). 40 was rejected: it needs even counts to stay exact, and a
+  // question whose answer is 12.5% is a different skill.
+  const b = ffPick(DA_CATS_BANK);
+  const total = ffPick([20, 25, 50]);
+  const k = b.items.length;
+  const f = [];
+  let left = total;
+  for (let j = 0; j < k - 1; j++){
+    const remainingSlots = k - 1 - j;          // each still needs at least 1
+    const hi = Math.max(1, Math.min(left - remainingSlots, Math.round(total * 0.45)));
+    const pick = rr(1, hi);
+    f.push(pick); left -= pick;
+  }
+  f.push(left);
+  const i = ri(k);
+  // Integer maths, then round: 18/50*100 is 36.000000000000004 in floating point,
+  // and a stray decimal would make a correct answer mark wrong.
+  const pct = Math.round(f[i] * 100 / total);
+  qData.ans = pct;
+  qData.workSteps = '<b>' + f[i] + '</b> out of <b>' + total + '</b> → ' + f[i] + ' ÷ ' + total
+    + ' × 100 = <b>' + pct + '%</b>.';
+  el.innerHTML = '<div style="' + A_LBL + '">' + total + ' people were asked about their ' + b.q + '.<br>'
+    + 'What <b>percentage</b> chose <b>' + b.items[i] + '</b>?</div>'
+    + daFreqTable(['Category', 'Frequency'], b.items.map(function(it, n){ return [it, f[n]]; }));
+}
+
+/* ══════════ SKILL 3 — READING DATA DISPLAYS ══════════
+   One level per display, so every engine above is exercised by students in
+   Release 1 rather than sitting untested until Release 2. */
+function genDataRead(el){
+  el.style.fontSize = '1.05rem';
+
+  if (level === 1){                       // dot plot
+    const ctx = ffPick(DA_CTX);
+    const lo = 0, hi = rr(4, 6), vals = [];
+    const n = rr(10, 16);
+    for (let i = 0; i < n; i++) vals.push(rr(lo, hi));
+    const counts = daCounts(vals, lo, hi);
+    const asTotal = Math.random() < 0.35;
+    let prompt;
+    if (asTotal){
+      qData.ans = vals.length;
+      prompt = 'How many ' + ctx.who + ' were surveyed altogether?';
+      qData.workSteps = 'Count every dot: ' + counts.join(' + ') + ' = <b>' + vals.length + '</b>.';
+    } else {
+      let t = rr(lo, hi), guard = 0;
+      while (counts[t - lo] === 0 && guard++ < 20) t = rr(lo, hi);
+      qData.ans = counts[t - lo];
+      prompt = 'How many ' + ctx.who + ' had <b>' + t + '</b> ' + daUnit(ctx, t) + '?';
+      qData.workSteps = 'Count the dots above <b>' + t + '</b>: <b>' + counts[t - lo] + '</b>.';
+    }
+    el.innerHTML = '<div style="' + A_LBL + '">' + ctx.axis + ' for ' + ctx.who + '.<br>' + prompt + '</div>'
+      + daDotPlot(vals, lo, hi, ctx.axis);
+    return;
+  }
+
+  if (level === 2){                       // stem-and-leaf
+    /* Half the questions use one-decimal-place data (4.7 kg), where the KEY is
+       the only thing that tells you the place value — which is exactly what a
+       key is for. Whole-number and decimal versions share one engine. */
+    const dp = Math.random() < 0.5 ? 1 : 0;
+    const unitLbl = dp ? ffPick(['kg', 'cm', 'seconds', 'litres']) : '';
+    const base = dp ? ffPick([20, 30, 40, 50]) : ffPick([10, 20, 30, 40]);
+    const vals = [];
+    const n = rr(11, 16);
+    for (let i = 0; i < n; i++) vals.push(base + rr(0, 29));
+    const sorted = vals.slice().sort(function(a, b){ return a - b; });
+    const show = function(v){ return dp ? (v / 10).toFixed(1) : String(v); };
+    const val  = function(v){ return dp ? Math.round(v) / 10 : v; };
+    const kind = ri(4);
+    let prompt;
+    if (kind === 0){
+      qData.ans = vals.length;
+      prompt = 'How many values are in the data set?';
+      qData.workSteps = 'Count every leaf — one leaf is one value: <b>' + vals.length + '</b>.';
+    } else if (kind === 1){
+      qData.ans = val(sorted[sorted.length - 1]);
+      prompt = 'What is the <b>largest</b> value?';
+      qData.workSteps = 'The largest value is the last leaf on the bottom stem. Read it with the key: <b>'
+        + show(sorted[sorted.length - 1]) + '</b>.';
+    } else if (kind === 2){
+      qData.ans = val(sorted[0]);
+      prompt = 'What is the <b>smallest</b> value?';
+      qData.workSteps = 'The smallest value is the first leaf on the top stem. Read it with the key: <b>'
+        + show(sorted[0]) + '</b>.';
+    } else {
+      const stems = {};
+      sorted.forEach(function(v){ const st = Math.floor(v / 10); stems[st] = (stems[st] || 0) + 1; });
+      const keys = Object.keys(stems).map(Number);
+      const st = keys[ri(keys.length)];
+      qData.ans = stems[st];
+      prompt = dp
+        ? 'How many values are on the <b>' + st + '</b> stem (that is, ' + (st) + '.0 to ' + (st) + '.9)?'
+        : 'How many values are in the <b>' + (st * 10) + 's</b>?';
+      qData.workSteps = 'Count the leaves on the <b>' + st + '</b> stem: <b>' + stems[st] + '</b>.';
+    }
+    el.innerHTML = '<div style="' + A_LBL + '">' + (dp ? 'The data is measured in ' + unitLbl + '.<br>' : '')
+      + prompt + '</div>' + daStemHtml(vals, { dp: dp, label: unitLbl });
+    return;
+  }
+
+  if (level === 3){                       // histogram — single-value OR grouped
+    const grouped = Math.random() < 0.5;
+    const ctx = ffPick(DA_CTX);
+    let bins, prompt;
+    let g = null, bounds = null;
+    if (grouped){
+      g = ffPick(DA_GROUPS);
+      const cls = daBuildClasses(g, 5);
+      bins = cls.map(function(c){ return { label: c.html, text: c.text, f: rr(1, 9) }; });
+      bounds = cls.map(function(c){ return c.a; }).concat([cls[cls.length - 1].b]);
+    } else {
+      bins = [];
+      for (let v = 0; v <= 4; v++) bins.push({ label: String(v), f: rr(0, 8) });
+    }
+    const total = daSum(bins.map(function(b){ return b.f; }));
+    const asTotal = Math.random() < 0.35;
+    if (asTotal){
+      qData.ans = total;
+      prompt = 'How many values are in the data set altogether?';
+      qData.workSteps = 'Add every bar’s frequency: ' + bins.map(function(b){ return b.f; }).join(' + ')
+        + ' = <b>' + total + '</b>.';
+    } else {
+      let bi = ri(bins.length), guard = 0;
+      while (bins[bi].f === 0 && guard++ < 12) bi = ri(bins.length);
+      qData.ans = bins[bi].f;
+      prompt = grouped
+        ? 'What is the frequency of the <b>' + bins[bi].label + '</b> group?'
+        : 'How many had <b>' + bins[bi].label + '</b> ' + daUnit(ctx, Number(bins[bi].label)) + '?';
+      qData.workSteps = 'Read the height of the <b>' + bins[bi].label + '</b> bar against the frequency axis: <b>'
+        + bins[bi].f + '</b>.';
+    }
+    el.innerHTML = '<div style="' + A_LBL + '">'
+      + (grouped ? g.name + ' (' + g.unit + ') for a sample.' : ctx.axis + ' for ' + ctx.who + '.')
+      + '<br>' + prompt + '</div>'
+      + daHistogram(bins, grouped ? (g.name + ', ' + g.sym + ' (' + g.unit + ')') : ctx.axis, !grouped, bounds);
+    return;
+  }
+
+  // Level 4 — box plot: read one of the five-number summary values.
+  // Every value in the summary is placed ON a tick mark. A box plot whose median
+  // sits at 33 on a scale ticked every 10 is unreadable — the student would be
+  // guessing, and a fluency drill must not reward guessing. Choosing the tick
+  // spacing first, then five distinct multiples of it, makes every question
+  // answerable exactly from the picture.
+  const tick = ffPick([2, 5, 10]);
+  const steps = rr(6, 8);                    // ticks across the axis
+  const lo = 0, hi = tick * steps;
+  const cand = [];
+  for (let v = lo + tick; v <= hi - tick; v += tick) cand.push(v);
+  const picks = shuffleArr(cand.slice()).slice(0, 5).sort(function(a, b){ return a - b; });
+  const fv = { min: picks[0], q1: picks[1], med: picks[2], q3: picks[3], max: picks[4] };
+  const parts = [
+    { k:'min', label:'minimum',              why:'the left-hand whisker end' },
+    { k:'q1',  label:'lower quartile (Q1)',  why:'the left-hand edge of the box' },
+    { k:'med', label:'median',               why:'the line inside the box' },
+    { k:'q3',  label:'upper quartile (Q3)',  why:'the right-hand edge of the box' },
+    { k:'max', label:'maximum',              why:'the right-hand whisker end' },
+  ];
+  const p = ffPick(parts);
+  qData.ans = fv[p.k];
+  qData.workSteps = 'The ' + p.label + ' is ' + p.why + '. Read straight down to the scale: <b>' + fv[p.k] + '</b>.';
+  el.innerHTML = '<div style="' + A_LBL + '">What is the <b>' + p.label + '</b> of this data?</div>'
+    + daBoxPlot(fv, lo, hi, tick, 'Score');
+}
+
 /* ═══════════════════════════════════════════════
    BOOT
 ═══════════════════════════════════════════════ */
+/* v85: wire up the keyboard/keypad layer here rather than from a
+   DOMContentLoaded listener. This script sits at the end of <body>, so the DOM
+   exists and every module-level `let` above is initialised. Doing it this way
+   means the app also works when the document has already finished parsing
+   before the script runs (preview panes, injected iframes) — the case where
+   Enter used to be dead while multiple choice still worked. */
+ffInitInputs();
 loadProfiles();
 try { if (localStorage.getItem('ff_theme') === 'dark') document.body.classList.add('dark'); } catch (e) {}
 syncThemeButton();
