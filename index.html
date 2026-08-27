@@ -1,4 +1,4 @@
-<!-- Sandy Fast Facts — v78 (internal v78.4 FIXES: (1) TYPING WAS DEAD on any narrow screen — the "is this a phone" test was window width ALONE, so a laptop with a narrow window (or the app in a preview pane) got the readonly-input trick meant to suppress a phone keyboard, with no way to type. A phone must now ALSO have a coarse primary pointer, and the first real key press from a physical keyboard unlocks every box and hides the keypad for the rest of the session. (2) THE PLOT GRID WAS SQUASHED — #qBox is a flex container and plotRender was handing it two or three children, so the prompt, story and grid became columns; wrapped in a single .q-text child, and the plot/graph SVGs now scale to the available width (up to 460px) instead of sitting at a fixed 300px. (3) DISTANCE-TIME JOURNEYS CAN NOW RETURN HOME — a stage may head back towards home so the graph comes down, and some journeys finish at 0 km; the line can never go below 0, "fastest" and "speed" compare magnitudes, and the story says "back towards home" / "the last N km home". internal v78.3: NEW CATEGORY 🧩 OTHER (Laura) — the practical, everyday-maths corner, placed last: Converting Units of Time (Yr 7: sec/min/hour · hour/day/week · week/month/year · compound times both ways), Train & Bus Timetables (Yr 7: read the table · trip length in minutes · latest service that still arrives in time · minutes until the next service, with 24-hour and 12-hour clocks mixed) and Distance-Time Graphs (Yr 7–8: read the distance · which stage is stationary/fastest · BUILD or finish the graph by tapping the corner of each stage · speed of a labelled stage). Coordinate Geometry gains Applications of Linear Graphs (Yr 8–9: rate or starting amount from P = −35 + 4c · write y = a + bx from a story · build its table · write ax + by = d from a two-item total). The plotPts mode is now axis-agnostic and can mark an ORDERED path, which is what the distance-time construct level uses. Purely additive — no existing skill, level, id or band changed. internal v78.2: 📈 COORDINATE GEOMETRY grows (Laura). The Cartesian Plane gains L4 — three corners of a rectangle, square or labelled parallelogram ABCD are plotted and the student writes the coordinates of the fourth. NEW skill Table of Values (Yr 7–8: L1 build a linear table from a rule · L2 PLOT that table on the plane · L3 build a non-linear table (x², x³, 2ˣ) · L4 plot a non-linear table). x- and y-Intercepts gains a new L2 — read both intercepts off a table of values — pushing y-int/x-int/both down to L3/L4/L5 (safe: no student has played Coordinate Geometry yet). NEW INPUT MODE plotPts: the drawn Cartesian plane itself is the answer surface — every lattice point carries an invisible tap target, tap to place or remove a marker, all-or-nothing marking, and the marking is drawn back onto the grid. internal v78.0: Yr 7–9 SEQUENCES in 💰 Finance & Patterns (Laura). NEW Sequence Rules in Words (Yr 7: L1 first term · L2 the term-to-term rule in words as a 4-way tap (add / subtract / multiply / divide / square numbers) · L3 next two terms · L4 write the first five terms from a starting value and a worded rule · L5 read a term off the sequence from aₙ notation). NEW Arithmetic Sequences (Yr 7–8: L1 common difference d · L2 next three terms · L3 fill a₁ and d into aₙ = a₁ + (n − 1)d · L4 use the rule to find a required term). NEW Geometric Sequences (Yr 8–9: L1 common ratio r · L2 next three terms · L3 fill a₁ and r into aₙ = a₁ × rⁿ⁻¹ · L4 use the rule to find a required term). The existing Sequences skill is RENAMED "Arithmetic & Geometric Sequences" and otherwise untouched (id, lvKey, levels and bands all unchanged) — it stays as the higher-order one where the student decides which kind it is. gapFill grows from four boxes to FIVE (gap4), with narrower boxes on a five-box row. All new bands are PLACEHOLDERS pending class data. internal v77.0: THREE NEW CATEGORIES and one new Number skill. ◡ Quadratics — Verify Solutions to Quadratic Equations (L1 x²=k · L2 factorised · L3 trinomial, Yes/No) and Solve Quadratic Equations (L1 x²=k · L2 exact values/fractions as multiple choice · L3 Null Factor Law · L4 monic trinomials). 📈 Coordinate Geometry — The Cartesian Plane (quadrant · read a plotted coordinate), Linear or Non-Linear (from a graph · from an equation), x- and y-Intercepts (y-int · x-int · both from ax+by=c) and Gradient of a Line Segment (whole · from a diagram · fractions & negatives). 💰 Finance & Patterns — GST (10%: added · price incl · removed), Simple Interest (5 levels on Vn = V0 + nD, D = r/100 × V0), Sequences (classify · next term · arithmetic rule · geometric rule), Recurrence Relations (write · use) and Flat Rate Depreciation (5 levels on Vn = V0 − nD). Number gains Number Classification (rational/irrational · tick every set). TWO NEW INPUT MODES: gapFill (a rendered rule/coordinate/solution template with up to five numeric boxes, all-or-nothing, optional order-free marking) and multiSel (tick every box that applies, all-or-nothing). Purely additive — no existing skill, level, id or band changed; all new bands are PLACEHOLDERS pending class data. internal v76.0: Congruence & Similarity now distinguish "provably false" from "unknown". L3 adds a 6th button "Not similar" (sides given but not in a constant ratio — the case a student CAN disprove, e.g. 5,8,11 vs 10,18,22); L2 adds a 6th button "Not congruent" via a new DIFF scenario that labels side lengths that don't all match. "Not enough information" now means only the genuinely undetermined cases (SSA, AAA-for-congruence, one angle, two sides). csSimilarityVerdict/csCongruenceVerdict extended; fixed 6-button order; storage-safe (no skill/level renamed or reordered). v75.0: NEW Percentages skills — Convert Percentages & Decimals (pctDecConv, both directions, number box) and Convert Fractions & Percentages (fracPctConv: L1–2 fraction→% number box, L3–4 %→fraction box; direction fixed per level via levelModes). Both single-question (not the FDP fill-in table), placed before Convert FDP; recall/Fluent-eligible with PLACEHOLDER bands (recalibrate with class data). Recurring values (33⅓% etc.) accepted within a per-question tolerance via qData.ansTol. Storage-safe additive change. v74.9: band cut-offs revised across the whole program from Laura's reviewed spreadsheet — 95 skill-levels re-banded via explicit per-level BAND_OVERRIDE entries (app matches the sheet on all 330 rows). v74.8: Decimals band targets LOWERED (Laura) so quick+accurate students reach higher animals — Identify/Expanded Form/Convert D→F −2; Rounding & Add/Subtract Decimals −3; all ×/÷ decimal operations (Multiply, Divide, ×÷ by 10/100/1000, Squares & Cubes, Square/Cube Roots, signed ×÷, ×fractions) −4. Display-only/storage-safe; .bas regenerated. v74.7: more Decimals (Laura) — NEW skills Add & Subtract Decimals (Positive & Negative), Multiply Decimals & Fractions (decFrac), Multiply & Divide Decimals (Positive & Negative), Leading Digit Estimation (round-to-1sf → estimate → BODMAS), Square Roots & Cube Roots of Decimals; NEW word-problem L4 on Multiply Decimals and Divide Decimals; Squares & Cubes of Decimals moved after Multiply Decimals & Fractions. v74.6: Add & Subtract Decimals L4 word problems; Add & Subtract Fractions & Decimals; Rounding Decimals L3 round-then-estimate. v74.5: miss reviews work THIS question's numbers step-by-step; Angles-in-Polygons L4; deeper concave polygons) -->
+<!-- Sandy Fast Facts — v79 (Laura). 🧩 OTHER IS RENAMED 🔄 TIME & TRANSFORMATIONS — display only: the CATS key stays 'other', so every stored Personal Best, streak and share line is untouched, and the dashboard .bas keys on SKILL names so it is unaffected too. SIX NEW TRANSFORMATION SKILLS, all built on one engine: every transformation in the program is an affine map whose matrix has exactly one non-zero entry per row, so applying one is two lines, COMPOSING two stays in the same family (which is what lets the Combinations skill print a single mapping for a chain), and the mapping notation is rendered straight off the matrix so the words and the notation can never drift apart. Translations (L1 one-axis slide · L2 two-axis · L3 describe it from the drawn points · L4 read the mapping · L5 apply the mapping · L6 find the pre-image), Reflections (same six; L1 the axes, L2 adds y = x), Dilations from the Origin (ONE apply level per Laura — a dilation from the origin is always a single step — then the same four; factors 2, 3, 4, ½ and ⅓ on a ±10 window because a factor of 4 leaves the −5…5 box immediately), Rotations about the Origin (L1 half turns only, L2 the quarter turns clockwise and anticlockwise; the describe-it levels are restricted to the three CANONICAL names because 90° clockwise and 270° anticlockwise are the SAME map and would otherwise be two right answers), Combinations of Transformations (NO describe-in-words level, per Laura — two points can be joined by any number of chains — so L1/L2 apply a chain of two then three, and the mapping levels survive because a mapping IS the composite), and Transformations of 2D Shapes (Yr 7–8: translate, reflect, identify, dilate, rotate and un-transform a whole shape by TAPPING its image corners, on a coarser −4…4 grid so a corner is an easy tap on a phone). One subtle guard worth remembering: two DIFFERENT transformations can still agree on ONE point — (2, −2) goes to (−2, 2) under both a half turn and a reflection in y = x — so a describe-it distractor is only safe if it fails on THAT point, not merely if it is a different map. Purely additive apart from the category label: no existing skill, level, id or band changed. All new bands are PLACEHOLDERS pending class data. internal v78.4 FIXES: (1) TYPING WAS DEAD on any narrow screen — the "is this a phone" test was window width ALONE, so a laptop with a narrow window (or the app in a preview pane) got the readonly-input trick meant to suppress a phone keyboard, with no way to type. A phone must now ALSO have a coarse primary pointer, and the first real key press from a physical keyboard unlocks every box and hides the keypad for the rest of the session. (2) THE PLOT GRID WAS SQUASHED — #qBox is a flex container and plotRender was handing it two or three children, so the prompt, story and grid became columns; wrapped in a single .q-text child, and the plot/graph SVGs now scale to the available width (up to 460px) instead of sitting at a fixed 300px. (3) DISTANCE-TIME JOURNEYS CAN NOW RETURN HOME — a stage may head back towards home so the graph comes down, and some journeys finish at 0 km; the line can never go below 0, "fastest" and "speed" compare magnitudes, and the story says "back towards home" / "the last N km home". internal v78.3: NEW CATEGORY 🧩 OTHER (Laura) — the practical, everyday-maths corner, placed last: Converting Units of Time (Yr 7: sec/min/hour · hour/day/week · week/month/year · compound times both ways), Train & Bus Timetables (Yr 7: read the table · trip length in minutes · latest service that still arrives in time · minutes until the next service, with 24-hour and 12-hour clocks mixed) and Distance-Time Graphs (Yr 7–8: read the distance · which stage is stationary/fastest · BUILD or finish the graph by tapping the corner of each stage · speed of a labelled stage). Coordinate Geometry gains Applications of Linear Graphs (Yr 8–9: rate or starting amount from P = −35 + 4c · write y = a + bx from a story · build its table · write ax + by = d from a two-item total). The plotPts mode is now axis-agnostic and can mark an ORDERED path, which is what the distance-time construct level uses. Purely additive — no existing skill, level, id or band changed. internal v78.2: 📈 COORDINATE GEOMETRY grows (Laura). The Cartesian Plane gains L4 — three corners of a rectangle, square or labelled parallelogram ABCD are plotted and the student writes the coordinates of the fourth. NEW skill Table of Values (Yr 7–8: L1 build a linear table from a rule · L2 PLOT that table on the plane · L3 build a non-linear table (x², x³, 2ˣ) · L4 plot a non-linear table). x- and y-Intercepts gains a new L2 — read both intercepts off a table of values — pushing y-int/x-int/both down to L3/L4/L5 (safe: no student has played Coordinate Geometry yet). NEW INPUT MODE plotPts: the drawn Cartesian plane itself is the answer surface — every lattice point carries an invisible tap target, tap to place or remove a marker, all-or-nothing marking, and the marking is drawn back onto the grid. internal v78.0: Yr 7–9 SEQUENCES in 💰 Finance & Patterns (Laura). NEW Sequence Rules in Words (Yr 7: L1 first term · L2 the term-to-term rule in words as a 4-way tap (add / subtract / multiply / divide / square numbers) · L3 next two terms · L4 write the first five terms from a starting value and a worded rule · L5 read a term off the sequence from aₙ notation). NEW Arithmetic Sequences (Yr 7–8: L1 common difference d · L2 next three terms · L3 fill a₁ and d into aₙ = a₁ + (n − 1)d · L4 use the rule to find a required term). NEW Geometric Sequences (Yr 8–9: L1 common ratio r · L2 next three terms · L3 fill a₁ and r into aₙ = a₁ × rⁿ⁻¹ · L4 use the rule to find a required term). The existing Sequences skill is RENAMED "Arithmetic & Geometric Sequences" and otherwise untouched (id, lvKey, levels and bands all unchanged) — it stays as the higher-order one where the student decides which kind it is. gapFill grows from four boxes to FIVE (gap4), with narrower boxes on a five-box row. All new bands are PLACEHOLDERS pending class data. internal v77.0: THREE NEW CATEGORIES and one new Number skill. ◡ Quadratics — Verify Solutions to Quadratic Equations (L1 x²=k · L2 factorised · L3 trinomial, Yes/No) and Solve Quadratic Equations (L1 x²=k · L2 exact values/fractions as multiple choice · L3 Null Factor Law · L4 monic trinomials). 📈 Coordinate Geometry — The Cartesian Plane (quadrant · read a plotted coordinate), Linear or Non-Linear (from a graph · from an equation), x- and y-Intercepts (y-int · x-int · both from ax+by=c) and Gradient of a Line Segment (whole · from a diagram · fractions & negatives). 💰 Finance & Patterns — GST (10%: added · price incl · removed), Simple Interest (5 levels on Vn = V0 + nD, D = r/100 × V0), Sequences (classify · next term · arithmetic rule · geometric rule), Recurrence Relations (write · use) and Flat Rate Depreciation (5 levels on Vn = V0 − nD). Number gains Number Classification (rational/irrational · tick every set). TWO NEW INPUT MODES: gapFill (a rendered rule/coordinate/solution template with up to five numeric boxes, all-or-nothing, optional order-free marking) and multiSel (tick every box that applies, all-or-nothing). Purely additive — no existing skill, level, id or band changed; all new bands are PLACEHOLDERS pending class data. internal v76.0: Congruence & Similarity now distinguish "provably false" from "unknown". L3 adds a 6th button "Not similar" (sides given but not in a constant ratio — the case a student CAN disprove, e.g. 5,8,11 vs 10,18,22); L2 adds a 6th button "Not congruent" via a new DIFF scenario that labels side lengths that don't all match. "Not enough information" now means only the genuinely undetermined cases (SSA, AAA-for-congruence, one angle, two sides). csSimilarityVerdict/csCongruenceVerdict extended; fixed 6-button order; storage-safe (no skill/level renamed or reordered). v75.0: NEW Percentages skills — Convert Percentages & Decimals (pctDecConv, both directions, number box) and Convert Fractions & Percentages (fracPctConv: L1–2 fraction→% number box, L3–4 %→fraction box; direction fixed per level via levelModes). Both single-question (not the FDP fill-in table), placed before Convert FDP; recall/Fluent-eligible with PLACEHOLDER bands (recalibrate with class data). Recurring values (33⅓% etc.) accepted within a per-question tolerance via qData.ansTol. Storage-safe additive change. v74.9: band cut-offs revised across the whole program from Laura's reviewed spreadsheet — 95 skill-levels re-banded via explicit per-level BAND_OVERRIDE entries (app matches the sheet on all 330 rows). v74.8: Decimals band targets LOWERED (Laura) so quick+accurate students reach higher animals — Identify/Expanded Form/Convert D→F −2; Rounding & Add/Subtract Decimals −3; all ×/÷ decimal operations (Multiply, Divide, ×÷ by 10/100/1000, Squares & Cubes, Square/Cube Roots, signed ×÷, ×fractions) −4. Display-only/storage-safe; .bas regenerated. v74.7: more Decimals (Laura) — NEW skills Add & Subtract Decimals (Positive & Negative), Multiply Decimals & Fractions (decFrac), Multiply & Divide Decimals (Positive & Negative), Leading Digit Estimation (round-to-1sf → estimate → BODMAS), Square Roots & Cube Roots of Decimals; NEW word-problem L4 on Multiply Decimals and Divide Decimals; Squares & Cubes of Decimals moved after Multiply Decimals & Fractions. v74.6: Add & Subtract Decimals L4 word problems; Add & Subtract Fractions & Decimals; Rounding Decimals L3 round-then-estimate. v74.5: miss reviews work THIS question's numbers step-by-step; Angles-in-Polygons L4; deeper concave polygons) -->
 <!-- Viewport (v48): dropped `maximum-scale=1.0, user-scalable=no`. iOS ignored it (so pinch worked there anyway) but Android obeyed it, blocking accessibility pinch-zoom. Accidental double-tap-to-zoom is killed per-control via `touch-action: manipulation` instead, which leaves deliberate pinch-zoom intact on every platform. -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1741,9 +1741,9 @@ body {
       <div class="cat-desc">Naming shapes, angles, Euler's rule &amp; congruence</div>
     </div>
     <div class="cat-card" onclick="openCat('other')">
-      <span class="cat-icon">🧩</span>
-      <div class="cat-name">Other</div>
-      <div class="cat-desc">Units of time, timetables &amp; distance-time graphs</div>
+      <span class="cat-icon">🔄</span>
+      <div class="cat-name">Time &amp; Transformations</div>
+      <div class="cat-desc">Time, timetables, distance-time graphs &amp; transformations</div>
     </div>
 
   </div>
@@ -2496,12 +2496,25 @@ const CATS = {
   },
   /* v78.3 (Laura) — a home for the practical, everyday-maths skills that don't
      belong to any of the strands above. Deliberately last in the menu. */
+  /* v79 (Laura): renamed from '🧩 Other' — the category now has a real subject.
+     The CATS KEY stays 'other', which is what every stored key is built from, so
+     the rename is display-only and no Personal Best moves. The dashboard .bas
+     matches on SKILL names, not the category, so it is unaffected too. */
   other: {
-    label: '🧩 Other',
+    label: '🔄 Time & Transformations',
     skills: [
       { id:'timeConvert', name:'Converting Units of Time',   inputMode:'number', lvKey:'tcv', levelModes:{4:'gapFill'} },
       { id:'timetables',  name:'Train &amp; Bus Timetables', inputMode:'number', lvKey:'ttb', levelModes:{1:'choice',3:'choice'} },
       { id:'distTime',    name:'Distance-Time Graphs',       inputMode:'number', lvKey:'dtg', levelModes:{2:'choice',3:'plotPts'} },
+      /* v79 — the transformations family. Levels 1–2 apply a transformation given
+         in words, the middle levels move between words and mapping notation, and
+         the last level runs the whole thing backwards. */
+      { id:'translate',   name:'Translations',                   inputMode:'gapFill', lvKey:'trn', levelModes:{3:'choice',4:'choice'} },
+      { id:'reflect',     name:'Reflections',                    inputMode:'gapFill', lvKey:'rfl', levelModes:{3:'choice',4:'choice'} },
+      { id:'dilate',      name:'Dilations from the Origin',      inputMode:'gapFill', lvKey:'dil', levelModes:{2:'choice',3:'choice'} },
+      { id:'rotate',      name:'Rotations about the Origin',     inputMode:'gapFill', lvKey:'rot', levelModes:{3:'choice',4:'choice'} },
+      { id:'combine',     name:'Combinations of Transformations',inputMode:'gapFill', lvKey:'cmb', levelModes:{3:'choice'} },
+      { id:'shapeTrans',  name:'Transformations of 2D Shapes',   inputMode:'plotPts', lvKey:'stf', levelModes:{3:'choice'} },
     ]
   }
 };
@@ -2564,6 +2577,9 @@ const SKILL_YEAR = {
   tableValues:'Yr 7–8',
   // v78.3
   linearApps:'Yr 8–9', timeConvert:'Yr 7', timetables:'Yr 7', distTime:'Yr 7–8',
+  // v79 — transformations
+  translate:'Yr 7–8', reflect:'Yr 7–8', dilate:'Yr 8–9', rotate:'Yr 8',
+  combine:'Yr 8–9', shapeTrans:'Yr 7–8',
   // v77 — Finance & Patterns
   gst:'Yr 8–9', simpleInterest:'Yr 9–10', sequences:'Yr 10', recurrence:'Yr 10', flatDep:'Yr 10',
   // v78 — Yr 7–9 sequence work
@@ -2639,6 +2655,55 @@ const LEVEL_DEFS = {
     { title:'Level 2 — Which Stage?',       desc:'A flat section means stationary. The steepest section is the fastest.', examples:['flat stage → stationary', 'steepest stage → fastest'] },
     { title:'Level 3 — Build the Graph',    desc:'Read the journey, then tap the corner at the end of each stage in order.', examples:['30 km in 1 h, rests 1 h, 20 km in 2 h'] },
     { title:'Level 4 — Speed of a Stage',   desc:'speed = distance ÷ time. Use just the one labelled stage.', examples:['30 km in 2 hours → 15 km/h'] },
+  ],
+  /* ── v79 — Transformations. Every skill runs the same six ideas so the family
+     feels like one thing: apply it from words · describe it · read the mapping ·
+     apply the mapping · run it backwards. ── */
+  trn: [
+    { title:'Level 1 — One Step',          desc:'Slide the point along one axis only. Right adds to x, left subtracts. Up adds to y, down subtracts.', examples:['A(2, 1), 3 units right → (5, 1)', 'A(0, 4), 2 units down → (0, 2)'] },
+    { title:'Level 2 — Two Steps',         desc:'Across AND up or down. Do the x move and the y move separately.', examples:['A(−1, 2), 3 right and 2 down → (2, 0)'] },
+    { title:'Level 3 — Describe It',       desc:'A point and its image are drawn. Work out how far across, and how far up or down, it moved.', examples:['(1, 1) → (4, 3) is 3 units right and 2 units up'] },
+    { title:'Level 4 — From the Mapping',  desc:'Read the mapping notation. On x, + is right and − is left. On y, + is up and − is down.', examples:['(x, y) → (x + 2, y − 3) is 2 right and 3 down'] },
+    { title:'Level 5 — Apply the Mapping', desc:'Substitute the x and the y of the point into the rule.', examples:['(x, y) → (x − 4, y + 1) with A(3, 2) → (−1, 3)'] },
+    { title:'Level 6 — Find the Original', desc:'You are given the IMAGE. Undo the translation to find where the point started.', examples:['A′(5, 1) after 3 units right → A(2, 1)'] },
+  ],
+  rfl: [
+    { title:'Level 1 — In the Axes',       desc:'Reflect in the x-axis or the y-axis. In the x-axis the y changes sign; in the y-axis the x changes sign.', examples:['(3, 2) in the x-axis → (3, −2)', '(3, 2) in the y-axis → (−3, 2)'] },
+    { title:'Level 2 — Including y = x',   desc:'Also reflect in the line y = x, which swaps the two coordinates over.', examples:['(3, 2) in y = x → (2, 3)'] },
+    { title:'Level 3 — Describe It',       desc:'A point and its image are drawn. Which line was it reflected in?', examples:['(4, 1) → (−4, 1) is the y-axis'] },
+    { title:'Level 4 — From the Mapping',  desc:'Read the mapping. A minus on y is the x-axis, a minus on x is the y-axis, and swapped letters mean y = x.', examples:['(x, y) → (y, x) is the line y = x'] },
+    { title:'Level 5 — Apply the Mapping', desc:'Substitute the x and the y of the point into the rule.', examples:['(x, y) → (−x, y) with A(3, 2) → (−3, 2)'] },
+    { title:'Level 6 — Find the Original', desc:'You are given the IMAGE. Reflect it back — a reflection undoes itself.', examples:['A′(3, −2) in the x-axis → A(3, 2)'] },
+  ],
+  dil: [
+    { title:'Level 1 — Apply the Dilation', desc:'Multiply BOTH coordinates by the factor. A factor bigger than 1 enlarges; a fraction makes it smaller.', examples:['(2, 3) by 3 → (6, 9)', '(6, −4) by ½ → (3, −2)'] },
+    { title:'Level 2 — Describe It',        desc:'A point and its image are drawn. Divide the image by the original to find the factor.', examples:['(2, 3) → (4, 6) is a factor of 2'] },
+    { title:'Level 3 — From the Mapping',   desc:'The number in front of BOTH x and y is the dilation factor.', examples:['(x, y) → (3x, 3y) is a factor of 3'] },
+    { title:'Level 4 — Apply the Mapping',  desc:'Substitute the x and the y of the point into the rule.', examples:['(x, y) → (½x, ½y) with A(8, −2) → (4, −1)'] },
+    { title:'Level 5 — Find the Original',  desc:'You are given the IMAGE. Divide by the factor instead of multiplying.', examples:['A′(6, 9) after a factor of 3 → A(2, 3)'] },
+  ],
+  rot: [
+    { title:'Level 1 — Half Turns',        desc:'180° about the origin sends (x, y) to (−x, −y). A half turn is the same whichever way you go round.', examples:['(3, 2) → (−3, −2)'] },
+    { title:'Level 2 — Quarter Turns',     desc:'90° and 270°, clockwise and anticlockwise. Swap the two coordinates over, then fix one sign.', examples:['(3, 2) 90° anticlockwise → (−2, 3)', '(3, 2) 90° clockwise → (2, −3)'] },
+    { title:'Level 3 — Describe It',       desc:'A point and its image are drawn. Which turn about the origin takes one to the other?', examples:['(3, 2) → (−2, 3) is 90° anticlockwise'] },
+    { title:'Level 4 — From the Mapping',  desc:'Read the mapping. Both signs flipped is 180°; swapped letters mean a quarter turn.', examples:['(x, y) → (−y, x) is 90° anticlockwise'] },
+    { title:'Level 5 — Apply the Mapping', desc:'Substitute the x and the y of the point into the rule.', examples:['(x, y) → (y, −x) with A(1, 4) → (4, −1)'] },
+    { title:'Level 6 — Find the Original', desc:'You are given the IMAGE. Turn it back the other way.', examples:['A′(−2, 3) after 90° anticlockwise → A(3, 2)'] },
+  ],
+  cmb: [
+    { title:'Level 1 — Two Transformations',   desc:'Do them in the order written. Finish the first one completely before starting the second.', examples:['Reflect in the y-axis, then translate 3 units up'] },
+    { title:'Level 2 — Three Transformations', desc:'Same idea with a third step. Keep track of the point after each one.', examples:['Rotate 180°, then reflect in the x-axis, then translate 2 units right'] },
+    { title:'Level 3 — From the Mapping',      desc:'One mapping can describe a whole chain. Match it to the combination that produces it.', examples:['(x, y) → (−x + 3, y) is reflect in the y-axis, then 3 units right'] },
+    { title:'Level 4 — Apply the Mapping',     desc:'Substitute the x and the y of the point into the rule — the chain is already done for you.', examples:['(x, y) → (−y, x + 2) with A(1, 3) → (−3, 3)'] },
+    { title:'Level 5 — Find the Original',     desc:'You are given the IMAGE. Undo each step, in reverse order.', examples:['undo the translation first, then the reflection'] },
+  ],
+  stf: [
+    { title:'Level 1 — Translate a Shape',      desc:'Move EVERY corner the same way, then tap the corners of the image.', examples:['a triangle 3 units right and 1 unit down'] },
+    { title:'Level 2 — Reflect a Shape',        desc:'Reflect each corner in the line, then tap the corners of the image.', examples:['a rectangle reflected in the y-axis'] },
+    { title:'Level 3 — Which Transformation?',  desc:'Two shapes are drawn. Follow ONE corner across to work out what happened.', examples:['A → B is a reflection in the x-axis'] },
+    { title:'Level 4 — Dilate a Shape',         desc:'Multiply every corner by the factor. The shape keeps its shape but changes size.', examples:['a triangle dilated by a factor of 2 from the origin'] },
+    { title:'Level 5 — Rotate a Shape',         desc:'Turn every corner about the origin, then tap the corners of the image.', examples:['a rectangle rotated 90° clockwise'] },
+    { title:'Level 6 — Find the Original Shape',desc:'The IMAGE is drawn. Work backwards and tap the corners of the original shape.', examples:['undo the transformation, corner by corner'] },
   ],
   grad: [
     { title:'Level 1 — Positive, Negative, Zero or Undefined?', desc:'Just the sign. Uphill left-to-right is positive, downhill is negative, flat is zero, and a vertical line is undefined.', examples:['↗ → Positive', '↘ → Negative', '— → Zero', '| → Undefined'] },
@@ -3302,6 +3367,14 @@ const LEVEL_REC = {
   lap:   { 2: 'practice', 3: 'practice', 4: 'challenge' },
   ttb:   { 3: 'challenge' },
   dtg:   { 3: 'practice', 4: 'challenge' },
+  /* v79 — the backwards levels and the shape-tapping levels are deliberate work,
+     not sprints, so they point at Practice; the chain levels at Challenge. */
+  trn:   { 6: 'practice' },
+  rfl:   { 6: 'practice' },
+  dil:   { 5: 'practice' },
+  rot:   { 5: 'practice', 6: 'practice' },
+  cmb:   { 1: 'practice', 2: 'practice', 5: 'challenge' },
+  stf:   { 1: 'practice', 2: 'practice', 4: 'practice', 5: 'practice', 6: 'practice' },
   gst:   { 3: 'challenge' },
 };
 function getLevelRec(key, lv) {
@@ -3449,6 +3522,13 @@ function getFluencyTarget(s, lv) {
 /* Method tips — the "show me how" fallback for method skills that don't build a
    numeric worked example. Algebra skills build precise steps in their generators. */
 const METHOD_TIP = {
+  // v79 — transformations
+  translate:'A translation adds to the coordinates: right/left changes x, up/down changes y. Do the two moves separately.',
+  reflect:'Reflecting in the x-axis changes the sign of y; in the y-axis it changes the sign of x; in the line y = x it swaps the two coordinates over.',
+  dilate:'A dilation from the origin multiplies BOTH coordinates by the same factor. Bigger than 1 enlarges, a fraction reduces.',
+  rotate:'About the origin: 180° flips both signs, 90° anticlockwise sends (x, y) to (−y, x), and 90° clockwise sends it to (y, −x). Swap, then fix one sign.',
+  combine:'Do the transformations strictly in the order written, finishing one before starting the next. To go backwards, undo them in reverse order.',
+  shapeTrans:'Transform a shape one corner at a time — every corner moves by the same rule — then join them back up.',
   orderOps:'Work left to right, but do brackets first, then × and ÷, then + and −.',
   intOrderOps:'Brackets first, then × and ÷, then + and −. Watch the signs: − × − = +.',
   fracOrderOps:'Brackets first, then × and ÷, then + and −. Keep fractions over a common denominator to add or subtract.',
@@ -3576,6 +3656,16 @@ const METHOD_BAND_CEIL = {
   timeConvert:[16, 14, 12, 6],   // only L4 is read (L1-L3 are recall — see FLUENCY_TARGET)
   timetables:[10, 8, 6, 8],
   distTime:[12, 12, 4, 8],
+  /* v79 — transformations. ALL PLACEHOLDERS: recalibrate with class data.
+     The point skills are quick two-number jobs; the shape skill involves three or
+     four taps a question, so it is banded much lower — closer to Table of Values
+     L2/L4 than to anything typed. */
+  translate:[14, 11, 12, 12, 12, 8],
+  reflect:[14, 11, 12, 12, 12, 8],
+  dilate:[12, 12, 12, 11, 8],
+  rotate:[12, 8, 10, 10, 9, 6],
+  combine:[7, 5, 8, 8, 5],
+  shapeTrans:[5, 5, 8, 4, 4, 3],
   gradientSeg:[15, 7, 8, 5],         // L1 sign only · L2 diagram · L3 two points · L4 fractions
   gst:[10, 10, 6],
   simpleInterest:[10, 9, 8, 6, 5, 6],  // L3 = new "read it off the rule" level
@@ -4785,7 +4875,14 @@ function buildChoiceGrid() {
   if (!grid) return;
   // v69: expanded-form options are long (multi-term, stacked fractions) — give
   // them a full-width, auto-height column so nothing clips in the 74px trig grid.
-  grid.classList.toggle('wide', skill === 'decExpand' || skill === 'compareDec' || skill === 'rearrange' || skill === 'primeFactor');
+  /* v79: a combination's options are whole sentences ("Reflect in the y-axis, then
+     translate 4 units left and 5 units down"), which the fixed 74px two-column
+     button clips top and bottom — unreadable. The transformation skills whose
+     labels are sentences get the full-width, auto-height column. Found by
+     screenshotting a real browser; the jsdom suite reads the label out of the DOM
+     and cannot see that it does not fit. */
+  grid.classList.toggle('wide', skill === 'decExpand' || skill === 'compareDec' || skill === 'rearrange' || skill === 'primeFactor'
+    || ['translate','reflect','dilate','rotate','combine','shapeTrans'].indexOf(skill) >= 0);
   grid.innerHTML = '';
   (qData.choices || []).forEach(opt => {
     const b = document.createElement('button');
@@ -7390,6 +7487,13 @@ function nextQ() {
   else if (skill === 'timeConvert')     { genTimeConvert(el); }
   else if (skill === 'timetables')      { genTimetables(el); }
   else if (skill === 'distTime')        { genDistTime(el); }
+  // v79 — transformations
+  else if (skill === 'translate')       { genTranslate(el); }
+  else if (skill === 'reflect')         { genReflect(el); }
+  else if (skill === 'dilate')          { genDilate(el); }
+  else if (skill === 'rotate')          { genRotate(el); }
+  else if (skill === 'combine')         { genCombine(el); }
+  else if (skill === 'shapeTrans')      { genShapeTrans(el); }
   else if (skill === 'linearNonlinear') { genLinearNonlinear(el); }
   else if (skill === 'intercepts')      { genIntercepts(el); }
   else if (skill === 'gradientSeg')     { genGradientSeg(el); }
@@ -13452,8 +13556,8 @@ function plotRender(){
     chosen.forEach(function(p){
       marks += '<circle cx="' + cgX(p[0]) + '" cy="' + cgY(p[1]) + '" r="6" fill="var(--accent)"/>';
     });
-    setText('plotCount', chosen.length + ' of ' + want.length
-      + (qData.plotOrdered ? ' corners placed' : ' plotted'));
+    setText('plotCount', chosen.length + ' of ' + want.length + ' '
+      + (qData.plotNoun || (qData.plotOrdered ? 'corners placed' : 'plotted')));
   }
   /* #qBox is display:flex — it must be given exactly ONE child, or the prompt, the
      story and the grid line up as columns and the graph is squeezed to nothing.
@@ -13693,6 +13797,593 @@ function genTableValues(el){
     + qData.plotAns.map(function(q){ return '(' + sgnNum(q[0]) + ', ' + sgnNum(q[1]) + ')'; }).join('&nbsp; ')
     + '<br>Across first, then up or down.';
   el.innerHTML = '';   // buildPlotPts() renders the grid once the panel is up
+}
+
+
+/* ═════════════════════════════════════════════════════════════════════════
+   TRANSFORMATIONS (v79, Laura) — 🔄 Time & Transformations
+   -------------------------------------------------------------------------
+   Six skills share one engine. EVERY transformation in the program (translate,
+   reflect in an axis or y = x, rotate a multiple of 90° about the origin,
+   dilate from the origin) is an AFFINE map whose matrix has exactly one
+   non-zero entry per row — a "monomial" matrix. That single fact is what makes
+   the whole thing tractable:
+
+     • applying one is a two-line calculation;
+     • COMPOSING two of them stays monomial, so the Combination skill can print
+       a single mapping (x, y) → (…, …) for a chain of transformations rather
+       than having to special-case every pairing;
+     • the mapping notation can be rendered straight off the matrix, so the
+       words and the notation can never drift apart — they are two views of the
+       same object.
+
+   T = { m: [[a,b],[c,d]], t: [e,f], words: '…', verb: '…' }
+       x' = a·x + b·y + e        y' = c·x + d·y + f                       */
+
+function tfApply(T, p){
+  return [ T.m[0][0]*p[0] + T.m[0][1]*p[1] + T.t[0],
+           T.m[1][0]*p[0] + T.m[1][1]*p[1] + T.t[1] ];
+}
+function tfCompose(T1, T2){          // apply T1 FIRST, then T2
+  const A = T2.m, B = T1.m;
+  return { m: [[A[0][0]*B[0][0] + A[0][1]*B[1][0], A[0][0]*B[0][1] + A[0][1]*B[1][1]],
+               [A[1][0]*B[0][0] + A[1][1]*B[1][0], A[1][0]*B[0][1] + A[1][1]*B[1][1]]],
+           t: [A[0][0]*T1.t[0] + A[0][1]*T1.t[1] + T2.t[0],
+               A[1][0]*T1.t[0] + A[1][1]*T1.t[1] + T2.t[1]] };
+}
+/* A transformation's IDENTITY as a string — two transformations that move every
+   point the same way have the same signature. Used to guarantee a multiple
+   choice never carries two right answers. */
+function tfSig(T){ return T.m[0][0]+'|'+T.m[0][1]+'|'+T.t[0]+'|'+T.m[1][0]+'|'+T.m[1][1]+'|'+T.t[1]; }
+function tfSame(T1, T2){ return tfSig(T1) === tfSig(T2); }
+
+/* Coefficient in front of a variable inside the mapping. Fractions are printed
+   as the vulgar character the level cards use, so ½x reads as a half of x
+   rather than as "1/2 x" running into the next term. */
+function tfCoef(k){
+  if (k === 1) return '';
+  if (k === -1) return '−';
+  if (k === 0.5) return '½';
+  if (k === -0.5) return '−½';
+  if (Math.abs(k - 1/3) < 1e-9) return '⅓';
+  if (Math.abs(k + 1/3) < 1e-9) return '−⅓';
+  return sgnNum(k);
+}
+function tfOff(n){ return n === 0 ? '' : (n > 0 ? ' + ' + n : ' − ' + (-n)); }
+function tfRowHtml(a, b, e){
+  return (a !== 0 ? tfCoef(a) + 'x' : tfCoef(b) + 'y') + tfOff(e);
+}
+function tfMapHtml(T){
+  return '(x, y) → (' + tfRowHtml(T.m[0][0], T.m[0][1], T.t[0]) + ', '
+                      + tfRowHtml(T.m[1][0], T.m[1][1], T.t[1]) + ')';
+}
+
+/* ── The transformation constructors ── */
+function tfTransWords(a, b){
+  const bits = [];
+  if (a !== 0) bits.push(Math.abs(a) + ' unit' + (Math.abs(a) === 1 ? '' : 's') + ' ' + (a > 0 ? 'right' : 'left'));
+  if (b !== 0) bits.push(Math.abs(b) + ' unit' + (Math.abs(b) === 1 ? '' : 's') + ' ' + (b > 0 ? 'up' : 'down'));
+  return bits.join(' and ');
+}
+function TF_translate(a, b){
+  const w = tfTransWords(a, b);
+  return { m:[[1,0],[0,1]], t:[a,b], kind:'translate',
+           words:'Translate ' + w, verb:'translate ' + w,
+           why:'Translating ' + w + ' means adding ' + sgnNum(a) + ' to x and ' + sgnNum(b) + ' to y.' };
+}
+function TF_reflect(which){
+  if (which === 'x') return { m:[[1,0],[0,-1]], t:[0,0], kind:'reflect',
+    words:'Reflect in the x-axis', verb:'reflect in the x-axis',
+    why:'Reflecting in the x-axis flips the point over the horizontal axis: x stays, y changes sign.' };
+  if (which === 'y') return { m:[[-1,0],[0,1]], t:[0,0], kind:'reflect',
+    words:'Reflect in the y-axis', verb:'reflect in the y-axis',
+    why:'Reflecting in the y-axis flips the point over the vertical axis: y stays, x changes sign.' };
+  return { m:[[0,1],[1,0]], t:[0,0], kind:'reflect',
+    words:'Reflect in the line y = x', verb:'reflect in the line y = x',
+    why:'Reflecting in y = x swaps the two coordinates over: (x, y) becomes (y, x).' };
+}
+const TF_DIL_TXT = { 2:'2', 3:'3', 4:'4', 0.5:'½' };
+function tfKTxt(k){ return Math.abs(k - 1/3) < 1e-9 ? '⅓' : (TF_DIL_TXT[k] || String(k)); }
+function TF_dilate(k){
+  const kt = tfKTxt(k);
+  return { m:[[k,0],[0,k]], t:[0,0], kind:'dilate', k:k,
+    words:'Dilate by a factor of ' + kt + ' from the origin',
+    verb:'dilate by a factor of ' + kt + ' from the origin',
+    why:'A dilation from the origin multiplies BOTH coordinates by the factor — here by ' + kt + '.' };
+}
+/* Rotations. 90° clockwise and 270° anticlockwise are the SAME map, so the two
+   names can never both appear as options on a describe-it level (see tfRotOpts). */
+function TF_rotate(deg, dir){
+  const d = ((dir === 'cw') ? -1 : 1) * deg;
+  const q = ((d % 360) + 360) % 360;                    // 0, 90, 180, 270 anticlockwise
+  const M = q === 90  ? [[0,-1],[1,0]]
+          : q === 180 ? [[-1,0],[0,-1]]
+          : q === 270 ? [[0,1],[-1,0]]
+          :             [[1,0],[0,1]];
+  const name = deg === 180 ? 'Rotate 180° about the origin'
+             : 'Rotate ' + deg + '° ' + (dir === 'cw' ? 'clockwise' : 'anticlockwise') + ' about the origin';
+  const why = q === 180 ? 'A half turn about the origin sends (x, y) to (−x, −y) — both signs flip.'
+            : q === 90  ? 'A quarter turn anticlockwise sends (x, y) to (−y, x): swap the coordinates, then change the sign of the new x.'
+            :             'A quarter turn clockwise sends (x, y) to (y, −x): swap the coordinates, then change the sign of the new y.';
+  return { m:M, t:[0,0], kind:'rotate', deg:deg, dir:dir, words:name, verb:name.charAt(0).toLowerCase() + name.slice(1), why:why };
+}
+
+/* ── A parameterised Cartesian plane ──
+   cgGrid() is hard-wired to −5…5 at 22px. Transformations need both a WIDER
+   window (a dilation by 4 leaves the −5…5 box immediately) and, for the shape
+   skill, a COARSER one so a vertex is an easy tap on a phone. Same drawing,
+   radius and spacing passed in.                                            */
+function tfGeom(R, extra){
+  const S = Math.max(9, Math.floor(110 / R)), CX = 150, CY = 125, H = 250;
+  const px = function(x){ return CX + x * S; }, py = function(y){ return CY - y * S; };
+  const step = R <= 5 ? 1 : (R <= 10 ? 2 : 5);
+  const rng = []; for (let i = -R; i <= R; i++) rng.push(i);
+  const grid = function(){
+    let s = '';
+    for (let i = -R; i <= R; i++) {
+      s += '<line x1="'+px(i)+'" y1="'+py(-R)+'" x2="'+px(i)+'" y2="'+py(R)+'" stroke="var(--border)" stroke-width="1"/>';
+      s += '<line x1="'+px(-R)+'" y1="'+py(i)+'" x2="'+px(R)+'" y2="'+py(i)+'" stroke="var(--border)" stroke-width="1"/>';
+    }
+    s += '<line x1="'+px(-R)+'" y1="'+py(0)+'" x2="'+px(R)+'" y2="'+py(0)+'" stroke="var(--text)" stroke-width="2"/>';
+    s += '<line x1="'+px(0)+'" y1="'+py(-R)+'" x2="'+px(0)+'" y2="'+py(R)+'" stroke="var(--text)" stroke-width="2"/>';
+    for (let i = -R; i <= R; i++) {
+      if (i === 0 || i % step !== 0) continue;
+      s += '<text x="'+px(i)+'" y="'+(py(0)+12)+'" font-family="Nunito,sans-serif" font-weight="700" font-size="9" fill="var(--muted)" text-anchor="middle">'+i+'</text>';
+      s += '<text x="'+(px(0)-7)+'" y="'+py(i)+'" font-family="Nunito,sans-serif" font-weight="700" font-size="9" fill="var(--muted)" text-anchor="end" dominant-baseline="central">'+i+'</text>';
+    }
+    s += '<text x="'+(px(R)+8)+'" y="'+py(0)+'" font-family="Nunito,sans-serif" font-weight="900" font-size="12" fill="var(--text)" text-anchor="middle" dominant-baseline="central">x</text>';
+    s += '<text x="'+px(0)+'" y="'+(py(R)-8)+'" font-family="Nunito,sans-serif" font-weight="900" font-size="12" fill="var(--text)" text-anchor="middle">y</text>';
+    return s + (extra ? extra() : '');
+  };
+  /* The tap radius must stay UNDER half the cell, or two targets overlap and a
+     tap is ambiguous about which lattice point it meant. */
+  return { px:px, py:py, xs:rng, ys:rng, grid:grid, h:H, r: Math.max(7, Math.floor(S/2) - 1), maxW:430, R:R, S:S };
+}
+function tfDot(G, x, y, label, muted){
+  const col = muted ? 'var(--muted)' : 'var(--accent)';
+  let s = '<circle cx="'+G.px(x)+'" cy="'+G.py(y)+'" r="5" fill="'+col+'"/>';
+  if (label) s += '<text x="'+(G.px(x)+10)+'" y="'+(G.py(y)-9)+'" font-family="Nunito,sans-serif" font-weight="900" font-size="13" fill="'+col+'" text-anchor="middle">'+label+'</text>';
+  return s;
+}
+function tfPoly(G, pts, label, muted, dashed){
+  const col = muted ? 'var(--muted)' : 'var(--accent)';
+  let s = '<polygon points="' + pts.map(function(p){ return G.px(p[0])+','+G.py(p[1]); }).join(' ')
+    + '" fill="'+col+'" fill-opacity="0.16" stroke="'+col+'" stroke-width="2.5" stroke-linejoin="round"'
+    + (dashed ? ' stroke-dasharray="5 3"' : '') + '/>';
+  pts.forEach(function(p){ s += '<circle cx="'+G.px(p[0])+'" cy="'+G.py(p[1])+'" r="3.5" fill="'+col+'"/>'; });
+  if (label) {
+    const cx = pts.reduce(function(t,p){ return t+p[0]; },0)/pts.length;
+    const cy = pts.reduce(function(t,p){ return t+p[1]; },0)/pts.length;
+    s += '<text x="'+G.px(cx)+'" y="'+G.py(cy)+'" font-family="Nunito,sans-serif" font-weight="900" font-size="14" fill="'+col+'" text-anchor="middle" dominant-baseline="central">'+label+'</text>';
+  }
+  return s;
+}
+function tfPtTxt(p){ return '(' + sgnNum(p[0]) + ', ' + sgnNum(p[1]) + ')'; }
+
+/* ── The four shared level shapes ───────────────────────────────────────────
+   Every transformation skill is built from these, which is what makes the six
+   of them feel like one family to a student:
+     APPLY (words)    — a point and a worded transformation → type the image
+     DESCRIBE         — a point and its image drawn → tap the transformation
+     FROM MAPPING     — a mapping (x, y) → (…, …) → tap the words that match
+     APPLY (mapping)  — a mapping and a point → type the image
+     PRE-IMAGE        — the image and the transformation → type where it started
+   `fam` supplies the pool of transformations for a level and the pool of
+   plausible wrong descriptions.                                            */
+
+/* Build a 4-way option list: the correct words plus three near-misses that are
+   guaranteed to be DIFFERENT MAPS, so exactly one option is ever right. */
+function tfOptions(T, pool, p, q){
+  const opts = [T.words];
+  /* Two DIFFERENT transformations can still agree on ONE point — (2, −2) goes to
+     (−2, 2) under both a half turn and a reflection in y = x. So when the question
+     shows a particular point, a distractor is only safe if it fails on THAT point;
+     comparing the maps is not enough. This is the single most likely way for a
+     transformations question to end up with two right answers. */
+  const rest = pool.filter(function(o){
+    if (tfSame(o, T)) return false;
+    if (!p) return true;
+    const r = tfApply(o, p);
+    return !(r[0] === q[0] && r[1] === q[1]);
+  });
+  // shuffle the near-misses, then take three
+  for (let i = rest.length - 1; i > 0; i--) { const j = ri(i + 1); const t = rest[i]; rest[i] = rest[j]; rest[j] = t; }
+  rest.slice(0, 3).forEach(function(o){ if (opts.indexOf(o.words) < 0) opts.push(o.words); });
+  return opts;
+}
+
+/* A point whose image under T lands inside ±R (and, where asked, whose image is
+   not the point itself — a question whose answer is "it didn't move" teaches
+   nothing and reads as a mistake). */
+function tfPickPoint(T, R, allowFixed){
+  const ok = function(p){
+    const q = tfApply(T, p);
+    return Number.isInteger(q[0]) && Number.isInteger(q[1])
+        && Math.abs(q[0]) <= R && Math.abs(q[1]) <= R
+        && !(p[0] === 0 && p[1] === 0)
+        && (allowFixed || !(q[0] === p[0] && q[1] === p[1]));
+  };
+  for (let g = 0; g < 200; g++) {
+    const p = [rr(-R, R), rr(-R, R)];
+    if (ok(p)) return { p:p, q:tfApply(T, p) };
+  }
+  /* Deterministic fallback: sweep the whole lattice rather than ever returning a
+     point whose image would sit off the grid. A random loop that runs out of
+     tries must not be allowed to ship a broken question. */
+  const all = [];
+  for (let x = -R; x <= R; x++) for (let y = -R; y <= R; y++) if (ok([x, y])) all.push([x, y]);
+  const p = all.length ? all[ri(all.length)] : [1, 0];
+  return { p:p, q:tfApply(T, p) };
+}
+
+const TF_LETTERS = ['A', 'B', 'P', 'Q', 'M', 'T'];
+
+/* APPLY from words — the plane is drawn with the starting point on it. */
+function tfLevelApply(el, T, R){
+  const G = tfGeom(R);
+  const pick = tfPickPoint(T, R, false);
+  const L = ffPick(TF_LETTERS);
+  qData.gapTemplate = [L + '&#8242; = ( ', 0, ' , ', 1, ' )'];
+  qData.gapAns = pick.q;
+  qData.gapHint = 'Across first (x), then up or down (y).';
+  qData.gapAnsText = tfPtTxt(pick.q);
+  qData.workSteps = T.why + '<br>' + L + ' = ' + tfPtTxt(pick.p) + ' → ' + L + '&#8242; = <b>' + tfPtTxt(pick.q) + '</b>.';
+  qData._tf = { T:tfSig(T), p:pick.p, q:pick.q };
+  id('qBox').innerHTML = '<div class="q-text" id="qText" style="font-size:1.05rem;width:100%;white-space:normal;">'
+    + '<div style="' + A_LBL + '">' + T.words + '. Where does ' + L + ' end up?</div>'
+    + plotSvg(G.grid() + tfDot(G, pick.p[0], pick.p[1], L), G) + '</div>';
+}
+/* DESCRIBE — both points drawn, tap the transformation that maps one to the other. */
+function tfLevelDescribe(el, T, R, pool){
+  const G = tfGeom(R);
+  const pick = tfPickPoint(T, R, false);
+  const L = ffPick(TF_LETTERS);
+  const opts = tfOptions(T, pool, pick.p, pick.q);
+  qData.workSteps = L + ' = ' + tfPtTxt(pick.p) + ' and ' + L + '&#8242; = ' + tfPtTxt(pick.q) + '.<br>' + T.why
+    + '<br>So the transformation is <b>' + T.words + '</b>.';
+  qData._tf = { T:tfSig(T), p:pick.p, q:pick.q, opts:opts };
+  decSetChoice(el, '', opts, T.words);
+  id('qBox').innerHTML = '<div class="q-text" id="qText" style="font-size:1.05rem;width:100%;white-space:normal;">'
+    + '<div style="' + A_LBL + '">Which transformation maps ' + L + ' onto ' + L + '&#8242;?</div>'
+    + plotSvg(G.grid() + tfDot(G, pick.p[0], pick.p[1], L, true)
+              + tfDot(G, pick.q[0], pick.q[1], L + '&#8242;'), G) + '</div>';
+}
+/* FROM MAPPING — the notation is given, tap the words that describe it. */
+function tfLevelFromMap(el, T, pool){
+  const opts = tfOptions(T, pool);
+  qData.workSteps = T.why + '<br>' + tfMapHtml(T) + ' is <b>' + T.words + '</b>.';
+  qData._tf = { T:tfSig(T), opts:opts };
+  el.style.fontSize = '1.05rem';
+  decSetChoice(el, '<div style="' + A_LBL + '">What does this mapping describe?</div>'
+    + '<div style="font-size:1.7rem;font-weight:900;margin:12px 0;">' + tfMapHtml(T) + '</div>',
+    opts, T.words);
+}
+/* APPLY from mapping — no picture: by this level the student works from the rule. */
+function tfLevelApplyMap(el, T, R){
+  const pick = tfPickPoint(T, R, false);
+  const L = ffPick(TF_LETTERS);
+  qData.gapTemplate = [L + '&#8242; = ( ', 0, ' , ', 1, ' )'];
+  qData.gapAns = pick.q;
+  qData.gapHint = 'Put the x and the y into the rule.';
+  qData.gapAnsText = tfPtTxt(pick.q);
+  qData.workSteps = 'x = ' + sgnNum(pick.p[0]) + ' and y = ' + sgnNum(pick.p[1]) + ' into ' + tfMapHtml(T) + '.<br>'
+    + L + '&#8242; = <b>' + tfPtTxt(pick.q) + '</b>.';
+  qData._tf = { T:tfSig(T), p:pick.p, q:pick.q };
+  id('qBox').innerHTML = '<div class="q-text" id="qText" style="font-size:1.05rem;width:100%;white-space:normal;">'
+    + '<div style="' + A_LBL + '">Apply this mapping to ' + L + ' = ' + tfPtTxt(pick.p) + '.</div>'
+    + '<div style="font-size:1.6rem;font-weight:900;margin:10px 0;">' + tfMapHtml(T) + '</div></div>';
+}
+/* PRE-IMAGE — the image and the transformation are given; where did it start?
+   Generated FORWARDS (pick the pre-image, apply T, then hide it) so the answer
+   is exact by construction and no inverse ever has to be taken. Half the
+   questions give the transformation in words and half as a mapping — the mix
+   Laura asked for. */
+function tfLevelPreImage(el, T, R){
+  const G = tfGeom(R);
+  const pick = tfPickPoint(T, R, false);
+  const L = ffPick(TF_LETTERS);
+  const asMap = ri(2) === 0;
+  const desc = asMap ? tfMapHtml(T) : T.words;
+  qData.gapTemplate = [L + ' = ( ', 0, ' , ', 1, ' )'];
+  qData.gapAns = pick.p;
+  qData.gapHint = 'Work backwards — undo the transformation.';
+  qData.gapAnsText = tfPtTxt(pick.p);
+  qData.workSteps = 'Undo the transformation. ' + T.why + '<br>'
+    + 'Check: ' + tfPtTxt(pick.p) + ' → ' + tfPtTxt(pick.q) + ', so ' + L + ' = <b>' + tfPtTxt(pick.p) + '</b>.';
+  qData._tf = { T:tfSig(T), p:pick.p, q:pick.q, asMap:asMap };
+  id('qBox').innerHTML = '<div class="q-text" id="qText" style="font-size:1.05rem;width:100%;white-space:normal;">'
+    + '<div style="' + A_LBL + '">' + L + '&#8242; = ' + tfPtTxt(pick.q) + ' is the image of ' + L + ' under '
+    + (asMap ? 'the mapping below' : '&ldquo;' + desc + '&rdquo;') + '. Where was ' + L + '?</div>'
+    + (asMap ? '<div style="font-size:1.5rem;font-weight:900;margin:8px 0;">' + desc + '</div>' : '')
+    + plotSvg(G.grid() + tfDot(G, pick.q[0], pick.q[1], L + '&#8242;'), G) + '</div>';
+}
+
+/* ═════════ Skill 1 — Translations ═════════ */
+function tfTransPick(twoStep){
+  let a, b;
+  do {
+    a = rr(-5, 5); b = rr(-5, 5);
+    if (!twoStep) { if (ri(2)) b = 0; else a = 0; }          // ONE step: along one axis only
+  } while ((a === 0 && b === 0) || (twoStep && (a === 0 || b === 0)));
+  return TF_translate(a, b);
+}
+function tfTransPool(T){
+  /* Near-misses built from the SAME numbers — right distance wrong direction,
+     right direction wrong distance — so the choice tests the concept and not
+     arithmetic the student can eyeball. */
+  const a = T.t[0], b = T.t[1], pool = [];
+  [[-a, b], [a, -b], [-a, -b], [b, a], [a + (a >= 0 ? 1 : -1), b], [a, b + (b >= 0 ? 1 : -1)]]
+    .forEach(function(v){ if (!(v[0] === 0 && v[1] === 0)) pool.push(TF_translate(v[0], v[1])); });
+  return pool;
+}
+function genTranslate(el){
+  const R = 5;
+  if (level === 1) return tfLevelApply(el, tfTransPick(false), R);
+  if (level === 2) return tfLevelApply(el, tfTransPick(true), R);
+  if (level === 3) { const T = tfTransPick(ri(2) === 1); return tfLevelDescribe(el, T, R, tfTransPool(T)); }
+  if (level === 4) { const T = tfTransPick(ri(2) === 1); return tfLevelFromMap(el, T, tfTransPool(T)); }
+  if (level === 5) return tfLevelApplyMap(el, tfTransPick(ri(2) === 1), R);
+  return tfLevelPreImage(el, tfTransPick(ri(2) === 1), R);
+}
+
+/* ═════════ Skill 2 — Reflections ═════════ */
+const TF_REFL_ALL = ['x', 'y', 'yx'];
+function tfReflPick(withDiag){ return TF_reflect(withDiag ? ffPick(TF_REFL_ALL) : ffPick(['x', 'y'])); }
+function tfReflPool(){ return TF_REFL_ALL.map(TF_reflect).concat([TF_rotate(180, 'acw'), TF_translate(2, 0)]); }
+function genReflect(el){
+  const R = 5;
+  if (level === 1) return tfLevelApply(el, tfReflPick(false), R);
+  if (level === 2) return tfLevelApply(el, tfReflPick(true), R);
+  if (level === 3) return tfLevelDescribe(el, tfReflPick(true), R, tfReflPool());
+  if (level === 4) return tfLevelFromMap(el, tfReflPick(true), tfReflPool());
+  if (level === 5) return tfLevelApplyMap(el, tfReflPick(true), R);
+  return tfLevelPreImage(el, tfReflPick(true), R);
+}
+
+/* ═════════ Skill 3 — Dilations from the Origin ═════════
+   ONE apply level, per Laura: every dilation here is a single step from the
+   origin, so there is no "two-step" version to build. The remaining levels
+   match the other skills exactly. The window widens to ±10 because a dilation
+   by 4 leaves the −5…5 box on almost any starting point. */
+const TF_DIL_KS = [2, 3, 4, 0.5, 1/3];
+function tfDilPick(){ return TF_dilate(ffPick(TF_DIL_KS)); }
+function tfDilPool(T){
+  return TF_DIL_KS.filter(function(k){ return k !== T.k; }).map(TF_dilate).concat([T]);
+}
+function genDilate(el){
+  const R = 10;
+  if (level === 1) return tfLevelApply(el, tfDilPick(), R);
+  if (level === 2) { const T = tfDilPick(); return tfLevelDescribe(el, T, R, tfDilPool(T)); }
+  if (level === 3) { const T = tfDilPick(); return tfLevelFromMap(el, T, tfDilPool(T)); }
+  if (level === 4) return tfLevelApplyMap(el, tfDilPick(), R);
+  return tfLevelPreImage(el, tfDilPick(), R);
+}
+
+/* ═════════ Skill 4 — Rotations about the Origin ═════════
+   L1 is 180° ONLY — a half turn has no direction to get wrong, so it is the
+   fair place to start. L2 brings in the quarter turns, where clockwise and
+   anticlockwise genuinely differ.
+
+   NOTE the one real trap in this topic: 90° clockwise and 270° anticlockwise
+   are the SAME map. On the two describe-it levels the option pool is therefore
+   restricted to the three canonical names (90° clockwise, 90° anticlockwise,
+   180°), so a question can never carry two correct answers. The 270° forms
+   still appear on the levels where the student APPLIES a rotation, where the
+   answer is a single point and nothing is ambiguous. */
+function tfRotPick(level1){
+  if (level1) return TF_rotate(180, 'acw');
+  const deg = ffPick([90, 90, 270]);
+  return TF_rotate(deg, ri(2) ? 'cw' : 'acw');
+}
+function tfRotAny(){ return ri(3) === 0 ? TF_rotate(180, 'acw') : TF_rotate(ffPick([90, 270]), ri(2) ? 'cw' : 'acw'); }
+function tfRotCanonical(){ return ffPick([TF_rotate(90, 'cw'), TF_rotate(90, 'acw'), TF_rotate(180, 'acw')]); }
+function tfRotPool(){ return [TF_rotate(90, 'cw'), TF_rotate(90, 'acw'), TF_rotate(180, 'acw')]; }
+function genRotate(el){
+  const R = 5;
+  if (level === 1) return tfLevelApply(el, tfRotPick(true), R);
+  if (level === 2) return tfLevelApply(el, tfRotPick(false), R);
+  if (level === 3) return tfLevelDescribe(el, tfRotCanonical(), R, tfRotPool());
+  if (level === 4) return tfLevelFromMap(el, tfRotCanonical(), tfRotPool());
+  if (level === 5) return tfLevelApplyMap(el, tfRotAny(), R);
+  return tfLevelPreImage(el, tfRotAny(), R);
+}
+
+/* ═════════ Skill 5 — Combinations of Transformations ═════════
+   NO describe-in-words level, per Laura: two points can be joined by any number
+   of different chains, so "which combination was this?" has no single answer.
+   The mapping levels survive because a mapping IS the composite — one object,
+   one right answer.
+
+   The chain's words and its mapping are both generated from the same composed
+   matrix, so they can never disagree.                                       */
+function tfComboParts(n){
+  /* At most ONE dilation in a chain. Two of them multiply — a half of a half is a
+     quarter, and (x, y) → (¼x, ¼y) is neither a factor students meet at this level
+     nor something the mapping renderer should have to print. */
+  const parts = [];
+  let dil = false;
+  for (let i = 0; i < n; i++) {
+    let pick = ri(4);
+    if (pick === 3 && dil) pick = ri(3);
+    if (pick === 3) dil = true;
+    parts.push(pick === 0 ? tfTransPick(ri(2) === 1)
+             : pick === 1 ? TF_reflect(ffPick(TF_REFL_ALL))
+             : pick === 2 ? TF_rotate(ffPick([90, 180]), ri(2) ? 'cw' : 'acw')
+             :              TF_dilate(ffPick([2, 0.5])));
+  }
+  return parts;
+}
+/* Every coefficient the mapping renderer can print as a clean symbol. */
+const TF_OK_COEF = [0, 1, -1, 2, -2, 3, -3, 4, -4, 0.5, -0.5];
+function tfPrintable(T){
+  return [T.m[0][0], T.m[0][1], T.m[1][0], T.m[1][1]].every(function(k){
+    return TF_OK_COEF.some(function(c){ return Math.abs(c - k) < 1e-9; });
+  }) && [T.t[0], T.t[1]].every(Number.isInteger);
+}
+function tfCombo(n, R){
+  let parts, T, guard = 0;
+  do {
+    guard++;
+    parts = tfComboParts(n);
+    T = parts.reduce(function(acc, p){ return acc ? tfCompose(acc, p) : p; }, null);
+    T = { m:T.m, t:T.t, kind:'combo' };
+    T.words = parts.map(function(p, i){ return i === 0 ? p.words : p.verb; }).join(', then ');
+    T.verb  = T.words.charAt(0).toLowerCase() + T.words.slice(1);
+    T.why   = 'Do them in order:<br>' + parts.map(function(p, i){ return (i + 1) + '. ' + p.words + ' — ' + p.why; }).join('<br>')
+            + '<br>Altogether that is ' + tfMapHtml(T) + '.';
+  } while (guard < 80 && (tfSame(T, { m:[[1,0],[0,1]], t:[0,0] })            // never the identity
+           || !tfPrintable(T)
+           || Math.abs(T.t[0]) > R || Math.abs(T.t[1]) > R));
+  return { T:T, parts:parts };
+}
+/* Wrong options for the mapping level: the same chain with one step altered, so
+   every distractor is a genuine composite rather than an obvious throwaway. */
+function tfComboPool(parts, R){
+  const pool = [];
+  for (let i = 0; i < 5; i++) {
+    const c = tfCombo(parts.length, R);
+    pool.push(c.T);
+  }
+  return pool;
+}
+function genCombine(el){
+  const R = 5;
+  if (level === 1 || level === 2) {
+    const c = tfCombo(level === 1 ? 2 : 3, R);
+    return tfLevelApply(el, c.T, R);
+  }
+  if (level === 3) {
+    const c = tfCombo(2, R);
+    return tfLevelFromMap(el, c.T, tfComboPool(c.parts, R));
+  }
+  if (level === 4) return tfLevelApplyMap(el, tfCombo(ri(2) ? 2 : 3, R).T, R);
+  return tfLevelPreImage(el, tfCombo(2, R).T, R);
+}
+
+/* ═════════ Skill 6 — Transformations of 2D Shapes ═════════
+   Yr 7–8. Same six ideas, but the object is a whole shape and the answer is
+   given by TAPPING its image vertices on the plane.
+
+   The window is −4…4, not −5…5. That is deliberate: a coarser lattice means a
+   bigger tap target (about 12 px of SVG against the Cartesian plane's 10), and
+   v78.2 flagged tap accuracy as the thing most likely to bite in class. Nine
+   columns is still plenty of room for a triangle and its image.             */
+const TF_SHAPES = [
+  [[0,0],[2,0],[0,1]], [[0,0],[2,0],[1,2]], [[0,0],[1,0],[1,2]],
+  [[0,0],[2,0],[2,1],[0,1]], [[0,0],[1,0],[1,1],[0,1]], [[0,0],[2,0],[2,2],[0,2]]
+];
+/* Shapes on EVEN coordinates only — needed whenever the transformation halves the
+   coordinates, so the image lands on lattice points rather than half-squares. */
+const TF_SHAPES_EVEN = [
+  [[0,0],[2,0],[0,2]], [[0,0],[4,0],[0,2]], [[0,0],[2,0],[2,2],[0,2]],
+  [[0,0],[4,0],[4,2],[0,2]], [[0,0],[2,0],[0,4]]
+];
+function tfShapePlace(R, maxAbs, even){
+  const base = ffPick(even ? TF_SHAPES_EVEN : TF_SHAPES).map(function(p){ return p.slice(); });
+  if (ri(2)) base.forEach(function(p){ p[0] = -p[0]; });
+  if (ri(2)) base.forEach(function(p){ p[1] = -p[1]; });
+  const st = even ? 2 : 1;
+  const dx = st * rr(-Math.floor(maxAbs/st), Math.floor(maxAbs/st));
+  const dy = st * rr(-Math.floor(maxAbs/st), Math.floor(maxAbs/st));
+  return base.map(function(p){ return [p[0] + dx, p[1] + dy]; });
+}
+function tfKeySet(pts){ return pts.map(function(p){ return p[0]+','+p[1]; }).slice().sort().join(' '); }
+/* Pick a shape and a transformation whose image fits the window, is genuinely
+   somewhere else, and does not sit on top of the original.
+
+   The shape is generated and then TESTED rather than reverse-engineered from the
+   transformation: it is the only way to be sure that both the pre-image and the
+   image are wholly on the grid, which is what makes the level answerable at all.
+   The fallback shrinks the shape rather than shipping one that runs off the edge. */
+function tfShapeQ(R, pickT, capIn){
+  let pre, T, img, guard = 0, bad = true;
+  for (guard = 0; guard < 400 && bad; guard++) {
+    T = pickT();
+    const even = (T.kind === 'dilate' && T.k < 1) || (T.kind === 'combo' && T.m[0][0] % 1 !== 0);
+    pre = tfShapePlace(R, capIn, even);
+    img = pre.map(function(p){ return tfApply(T, p); });
+    bad = img.some(function(p){ return !Number.isInteger(p[0]) || !Number.isInteger(p[1]) || Math.abs(p[0]) > R || Math.abs(p[1]) > R; })
+       || pre.some(function(p){ return Math.abs(p[0]) > R || Math.abs(p[1]) > R; })
+       || tfKeySet(img) === tfKeySet(pre)                       // the image must actually move
+       || img.some(function(q){ return pre.some(function(p){ return p[0] === q[0] && p[1] === q[1]; }); });
+  }
+  if (bad) {                                     // guaranteed-safe last resort
+    T = TF_reflect('y');
+    pre = [[1,1],[3,1],[1,2]];
+    img = pre.map(function(p){ return tfApply(T, p); });
+  }
+  return { pre:pre, T:T, img:img };
+}
+function tfShapeTapLevel(el, q, R, promptHtml, backwards){
+  const shown = backwards ? q.img : q.pre;
+  const want  = backwards ? q.pre : q.img;
+  const G0 = tfGeom(R);
+  const G = tfGeom(R, function(){ return tfPoly(G0, shown, backwards ? 'A&#8242;' : 'A', true); });
+  qData.plotGeom = G;
+  qData.plotAns = want;
+  qData.plotInstr = 'Tap each corner of the image. Tap a corner again to remove it.';
+  qData.plotNoun = 'corners tapped';
+  qData.plotAbove = '<div style="' + A_LBL + '">' + promptHtml + '</div>';
+  qData.workSteps = q.T.why + '<br>'
+    + shown.map(function(p, i){ return tfPtTxt(p) + ' → ' + tfPtTxt(want[i]); }).join('<br>');
+  qData._tf = { T:tfSig(q.T), pre:q.pre, img:q.img, backwards:!!backwards };
+  el.innerHTML = '';
+}
+/* Translations for the SHAPE skill are shorter than for the point skill — a whole
+   shape plus a 5-unit shift does not fit a 9-square window. */
+function tfShapeTrans(){
+  let a, b;
+  do { a = rr(-3, 3); b = rr(-3, 3); } while (a === 0 && b === 0);
+  return TF_translate(a, b);
+}
+function genShapeTrans(el){
+  const R = 4;
+  if (level === 1) {
+    const q = tfShapeQ(R, tfShapeTrans, 2);
+    return tfShapeTapLevel(el, q, R, 'Translate shape A ' + q.T.words.replace(/^Translate /, '') + '. Tap the corners of the image.');
+  }
+  if (level === 2) {
+    const q = tfShapeQ(R, function(){ return TF_reflect(ffPick(TF_REFL_ALL)); }, 3);
+    return tfShapeTapLevel(el, q, R, q.T.words + '. Tap the corners of the image.');
+  }
+  if (level === 3) {
+    /* Which transformation maps A onto B? Every wrong option is CHECKED against the
+       drawn shape, so a distractor that happens to produce the same image is thrown
+       away rather than shipped as a second right answer. */
+    const q = tfShapeQ(R, function(){
+      const k = ri(3);
+      return k === 0 ? tfShapeTrans() : k === 1 ? TF_reflect(ffPick(TF_REFL_ALL)) : tfRotCanonical();
+    }, 2);
+    const cand = TF_REFL_ALL.map(TF_reflect).concat(tfRotPool()).concat(tfTransPool(q.T))
+      .concat([TF_translate(1,0), TF_translate(0,1), TF_translate(-2,0), TF_translate(0,-2), TF_translate(2,2)]);
+    const wrong = cand.filter(function(o){ return tfKeySet(q.pre.map(function(p){ return tfApply(o, p); })) !== tfKeySet(q.img); });
+    for (let i = wrong.length - 1; i > 0; i--) { const j = ri(i + 1); const t = wrong[i]; wrong[i] = wrong[j]; wrong[j] = t; }
+    const opts = [q.T.words];
+    wrong.forEach(function(o){ if (opts.length < 4 && opts.indexOf(o.words) < 0) opts.push(o.words); });
+    const G = tfGeom(R);
+    qData.workSteps = 'Follow one corner: ' + tfPtTxt(q.pre[0]) + ' → ' + tfPtTxt(q.img[0]) + '.<br>' + q.T.why
+      + '<br>So it is <b>' + q.T.words + '</b>.';
+    qData._tf = { T:tfSig(q.T), pre:q.pre, img:q.img, opts:opts };
+    decSetChoice(el, '', opts, q.T.words);
+    id('qBox').innerHTML = '<div class="q-text" id="qText" style="font-size:1.05rem;width:100%;white-space:normal;">'
+      + '<div style="' + A_LBL + '">Which transformation maps shape A onto shape B?</div>'
+      + plotSvg(G.grid() + tfPoly(G, q.pre, 'A', true) + tfPoly(G, q.img, 'B'), G) + '</div>';
+    return;
+  }
+  if (level === 4) {
+    const q = tfShapeQ(R, function(){ return TF_dilate(ri(2) ? 2 : 0.5); }, 4);
+    return tfShapeTapLevel(el, q, R, q.T.words + '. Tap the corners of the image.');
+  }
+  if (level === 5) {
+    const q = tfShapeQ(R, tfRotAny, 3);
+    return tfShapeTapLevel(el, q, R, q.T.words + '. Tap the corners of the image.');
+  }
+  const q = tfShapeQ(R, function(){
+    const k = ri(3);
+    return k === 0 ? tfShapeTrans() : k === 1 ? TF_reflect(ffPick(TF_REFL_ALL)) : tfRotAny();
+  }, 2);
+  return tfShapeTapLevel(el, q, R,
+    'Shape A&#8242; is the image after &ldquo;' + q.T.words + '&rdquo;. Tap the corners of the ORIGINAL shape A.', true);
 }
 
 /* ═════════ Linear or Non-Linear ═════════ */
