@@ -1396,7 +1396,7 @@ body {
 /* ── iOS ZOOM FIX: iOS Safari zooms in when any input has font-size < 16px.
    Force all interactive inputs to 16px minimum on mobile so the viewport
    never zooms when a student taps a field. ── */
-@media (max-width: 767px) {
+@media (max-width: 899px) {
   input, textarea, select,
   .ans-input, .frac-num-input, .frac-den-input,
   .whole-input, .mixed-num-input, .mixed-den-input,
@@ -1467,7 +1467,7 @@ body {
   font-size: 0.82rem; color: var(--muted); font-weight: 700; line-height: 1.5;
 }
 
-@media (max-width: 767px) {
+@media (max-width: 899px) {
 
   /* ── Body: add bottom padding so fixed keypad doesn't cover content ── */
   body {
@@ -1604,7 +1604,7 @@ body {
    (syncKeypadClearance) still reserves exactly the keypad's measured height,
    so nothing overlaps regardless; this just keeps keys reachable on small
    devices. ══════════════════════════════════════════════════ */
-@media (max-width: 767px) and (max-height: 760px) {
+@media (max-width: 899px) and (max-height: 760px) {
   #kbDisplay {
     padding: 4px 12px !important;
     font-size: 1.1rem !important;
@@ -1627,7 +1627,7 @@ body {
    pushed the 2×2 answer grid below the fold. For choice questions only, keep
    the diagram compact so all four options stay on screen without scrolling.
    Scoped via #s-game.choice-active so number-input geometry is untouched. */
-@media (min-width: 768px) {
+@media (min-width: 900px) {
   #s-game.choice-active #qBox svg {
     width: auto; height: auto; max-height: 200px; max-width: 100%;
   }
@@ -2781,6 +2781,18 @@ const CATS = {
       { id:'dataClassify', name:'Classifying Data',      inputMode:'choice', lvKey:'dcl' },
       { id:'freqTables',   name:'Frequency Tables',      inputMode:'number', lvKey:'fqt', levelModes:{3:'choice'} },
       { id:'dataRead',     name:'Reading Data Displays', inputMode:'number', lvKey:'drd' },
+      /* v87 — Release 2. One level per display, in the same order every time
+         (raw → dot plot → stem plot → frequency table → histogram → grouped or
+         box plot), so a student always knows where they are in the family. */
+      { id:'dataMean',     name:'Mean',   inputMode:'number', lvKey:'dmn' },
+      { id:'dataMode',     name:'Mode',   inputMode:'number', lvKey:'dmo', levelModes:{6:'choice'} },
+      { id:'dataMedian',   name:'Median', inputMode:'number', lvKey:'dmd' },
+      { id:'dataRange',    name:'Range',  inputMode:'number', lvKey:'drg' },
+      /* v88 — Release 3. Shape is the first skill here whose answer is a
+         judgement, so every distribution is generated from a hand-checked
+         count pattern (see genDataShape) rather than sampled. */
+      { id:'dataShape',    name:'Shape of a Distribution', inputMode:'choice', lvKey:'dsh' },
+      { id:'dataOutliers', name:'Outliers &amp; Fences',   inputMode:'number', lvKey:'dou', levelModes:{4:'gapFill', 5:'choice'} },
     ]
   }
 };
@@ -2848,6 +2860,10 @@ const SKILL_YEAR = {
   combine:'Yr 8–9', shapeTrans:'Yr 7–8',
   // v84 — Data Analysis
   dataClassify:'Yr 7–8', freqTables:'Yr 7–9', dataRead:'Yr 7–10',
+  // v87 — Release 2. The grouped/estimate levels are the Yr 9–10 end.
+  dataMean:'Yr 7–10', dataMode:'Yr 7–10', dataMedian:'Yr 7–10', dataRange:'Yr 7–10',
+  // v88 — Release 3
+  dataShape:'Yr 8–10', dataOutliers:'Yr 10',
   // v77 — Finance & Patterns
   gst:'Yr 8–9', simpleInterest:'Yr 9–10', sequences:'Yr 10', recurrence:'Yr 10', flatDep:'Yr 10',
   // v78 — Yr 7–9 sequence work
@@ -3606,6 +3622,54 @@ const LEVEL_DEFS = {
     { title:'Level 3 — Histograms & Column Graphs', desc:'Read a bar height off the frequency axis. Grouped data touches (a histogram); single values are separated (a column graph).', examples:['the 15–19 bar → 6'] },
     { title:'Level 4 — Box Plots',        desc:'Read the five-number summary: minimum, Q1, median, Q3 and maximum.', examples:['the line in the box → the median'] },
   ],
+  /* ── v87 — Data Analysis Release 2 ── */
+  dmn: [
+    { title:'Level 1 — From a List',        desc:'mean = total ÷ how many. Add every value, then divide by the number of values.', examples:['4, 7, 3, 6 → 5'] },
+    { title:'Level 2 — From a Dot Plot',    desc:'Each dot is one value. Add them all, then divide by the number of dots.', examples:['count the dots, then divide'] },
+    { title:'Level 3 — From a Stem Plot',   desc:'Read every value off the plot (stem × 10 + leaf), then find the mean.', examples:['stem 3, leaf 7 → 37'] },
+    { title:'Level 4 — From a Frequency Table', desc:'Multiply each value by its frequency, add those, then divide by the total frequency.', examples:['Σfx ÷ Σf'] },
+    { title:'Level 5 — From a Histogram',   desc:'Read each bar as a frequency, then the same Σfx ÷ Σf.', examples:['bar height = frequency'] },
+    { title:'Level 6 — Estimate from Grouped Data', desc:'Grouped data has lost the individual values, so use each class MIDPOINT. Answer to 1 decimal place.', examples:['150 < h ≤ 160 → midpoint 155'] },
+  ],
+  dmo: [
+    { title:'Level 1 — From a List',        desc:'The mode is the value that appears most often.', examples:['3, 5, 3, 7, 3 → 3'] },
+    { title:'Level 2 — From a Dot Plot',    desc:'The mode is the value with the tallest stack of dots.', examples:['tallest column → the mode'] },
+    { title:'Level 3 — From a Stem Plot',   desc:'Look for a repeated leaf on the same stem.', examples:['3 | 4 4 7 → 34'] },
+    { title:'Level 4 — From a Frequency Table', desc:'The mode is the VALUE with the highest frequency — not the frequency itself.', examples:['a common slip: answering the frequency'] },
+    { title:'Level 5 — From a Histogram',   desc:'The mode is the value under the tallest bar — not the height of the bar.', examples:['tallest bar → read the axis'] },
+    { title:'Level 6 — Modal Class',        desc:'Grouped data has no single mode. Name the class interval with the highest frequency.', examples:['160 < h ≤ 170'] },
+  ],
+  dmd: [
+    { title:'Level 1 — Odd Number of Values', desc:'Put the values in order, then take the middle one.', examples:['3, 8, 5 → 5'] },
+    { title:'Level 2 — Even Number of Values', desc:'Order them, then take the halfway point between the two middle values. The answer may end in .5.', examples:['3, 5, 8, 9 → 6.5'] },
+    { title:'Level 3 — From a Dot Plot',    desc:'A dot plot is already in order — count in from both ends.', examples:['count in to the middle dot'] },
+    { title:'Level 4 — From a Stem Plot',   desc:'A stem-and-leaf plot is already in order — count in to the middle.', examples:['count leaves from the top'] },
+    { title:'Level 5 — From a Frequency Table', desc:'Add the frequencies to find how many values there are, then count down the column to the middle one.', examples:['Σf = 15 → the 8th value'] },
+    { title:'Level 6 — From a Histogram',   desc:'Read each bar as a frequency, then count in to the middle value.', examples:['bar height = frequency'] },
+  ],
+  drg: [
+    { title:'Level 1 — From a List',        desc:'range = largest − smallest.', examples:['4, 19, 7 → 15'] },
+    { title:'Level 2 — From a Dot Plot',    desc:'Use the first and last values that have a dot — not the ends of the number line.', examples:['dots from 1 to 6 → 5'] },
+    { title:'Level 3 — From a Stem Plot',   desc:'Smallest is the first leaf on the top stem; largest is the last leaf on the bottom stem.', examples:['12 to 47 → 35'] },
+    { title:'Level 4 — From a Frequency Table', desc:'Use only the values whose frequency is not zero.', examples:['a common slip: using the table’s end rows'] },
+    { title:'Level 5 — From a Histogram',   desc:'Use only the values that actually have a bar.', examples:['ignore the empty gaps'] },
+    { title:'Level 6 — From a Box Plot',    desc:'The whiskers mark the smallest and largest values. The box is the middle half, not the range.', examples:['max − min'] },
+  ],
+  /* ── v88 — Data Analysis Release 3 ── */
+  dsh: [
+    { title:'Level 1 — From a Dot Plot',   desc:'Symmetric, positively skewed, negatively skewed — or bimodal (two separate humps).', examples:['one peak in the middle → symmetric', 'tail to the right → positively skewed'] },
+    { title:'Level 2 — From a Stem Plot',  desc:'Turn the plot on its side: the leaf rows make the shape.', examples:['longest rows at the top → negatively skewed'] },
+    { title:'Level 3 — From a Histogram',  desc:'Symmetric, positively skewed, negatively skewed — or bimodal.', examples:['two humps with a gap → bimodal'] },
+    { title:'Level 4 — From a Box Plot',   desc:'Where does the median sit in the box, and which whisker is longer?', examples:['median near Q1 + long right whisker → positively skewed'] },
+  ],
+  dou: [
+    { title:'Level 1 — Spot the Outlier',  desc:'One value sits far away from all the others. Read it off the dot plot.', examples:['cluster at 3–6, one point at 14 → 14'] },
+    { title:'Level 2 — Lower Fence',       desc:'Lower fence = Q1 − 1.5 × IQR. Work out the IQR first.', examples:['Q1 = 20, Q3 = 30 → 20 − 15 = 5'] },
+    { title:'Level 3 — Upper Fence',       desc:'Upper fence = Q3 + 1.5 × IQR.', examples:['Q1 = 20, Q3 = 30 → 30 + 15 = 45'] },
+    { title:'Level 4 — Both Fences',       desc:'Find the lower and the upper fence from Q1 and Q3.', examples:['Q1 = 12, Q3 = 20 → 0 and 32'] },
+    { title:'Level 5 — Is It an Outlier?', desc:'Work out both fences, then decide whether the value falls outside them.', examples:['fences 5 and 45; is 48 an outlier? → Yes'] },
+    { title:'Level 6 — Find the Outlier',  desc:'Use the fences to decide which value in the list is the outlier.', examples:['fences 5 and 45; the 51 is the outlier'] },
+  ],
 };
 
 /* ── Per-level "best played in" recommendations (v23) ──
@@ -3697,7 +3761,11 @@ const RECALL_SKILLS = [
   // v78.3 — unit-of-time conversion is a quick recall job
   'timeConvert',
   // v77.1 (Laura) — Verify Solutions is Fluent-eligible on L1/L2 (L3 stays method)
-  'quadVerify'
+  'quadVerify',
+  /* v90 (Laura, from the v88 band review): Multiply Terms and Divide Terms are
+     Fluent-eligible on L1 ONLY — a single-variable product like 2x × 3x is
+     recall. L2-L4 stay accuracy-first via METHOD_LEVEL_OVERRIDE below. */
+  'algMultiply', 'algDivide'
 ];
 function getSkillKind(id) { return RECALL_SKILLS.includes(id) ? 'recall' : 'method'; }
 /* v74 (Laura): a few recall skills are Fluent-eligible on the lower levels but METHOD
@@ -3712,7 +3780,10 @@ const METHOD_LEVEL_OVERRIDE = { pctIdentify:[3], pctOfAmount:[3], decAddSub:[4],
   // v78.2 — The Cartesian Plane L4 (find the missing corner) is reasoning, not recall
   cartesian:[4],
   // v78.3 — compound times (3 h 25 min) are a two-step method, not a single recall
-  timeConvert:[4] };
+  timeConvert:[4],
+  /* v90 — only L1 of Multiply/Divide Terms is recall; two-variable and
+     power-of-a-power questions are multi-step. */
+  algMultiply:[2, 3, 4], algDivide:[2, 3, 4] };
 function getLevelKind(id, lv) {
   if (RECALL_SKILLS.includes(id) && !((METHOD_LEVEL_OVERRIDE[id] || []).includes(lv))) return 'recall';
   return 'method';
@@ -3729,6 +3800,12 @@ function getLevelKind(id, lv) {
      • addition / subtraction  → 30/min on Level 1 (single-digit recall)
    Edit freely. */
 const FLUENCY_TARGET = {
+  /* v90 (Laura): Multiply/Divide Terms L1 = 20/min, which is the Lion max in the
+     reviewed sheet (7 / 13 / 20 / 29), so "Fluent" starts at 21 — the top of
+     Lion — exactly as it does for every other recall skill. The ZEROS matter:
+     bandCeil() reads this table first, so a non-zero value here would override
+     METHOD_BAND_CEIL for L2-L4 and silently re-band them. Zero falls through. */
+  algMultiply:[20, 0, 0, 0], algDivide:[20, 0, 0, 0],
   timesTables:[30, 30, 25],   // v45: L1 now matches L2 (full-set band, 30)
   division:   [30, 30, 25],   // v45: L1 = L2 = 30
   addition:   [30, 18, 10],   // L1 single-digit recall (30) → L2 two-digit → L3 three-digit mental
@@ -3958,6 +4035,19 @@ const METHOD_BAND_CEIL = {
   dataClassify:[16, 14, 14, 10],
   freqTables:[12, 10, 10, 8],
   dataRead:[14, 12, 12, 10],
+  /* v87 — Release 2. ALL PLACEHOLDERS, all METHOD (accuracy-first): finding a
+     mean off a stem plot is a multi-step job, not recall. The ramp reflects how
+     much reading each display needs before the arithmetic starts — a list is
+     quick, a stem plot or a grouped estimate is not. */
+  dataMean:[10, 7, 5, 6, 6, 4],
+  dataMode:[16, 14, 10, 14, 14, 10],
+  dataMedian:[12, 10, 9, 8, 7, 7],
+  dataRange:[16, 12, 10, 12, 12, 12],
+  /* v88 — Release 3. PLACEHOLDERS, METHOD. Shape is a one-tap judgement so it
+     bands higher than the calculating skills; the fence levels are two-step
+     arithmetic and band lower. */
+  dataShape:[14, 12, 14, 12],
+  dataOutliers:[14, 9, 9, 6, 8, 7],
   translate:[14, 11, 12, 12, 12, 8],
   reflect:[14, 11, 12, 12, 12, 8],
   dilate:[12, 12, 12, 11, 8],
@@ -4177,6 +4267,26 @@ Object.assign(BAND_OVERRIDE, {
   angleRel_L1: [8, 17, 25, 37],   // Angle Relationships L1
   angleParallel_L1: [8, 17, 25, 37],   // Angles on Parallel Lines L1
 });
+/* ── REVIEWED BANDS (from the spreadsheet) — BEGIN ── */
+/* 11 level(s) re-banded from the reviewed sheet, 2026-08-28.
+   Applied as the LAST assignment to BAND_OVERRIDE so these values win
+   over both the literal above and the v74.9 spreadsheet block. Format is
+   [Kangaroo max, Greyhound max, Lion max, Antelope max]; Cheetah = Antelope + 1. */
+Object.assign(BAND_OVERRIDE, {
+  algDivide_L1:              [7, 13, 20, 29],   // Divide Terms L1
+  algMultiply_L1:            [7, 13, 20, 29],   // Multiply Terms L1
+  distTime_L3:               [1, 3, 6, 7],   // Distance-Time Graphs L3
+  surdAddSub_L1:             [5, 10, 15, 22],   // Add & Subtract Surds L1
+  surdDivide_L1:             [5, 10, 15, 22],   // Divide Surds L1
+  surdSimplify_L1:           [2, 3, 5, 7],   // Simplify Surds L1
+  surdSimplify_L2:           [2, 3, 5, 7],   // Simplify Surds L2
+  surdSimplify_L3:           [1, 2, 4, 6],   // Simplify Surds L3
+  timetables_L2:             [3, 7, 10, 14],   // Train & Bus Timetables L2
+  timetables_L3:             [3, 7, 10, 14],   // Train & Bus Timetables L3
+  timetables_L4:             [3, 7, 10, 14],   // Train & Bus Timetables L4
+});
+/* ── REVIEWED BANDS — END ── */
+
 const DEFAULT_METHOD_CEIL = 5;
 
 /* The Lion ceiling T for a skill+level. Recall → FLUENCY_TARGET; method → map
@@ -5349,7 +5459,7 @@ function buildGapFill() {
 function gapFitOneLine() {
   const row = id('gapRow'); if (!row) return;
   row.style.transform = ''; row.style.transformOrigin = '';
-  if (window.innerWidth >= 768) return;
+  if (window.innerWidth >= 900) return;
   /* The row is a shrink-to-fit flex box, so its own clientWidth IS its content
      width — comparing the two would never detect an overflow. Measure against
      the space the row actually has: its parent panel, less the page padding. */
@@ -5406,6 +5516,19 @@ function plChoose(dir) {
   qData.plChosen = dir;
   id('plProfitBtn').classList.toggle('sel', dir === 'profit');
   id('plLossBtn').classList.toggle('sel', dir === 'loss');
+  /* v89 (Laura): tapping Profit or Loss IS the submit, whenever the amount is
+     already typed. Before this, choosing a direction only set a flag: the tap
+     had taken focus off the number box, so the student had to click back into
+     it and press Enter, which made a two-part answer feel like a four-step job.
+     Profit/Loss is always the LAST thing decided, so the tap that completes the
+     answer should also send it.
+     If the box is still empty the tap just selects the direction and puts the
+     cursor back in the box, so answering direction-first still works, and Enter
+     or the keypad tick still submit exactly as before. */
+  const inp = id('ansInput');
+  const raw = (inp && inp.value ? inp.value : '').trim();
+  if (raw !== '' && raw !== '.' && !isNaN(parseFloat(raw))) { checkAns(); return; }
+  if (inp && !inp.disabled) { inp.focus(); if (typeof kbFocus === 'function') kbFocus(inp); }
 }
 
 /* ── setupIndexInput: shows the right sub-row and enables the right inputs ── */
@@ -7838,6 +7961,14 @@ function nextQ() {
   else if (skill === 'dataClassify')    { genDataClassify(el); }
   else if (skill === 'freqTables')      { genFreqTables(el); }
   else if (skill === 'dataRead')        { genDataRead(el); }
+  // v87 — Data Analysis Release 2
+  else if (skill === 'dataMean')        { genDataMean(el); }
+  else if (skill === 'dataMode')        { genDataMode(el); }
+  else if (skill === 'dataMedian')      { genDataMedian(el); }
+  else if (skill === 'dataRange')       { genDataRange(el); }
+  // v88 — Data Analysis Release 3
+  else if (skill === 'dataShape')       { genDataShape(el); }
+  else if (skill === 'dataOutliers')    { genDataOutliers(el); }
 
   enableInputs();
 }
@@ -12948,7 +13079,17 @@ function kbHasCoarsePointer() {
   } catch (e) {}
   return ('ontouchstart' in window) || (navigator.maxTouchPoints || 0) > 0;
 }
-const IS_MOBILE = () => !kbPhysical && window.innerWidth < 768 && kbHasCoarsePointer();
+/* v91 (Laura): the threshold is 900, NOT 768, and it is 900 because that is where
+   the desktop layout starts. Between 768 and 899 the app used to fall in a gap:
+   too wide for the phone rules (which ended at 767) and too narrow for the
+   desktop ones (which begin at 900), so a TOUCH device in that band got no
+   keypad, no readonly inputs and no two-column layout — which is exactly what a
+   tablet, a split-screen phone, and the app's own in-app preview pane land in.
+   Reported as "the new Data Analysis has no keypad", but it was never about
+   Data Analysis: every number skill in the program behaved the same way at that
+   width. One number in two places (here and the CSS breakpoints) is what keeps
+   the two layers from disagreeing again. */
+const IS_MOBILE = () => !kbPhysical && window.innerWidth < 900 && kbHasCoarsePointer();
 
 let kbTarget = null;   // the currently "focused" input element
 let kbMode   = 'num';  // 'num' | 'numNeg' | 'numNegDot' | 'frac' | 'idx' | 'sci'
@@ -16549,12 +16690,19 @@ function daUnit(ctx, n){ return n === 1 ? ctx.unit1 : ctx.unit; }
    UPPER end is what decides where a boundary value goes — which is the whole
    point of the level. */
 const DA_GROUPS = [
-  { name:'Height',       sym:'h', unit:'cm',      start:150, width:10 },
-  { name:'Mass',         sym:'m', unit:'kg',      start:40,  width:5  },
-  { name:'Time taken',   sym:'t', unit:'seconds', start:10,  width:5  },
-  { name:'Test score',   sym:'s', unit:'%',       start:50,  width:10 },
-  { name:'Plant height', sym:'h', unit:'cm',      start:0,   width:10 },
+  { name:'Height',       sym:'h', unit:'cm',      start:150, width:10, ceil:200 },
+  { name:'Mass',         sym:'m', unit:'kg',      start:40,  width:5,  ceil:90  },
+  { name:'Time taken',   sym:'t', unit:'seconds', start:10,  width:5,  ceil:60  },
+  { name:'Test score',   sym:'s', unit:'%',       start:50,  width:10, ceil:100 },
+  { name:'Plant height', sym:'h', unit:'cm',      start:0,   width:10, ceil:100 },
 ];
+/* v88: a shape histogram can need up to SEVEN classes, and starting every
+   context at its usual value ran the top class past what the quantity can
+   physically be — "90 < s ≤ 100 … 110 < s ≤ 120" for a test score out of 100.
+   Slide the start down so the last boundary lands on the context's ceiling. */
+function daGroupStart(g, nClasses){
+  return Math.max(0, Math.min(g.start, g.ceil - nClasses * g.width));
+}
 function daIntervalHtml(g, a, b){ return a + ' &lt; ' + g.sym + ' ≤ ' + b; }
 function daIntervalText(g, a, b){ return a + ' < ' + g.sym + ' ≤ ' + b; }
 /* Build n equal classes from a context. */
@@ -16896,6 +17044,638 @@ function genDataRead(el){
 /* ═══════════════════════════════════════════════
    BOOT
 ═══════════════════════════════════════════════ */
+
+/* ══════════════════════════════════════════════════════════════════════════
+   📊 DATA ANALYSIS — RELEASE 2 (v87, Laura)
+   Mean · Mode · Median · Range, each one level per display.
+   ──────────────────────────────────────────────────────────────────────────
+   Every level here DRAWS with a Release 1 engine (daDotPlot, daStemHtml,
+   daFreqTable, daHistogram, daBoxPlot) and adds only the question. That was
+   the point of building the displays first — there is no second copy of the
+   drawing code to keep in step.
+
+   The recurring design problem in this release is that a random data set gives
+   an ugly answer. A fluency drill must not hand a Year 8 student a mean of
+   7.3333, so the sets are CONSTRUCTED to land on a clean answer:
+     • mean levels retry until the total divides exactly by the count;
+     • mode levels retry until the mode is UNIQUE (a bimodal set has no single
+       right answer, so it must never be generated);
+     • median levels choose the parity of n deliberately — odd for the middle
+       value, even for the halfway point (which may legitimately end in .5);
+     • the grouped-estimate level is the one place a decimal is expected, and
+       it says "to 1 decimal place" and accepts the unrounded value too.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+function daSorted(v){ return v.slice().sort(function(a,b){ return a - b; }); }
+function daMeanOf(v){ return daSum(v) / v.length; }
+function daMedianOf(v){
+  const s = daSorted(v), n = s.length;
+  return n % 2 ? s[(n - 1) / 2] : (s[n / 2 - 1] + s[n / 2]) / 2;
+}
+function daRangeOf(v){ const s = daSorted(v); return s[s.length - 1] - s[0]; }
+/* Returns the mode only when it is UNIQUE; null for a tie (bimodal). */
+function daModeOf(v){
+  const c = {};
+  v.forEach(function(x){ c[x] = (c[x] || 0) + 1; });
+  let best = -1, who = null, ties = 0;
+  Object.keys(c).forEach(function(k){
+    if (c[k] > best){ best = c[k]; who = Number(k); ties = 1; }
+    else if (c[k] === best) ties++;
+  });
+  return ties === 1 ? who : null;
+}
+/* A list of n values in [lo,hi] whose MEAN is a whole number. */
+function daWholeMeanList(n, lo, hi){
+  for (let t = 0; t < 300; t++){
+    const v = [];
+    for (let i = 0; i < n; i++) v.push(rr(lo, hi));
+    const need = (n - (daSum(v) % n)) % n;
+    if (need === 0) return v;
+    for (let i = 0; i < n; i++){ if (v[i] + need <= hi){ v[i] += need; return v; } }
+  }
+  const v = []; for (let i = 0; i < n; i++) v.push(lo);
+  return v;
+}
+/* A list with a single clear mode. */
+function daUniqueModeList(n, lo, hi){
+  for (let t = 0; t < 300; t++){
+    const v = [];
+    for (let i = 0; i < n; i++) v.push(rr(lo, hi));
+    if (daModeOf(v) !== null) return v;
+  }
+  const v = []; for (let i = 0; i < n; i++) v.push(lo + (i % 2));
+  v.push(lo); return v;
+}
+/* Frequency table rows [{x, f}] over consecutive values, with options:
+   opts.wholeMean → total divides exactly · opts.uniqueMode → one tallest bar
+   opts.endsUsed  → the first and last value both have f ≥ 1 (needed for range) */
+function daFreqRows(lo, hi, opts){
+  opts = opts || {};
+  for (let t = 0; t < 400; t++){
+    const rows = [];
+    for (let x = lo; x <= hi; x++) rows.push({ x: x, f: rr(opts.minF != null ? opts.minF : 0, 8) });
+    if (opts.endsUsed){ if (rows[0].f === 0) rows[0].f = rr(1, 6);
+                        if (rows[rows.length - 1].f === 0) rows[rows.length - 1].f = rr(1, 6); }
+    const N = daSum(rows.map(function(r){ return r.f; }));
+    if (N < 8) continue;
+    const vals = [];
+    rows.forEach(function(r){ for (let i = 0; i < r.f; i++) vals.push(r.x); });
+    if (opts.wholeMean && (daSum(vals) % vals.length !== 0)) continue;
+    if (opts.uniqueMode && daModeOf(vals) === null) continue;
+    if (opts.evenN && vals.length % 2 !== 0) continue;
+    if (opts.oddN && vals.length % 2 === 0) continue;
+    return { rows: rows, vals: vals };
+  }
+  const rows = []; for (let x = lo; x <= hi; x++) rows.push({ x: x, f: (x === lo ? 3 : 1) });
+  const vals = []; rows.forEach(function(r){ for (let i = 0; i < r.f; i++) vals.push(r.x); });
+  return { rows: rows, vals: vals };
+}
+function daFreqTableFor(ctx, rows){
+  return daFreqTable([ctx.axis, 'Frequency'], rows.map(function(r){ return [r.x, r.f]; }));
+}
+function daHistoFor(ctx, rows){
+  return daHistogram(rows.map(function(r){ return { label: String(r.x), f: r.f }; }), ctx.axis, true);
+}
+function daListHtml(vals){
+  return '<div style="font-size:1.3rem;font-weight:900;line-height:1.7;margin:12px 4px 0;">'
+    + vals.join(' &nbsp; ') + '</div>';
+}
+/* A stem-plot data set in one decade band, with the same constraints. */
+function daStemSet(n, opts){
+  opts = opts || {};
+  const base = ffPick([10, 20, 30, 40, 50]);
+  for (let t = 0; t < 400; t++){
+    const v = [];
+    for (let i = 0; i < n; i++) v.push(base + rr(0, 29));
+    if (opts.wholeMean && (daSum(v) % n !== 0)) continue;
+    if (opts.uniqueMode && daModeOf(v) === null) continue;
+    return v;
+  }
+  const v = []; for (let i = 0; i < n; i++) v.push(base + (i % 3));
+  return v;
+}
+/* Grouped classes with frequencies, for the estimate-the-mean / modal-class
+   levels. Width 10 only, so every midpoint is a whole number and the estimate
+   is arithmetic a student can actually do in their head. */
+function daGroupedSet(opts){
+  opts = opts || {};
+  const g = ffPick(DA_GROUPS.filter(function(x){ return x.width === 10; }));
+  for (let t = 0; t < 300; t++){
+    const cls = daBuildClasses(g, 4).map(function(c){
+      return { a: c.a, b: c.b, html: c.html, text: c.text, mid: (c.a + c.b) / 2, f: rr(1, 9) };
+    });
+    if (opts.uniqueMode){
+      const mx = Math.max.apply(null, cls.map(function(c){ return c.f; }));
+      if (cls.filter(function(c){ return c.f === mx; }).length !== 1) continue;
+    }
+    return { g: g, cls: cls };
+  }
+  const cls = daBuildClasses(g, 4).map(function(c, i){
+    return { a: c.a, b: c.b, html: c.html, text: c.text, mid: (c.a + c.b) / 2, f: i === 0 ? 5 : 2 };
+  });
+  return { g: g, cls: cls };
+}
+function daGroupedTable(g, cls){
+  return daFreqTable([g.name + ', ' + g.sym + ' (' + g.unit + ')', 'Frequency'],
+                     cls.map(function(c){ return [c.html, c.f]; }));
+}
+
+/* ═════════ MEAN ═════════ */
+function genDataMean(el){
+  el.style.fontSize = '1.05rem';
+  const ctx = ffPick(DA_CTX);
+  const say = function(prompt, body){
+    el.innerHTML = '<div style="' + A_LBL + '">' + prompt + '</div>' + body;
+  };
+  const workList = function(vals){
+    return 'mean = total ÷ how many = ' + daSum(vals) + ' ÷ ' + vals.length
+      + ' = <b>' + (daSum(vals) / vals.length) + '</b>.';
+  };
+
+  if (level === 1){
+    const vals = daWholeMeanList(rr(5, 8), 1, 20);
+    qData.ans = daMeanOf(vals);
+    qData.workSteps = 'Add every value, then divide by how many there are: ' + workList(vals);
+    say('Find the <b>mean</b> of this data set.', daListHtml(vals));
+    return;
+  }
+  if (level === 2){
+    const hi = rr(4, 6);
+    const vals = daWholeMeanList(rr(8, 14), 0, hi);
+    qData.ans = daMeanOf(vals);
+    qData.workSteps = 'Each dot is one value. ' + workList(vals);
+    say(ctx.axis + ' for ' + ctx.who + '.<br>Find the <b>mean</b>.', daDotPlot(vals, 0, hi, ctx.axis));
+    return;
+  }
+  if (level === 3){
+    const vals = daStemSet(rr(8, 12), { wholeMean: true });
+    qData.ans = daMeanOf(vals);
+    qData.workSteps = 'Read every value off the plot (stem × 10 + leaf), then ' + workList(vals);
+    say('Find the <b>mean</b> of the data in this stem-and-leaf plot.', daStemHtml(vals));
+    return;
+  }
+  if (level === 4 || level === 5){
+    const set = daFreqRows(0, rr(4, 5), { wholeMean: true, minF: level === 4 ? 1 : 0, endsUsed: true });
+    qData.ans = daMeanOf(set.vals);
+    const parts = set.rows.filter(function(r){ return r.f > 0; })
+      .map(function(r){ return r.x + '×' + r.f; }).join(' + ');
+    qData.workSteps = 'Multiply each value by its frequency, add those up, then divide by the total '
+      + 'frequency:<br>' + parts + ' = ' + daSum(set.vals) + ', and ' + daSum(set.vals) + ' ÷ '
+      + set.vals.length + ' = <b>' + daMeanOf(set.vals) + '</b>.';
+    say(ctx.axis + ' for ' + ctx.who + '.<br>Find the <b>mean</b>.',
+        level === 4 ? daFreqTableFor(ctx, set.rows) : daHistoFor(ctx, set.rows));
+    return;
+  }
+  /* Level 6 — ESTIMATE the mean of grouped data using class midpoints. */
+  const G = daGroupedSet({});
+  const N = daSum(G.cls.map(function(c){ return c.f; }));
+  const tot = daSum(G.cls.map(function(c){ return c.mid * c.f; }));
+  const exact = tot / N;
+  qData.ans = Math.round(exact * 10) / 10;
+  /* The exact value is accepted as well as the correctly rounded one — a
+     student who does not round is not wrong about the statistics. */
+  qData.ansTol = 0.06;
+  qData.workSteps = 'Grouped data has lost the individual values, so use the MIDPOINT of each class '
+    + 'as its value.<br>Midpoints: ' + G.cls.map(function(c){ return c.mid; }).join(', ')
+    + '.<br>Σ(f × midpoint) = ' + G.cls.map(function(c){ return c.f + '×' + c.mid; }).join(' + ')
+    + ' = ' + tot + ', and Σf = ' + N + '.<br>Estimated mean = ' + tot + ' ÷ ' + N + ' = <b>'
+    + (Math.round(exact * 100) / 100) + '</b> ≈ <b>' + qData.ans + '</b>.';
+  say(G.g.name + ' (' + G.g.unit + ') for a sample.<br><b>Estimate</b> the mean using the class '
+    + 'midpoints. Give your answer to 1 decimal place.', daGroupedTable(G.g, G.cls));
+}
+
+/* ═════════ MODE ═════════ */
+function genDataMode(el){
+  el.style.fontSize = '1.05rem';
+  const ctx = ffPick(DA_CTX);
+  const say = function(prompt, body){
+    el.innerHTML = '<div style="' + A_LBL + '">' + prompt + '</div>' + body;
+  };
+  if (level === 1){
+    const vals = daUniqueModeList(rr(7, 10), 1, 9);
+    qData.ans = daModeOf(vals);
+    qData.workSteps = 'The mode is the value that appears most often: <b>' + qData.ans + '</b>.';
+    say('Find the <b>mode</b> of this data set.', daListHtml(vals));
+    return;
+  }
+  if (level === 2){
+    const hi = rr(4, 6);
+    const vals = daUniqueModeList(rr(9, 14), 0, hi);
+    qData.ans = daModeOf(vals);
+    qData.workSteps = 'The mode is the value with the TALLEST stack of dots: <b>' + qData.ans + '</b>.';
+    say(ctx.axis + ' for ' + ctx.who + '.<br>Find the <b>mode</b>.', daDotPlot(vals, 0, hi, ctx.axis));
+    return;
+  }
+  if (level === 3){
+    const vals = daStemSet(rr(10, 14), { uniqueMode: true });
+    qData.ans = daModeOf(vals);
+    qData.workSteps = 'The mode is the value that appears most often — look for a repeated leaf on the '
+      + 'same stem: <b>' + qData.ans + '</b>.';
+    say('Find the <b>mode</b> of the data in this stem-and-leaf plot.', daStemHtml(vals));
+    return;
+  }
+  if (level === 4 || level === 5){
+    const set = daFreqRows(0, rr(4, 5), { uniqueMode: true, minF: level === 4 ? 1 : 0, endsUsed: true });
+    qData.ans = daModeOf(set.vals);
+    qData.workSteps = level === 4
+      ? 'The mode is the value with the HIGHEST frequency — not the frequency itself: <b>'
+        + qData.ans + '</b>.'
+      : 'The mode is the value under the TALLEST bar — not the height of the bar: <b>'
+        + qData.ans + '</b>.';
+    say(ctx.axis + ' for ' + ctx.who + '.<br>Find the <b>mode</b>.',
+        level === 4 ? daFreqTableFor(ctx, set.rows) : daHistoFor(ctx, set.rows));
+    return;
+  }
+  /* Level 6 — MODAL CLASS. Grouped data has no single mode, only a modal class. */
+  const G = daGroupedSet({ uniqueMode: true });
+  const top = G.cls.reduce(function(a, b){ return b.f > a.f ? b : a; }, G.cls[0]);
+  qData.workSteps = 'Grouped data has lost the individual values, so there is no single mode — the '
+    + 'answer is the <b>modal class</b>, the interval with the highest frequency: <b>' + top.text
+    + '</b> (frequency ' + top.f + ').';
+  decSetChoice(el, '<div style="' + A_LBL + '">' + G.g.name + ' (' + G.g.unit + ') for a sample.<br>'
+    + 'Which is the <b>modal class</b>?</div>' + daGroupedTable(G.g, G.cls),
+    G.cls.map(function(c){ return c.html; }), top.html, true);
+}
+
+/* ═════════ MEDIAN ═════════ */
+function genDataMedian(el){
+  el.style.fontSize = '1.05rem';
+  const ctx = ffPick(DA_CTX);
+  const say = function(prompt, body){
+    el.innerHTML = '<div style="' + A_LBL + '">' + prompt + '</div>' + body;
+  };
+  const workOdd = function(vals){
+    const s = daSorted(vals);
+    return 'Put the values in order: ' + s.join(', ') + '.<br>There are ' + s.length
+      + ' values, so the median is the middle one — the ' + ((s.length + 1) / 2)
+      + 'th: <b>' + daMedianOf(vals) + '</b>.';
+  };
+  const workEven = function(vals){
+    const s = daSorted(vals), n = s.length;
+    return 'Put the values in order: ' + s.join(', ') + '.<br>There are ' + n
+      + ' values — an even number — so the median is halfway between the ' + (n / 2) + 'th and '
+      + (n / 2 + 1) + 'th: (' + s[n / 2 - 1] + ' + ' + s[n / 2] + ') ÷ 2 = <b>'
+      + daMedianOf(vals) + '</b>.';
+  };
+
+  if (level === 1){
+    const vals = []; const n = ffPick([5, 7, 9]);
+    for (let i = 0; i < n; i++) vals.push(rr(1, 20));
+    qData.ans = daMedianOf(vals);
+    qData.workSteps = workOdd(vals);
+    say('Find the <b>median</b> of this data set.', daListHtml(vals));
+    return;
+  }
+  if (level === 2){
+    const vals = []; const n = ffPick([6, 8, 10]);
+    for (let i = 0; i < n; i++) vals.push(rr(1, 20));
+    qData.ans = daMedianOf(vals);
+    qData.workSteps = workEven(vals);
+    say('Find the <b>median</b> of this data set.<br>There is an even number of values — the answer '
+      + 'may end in .5.', daListHtml(vals));
+    return;
+  }
+  if (level === 3){
+    const hi = rr(4, 6); const n = rr(9, 15); const vals = [];
+    for (let i = 0; i < n; i++) vals.push(rr(0, hi));
+    qData.ans = daMedianOf(vals);
+    qData.workSteps = 'A dot plot is already in order — count in from the ends to the middle dot. '
+      + (n % 2 ? workOdd(vals) : workEven(vals));
+    say(ctx.axis + ' for ' + ctx.who + '.<br>Find the <b>median</b>.', daDotPlot(vals, 0, hi, ctx.axis));
+    return;
+  }
+  if (level === 4){
+    const n = rr(9, 13); const vals = daStemSet(n, {});
+    qData.ans = daMedianOf(vals);
+    qData.workSteps = 'A stem-and-leaf plot is already in order — count in to the middle. '
+      + (n % 2 ? workOdd(vals) : workEven(vals));
+    say('Find the <b>median</b> of the data in this stem-and-leaf plot.', daStemHtml(vals));
+    return;
+  }
+  if (level === 5){
+    const set = daFreqRows(0, rr(4, 5), { minF: 1 });
+    qData.ans = daMedianOf(set.vals);
+    qData.workSteps = 'The frequencies add to ' + set.vals.length + ', so the median is the '
+      + (set.vals.length % 2 ? ((set.vals.length + 1) / 2) + 'th value'
+                             : 'halfway point between the ' + (set.vals.length / 2) + 'th and '
+                               + (set.vals.length / 2 + 1) + 'th values')
+      + '. Count down the frequency column until you reach it: <b>' + qData.ans + '</b>.';
+    say(ctx.axis + ' for ' + ctx.who + '.<br>Find the <b>median</b>.', daFreqTableFor(ctx, set.rows));
+    return;
+  }
+  const set = daFreqRows(0, rr(4, 5), { endsUsed: true });
+  qData.ans = daMedianOf(set.vals);
+  qData.workSteps = 'Read each bar’s height as its frequency (total ' + set.vals.length
+    + '), then count in to the middle value: <b>' + qData.ans + '</b>.';
+  say(ctx.axis + ' for ' + ctx.who + '.<br>Find the <b>median</b>.', daHistoFor(ctx, set.rows));
+}
+
+/* ═════════ RANGE ═════════ */
+function genDataRange(el){
+  el.style.fontSize = '1.05rem';
+  const ctx = ffPick(DA_CTX);
+  const say = function(prompt, body){
+    el.innerHTML = '<div style="' + A_LBL + '">' + prompt + '</div>' + body;
+  };
+  const work = function(vals){
+    const s = daSorted(vals);
+    return 'range = largest − smallest = ' + s[s.length - 1] + ' − ' + s[0] + ' = <b>'
+      + (s[s.length - 1] - s[0]) + '</b>.';
+  };
+  if (level === 1){
+    const vals = []; const n = rr(6, 9);
+    for (let i = 0; i < n; i++) vals.push(rr(1, 40));
+    qData.ans = daRangeOf(vals);
+    qData.workSteps = work(vals);
+    say('Find the <b>range</b> of this data set.', daListHtml(vals));
+    return;
+  }
+  if (level === 2){
+    const hi = rr(5, 7); const n = rr(9, 14); const vals = [];
+    for (let i = 0; i < n; i++) vals.push(rr(0, hi));
+    if (vals.indexOf(Math.min.apply(null, vals)) < 0) vals.push(0);
+    qData.ans = daRangeOf(vals);
+    qData.workSteps = 'Use the FIRST and LAST values that have a dot above them — not the ends of the '
+      + 'number line. ' + work(vals);
+    say(ctx.axis + ' for ' + ctx.who + '.<br>Find the <b>range</b>.', daDotPlot(vals, 0, hi, ctx.axis));
+    return;
+  }
+  if (level === 3){
+    const vals = daStemSet(rr(9, 13), {});
+    qData.ans = daRangeOf(vals);
+    qData.workSteps = 'The smallest value is the first leaf on the top stem and the largest is the last '
+      + 'leaf on the bottom stem. ' + work(vals);
+    say('Find the <b>range</b> of the data in this stem-and-leaf plot.', daStemHtml(vals));
+    return;
+  }
+  if (level === 4 || level === 5){
+    const set = daFreqRows(0, rr(5, 7), { endsUsed: false, minF: 0 });
+    /* Range needs a value at each end that actually occurs, and it is a better
+       question when the ends are NOT the ends of the table — that is the error
+       this level exists to catch. */
+    const used = set.rows.filter(function(r){ return r.f > 0; });
+    if (used.length < 2){ set.rows[0].f = 2; set.rows[set.rows.length - 1].f = 3; }
+    const vals2 = [];
+    set.rows.forEach(function(r){ for (let i = 0; i < r.f; i++) vals2.push(r.x); });
+    qData.ans = daRangeOf(vals2);
+    qData.workSteps = (level === 4
+        ? 'Use only the values whose frequency is NOT zero. '
+        : 'Use only the values that actually have a bar. ') + work(vals2);
+    say(ctx.axis + ' for ' + ctx.who + '.<br>Find the <b>range</b>.',
+        level === 4 ? daFreqTableFor(ctx, set.rows) : daHistoFor(ctx, set.rows));
+    return;
+  }
+  /* Level 6 — range from a box plot: max − min, both read off the scale. */
+  const tick = ffPick([2, 5, 10]);
+  const steps = rr(6, 8);
+  const lo = 0, hi = tick * steps;
+  const cand = [];
+  for (let v = lo + tick; v <= hi - tick; v += tick) cand.push(v);
+  const picks = shuffleArr(cand.slice()).slice(0, 5).sort(function(a, b){ return a - b; });
+  const fv = { min: picks[0], q1: picks[1], med: picks[2], q3: picks[3], max: picks[4] };
+  qData.ans = fv.max - fv.min;
+  qData.workSteps = 'The whiskers mark the smallest and largest values: range = ' + fv.max + ' − '
+    + fv.min + ' = <b>' + (fv.max - fv.min) + '</b>. (The box shows the middle half, not the range.)';
+  say('Find the <b>range</b> of the data in this box plot.', daBoxPlot(fv, lo, hi, tick, 'Score'));
+}
+
+
+/* ══════════════════════════════════════════════════════════════════════════
+   📊 DATA ANALYSIS — RELEASE 3 (v88, Laura)
+   Shape of Distribution · Outliers and Fences
+   ──────────────────────────────────────────────────────────────────────────
+   Shape is the first skill in the category whose answer is a JUDGEMENT rather
+   than a calculation, so the whole design problem is making sure exactly one
+   option is defensible. Random data will not do that — a random dot plot is
+   usually "lumpy", not one of four named shapes. So every shape is generated
+   from a HAND-CHECKED count pattern:
+
+     symmetric  strictly single-peaked and exactly mirrored
+     pos. skew  single peak at the LOW end with a monotone tail to the right
+     neg. skew  the mirror image of a positive-skew pattern
+     bimodal    two clear humps separated by an EMPTY class, and the two peaks
+                are deliberately UNEQUAL so "symmetric" is not also true
+
+   That last point is the subtle one. A textbook bimodal picture is often drawn
+   symmetrically, which makes two options correct at once. Unequal peaks plus a
+   zero trough leaves "bimodal" as the only defensible answer, and the worked
+   step says which feature decides it.
+
+   Per Laura: bimodal is offered ONLY for dot plots and histograms — the
+   displays where a student can actually see two humps. Stem plots and box
+   plots keep the three-way choice.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+const DA_SHAPE_NAME = {
+  sym: 'Symmetric', pos: 'Positively skewed', neg: 'Negatively skewed', bi: 'Bimodal',
+};
+/* Count patterns, low value → high value. Every one hand-checked. */
+const DA_SHAPE_PATTERNS = {
+  sym: [[1,3,5,3,1], [1,2,4,6,4,2,1], [2,3,6,3,2], [1,3,7,3,1], [2,5,8,5,2]],
+  pos: [[8,5,3,2,1], [7,6,4,2,1,1], [9,6,3,2,1], [6,5,3,2,1,1], [8,7,4,2,1]],
+  bi:  [[4,6,1,0,1,5,3], [3,5,1,0,2,6,4], [5,6,2,0,1,4,3], [6,4,1,0,3,5,2]],
+};
+function daShapeCounts(kind){
+  if (kind === 'neg') return DA_SHAPE_PATTERNS.pos[ri(DA_SHAPE_PATTERNS.pos.length)].slice().reverse();
+  return DA_SHAPE_PATTERNS[kind][ri(DA_SHAPE_PATTERNS[kind].length)].slice();
+}
+const DA_SHAPE_WHY = {
+  sym: 'The picture has ONE peak in the middle and the two sides mirror each other, so the '
+     + 'distribution is <b>symmetric</b>.',
+  pos: 'There is one peak at the LOW end and a long tail stretching to the RIGHT (towards the higher '
+     + 'values), so the distribution is <b>positively skewed</b>. The tail points the way the skew is named.',
+  neg: 'There is one peak at the HIGH end and a long tail stretching to the LEFT (towards the lower '
+     + 'values), so the distribution is <b>negatively skewed</b>. The tail points the way the skew is named.',
+  bi:  'There are TWO separate humps with a gap between them, so the distribution is <b>bimodal</b>. '
+     + 'Two peaks beat one shape — a bimodal picture is never described as symmetric or skewed.',
+};
+
+function genDataShape(el){
+  el.style.fontSize = '1.05rem';
+  const ctx = ffPick(DA_CTX);
+  const fourWay = (level === 1 || level === 3);          // dot plots and histograms only
+  const kinds = fourWay ? ['sym','pos','neg','bi'] : ['sym','pos','neg'];
+  const kind = ffPick(kinds);
+  const opts = kinds.map(function(k){ return DA_SHAPE_NAME[k]; });
+  qData.workSteps = DA_SHAPE_WHY[kind];
+
+  if (level === 1){                                       // dot plot
+    const counts = daShapeCounts(kind);
+    const vals = [];
+    counts.forEach(function(c, i){ for (let j = 0; j < c; j++) vals.push(i); });
+    el.innerHTML = '';
+    decSetChoice(el, '<div style="' + A_LBL + '">' + ctx.axis + ' for ' + ctx.who
+      + '.<br>What is the <b>shape</b> of this distribution?</div>'
+      + daDotPlot(vals, 0, counts.length - 1, ctx.axis), opts, DA_SHAPE_NAME[kind], true);
+    return;
+  }
+  if (level === 2){                                       // stem-and-leaf
+    const counts = daShapeCounts(kind);
+    const base = ffPick([1, 2, 3]);                       // first stem
+    const vals = [];
+    counts.forEach(function(c, i){
+      const stem = base + i;
+      const leaves = shuffleArr([0,1,2,3,4,5,6,7,8,9]).slice(0, Math.max(c, 0));
+      leaves.forEach(function(l){ vals.push(stem * 10 + l); });
+    });
+    decSetChoice(el, '<div style="' + A_LBL + '">What is the <b>shape</b> of this distribution?</div>'
+      + daStemHtml(vals), opts, DA_SHAPE_NAME[kind], true);
+    return;
+  }
+  if (level === 3){                                       // histogram (grouped)
+    const counts = daShapeCounts(kind);
+    const g = ffPick(DA_GROUPS.filter(function(x){ return x.width === 10; }));
+    const st = daGroupStart(g, counts.length);
+    const cls = [];
+    for (let i = 0; i < counts.length; i++){
+      const a = st + i * g.width;
+      cls.push({ label: daIntervalHtml(g, a, a + g.width), f: counts[i], a: a });
+    }
+    const bounds = cls.map(function(c){ return c.a; }).concat([st + counts.length * g.width]);
+    decSetChoice(el, '<div style="' + A_LBL + '">' + g.name + ' (' + g.unit + ') for a sample.<br>'
+      + 'What is the <b>shape</b> of this distribution?</div>'
+      + daHistogram(cls, g.name + ', ' + g.sym + ' (' + g.unit + ')', false, bounds),
+      opts, DA_SHAPE_NAME[kind], true);
+    return;
+  }
+  /* Level 4 — box plot. Both cues are made to AGREE: where the median sits in
+     the box AND which whisker is longer. A box plot where they disagree has no
+     single right answer, so it is never generated. */
+  const tick = ffPick([5, 10]);
+  const F = { sym: [1, 3, 5, 7, 9], pos: [1, 2, 3, 5, 9], neg: [1, 5, 7, 8, 9] };
+  const steps = F[kind];
+  const lo = 0, hi = tick * 10;
+  const fv = { min: steps[0]*tick, q1: steps[1]*tick, med: steps[2]*tick,
+               q3: steps[3]*tick, max: steps[4]*tick };
+  qData.workSteps = (kind === 'sym'
+      ? 'The median sits in the MIDDLE of the box and the two whiskers are the same length, so the '
+        + 'distribution is <b>symmetric</b>.'
+      : kind === 'pos'
+      ? 'The median sits close to Q1 (the LEFT of the box) and the RIGHT whisker is much longer, so the '
+        + 'distribution is <b>positively skewed</b>.'
+      : 'The median sits close to Q3 (the RIGHT of the box) and the LEFT whisker is much longer, so the '
+        + 'distribution is <b>negatively skewed</b>.');
+  decSetChoice(el, '<div style="' + A_LBL + '">What is the <b>shape</b> of this distribution?</div>'
+    + daBoxPlot(fv, lo, hi, tick, 'Score'), opts, DA_SHAPE_NAME[kind], true);
+}
+
+/* ══════════════ OUTLIERS AND FENCES ══════════════
+   fences:  lower = Q1 − 1.5 × IQR      upper = Q3 + 1.5 × IQR
+   Every quartile pair is chosen with an EVEN IQR, so 1.5 × IQR is a whole
+   number and the fences are whole numbers too. A fluency drill on the rule
+   should not also be a decimal-arithmetic drill. */
+function daQuartilePair(){
+  const q1 = rr(4, 30);
+  const iqr = 2 * rr(2, 8);                 // even → 1.5 × IQR is a whole number
+  return { q1: q1, q3: q1 + iqr, iqr: iqr, lo: q1 - 1.5 * iqr, hi: q1 + iqr + 1.5 * iqr };
+}
+function genDataOutliers(el){
+  el.style.fontSize = '1.05rem';
+  const ctx = ffPick(DA_CTX);
+
+  if (level === 1){                          // spot it on a dot plot
+    const start = rr(1, 4);
+    const vals = [];
+    const n = rr(9, 13);
+    for (let i = 0; i < n; i++) vals.push(start + rr(0, 3));
+    const out = start + rr(9, 12);
+    vals.push(out);
+    qData.ans = out;
+    qData.workSteps = 'Almost every value sits together between ' + start + ' and ' + (start + 3)
+      + '. One value, <b>' + out + '</b>, is far away from the rest — that is the outlier.';
+    el.innerHTML = '<div style="' + A_LBL + '">' + ctx.axis + ' for ' + ctx.who
+      + '.<br>Which value is the <b>outlier</b>?</div>'
+      + daDotPlot(vals, 0, out + 1, ctx.axis);
+    return;
+  }
+  if (level === 2 || level === 3){           // one fence
+    const Q = daQuartilePair();
+    const wantLower = (level === 2);
+    qData.ans = wantLower ? Q.lo : Q.hi;
+    qData.workSteps = 'IQR = Q3 − Q1 = ' + Q.q3 + ' − ' + Q.q1 + ' = ' + Q.iqr
+      + '.<br>1.5 × IQR = ' + (1.5 * Q.iqr) + '.<br>'
+      + (wantLower
+          ? 'Lower fence = Q1 − 1.5 × IQR = ' + Q.q1 + ' − ' + (1.5 * Q.iqr) + ' = <b>' + Q.lo + '</b>.'
+          : 'Upper fence = Q3 + 1.5 × IQR = ' + Q.q3 + ' + ' + (1.5 * Q.iqr) + ' = <b>' + Q.hi + '</b>.');
+    el.innerHTML = '<div style="' + A_LBL + '">Q1 = <b>' + Q.q1 + '</b> and Q3 = <b>' + Q.q3
+      + '</b>.<br>Find the <b>' + (wantLower ? 'lower' : 'upper') + ' fence</b>.</div>'
+      + '<div style="text-align:center;margin:12px 0;font-weight:900;font-size:1.35rem;">'
+      + (wantLower ? 'Q1 − 1.5 × IQR' : 'Q3 + 1.5 × IQR') + '</div>';
+    return;
+  }
+  if (level === 4){                          // both fences, in one go
+    const Q = daQuartilePair();
+    qData.gapTemplate = ['Lower fence = ', 0, ',&nbsp;&nbsp;&nbsp;Upper fence = ', 1];
+    qData.gapAns = [Q.lo, Q.hi];
+    qData.gapAnsText = 'Lower fence = ' + Q.lo + ',  Upper fence = ' + Q.hi;
+    qData.gapHint = 'Work out the IQR first, then both fences.';
+    qData.workSteps = 'IQR = ' + Q.q3 + ' − ' + Q.q1 + ' = ' + Q.iqr + ', so 1.5 × IQR = '
+      + (1.5 * Q.iqr) + '.<br>Lower fence = ' + Q.q1 + ' − ' + (1.5 * Q.iqr) + ' = <b>' + Q.lo
+      + '</b>.<br>Upper fence = ' + Q.q3 + ' + ' + (1.5 * Q.iqr) + ' = <b>' + Q.hi + '</b>.';
+    el.innerHTML = '<div style="' + A_LBL + '">Q1 = <b>' + Q.q1 + '</b> and Q3 = <b>' + Q.q3
+      + '</b>.<br>Find <b>both fences</b>.</div>';
+    return;
+  }
+  if (level === 5){                          // is this value an outlier?
+    const Q = daQuartilePair();
+    const outside = Math.random() < 0.5;
+    let v;
+    if (outside){
+      /* Comfortably beyond a fence — never ON it, because a value exactly on a
+         fence is a convention argument, not a fluency question. */
+      v = (Math.random() < 0.5) ? Q.lo - rr(1, 6) : Q.hi + rr(1, 6);
+    } else {
+      v = rr(Q.lo + 1, Q.hi - 1);
+    }
+    const isOut = (v < Q.lo || v > Q.hi);
+    qData.workSteps = 'IQR = ' + Q.iqr + ', so the fences are ' + Q.lo + ' and ' + Q.hi + '.<br>'
+      + v + ' is ' + (isOut ? 'OUTSIDE' : 'inside') + ' that range, so it <b>is '
+      + (isOut ? '' : 'not ') + 'an outlier</b>.';
+    decSetChoice(el, '<div style="' + A_LBL + '">Q1 = <b>' + Q.q1 + '</b> and Q3 = <b>' + Q.q3
+      + '</b>.<br>Is <b>' + v + '</b> an outlier?</div>', ['Yes', 'No'], isOut ? 'Yes' : 'No', true);
+    return;
+  }
+  /* Level 6 — use the fences to FIND the outlier in a list.
+     The quartiles are COMPUTED FROM THE LIST rather than invented, because a
+     data set where every ordinary value happens to sit between Q1 and Q3 is a
+     lie: with real data about half the values fall outside the box. n = 11 and
+     the Australian school convention (exclude the median, take the median of
+     each half) puts Q1 and Q3 on the 3rd and 9th values, so both are whole
+     numbers; the loop then requires an even IQR and exactly one value beyond a
+     fence, so the question always has exactly one right answer. */
+  let vals = null, Q = null;
+  for (let t = 0; t < 400 && !vals; t++){
+    const base = rr(10, 30), spread = rr(6, 14);
+    const cand = [];
+    for (let i = 0; i < 10; i++) cand.push(base + rr(0, spread));
+    const s0 = cand.slice().sort(function(a, b){ return a - b; });
+    const far = (Math.random() < 0.5)
+      ? s0[0] - rr(Math.round(spread * 1.6), Math.round(spread * 2.4))
+      : s0[s0.length - 1] + rr(Math.round(spread * 1.6), Math.round(spread * 2.4));
+    if (far < 0) continue;
+    const all = s0.concat([far]).sort(function(a, b){ return a - b; });   // n = 11
+    const q1 = all[2], q3 = all[8], iqr = q3 - q1;
+    if (iqr % 2 !== 0 || iqr < 4) continue;
+    const lo = q1 - 1.5 * iqr, hi = q3 + 1.5 * iqr;
+    const outside = all.filter(function(v){ return v < lo || v > hi; });
+    if (outside.length !== 1 || outside[0] !== far) continue;
+    vals = shuffleArr(all.slice());
+    Q = { q1: q1, q3: q3, iqr: iqr, lo: lo, hi: hi, out: far };
+  }
+  if (!vals){                                   // deterministic fallback
+    vals = [12, 14, 15, 16, 17, 18, 19, 20, 21, 22, 60];
+    Q = { q1: 15, q3: 21, iqr: 6, lo: 6, hi: 30, out: 60 };
+  }
+  qData.ans = Q.out;
+  qData.workSteps = 'IQR = Q3 − Q1 = ' + Q.q3 + ' − ' + Q.q1 + ' = ' + Q.iqr
+    + ', so 1.5 × IQR = ' + (1.5 * Q.iqr) + '.<br>Fences: ' + Q.q1 + ' − ' + (1.5 * Q.iqr) + ' = '
+    + Q.lo + ' and ' + Q.q3 + ' + ' + (1.5 * Q.iqr) + ' = ' + Q.hi
+    + '.<br>Every value sits inside that range except <b>' + Q.out + '</b>, so that is the outlier.';
+  el.innerHTML = '<div style="' + A_LBL + '">Q1 = <b>' + Q.q1 + '</b> and Q3 = <b>' + Q.q3
+    + '</b>.<br>Use the fences to find the <b>outlier</b> in this data set.</div>'
+    + daListHtml(vals);
+}
+
 /* v85: wire up the keyboard/keypad layer here rather than from a
    DOMContentLoaded listener. This script sits at the end of <body>, so the DOM
    exists and every module-level `let` above is initialised. Doing it this way
