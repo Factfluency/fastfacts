@@ -1,4 +1,4 @@
-<!-- Sandy Fast Facts — v92 (Laura). 🎯 NEW: EXAM / ALT TRAINING + THREE USABILITY CHANGES. (1) HOME HEADER is one row — name and greeting left, class chip and Edit / Dark / Backup as icon buttons plus Switch profile right; Backup turns amber with a dot when the last backup is over 14 days old, because it is the only control there that protects data. (2) MODE IS CHOSEN AFTER THE LEVEL, not before. The home-screen segmented control is gone; the level screen's Start now opens a mode screen naming the skill and level, with one of the three RECOMMENDED from what the app already stores — an explicit LEVEL_REC wins, then a never-attempted or sub-85% level goes to Practice, and only an accurate student is sent to the clock. This is the fix for "everyone just does Fluency because it is pre-set". beginGame() is unchanged and still starts the game, so every existing test path (harness start = selectSkill -> lc<lv>.onclick -> beginGame -> launchSession) still works. (3) TOP ROW is streak strip + Daily Mix + Exam/ALT Training, three across at >=900px and stacked below; the streak card lost its progress text and shrank to a strip. EXAM / ALT TRAINING: a COURSES object of PURE METADATA (Year 7 Mathematics, Year 7 SEAL Mathematics) naming skill ids and level numbers that already exist — nothing in CATS, LEVEL_DEFS or any band changed, and no storage key moved. Course -> ALT list -> the skills and levels in that ALT, each level carrying a grey/amber/green READINESS dot read from the accuracy the app already saved after every session. Every ALT and the exam get a MIXED PRACTICE button (practice mode only, by design): nextQ() is now a wrapper that re-picks the skill between questions, weighting anything not yet green 3:1, and the round records one session plus a per-level accuracy stamp for every level that got at least 3 questions. EXAM PRACTICE is generated as the union of the examinable ALTs, so it can never drift; ALT 8 (Measurement) is exam:false because it is taught after the exam. PREREQUISITES (Times Tables, Division) sit greyed and dashed at the foot of every ALT — assumed knowledge, not assessed, but somewhere to drop back to. test_courses.js proves all 718 course->skill-level references resolve, that Exam Practice equals the union, and that Mixed Practice rotates skills and stays in practice mode. v84 notes follow. internal v84 (Laura). 📊 NEW CATEGORY: DATA ANALYSIS (Release 1 of 3). Four reusable display engines — daDotPlot, daStemHtml, daHistogram, daBoxPlot — each driven by DATA and working out its own scale, so Release 2 (mean/mode/median/range) re-uses them unchanged. Three skills: Classifying Data, Frequency Tables (read · from a raw list · grouped class intervals · percentage frequency, with totals restricted to 20/25/50 so every percentage is exact) and Reading Data Displays (one level per display, so every engine is student-tested now rather than sitting unused until Release 2). All bands are PLACEHOLDERS and every level is METHOD (accuracy-first, no Fluent badge) until class data exists. Purely additive: no existing skill, level, id or band changed. v83 notes follow. internal v83: 🔍 DESKTOP SIZING, SPLIT THE DIFFERENCE: v82 over-reserved vertical space (420px) so diagrams came out smaller than they had to; the budget is now calc(100vh - 330px) and the cap 460px. Question CONTENT also scales on a big screen — A_LBL now reads its size from --qlbl (a CSS variable, because a media query cannot override an inline style) and the timetable from --qtbl, so prompts and tables grow with the column instead of staying at phone size. v82 notes follow. internal v82: 📏 TIGHTER GAME HEADER ON DESKTOP: the back link / stats / progress / nudge strip is trimmed from ~170px to ~105px and diagrams are capped at calc(100vh - 420px), so the tall coordinate-grid and plot questions fit without scrolling. CSS only, ≥900px only. v81 notes follow. internal v81: 🎯 START BUTTON IS ALWAYS REACHABLE: #levelStartBtn is position:sticky at every width, so on a 6-level skill it rides the bottom of the window instead of hiding below the cards, and settles into the flow once the list fits. On desktop the level grid is now auto-fill minmax(300px) — 3 across on a 1080px frame — so even the worst case (six levels) needs no scrolling. CSS only. v80 notes follow. internal v80: 🖥 DESKTOP LAYOUT: additive CSS in one @media (min-width:900px) block plus two harmless wrapper divs on the home screen (.home-top, .home-foot). The frame widens to 1080px, categories go 3-across, skills and levels 2-across, and the GAME screen becomes two columns (question left, answering right) via grid auto-placement — no JS, no ids, no question logic touched. Under 900px every rule is unchanged, so all phone layouts are byte-identical to v79. v79 notes follow. internal v79: 🧩 OTHER IS RENAMED 🔄 TIME & TRANSFORMATIONS — display only: the CATS key stays 'other', so every stored Personal Best, streak and share line is untouched, and the dashboard .bas keys on SKILL names so it is unaffected too. SIX NEW TRANSFORMATION SKILLS, all built on one engine: every transformation in the program is an affine map whose matrix has exactly one non-zero entry per row, so applying one is two lines, COMPOSING two stays in the same family (which is what lets the Combinations skill print a single mapping for a chain), and the mapping notation is rendered straight off the matrix so the words and the notation can never drift apart. Translations (L1 one-axis slide · L2 two-axis · L3 describe it from the drawn points · L4 read the mapping · L5 apply the mapping · L6 find the pre-image), Reflections (same six; L1 the axes, L2 adds y = x), Dilations from the Origin (ONE apply level per Laura — a dilation from the origin is always a single step — then the same four; factors 2, 3, 4, ½ and ⅓ on a ±10 window because a factor of 4 leaves the −5…5 box immediately), Rotations about the Origin (L1 half turns only, L2 the quarter turns clockwise and anticlockwise; the describe-it levels are restricted to the three CANONICAL names because 90° clockwise and 270° anticlockwise are the SAME map and would otherwise be two right answers), Combinations of Transformations (NO describe-in-words level, per Laura — two points can be joined by any number of chains — so L1/L2 apply a chain of two then three, and the mapping levels survive because a mapping IS the composite), and Transformations of 2D Shapes (Yr 7–8: translate, reflect, identify, dilate, rotate and un-transform a whole shape by TAPPING its image corners, on a coarser −4…4 grid so a corner is an easy tap on a phone). One subtle guard worth remembering: two DIFFERENT transformations can still agree on ONE point — (2, −2) goes to (−2, 2) under both a half turn and a reflection in y = x — so a describe-it distractor is only safe if it fails on THAT point, not merely if it is a different map. Purely additive apart from the category label: no existing skill, level, id or band changed. All new bands are PLACEHOLDERS pending class data. internal v78.4 FIXES: (1) TYPING WAS DEAD on any narrow screen — the "is this a phone" test was window width ALONE, so a laptop with a narrow window (or the app in a preview pane) got the readonly-input trick meant to suppress a phone keyboard, with no way to type. A phone must now ALSO have a coarse primary pointer, and the first real key press from a physical keyboard unlocks every box and hides the keypad for the rest of the session. (2) THE PLOT GRID WAS SQUASHED — #qBox is a flex container and plotRender was handing it two or three children, so the prompt, story and grid became columns; wrapped in a single .q-text child, and the plot/graph SVGs now scale to the available width (up to 460px) instead of sitting at a fixed 300px. (3) DISTANCE-TIME JOURNEYS CAN NOW RETURN HOME — a stage may head back towards home so the graph comes down, and some journeys finish at 0 km; the line can never go below 0, "fastest" and "speed" compare magnitudes, and the story says "back towards home" / "the last N km home". internal v78.3: NEW CATEGORY 🧩 OTHER (Laura) — the practical, everyday-maths corner, placed last: Converting Units of Time (Yr 7: sec/min/hour · hour/day/week · week/month/year · compound times both ways), Train & Bus Timetables (Yr 7: read the table · trip length in minutes · latest service that still arrives in time · minutes until the next service, with 24-hour and 12-hour clocks mixed) and Distance-Time Graphs (Yr 7–8: read the distance · which stage is stationary/fastest · BUILD or finish the graph by tapping the corner of each stage · speed of a labelled stage). Coordinate Geometry gains Applications of Linear Graphs (Yr 8–9: rate or starting amount from P = −35 + 4c · write y = a + bx from a story · build its table · write ax + by = d from a two-item total). The plotPts mode is now axis-agnostic and can mark an ORDERED path, which is what the distance-time construct level uses. Purely additive — no existing skill, level, id or band changed. internal v78.2: 📈 COORDINATE GEOMETRY grows (Laura). The Cartesian Plane gains L4 — three corners of a rectangle, square or labelled parallelogram ABCD are plotted and the student writes the coordinates of the fourth. NEW skill Table of Values (Yr 7–8: L1 build a linear table from a rule · L2 PLOT that table on the plane · L3 build a non-linear table (x², x³, 2ˣ) · L4 plot a non-linear table). x- and y-Intercepts gains a new L2 — read both intercepts off a table of values — pushing y-int/x-int/both down to L3/L4/L5 (safe: no student has played Coordinate Geometry yet). NEW INPUT MODE plotPts: the drawn Cartesian plane itself is the answer surface — every lattice point carries an invisible tap target, tap to place or remove a marker, all-or-nothing marking, and the marking is drawn back onto the grid. internal v78.0: Yr 7–9 SEQUENCES in 💰 Finance & Patterns (Laura). NEW Sequence Rules in Words (Yr 7: L1 first term · L2 the term-to-term rule in words as a 4-way tap (add / subtract / multiply / divide / square numbers) · L3 next two terms · L4 write the first five terms from a starting value and a worded rule · L5 read a term off the sequence from aₙ notation). NEW Arithmetic Sequences (Yr 7–8: L1 common difference d · L2 next three terms · L3 fill a₁ and d into aₙ = a₁ + (n − 1)d · L4 use the rule to find a required term). NEW Geometric Sequences (Yr 8–9: L1 common ratio r · L2 next three terms · L3 fill a₁ and r into aₙ = a₁ × rⁿ⁻¹ · L4 use the rule to find a required term). The existing Sequences skill is RENAMED "Arithmetic & Geometric Sequences" and otherwise untouched (id, lvKey, levels and bands all unchanged) — it stays as the higher-order one where the student decides which kind it is. gapFill grows from four boxes to FIVE (gap4), with narrower boxes on a five-box row. All new bands are PLACEHOLDERS pending class data. internal v77.0: THREE NEW CATEGORIES and one new Number skill. ◡ Quadratics — Verify Solutions to Quadratic Equations (L1 x²=k · L2 factorised · L3 trinomial, Yes/No) and Solve Quadratic Equations (L1 x²=k · L2 exact values/fractions as multiple choice · L3 Null Factor Law · L4 monic trinomials). 📈 Coordinate Geometry — The Cartesian Plane (quadrant · read a plotted coordinate), Linear or Non-Linear (from a graph · from an equation), x- and y-Intercepts (y-int · x-int · both from ax+by=c) and Gradient of a Line Segment (whole · from a diagram · fractions & negatives). 💰 Finance & Patterns — GST (10%: added · price incl · removed), Simple Interest (5 levels on Vn = V0 + nD, D = r/100 × V0), Sequences (classify · next term · arithmetic rule · geometric rule), Recurrence Relations (write · use) and Flat Rate Depreciation (5 levels on Vn = V0 − nD). Number gains Number Classification (rational/irrational · tick every set). TWO NEW INPUT MODES: gapFill (a rendered rule/coordinate/solution template with up to five numeric boxes, all-or-nothing, optional order-free marking) and multiSel (tick every box that applies, all-or-nothing). Purely additive — no existing skill, level, id or band changed; all new bands are PLACEHOLDERS pending class data. internal v76.0: Congruence & Similarity now distinguish "provably false" from "unknown". L3 adds a 6th button "Not similar" (sides given but not in a constant ratio — the case a student CAN disprove, e.g. 5,8,11 vs 10,18,22); L2 adds a 6th button "Not congruent" via a new DIFF scenario that labels side lengths that don't all match. "Not enough information" now means only the genuinely undetermined cases (SSA, AAA-for-congruence, one angle, two sides). csSimilarityVerdict/csCongruenceVerdict extended; fixed 6-button order; storage-safe (no skill/level renamed or reordered). v75.0: NEW Percentages skills — Convert Percentages & Decimals (pctDecConv, both directions, number box) and Convert Fractions & Percentages (fracPctConv: L1–2 fraction→% number box, L3–4 %→fraction box; direction fixed per level via levelModes). Both single-question (not the FDP fill-in table), placed before Convert FDP; recall/Fluent-eligible with PLACEHOLDER bands (recalibrate with class data). Recurring values (33⅓% etc.) accepted within a per-question tolerance via qData.ansTol. Storage-safe additive change. v74.9: band cut-offs revised across the whole program from Laura's reviewed spreadsheet — 95 skill-levels re-banded via explicit per-level BAND_OVERRIDE entries (app matches the sheet on all 330 rows). v74.8: Decimals band targets LOWERED (Laura) so quick+accurate students reach higher animals — Identify/Expanded Form/Convert D→F −2; Rounding & Add/Subtract Decimals −3; all ×/÷ decimal operations (Multiply, Divide, ×÷ by 10/100/1000, Squares & Cubes, Square/Cube Roots, signed ×÷, ×fractions) −4. Display-only/storage-safe; .bas regenerated. v74.7: more Decimals (Laura) — NEW skills Add & Subtract Decimals (Positive & Negative), Multiply Decimals & Fractions (decFrac), Multiply & Divide Decimals (Positive & Negative), Leading Digit Estimation (round-to-1sf → estimate → BODMAS), Square Roots & Cube Roots of Decimals; NEW word-problem L4 on Multiply Decimals and Divide Decimals; Squares & Cubes of Decimals moved after Multiply Decimals & Fractions. v74.6: Add & Subtract Decimals L4 word problems; Add & Subtract Fractions & Decimals; Rounding Decimals L3 round-then-estimate. v74.5: miss reviews work THIS question's numbers step-by-step; Angles-in-Polygons L4; deeper concave polygons) -->
+<!-- Sandy Fast Facts — v97 (Laura). 📉 A SKETCH IS MARKED AGAINST THE LINE, NOT A POINT LIST. Laura, on y = −x + 4: she plotted (0, 4) and stepped the gradient BACKWARDS to (−1, 5) — a correct point on a correctly drawn line — and was marked wrong, because plotPts compared her taps against ONE fixed pair. The old way of hiding that flaw was to name the two points in the prompt ("step 1 across and 1 down"), which handed over the answer and turned the level into a copying exercise. Both are fixed together. A plotting question can now describe the LINE instead of the points: qData.plotLine = {m, c} or {vx} for a vertical, qData.plotMust = the anchor points the named METHOD requires, qData.plotNeed = how many to plot. Marked right when the required number of DISTINCT points is plotted, every one lies on the line, and every compulsory point is among them. So on Gradient & y-Intercept L3 the y-intercept is still compulsory — plotting it IS half of "the gradient–intercept method" — but the second point is genuinely free, and stepping the gradient either way is correct. On Sketching Linear Graphs L1 (horizontal/vertical) ANY two points on the line count; L2 still requires both intercepts and L3 the origin, because those anchors ARE the method each level is named for. Every giveaway instruction is gone: "Plot the y-intercept, then use the gradient to plot one more point on the line" and "Plot any two points on this line". The marked-up re-draw now shows the whole correct LINE dashed in green with each tap green or red against it, instead of hollow rings on the two points the app happened to have in mind — better feedback, and it makes the "any point counts" rule visible. PURELY ADDITIVE: the exact-point-set path is untouched, so Table of Values, Distance-Time Graphs and Transformations of 2D Shapes mark exactly as before (regression-checked). test_v96.js now asserts the backwards step is accepted on every question, that an off-line point and a pair missing the compulsory anchor are still rejected, and that the instruction no longer names the second point. No band, storage key, level count or .bas row changed — FastFactsBands_v96.bas is still current. v96 notes follow. internal v96 (Laura). 📝 THE 2026 EXAM AUDIT, BUILT. Both Year 7 papers were mapped question by question against Exam Practice mode; everything below answers a question that is actually on one of them. 514 → 547 skill-levels. ⚠ THE TWO MAPPING FIXES FIRST, because they needed no new content at all: Year 7 Section B Q14 IS "solve 2x/5 − 8 = −4" and Two-Step Equations with Fractions was not in the Year 7 exam pool, so a student revising in the app would never have met the question type — it is now in ALT 3; and Q11c needs an 18% increase while Year 7 carried only Percentage Increase & Decrease L1 (friendly percentages) — L2 and L3 are now in ALT 5. SIX NEW SKILLS. Identify Fractions (the app could read a decimal and a percentage off a shaded grid but not a FRACTION, which the Year 7 paper asks for twice; L1/L2 generate only fractions already in lowest terms so "simplest form" is never ambiguous while the diagram is the thing being learned, L3 is where simplifying becomes the point). Index Notation & Expanded Form (VC2M7N02, Section B Q5). Quartiles & Interquartile Range (SEAL Section B Q9 — and the Outliers & Fences levels already in the app computed fences from Q1 and Q3 without ever teaching them; every data set is sized so BOTH halves are odd, so Q1 and Q3 are real data values and a quartiles drill is not also a "halfway between 63 and 77" drill). Gradient & y-Intercept from an Equation (SEAL MC Q7 — Gradient of a Line Segment only ever worked from two points or a diagram; L1/L2 are MULTIPLE CHOICE because a gradient is often a fraction and a fraction will not go in a numeric box, and L3 is the sketch-by-gradient-intercept level on the same tap-to-plot surface as the distance-time graphs). Matching Equations & Graphs (SEAL MC Q10 and Section B Q5c — the graph is DRAWN and the four options are EQUATIONS, because four graphs in a 74px button are unreadable; L3 checks every distractor against the rule so a "wrong" point can never accidentally satisfy it). Sketching Linear Graphs (Laura's spec: L1 horizontal and vertical, L2 by the intercepts, L3 through the origin, L4 mixed — every level names EXACTLY which two points to plot, because the marking is all-or-nothing on a point set and "sketch the line" alone would have infinitely many right answers). TEN NEW LEVELS on existing skills: four-digit column addition and subtraction, Division L4 (how many are needed — ceiling division, where rounding the ordinary way is wrong every time), Describe the Number (Yr 7 MC Q3), Prime Factor Form (Q7), Combining Two Ratios (SEAL Q2), Two-Step Number Patterns (Yr 7 MC Q10 — ×2 + 1 is neither arithmetic nor geometric), Find the Term Number (SEAL Q10c), Working Backwards from a finish time (SEAL Q8e), and Polygon-or-Not plus Count the Sides/Vertices (Section B Q1). All ten route from ONE map and ONE dispatcher (V96_LEVELS / genV96Level), the same pattern as the v93 word problems, so not a single existing generator was reopened. Levels added to recall skills go into METHOD_LEVEL_OVERRIDE. test_v96.js re-derives every answer INDEPENDENTLY of the generator that produced it — quartiles recomputed from the sorted list, prime factor form refactorised, ratio chains recombined, plotted points substituted back into their own equation — so a generator and its own working can never be wrong together. All v96 bands are PLACEHOLDERS. FastFactsBands_v96.bas regenerated, parity-checked 547/547, no existing row changed. v95 notes follow. internal v95 (Laura). 🏆 THE REST OF THE SURD FAMILY. Add & Subtract Surds L1 and Divide Surds L1 were still asking for 23 correct answers in a round; both are now Cheetah 10, matching Multiply Surds. The family now reads Simplify 8·8·7 (unchanged — already sane), Add & Subtract 10·9·8, Multiply 10·10·9·8, Divide 10·9·8. Every answer in this family has to be WRITTEN as an exact surd, which is slower than any of the arithmetic skills banded above 20. Nothing outside the family moved: the same [6,12,18,26] placeholder is still on Scientific Notation L1–L3 and several fraction L1s, deliberately left for a separate call. ⚠ STRUCTURAL FIX WORTH KNOWING: these two L1s came from the 2026-08-28 REVIEWED SPREADSHEET at [5,10,15,22], not from a placeholder — so which of the three maps setting them won was decided by LINE ORDER (the literal, then the v74.9 spreadsheet block, then the reviewed block). Every surd band Laura has called now lives in ONE "LAURA'S SURD CALLS" Object.assign block appended AFTER the reviewed block, so a future spreadsheet pass cannot silently revert a classroom call, and the superseded lines above carry a pointer to it. METHOD_BAND_CEIL surdAddSub/surdDivide L1 fallbacks follow the overrides. Bands are DISPLAY-ONLY over the stored Fluency Score: no storage key, PB, streak or share line changes and no score is lost — a past round simply reads as a higher animal. test_bands_surd.js now locks the WHOLE family (96 assertions): every Cheetah value, cut-offs in order, Cheetah = Antelope+1, a harder level never easier to top out than an easier one, the five non-surd skills that keep the old placeholder, and no surd level ever earning Fluent. FastFactsBands_v95.bas regenerated and parity-checked 514/514. v94 notes follow. internal v94 (Laura). 🏆 BAND FIX: MULTIPLY SURDS L1 AND L2. Laura: "the bands are too high, move Cheetah down to 10". The v86 PLACEHOLDER overrides asked for 31 (L1) and 27 (L2) correct answers in a round on a skill where every answer has to be written as an exact surd. BAND_OVERRIDE surdMultiply_L1 [8,15,22,30] → [3,5,7,9] and surdMultiply_L2 [6,12,18,26] → [2,4,6,9]; Cheetah is Antelope max + 1, so both are now 10. The four cut-offs below Cheetah are rescaled in the SAME PROPORTIONS as the old ladder rather than squashed under an unchanged one — a Lion ceiling of 22 beneath a Cheetah of 10 would be nonsense — and L2 keeps slightly easier lower bands than L1 because the simplifying step makes it slower. L3 and L4 are untouched (Cheetah 9 and 8), and no other skill moved: the identical [6,12,18,26] placeholder is still shared by Add & Subtract Surds L1, Divide Surds L1, Scientific Notation → Number L3 and several fraction L1s, all of which are LEFT AS THEY WERE because Laura only called this one. METHOD_BAND_CEIL surdMultiply is updated to [7,6,6,5] so the fallback no longer contradicts the overrides that actually apply. Bands are DISPLAY-ONLY over the stored Fluency Score — no storage key, PB, streak or share line changes, and no student loses a recorded score; a past round simply reads as a higher animal than it did. test_bands_surd.js locks the new numbers in the style of test_bands.js. FastFactsBands_v94.bas is regenerated and parity-checked (514/514 rows match bandCutoffs) — the dashboard module had not been regenerated since v79, so it was leaving the Animal column BLANK for all 65 skill-levels added in v80–v93 (the whole Data Analysis category included). v93 notes follow. internal v93 (Laura). 📐 CURRICULUM FILL: NETS/VIEWS, RECURRING DECIMALS, PERCENTAGE ERROR AND TEN WORD-PROBLEM LEVELS. NEW SKILL Nets, Plans & Views of 3D Objects (Geometry, VC2M7SP01 — the one examinable Level 7 Space idea with nothing in the app): L1 name the solid from a drawn net, L2 what the net of a drawn solid is made from, L3 front/side/top of a labelled rectangular prism (w, h and d forced distinct so exactly one view fits the stated rectangle), L4 the shape of a named view. Every level is CHOICE with a drawing and TEXT options — four small net pictures in a 74px option grid are unreadable, and comparing four pictures is a different task from the one the curriculum names. The nets are drawn here rather than taken from SHAPE_LIB because a net is a DIFFERENT picture of the same solid, which is the skill. NEW SKILL Terminating & Recurring Decimals (Decimals, VC2M8N03): L1 pick the odd one out, L2 write a terminating fraction as a decimal, L3 a dotted recurring decimal back to a fraction in simplest form. The terminate/recur test is done on the fraction in LOWEST TERMS (strip every 2 and 5, terminating iff 1 remains) and questions are GENERATED then CLASSIFIED, so 6/8 can never be mislabelled. NEW LEVEL Percentage Increase & Decrease L4 — PERCENTAGE ERROR (VC2M8N05), with values chosen so the error is a whole number of units and the percentage is exact. TEN WORD-PROBLEM LEVELS (VC2M7N10 / VC2M7A03 / VC2M8A03) — a FORMAT gap, not a topic gap: until now only three decimal skills had worded questions, so students met worded number, ratio and algebra questions for the first time in an ALT. HCF/LCM L4, Add/Subtract Integers L4, Order of Operations L5, Fraction of an Amount L4, Percentage of an Amount L4, Percentage Increase & Decrease L5, Sharing in a Ratio L5, Converting Rates L3, Substitute into Expressions L5, Two-Step Equations L4 (levelModes 4:number — the answer is a whole number, one box). All eleven are routed from ONE line at the top of nextQCore via the WORD_LEVEL map, so not one existing generator was touched. Word-problem levels on recall skills are added to METHOD_LEVEL_OVERRIDE — a word problem is never fact recall — and all carry a Challenge hint. test_v93.js compares the number inside the <b> of every worked solution against the stored answer on every question (the realistic bug is the story and the working drifting apart) and re-derives the HCF/LCM, ratio and equation answers from the story text itself. Nets/views and recurring-decimal bands are PLACEHOLDERS pending class data. v92 notes follow. internal v92 (Laura). 🎯 NEW: EXAM / ALT TRAINING + THREE USABILITY CHANGES. (1) HOME HEADER is one row — name and greeting left, class chip and Edit / Dark / Backup as icon buttons plus Switch profile right; Backup turns amber with a dot when the last backup is over 14 days old, because it is the only control there that protects data. (2) MODE IS CHOSEN AFTER THE LEVEL, not before. The home-screen segmented control is gone; the level screen's Start now opens a mode screen naming the skill and level, with one of the three RECOMMENDED from what the app already stores — an explicit LEVEL_REC wins, then a never-attempted or sub-85% level goes to Practice, and only an accurate student is sent to the clock. This is the fix for "everyone just does Fluency because it is pre-set". beginGame() is unchanged and still starts the game, so every existing test path (harness start = selectSkill -> lc<lv>.onclick -> beginGame -> launchSession) still works. (3) TOP ROW is streak strip + Daily Mix + Exam/ALT Training, three across at >=900px and stacked below; the streak card lost its progress text and shrank to a strip. EXAM / ALT TRAINING: a COURSES object of PURE METADATA (Year 7 Mathematics, Year 7 SEAL Mathematics) naming skill ids and level numbers that already exist — nothing in CATS, LEVEL_DEFS or any band changed, and no storage key moved. Course -> ALT list -> the skills and levels in that ALT, each level carrying a grey/amber/green READINESS dot read from the accuracy the app already saved after every session. Every ALT and the exam get a MIXED PRACTICE button (practice mode only, by design): nextQ() is now a wrapper that re-picks the skill between questions, weighting anything not yet green 3:1, and the round records one session plus a per-level accuracy stamp for every level that got at least 3 questions. EXAM PRACTICE is generated as the union of the examinable ALTs, so it can never drift; ALT 8 (Measurement) is exam:false because it is taught after the exam. PREREQUISITES (Times Tables, Division) sit greyed and dashed at the foot of every ALT — assumed knowledge, not assessed, but somewhere to drop back to. test_courses.js proves all 718 course->skill-level references resolve, that Exam Practice equals the union, and that Mixed Practice rotates skills and stays in practice mode. v84 notes follow. internal v84 (Laura). 📊 NEW CATEGORY: DATA ANALYSIS (Release 1 of 3). Four reusable display engines — daDotPlot, daStemHtml, daHistogram, daBoxPlot — each driven by DATA and working out its own scale, so Release 2 (mean/mode/median/range) re-uses them unchanged. Three skills: Classifying Data, Frequency Tables (read · from a raw list · grouped class intervals · percentage frequency, with totals restricted to 20/25/50 so every percentage is exact) and Reading Data Displays (one level per display, so every engine is student-tested now rather than sitting unused until Release 2). All bands are PLACEHOLDERS and every level is METHOD (accuracy-first, no Fluent badge) until class data exists. Purely additive: no existing skill, level, id or band changed. v83 notes follow. internal v83: 🔍 DESKTOP SIZING, SPLIT THE DIFFERENCE: v82 over-reserved vertical space (420px) so diagrams came out smaller than they had to; the budget is now calc(100vh - 330px) and the cap 460px. Question CONTENT also scales on a big screen — A_LBL now reads its size from --qlbl (a CSS variable, because a media query cannot override an inline style) and the timetable from --qtbl, so prompts and tables grow with the column instead of staying at phone size. v82 notes follow. internal v82: 📏 TIGHTER GAME HEADER ON DESKTOP: the back link / stats / progress / nudge strip is trimmed from ~170px to ~105px and diagrams are capped at calc(100vh - 420px), so the tall coordinate-grid and plot questions fit without scrolling. CSS only, ≥900px only. v81 notes follow. internal v81: 🎯 START BUTTON IS ALWAYS REACHABLE: #levelStartBtn is position:sticky at every width, so on a 6-level skill it rides the bottom of the window instead of hiding below the cards, and settles into the flow once the list fits. On desktop the level grid is now auto-fill minmax(300px) — 3 across on a 1080px frame — so even the worst case (six levels) needs no scrolling. CSS only. v80 notes follow. internal v80: 🖥 DESKTOP LAYOUT: additive CSS in one @media (min-width:900px) block plus two harmless wrapper divs on the home screen (.home-top, .home-foot). The frame widens to 1080px, categories go 3-across, skills and levels 2-across, and the GAME screen becomes two columns (question left, answering right) via grid auto-placement — no JS, no ids, no question logic touched. Under 900px every rule is unchanged, so all phone layouts are byte-identical to v79. v79 notes follow. internal v79: 🧩 OTHER IS RENAMED 🔄 TIME & TRANSFORMATIONS — display only: the CATS key stays 'other', so every stored Personal Best, streak and share line is untouched, and the dashboard .bas keys on SKILL names so it is unaffected too. SIX NEW TRANSFORMATION SKILLS, all built on one engine: every transformation in the program is an affine map whose matrix has exactly one non-zero entry per row, so applying one is two lines, COMPOSING two stays in the same family (which is what lets the Combinations skill print a single mapping for a chain), and the mapping notation is rendered straight off the matrix so the words and the notation can never drift apart. Translations (L1 one-axis slide · L2 two-axis · L3 describe it from the drawn points · L4 read the mapping · L5 apply the mapping · L6 find the pre-image), Reflections (same six; L1 the axes, L2 adds y = x), Dilations from the Origin (ONE apply level per Laura — a dilation from the origin is always a single step — then the same four; factors 2, 3, 4, ½ and ⅓ on a ±10 window because a factor of 4 leaves the −5…5 box immediately), Rotations about the Origin (L1 half turns only, L2 the quarter turns clockwise and anticlockwise; the describe-it levels are restricted to the three CANONICAL names because 90° clockwise and 270° anticlockwise are the SAME map and would otherwise be two right answers), Combinations of Transformations (NO describe-in-words level, per Laura — two points can be joined by any number of chains — so L1/L2 apply a chain of two then three, and the mapping levels survive because a mapping IS the composite), and Transformations of 2D Shapes (Yr 7–8: translate, reflect, identify, dilate, rotate and un-transform a whole shape by TAPPING its image corners, on a coarser −4…4 grid so a corner is an easy tap on a phone). One subtle guard worth remembering: two DIFFERENT transformations can still agree on ONE point — (2, −2) goes to (−2, 2) under both a half turn and a reflection in y = x — so a describe-it distractor is only safe if it fails on THAT point, not merely if it is a different map. Purely additive apart from the category label: no existing skill, level, id or band changed. All new bands are PLACEHOLDERS pending class data. internal v78.4 FIXES: (1) TYPING WAS DEAD on any narrow screen — the "is this a phone" test was window width ALONE, so a laptop with a narrow window (or the app in a preview pane) got the readonly-input trick meant to suppress a phone keyboard, with no way to type. A phone must now ALSO have a coarse primary pointer, and the first real key press from a physical keyboard unlocks every box and hides the keypad for the rest of the session. (2) THE PLOT GRID WAS SQUASHED — #qBox is a flex container and plotRender was handing it two or three children, so the prompt, story and grid became columns; wrapped in a single .q-text child, and the plot/graph SVGs now scale to the available width (up to 460px) instead of sitting at a fixed 300px. (3) DISTANCE-TIME JOURNEYS CAN NOW RETURN HOME — a stage may head back towards home so the graph comes down, and some journeys finish at 0 km; the line can never go below 0, "fastest" and "speed" compare magnitudes, and the story says "back towards home" / "the last N km home". internal v78.3: NEW CATEGORY 🧩 OTHER (Laura) — the practical, everyday-maths corner, placed last: Converting Units of Time (Yr 7: sec/min/hour · hour/day/week · week/month/year · compound times both ways), Train & Bus Timetables (Yr 7: read the table · trip length in minutes · latest service that still arrives in time · minutes until the next service, with 24-hour and 12-hour clocks mixed) and Distance-Time Graphs (Yr 7–8: read the distance · which stage is stationary/fastest · BUILD or finish the graph by tapping the corner of each stage · speed of a labelled stage). Coordinate Geometry gains Applications of Linear Graphs (Yr 8–9: rate or starting amount from P = −35 + 4c · write y = a + bx from a story · build its table · write ax + by = d from a two-item total). The plotPts mode is now axis-agnostic and can mark an ORDERED path, which is what the distance-time construct level uses. Purely additive — no existing skill, level, id or band changed. internal v78.2: 📈 COORDINATE GEOMETRY grows (Laura). The Cartesian Plane gains L4 — three corners of a rectangle, square or labelled parallelogram ABCD are plotted and the student writes the coordinates of the fourth. NEW skill Table of Values (Yr 7–8: L1 build a linear table from a rule · L2 PLOT that table on the plane · L3 build a non-linear table (x², x³, 2ˣ) · L4 plot a non-linear table). x- and y-Intercepts gains a new L2 — read both intercepts off a table of values — pushing y-int/x-int/both down to L3/L4/L5 (safe: no student has played Coordinate Geometry yet). NEW INPUT MODE plotPts: the drawn Cartesian plane itself is the answer surface — every lattice point carries an invisible tap target, tap to place or remove a marker, all-or-nothing marking, and the marking is drawn back onto the grid. internal v78.0: Yr 7–9 SEQUENCES in 💰 Finance & Patterns (Laura). NEW Sequence Rules in Words (Yr 7: L1 first term · L2 the term-to-term rule in words as a 4-way tap (add / subtract / multiply / divide / square numbers) · L3 next two terms · L4 write the first five terms from a starting value and a worded rule · L5 read a term off the sequence from aₙ notation). NEW Arithmetic Sequences (Yr 7–8: L1 common difference d · L2 next three terms · L3 fill a₁ and d into aₙ = a₁ + (n − 1)d · L4 use the rule to find a required term). NEW Geometric Sequences (Yr 8–9: L1 common ratio r · L2 next three terms · L3 fill a₁ and r into aₙ = a₁ × rⁿ⁻¹ · L4 use the rule to find a required term). The existing Sequences skill is RENAMED "Arithmetic & Geometric Sequences" and otherwise untouched (id, lvKey, levels and bands all unchanged) — it stays as the higher-order one where the student decides which kind it is. gapFill grows from four boxes to FIVE (gap4), with narrower boxes on a five-box row. All new bands are PLACEHOLDERS pending class data. internal v77.0: THREE NEW CATEGORIES and one new Number skill. ◡ Quadratics — Verify Solutions to Quadratic Equations (L1 x²=k · L2 factorised · L3 trinomial, Yes/No) and Solve Quadratic Equations (L1 x²=k · L2 exact values/fractions as multiple choice · L3 Null Factor Law · L4 monic trinomials). 📈 Coordinate Geometry — The Cartesian Plane (quadrant · read a plotted coordinate), Linear or Non-Linear (from a graph · from an equation), x- and y-Intercepts (y-int · x-int · both from ax+by=c) and Gradient of a Line Segment (whole · from a diagram · fractions & negatives). 💰 Finance & Patterns — GST (10%: added · price incl · removed), Simple Interest (5 levels on Vn = V0 + nD, D = r/100 × V0), Sequences (classify · next term · arithmetic rule · geometric rule), Recurrence Relations (write · use) and Flat Rate Depreciation (5 levels on Vn = V0 − nD). Number gains Number Classification (rational/irrational · tick every set). TWO NEW INPUT MODES: gapFill (a rendered rule/coordinate/solution template with up to five numeric boxes, all-or-nothing, optional order-free marking) and multiSel (tick every box that applies, all-or-nothing). Purely additive — no existing skill, level, id or band changed; all new bands are PLACEHOLDERS pending class data. internal v76.0: Congruence & Similarity now distinguish "provably false" from "unknown". L3 adds a 6th button "Not similar" (sides given but not in a constant ratio — the case a student CAN disprove, e.g. 5,8,11 vs 10,18,22); L2 adds a 6th button "Not congruent" via a new DIFF scenario that labels side lengths that don't all match. "Not enough information" now means only the genuinely undetermined cases (SSA, AAA-for-congruence, one angle, two sides). csSimilarityVerdict/csCongruenceVerdict extended; fixed 6-button order; storage-safe (no skill/level renamed or reordered). v75.0: NEW Percentages skills — Convert Percentages & Decimals (pctDecConv, both directions, number box) and Convert Fractions & Percentages (fracPctConv: L1–2 fraction→% number box, L3–4 %→fraction box; direction fixed per level via levelModes). Both single-question (not the FDP fill-in table), placed before Convert FDP; recall/Fluent-eligible with PLACEHOLDER bands (recalibrate with class data). Recurring values (33⅓% etc.) accepted within a per-question tolerance via qData.ansTol. Storage-safe additive change. v74.9: band cut-offs revised across the whole program from Laura's reviewed spreadsheet — 95 skill-levels re-banded via explicit per-level BAND_OVERRIDE entries (app matches the sheet on all 330 rows). v74.8: Decimals band targets LOWERED (Laura) so quick+accurate students reach higher animals — Identify/Expanded Form/Convert D→F −2; Rounding & Add/Subtract Decimals −3; all ×/÷ decimal operations (Multiply, Divide, ×÷ by 10/100/1000, Squares & Cubes, Square/Cube Roots, signed ×÷, ×fractions) −4. Display-only/storage-safe; .bas regenerated. v74.7: more Decimals (Laura) — NEW skills Add & Subtract Decimals (Positive & Negative), Multiply Decimals & Fractions (decFrac), Multiply & Divide Decimals (Positive & Negative), Leading Digit Estimation (round-to-1sf → estimate → BODMAS), Square Roots & Cube Roots of Decimals; NEW word-problem L4 on Multiply Decimals and Divide Decimals; Squares & Cubes of Decimals moved after Multiply Decimals & Fractions. v74.6: Add & Subtract Decimals L4 word problems; Add & Subtract Fractions & Decimals; Rounding Decimals L3 round-then-estimate. v74.5: miss reviews work THIS question's numbers step-by-step; Angles-in-Polygons L4; deeper concave polygons) -->
 <!-- Viewport (v48): dropped `maximum-scale=1.0, user-scalable=no`. iOS ignored it (so pinch worked there anyway) but Android obeyed it, blocking accessibility pinch-zoom. Accidental double-tap-to-zoom is killed per-control via `touch-action: manipulation` instead, which leaves deliberate pinch-zoom intact on every platform. -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -2750,8 +2750,8 @@ const CATS = {
       { id:'timesTables', name:'Times Tables',          inputMode:'number', lvKey:'tt'  },
       { id:'division',    name:'Division',               inputMode:'number', lvKey:'div' },
       { id:'orderOps',    name:'Order of Operations',    inputMode:'number', lvKey:'oo'  },
-      { id:'factorsMultiples', name:'Factors, Multiples &amp; Primes', inputMode:'number', lvKey:'fmp', levelModes:{1:'choice',2:'choice',3:'number'} },
-      { id:'primeFactor', name:'Prime Factorisation', inputMode:'number', lvKey:'pfac', levelModes:{1:'choice',2:'number',3:'number'} },
+      { id:'factorsMultiples', name:'Factors, Multiples &amp; Primes', inputMode:'number', lvKey:'fmp', levelModes:{1:'choice',2:'choice',3:'number',4:'choice'} },
+      { id:'primeFactor', name:'Prime Factorisation', inputMode:'number', lvKey:'pfac', levelModes:{1:'choice',2:'number',3:'number',4:'choice'} },
       { id:'hcfLcm',      name:'Highest Common Factor &amp; Lowest Common Multiple', inputMode:'number', lvKey:'hcflcm' },
       { id:'roundEst',    name:'Rounding &amp; Estimation', inputMode:'number', lvKey:'rest' },
       { id:'sigFigs',     name:'Significant Figures',    inputMode:'number', lvKey:'sf'  },
@@ -2774,6 +2774,7 @@ const CATS = {
       { id:'roots',      name:'Square Roots',            inputMode:'number', lvKey:'sq'   },
       { id:'cubes',      name:'Cube Numbers',            inputMode:'number', lvKey:'cu'   },
       { id:'cubeRoots',  name:'Cube Roots',              inputMode:'number', lvKey:'cu'   },
+      { id:'indexExpand', name:'Index Notation &amp; Expanded Form', inputMode:'number', lvKey:'ixe', levelModes:{1:'gapFill',2:'choice'} },
       { id:'indexMult',  name:'Index Law (Multiplication Law)',  inputMode:'index',  lvKey:'imul' },
       { id:'indexDiv',   name:'Index Law (Division Law)',        inputMode:'index',  lvKey:'idiv' },
       { id:'indexPow',   name:'Index Law (Power of a Power)',    inputMode:'index',  lvKey:'ipow' },
@@ -2795,6 +2796,7 @@ const CATS = {
       { id:'fracAddSub',     name:'Add &amp; Subtract Fractions',      inputMode:'fraction', lvKey:'fas'  },
       { id:'fracMultiply',   name:'Multiply Fractions',                inputMode:'fraction', lvKey:'fmu'  },
       { id:'fracDivide',     name:'Divide Fractions',                  inputMode:'fraction', lvKey:'fd'   },
+      { id:'fracIdentify',   name:'Identify Fractions',                 inputMode:'fraction', lvKey:'fid'  },
       { id:'fracOfAmount',   name:'Fraction of an Amount',             inputMode:'number',   lvKey:'foa'  },
       { id:'mixedToImp',     name:'Mixed Number → Improper Fraction',  inputMode:'fraction', lvKey:'mi'   },
       { id:'impToMixed',     name:'Improper Fraction → Mixed Number',  inputMode:'mixed',    lvKey:'mi'   },
@@ -2809,6 +2811,7 @@ const CATS = {
       { id:'decExpand',    name:'Expanded Form of Decimals',      inputMode:'number', lvKey:'dxf', levelModes:{1:'choice',2:'choice',3:'number'} },
       { id:'decToFrac',    name:'Convert Decimals to Fractions',  inputMode:'number', lvKey:'dtf', levelModes:{1:'fraction',2:'fraction',3:'fraction'} },
       { id:'fracToDec',    name:'Convert Fractions to Decimals',  inputMode:'number', lvKey:'ftd'  },
+      { id:'decRecurring', name:'Terminating &amp; Recurring Decimals', inputMode:'number', lvKey:'trd', levelModes:{1:'choice',2:'number',3:'fraction'} },
       { id:'compareDec',   name:'Compare &amp; Order Decimals',   inputMode:'choice', lvKey:'cmp', levelModes:{1:'choice',2:'arrange',3:'choice',4:'arrange',5:'arrange'} },
       { id:'decRound',     name:'Rounding Decimals',              inputMode:'number', lvKey:'dr'   },
       { id:'decAdd',       name:'Add Decimals',                  inputMode:'number', lvKey:'da'   },
@@ -2845,7 +2848,7 @@ const CATS = {
     label: '➡️ Ratios & Rates',
     skills: [
       { id:'ratioSimplify', name:'Simplifying Ratios',     inputMode:'ratio',  lvKey:'rsim' },
-      { id:'ratioEquiv',    name:'Equivalent Ratios',      inputMode:'number', lvKey:'req'  },
+      { id:'ratioEquiv',    name:'Equivalent Ratios',      inputMode:'number', lvKey:'req', levelModes:{4:'ratio'} },
       { id:'ratioShare',    name:'Sharing in a Ratio',     inputMode:'number', lvKey:'rsh'  },
       { id:'rateSimplify',  name:'Simplifying Rates',      inputMode:'number', lvKey:'rtsim' },
       { id:'rateConvert',   name:'Converting Rates',       inputMode:'number', lvKey:'rtcv'  },
@@ -2875,7 +2878,7 @@ const CATS = {
     skills: [
       { id:'eqOneStepAddSub', name:'One-Step Equations (+ / −)', inputMode:'fraction', lvKey:'eq1' },
       { id:'eqOneStepMulDiv', name:'One-Step Equations (× / ÷)', inputMode:'fraction', lvKey:'eq2' },
-      { id:'eqTwoStep',       name:'Two-Step Linear Equations',  inputMode:'fraction', lvKey:'eq3' },
+      { id:'eqTwoStep',       name:'Two-Step Linear Equations',  inputMode:'fraction', lvKey:'eq3', levelModes:{4:'number'} },
       { id:'eqTwoStepFrac',   name:'Two-Step Equations with Fractions',    inputMode:'fraction', lvKey:'eq4' },
       { id:'eqVarDenom',      name:'Equations with x on the Denominator',  inputMode:'fraction', lvKey:'eq5' },
       { id:'eqBothSides',     name:'Variables on Both Sides',              inputMode:'fraction', lvKey:'eq6' },
@@ -2900,6 +2903,9 @@ const CATS = {
       { id:'tableValues',     name:'Table of Values',                     inputMode:'gapFill',  lvKey:'tov',  levelModes:{2:'plotPts',4:'plotPts'} },
       { id:'intercepts',      name:'x- and y-Intercepts of Linear Graphs', inputMode:'number',  lvKey:'xyint', levelModes:{1:'gapFill',5:'gapFill'} },
       { id:'gradientSeg',     name:'Gradient of a Line Segment',          inputMode:'fraction', lvKey:'grad', levelModes:{1:'choice'} },
+      { id:'gradEqn',         name:'Gradient &amp; y-Intercept from an Equation', inputMode:'choice', lvKey:'gre', levelModes:{3:'plotPts'} },
+      { id:'eqnGraph',        name:'Matching Equations &amp; Graphs',      inputMode:'choice',   lvKey:'egm' },
+      { id:'sketchLinear',    name:'Sketching Linear Graphs',             inputMode:'plotPts',  lvKey:'skl' },
       // v78.3 (Laura) — the modelling half of linear relationships
       { id:'linearApps',      name:'Applications of Linear Graphs',       inputMode:'number',   lvKey:'lap',  levelModes:{2:'gapFill',3:'gapFill',4:'gapFill'} },
     ]
@@ -2933,9 +2939,10 @@ const CATS = {
   geometry: {
     label: '△ Geometry',
     skills: [
-      { id:'nameShapes', name:'Naming 2D &amp; 3D Shapes', inputMode:'choice', lvKey:'nsh' },
+      { id:'nameShapes', name:'Naming 2D &amp; 3D Shapes', inputMode:'choice', lvKey:'nsh', levelModes:{7:'number'} },
       { id:'nameAnglesLines', name:'Naming Angles, Lines &amp; Triangles', inputMode:'choice', lvKey:'nal' },
       { id:'eulerRule', name:"Euler's Rule — Edges, Faces &amp; Vertices", inputMode:'number', lvKey:'eul' },
+      { id:'netsViews', name:'Nets, Plans &amp; Views of 3D Objects', inputMode:'choice', lvKey:'npv' },
       { id:'interiorAngles', name:'Interior Angles of a Triangle', inputMode:'number', lvKey:'iat' },
       { id:'angleRel', name:'Angle Relationships', inputMode:'number', lvKey:'arl', levelModes:{1:'choice'} },
       { id:'angleParallel', name:'Angles on Parallel Lines', inputMode:'number', lvKey:'apl', levelModes:{1:'choice'} },
@@ -2954,7 +2961,7 @@ const CATS = {
     label: '🔄 Time & Transformations',
     skills: [
       { id:'timeConvert', name:'Converting Units of Time',   inputMode:'number', lvKey:'tcv', levelModes:{4:'gapFill'} },
-      { id:'timetables',  name:'Train &amp; Bus Timetables', inputMode:'number', lvKey:'ttb', levelModes:{1:'choice',3:'choice'} },
+      { id:'timetables',  name:'Train &amp; Bus Timetables', inputMode:'number', lvKey:'ttb', levelModes:{1:'choice',3:'choice',5:'choice'} },
       { id:'distTime',    name:'Distance-Time Graphs',       inputMode:'number', lvKey:'dtg', levelModes:{2:'choice',3:'plotPts'} },
       /* v79 — the transformations family. Levels 1–2 apply a transformation given
          in words, the middle levels move between words and mapping notation, and
@@ -2988,6 +2995,7 @@ const CATS = {
          judgement, so every distribution is generated from a hand-checked
          count pattern (see genDataShape) rather than sampled. */
       { id:'dataShape',    name:'Shape of a Distribution', inputMode:'choice', lvKey:'dsh' },
+      { id:'dataQuartiles', name:'Quartiles &amp; Interquartile Range', inputMode:'number', lvKey:'dqt' },
       { id:'dataOutliers', name:'Outliers &amp; Fences',   inputMode:'number', lvKey:'dou', levelModes:{4:'gapFill', 5:'choice'} },
     ]
   }
@@ -3002,6 +3010,9 @@ const SKILL_YEAR = {
   // Number  (foundational skills below high-school level carry no year chip)
   timesTables:'', division:'', addition:'', subtraction:'',
   orderOps:'Yr 7', sigFigs:'Yr 9',
+  netsViews:'Yr 7', decRecurring:'Yr 8',
+  fracIdentify:'Yr 7', indexExpand:'Yr 7', dataQuartiles:'Yr 8–9',
+  gradEqn:'Yr 8', eqnGraph:'Yr 8', sketchLinear:'Yr 8',
   numberBonds:'', factorsMultiples:'Yr 7', primeFactor:'Yr 7–8', hcfLcm:'Yr 7–8', roundEst:'Yr 7',
   // Integers
   intAddSub:'Yr 7', intMultDiv:'Yr 7', intSquareCube:'Yr 7–8', intOrderOps:'Yr 7',
@@ -3068,6 +3079,59 @@ const SKILL_YEAR = {
 
 /* Each level: title, description, examples shown on card */
 const LEVEL_DEFS = {
+  /* ── v96 — Identify Fractions (Yr 7 exam MC Q1 and Section B Q8) ── */
+  fid: [
+    { title:'Level 1 — Shaded Shapes', desc:'A circle or bar is split into equal parts and some are shaded. Write the fraction shaded. On this level the fraction is already in simplest form.', examples:['3 of 7 slices \u2192 3/7', '2 of 5 parts \u2192 2/5', '5 of 9 \u2192 5/9'] },
+    { title:'Level 2 — Grids', desc:'A grid of 10, 20, 25, 50 or 100 squares with some shaded. Write the fraction shaded. Still already in simplest form.', examples:['7 of 10 \u2192 7/10', '9 of 20 \u2192 9/20', '33 of 100 \u2192 33/100'] },
+    { title:'Level 3 — In Simplest Form', desc:'Now the shaded count and the answer are different \u2014 count the shaded parts, write the fraction, then simplify it.', examples:['6 of 8 \u2192 3/4', '15 of 20 \u2192 3/4', '8 of 12 \u2192 2/3'] },
+  ],
+  /* ── v96 — Index Notation & Expanded Form (VC2M7N02) ── */
+  ixe: [
+    { title:'Level 1 — Write in Index Form', desc:'A repeated multiplication is shown. Type the base and the power. The base is the number being multiplied; the power is how many of them there are.', examples:['2 \u00d7 2 \u00d7 2 \u00d7 2 \u2192 base 2, power 4', '5 \u00d7 5 \u00d7 5 \u2192 base 5, power 3'] },
+    { title:'Level 2 — Write in Expanded Form', desc:'Tap the expanded form of a product of two powers. Watch for the classic trap of multiplying the base by the power instead.', examples:['2\u2074 \u00d7 3\u00b2 \u2192 2\u00d72\u00d72\u00d72 \u00d7 3\u00d73'] },
+    { title:'Level 3 — Evaluate', desc:'Work out the value of a product of two powers. Evaluate each power first, then multiply.', examples:['2\u2074 \u00d7 3\u00b2 = 144', '5\u00b2 \u00d7 3 = 75', '3\u00b3 \u00d7 2\u00b2 = 108'] },
+  ],
+  /* ── v96 — Quartiles & Interquartile Range (SEAL exam Section B Q9) ── */
+  dqt: [
+    { title:'Level 1 — Lower Quartile (Q1)', desc:'Order the data, split it at the median (leaving the median out if there is an odd number), and find the median of the LOWER half.', examples:['11 values \u2192 Q1 is the 3rd', '7 values \u2192 Q1 is the 2nd'] },
+    { title:'Level 2 — Upper Quartile (Q3)', desc:'The same split, but the median of the UPPER half.', examples:['11 values \u2192 Q3 is the 9th', '7 values \u2192 Q3 is the 6th'] },
+    { title:'Level 3 — Interquartile Range', desc:'IQR = Q3 \u2212 Q1. The spread of the middle half of the data \u2014 unaffected by an outlier at either end, which is why it beats the range.', examples:['Q1 = 63, Q3 = 85 \u2192 IQR 22'] },
+    { title:'Level 4 — From a Dot Plot', desc:'The same job, but read off a dot plot. A dot plot is already in order, so count in from each end.', examples:['count in to Q1 and Q3, then subtract'] },
+    { title:'Level 5 — From a Stem Plot', desc:'The IQR from a stem-and-leaf plot. Also already in order \u2014 count the leaves.', examples:['count in to Q1 and Q3, then subtract'] },
+    { title:'Level 6 — From a Box Plot', desc:'A box plot draws the quartiles: the BOX runs from Q1 to Q3, so its width is the IQR. Read Q1, Q3 or the IQR straight off the scale.', examples:['box from 30 to 55 \u2192 IQR 25'] },
+  ],
+  /* ── v96 — Gradient & y-Intercept from an Equation (SEAL exam MC Q7) ── */
+  gre: [
+    { title:'Level 1 — From y = mx + c', desc:'The equation is already in y = mx + c form. Tap the gradient and y-intercept. The number in front of x is m; the number on its own is c.', examples:['y = 3x \u2212 2 \u2192 gradient 3, (0, \u22122)'] },
+    { title:'Level 2 — Rearrange First', desc:'The equation is in the form ax + by = c. Get y on its own \u2014 divide EVERY term by the number in front of y \u2014 then read the gradient and intercept.', examples:['4y + 8x = 12 \u2192 y = \u22122x + 3 \u2192 gradient \u22122, (0, 3)'] },
+    { title:'Level 3 — Sketch It', desc:'Sketch the line by the gradient\u2013intercept method: tap the y-intercept, then step across 1 and up or down by the gradient and tap that point.', examples:['y = 2x \u2212 1 \u2192 tap (0, \u22121) then (1, 1)'] },
+  ],
+  /* ── v96 — Matching Equations & Graphs (SEAL exam MC Q10, Section B Q5c) ── */
+  egm: [
+    { title:'Level 1 — Which Equation? (positive gradients)', desc:'A line is drawn on the plane. Tap its equation. Read the y-intercept off the axis first, then count the rise over the run.', examples:['crosses at (0, 2), goes up 3 across 1 \u2192 y = 3x + 2'] },
+    { title:'Level 2 — Which Equation? (negatives)', desc:'The same job with negative gradients and a wider spread of intercepts. A line going DOWN left to right has a negative gradient.', examples:['crosses at (0, 4), goes down 2 across 1 \u2192 y = \u22122x + 4'] },
+    { title:'Level 3 — Which Point Lies on the Line?', desc:'Four coordinates and one equation. Substitute each x and see which one gives the matching y. Only one of the four works.', examples:['y = 2x \u2212 1 \u2192 (3, 5) works'] },
+  ],
+  /* ── v96 — Sketching Linear Graphs (Laura) ── */
+  skl: [
+    { title:'Level 1 — Horizontal &amp; Vertical Lines', desc:'y = a number is horizontal; x = a number is vertical. Tap the two points where the line meets the edges of the grid.', examples:['y = 3 \u2192 (\u22125, 3) and (5, 3)', 'x = \u22122 \u2192 (\u22122, \u22125) and (\u22122, 5)'] },
+    { title:'Level 2 — Using the Intercepts', desc:'Put x = 0 to get the y-intercept, then y = 0 to get the x-intercept, and tap both. Two points are all a straight line needs.', examples:['y = 2x \u2212 4 \u2192 (0, \u22124) and (2, 0)'] },
+    { title:'Level 3 — Through the Origin', desc:'With no + c the line passes through the origin. Tap (0, 0), then use the gradient to find the point where x = 1.', examples:['y = 3x \u2192 (0, 0) and (1, 3)'] },
+    { title:'Level 4 — Mixed', desc:'All three kinds mixed together, so you have to decide which method the equation calls for before you plot.', examples:['x = 4', 'y = \u2212x + 3', 'y = 2x'] },
+  ],
+  /* ── v93 — Nets, Plans & Views of 3D Objects (VC2M7SP01) ── */
+  npv: [
+    { title:'Level 1 — Name the Solid from its Net', desc:'A flattened net is drawn. Tap the solid it folds up into. Count the faces and look at their shapes.', examples:['6 squares \u2192 cube', '2 circles + a rectangle \u2192 cylinder', '1 square + 4 triangles \u2192 square pyramid'] },
+    { title:'Level 2 — What is the Net Made From?', desc:'A solid is drawn. Tap the description of the faces its net is made from. The reverse of Level 1.', examples:['triangular prism \u2192 3 rectangles + 2 triangles', 'cube \u2192 6 identical squares', 'sphere \u2192 cannot be flattened'] },
+    { title:'Level 3 — Front, Side or Top?', desc:'A rectangular prism is drawn with its three lengths labelled. Decide which view is the rectangle described. Front is width \u00d7 height, side is depth \u00d7 height, top is width \u00d7 depth.', examples:['5 by 3 \u2192 front view', '2 by 3 \u2192 side view', '5 by 2 \u2192 top view'] },
+    { title:'Level 4 — Shape of the View', desc:'A solid stands upright on its base. Tap the shape of its front, side or top view. This is the plan-and-elevation idea in its simplest form.', examples:['cylinder from the top \u2192 circle', 'cone from the front \u2192 triangle', 'square pyramid from the top \u2192 square'] },
+  ],
+  /* ── v93 — Terminating & Recurring Decimals (VC2M8N03) ── */
+  trd: [
+    { title:'Level 1 — Terminating or Recurring?', desc:'Four fractions are shown. Tap the one that gives the kind of decimal named in the question. Simplify first, then strip every 2 and every 5 from the denominator \u2014 if 1 is left it terminates.', examples:['3/8 \u2192 terminating', '5/12 \u2192 recurring', '7/20 \u2192 terminating'] },
+    { title:'Level 2 — Write the Decimal', desc:'Write a terminating fraction as a decimal. Every fraction on this level does stop \u2014 type the exact decimal.', examples:['3/8 = 0.375', '7/20 = 0.35', '9/16 = 0.5625'] },
+    { title:'Level 3 — Recurring Decimal \u2192 Fraction', desc:'A dot above a digit means it repeats forever. One repeating digit sits over 9, two repeating digits over 99. Give the fraction in simplest form.', examples:['0.4\u0307 = 4/9', '0.2\u03077\u0307 = 3/11', '0.6\u0307 = 2/3'] },
+  ],
   /* ── v77 — Number Classification ── */
   ncl: [
     { title:'Level 1 — Rational or Irrational', desc:'Decide whether a number can be written as a fraction of two whole numbers (rational) or not (irrational).', examples:['7', '√2', '0.75'] },
@@ -3129,6 +3193,7 @@ const LEVEL_DEFS = {
     { title:'Level 2 — How Long Is the Trip?',desc:'Subtract the departure time from the arrival time. Answer in minutes.', examples:['leaves 8:05, arrives 8:32 → 27 minutes'] },
     { title:'Level 3 — Which Service?',       desc:'You must arrive by a certain time. Find the latest service that still gets you there.', examples:['must arrive by 9:10 → leave at 8:35'] },
     { title:'Level 4 — How Long to Wait?',    desc:'You arrive at the stop at a given time. How many minutes until the next service?', examples:['you arrive 8:12, next is 8:20 → 8 minutes'] },
+    { title:'Level 5 — Working Backwards', desc:'Something must be finished BY a given time and you know how long it takes. Count backwards from the finish time to find when to start.', examples:['ready by 6:20 am, takes 45 min \u2192 start 5:35 am'] },
   ],
   dtg: [
     { title:'Level 1 — Distance Travelled', desc:'Read up from the time axis to the line, then across to the distance axis.', examples:['after 3 hours → 40 km'] },
@@ -3212,12 +3277,14 @@ const LEVEL_DEFS = {
     { title:'Level 3 — Term Notation',       desc:'aₙ means the nth term. Read the term the question asks for straight off the sequence.', examples:['5, 8, 11, 14, 17 → a₃ = 11'] },
     { title:'Level 4 — Next Two Terms',      desc:'Work out the rule, then fill in the next two terms.', examples:['18, 24, 30, 36, ▢, ▢ → 42, 48'] },
     { title:'Level 5 — First Five Terms',    desc:'You are given a starting value and a rule in words. Write down the first five terms.', examples:['Start at 5, add 3 → 5, 8, 11, 14, 17'] },
+    { title:'Level 6 — Two-Step Rules', desc:'The rule takes TWO steps \u2014 multiply, then add or subtract. These patterns are neither arithmetic nor geometric, so look at what happens between each pair of terms.', examples:['3, 7, 15, 31, 63 (\u00d72 + 1)', '2, 7, 22, 67 (\u00d73 + 1)'] },
   ],
   ase: [
     { title:'Level 1 — Common Difference (d)', desc:'Subtract any term from the one after it to find the common difference d.', examples:['5, 8, 11, 14 → d = 3'] },
     { title:'Level 2 — Next Three Terms',      desc:'Keep adding the common difference to find the next three terms.', examples:['5, 8, 11, 14 → 17, 20, 23'] },
     { title:'Level 3 — Write the nth Term Rule', desc:'Fill in the boxes for aₙ = a₁ + (n − 1)d.', examples:['5, 8, 11 → aₙ = 5 + (n − 1) × 3'] },
     { title:'Level 4 — Find a Required Term',  desc:'Use aₙ = a₁ + (n − 1)d to find the term the question asks for.', examples:['a₁ = 5, d = 3 → a₁₂ = 5 + 11 × 3 = 38'] },
+    { title:'Level 5 — Find the Term Number', desc:'You are told a number IS in the sequence \u2014 work out which term it is. Put the value into the rule and solve for n.', examples:['3, 7, 11, \u2026 and 488 \u2192 n = 123'] },
   ],
   gse: [
     { title:'Level 1 — Common Ratio (r)',      desc:'Divide any term by the one before it to find the common ratio r.', examples:['2, 6, 18, 54 → r = 3'] },
@@ -3252,11 +3319,13 @@ const LEVEL_DEFS = {
     { title:'Level 1 — Divide by 1–5',   desc:'Division facts using divisors up to 5. Ideal for building the basics.', examples:['20 ÷ 4', '15 ÷ 3', '18 ÷ 2'] },
     { title:'Level 2 — Divide by 1–12',  desc:'Division facts using divisors up to 12, matching the full times tables.', examples:['72 ÷ 9', '48 ÷ 6', '132 ÷ 11'] },
     { title:'Level 3 — Divide by 1–20',  desc:'Division facts using divisors up to 20 for a demanding challenge.', examples:['119 ÷ 17', '260 ÷ 13', '360 ÷ 18'] },
+    { title:'Level 4 — How Many Are Needed?', desc:'Divide, then round UP \u2014 leftovers still need one more box, tray or bus. Rounding the ordinary way gets these wrong every time.', examples:['152 \u00f7 36 = 4 r 8 \u2192 5 trays', '50 people, 12 per bus \u2192 5 buses'] },
   ],
   as: [
     { title:'Level 1 — Single Digit',  desc:'Add or subtract single-digit numbers (1–9). Focus on instant recall.', examples:['7 + 8', '9 − 4', '6 + 7'] },
     { title:'Level 2 — Two Digit',     desc:'Add or subtract numbers up to 99. Includes carrying and borrowing.', examples:['47 + 36', '82 − 57', '63 + 29'] },
     { title:'Level 3 — Three Digit',   desc:'Add or subtract numbers up to 999. Mental arithmetic challenge.', examples:['347 + 256', '801 − 463', '592 + 317'] },
+    { title:'Level 4 — Four Digits', desc:'Four-digit column addition and subtraction, the way the exam sets it out. Line up the columns, work from the right, and carry or borrow as you go.', examples:['1009 + 882 = 1891', '4879 \u2212 2988 = 1891', '6431 \u2212 4879 = 1552'] },
   ],
   nb: [
     { title:'Level 1 — Make 10',       desc:'Find the number that completes the pair to 10. The building block for all mental addition.', examples:['7 + ▢ = 10', '3 + ▢ = 10', '6 + ▢ = 10'] },
@@ -3267,6 +3336,7 @@ const LEVEL_DEFS = {
     { title:'Level 1 — Range ±10',   desc:'Integers from −10 to +10. Covers basic negative number operations.', examples:['−6 + 4', '3 − (−2)', '−5 + 8'] },
     { title:'Level 2 — Range ±20',   desc:'Integers from −20 to +20 for a more demanding range.', examples:['−14 + 9', '7 − (−11)', '−18 + 5'] },
     { title:'Level 3 — Range ±50',   desc:'Integers from −50 to +50. Builds strong mental number line skills.', examples:['−37 + 24', '−45 − (−18)', '29 − 41'] },
+    { title:'Level 4 — Word Problems', desc:'Real-life negative numbers \u2014 temperatures, lifts below ground, overdrawn accounts and divers. Decide whether to add or subtract, and remember the answer can be negative.', examples:['\u22125\u00b0C rises 8 degrees \u2192 3\u00b0C', 'floor 4, down 9 \u2192 \u22125', 'overdrawn $30, deposit $50 \u2192 20'] },
   ],
   /* v45: dedicated levels for Multiply / Divide Integers (was sharing the
      add/sub 'int' levels, which showed the wrong examples). Ranges match the
@@ -3286,6 +3356,7 @@ const LEVEL_DEFS = {
     { title:'Level 2 — With Brackets', desc:'Brackets change the order — work out what is inside first, then apply the operation.', examples:['(3 + 4) × 2', '5 × (6 + 3)', '(8 − 3) × 4'] },
     { title:'Level 3 — Mixed Challenge',desc:'Three or more operations mixed together. Tests full BODMAS understanding.', examples:['2 + 3 × 4 − 1', '(5 + 2) × 3 − 4', '4 × 3 + 2 × 5'] },
     { title:'Level 4 — Indices & Brackets', desc:'Now with powers and nested brackets. Do indices right after brackets, before × ÷ + −.', examples:['2 + 3² × 2', '(2 + 3)² − 4', '5² − 4 × 3'] },
+    { title:'Level 5 — Word Problems', desc:'Read the story, write it as ONE calculation, then use the order of operations. Multiplying and dividing happen before adding and subtracting.', examples:['4 pens at $3 and 2 books at $7 \u2192 4\u00d73 + 2\u00d77', 'change from $50 for 3 tickets at $12', '5 boxes of 8, minus 6 eaten'] },
   ],
   /* ── FRACTION LEVELS ── */
   fs: [
@@ -3510,11 +3581,14 @@ const LEVEL_DEFS = {
     { title:'Level 1 — Friendly Percentages', desc:'Find 10%, 20%, 25%, 50% and other easy percentages of an amount.', examples:['10% of 80 → 8', '25% of 60 → 15', '20% of 45 → 9'] },
     { title:'Level 2 — Any Whole Percent', desc:'Find trickier whole-number percentages such as 11% or 18% of an amount.', examples:['11% of 200 → 22', '18% of 50 → 9', '35% of 80 → 28'] },
     { title:'Level 3 — Decimals &amp; Over 100%', desc:'Percentages like 12.5%, or more than 100% of an amount.', examples:['12.5% of 80 → 10', '150% of 40 → 60', '7.5% of 200 → 15'] },
+    { title:'Level 4 — Word Problems', desc:'Find a percentage of an amount from a story \u2014 savings, discounts and how many out of a group.', examples:['25% off an $80 jacket \u2192 saves $20', '15% of 60 students \u2192 9', '30% of $140 saved \u2192 $42'] },
   ],
   pcd: [
     { title:'Level 1 — Friendly Increase / Decrease', desc:'Increase or decrease an amount by an easy percentage (10%, 20%, 25%, …).', examples:['Increase 80 by 10% → 88', 'Decrease 60 by 25% → 45', 'Increase 50 by 20% → 60'] },
     { title:'Level 2 — Any Whole Percent', desc:'Increase or decrease an amount by a trickier whole percentage (11%, 18%, …).', examples:['Increase 200 by 11% → 222', 'Decrease 50 by 18% → 41', 'Increase 80 by 35% → 108'] },
     { title:'Level 3 — Real-World Words', desc:'Spot the change word — marked up, inflated, appreciation and rise all mean increase; discount, reduction, depreciated and decline all mean decrease.', examples:['$60 marked up 20% → $72', '$80 discounted 25% → $60', '$50 depreciated 10% → $45'] },
+    { title:'Level 4 — Percentage Error', desc:'Percentage error = (size of the error \u00f7 the TRUE value) \u00d7 100. Compare a measurement or estimate with the true value. Answers are exact whole percentages \u2014 type the number without the % sign.', examples:['true 200, measured 210 \u2192 5', 'true 50, measured 48 \u2192 4', 'true 80, estimate 100 \u2192 25'] },
+    { title:'Level 5 — Word Problems', desc:'Increase or decrease an amount by a percentage in a real context \u2014 sale prices and price rises. Work out the new total, not the change.', examples:['$40 shirt up 15% \u2192 $46', '$80 bike, 25% off \u2192 $60', '$60 plan up 10% \u2192 $66'] },
   ],
   ppl: [
     { title:'Level 1 — Profit or Loss', desc:'An item is bought and sold — work out the profit or loss in dollars, then tap Profit or Loss.', examples:['Buy $60, sell $25 → $35 loss', 'Buy $40, sell $70 → $30 profit', 'Buy $18, sell $30 → $12 profit'] },
@@ -3526,11 +3600,13 @@ const LEVEL_DEFS = {
     { title:'Level 1 — Prime or Not?', desc:'Tap whether a number is prime (only factors 1 and itself) or not prime.', examples:['17 → Prime', '21 → Not prime', '2 → Prime'] },
     { title:'Level 2 — Is It a Factor?', desc:'Tap whether the first number is a factor of the second (divides it exactly).', examples:['6 a factor of 24? Yes', '7 a factor of 20? No', '9 a factor of 54? Yes'] },
     { title:'Level 3 — Multiples', desc:'Type the multiple asked for — the Nth multiple of a number.', examples:['4th multiple of 7 → 28', '6th multiple of 8 → 48', '3rd multiple of 12 → 36'] },
+    { title:'Level 4 — Describe the Number', desc:'Tap the description that fits: odd or even, and prime, square or a multiple of something. Two facts about the same number at once.', examples:['51 \u2192 odd and a multiple of 3', '49 \u2192 odd and square', '23 \u2192 odd and prime'] },
   ],
   hcflcm: [
     { title:'Level 1 — Highest Common Factor', desc:'Type the largest number that divides into both — the HCF.', examples:['HCF of 12 & 18 → 6', 'HCF of 20 & 30 → 10', 'HCF of 9 & 24 → 3'] },
     { title:'Level 2 — Lowest Common Multiple', desc:'Type the smallest number both go into — the LCM.', examples:['LCM of 4 & 6 → 12', 'LCM of 3 & 5 → 15', 'LCM of 6 & 8 → 24'] },
     { title:'Level 3 — Harder Pairs', desc:'HCF or LCM of trickier pairs with larger numbers.', examples:['HCF of 36 & 48 → 12', 'LCM of 8 & 12 → 24', 'LCM of 9 & 15 → 45'] },
+    { title:'Level 4 — Word Problems', desc:'Decide whether the story needs the highest common factor or the lowest common multiple, then find it. "Next time together" is LCM; "identical groups, nothing left over" is HCF.', examples:['buses every 12 and 18 min \u2192 LCM', '24 pencils and 36 erasers into equal bags \u2192 HCF'] },
   ],
   rest: [
     { title:'Level 1 — Round to 10 or 100', desc:'Round a whole number to the nearest 10 or 100.', examples:['67 to 10 → 70', '340 to 100 → 300', '85 to 10 → 90'] },
@@ -3542,6 +3618,7 @@ const LEVEL_DEFS = {
     { title:'Level 1 — Unit Fractions', desc:'Find a unit fraction of an amount (½, ⅓, ¼, ⅕…) — just divide by the denominator.', examples:['½ of 30 → 15', '¼ of 20 → 5', '⅓ of 18 → 6'] },
     { title:'Level 2 — Non-Unit Fractions', desc:'Find a fraction of an amount — divide by the bottom, multiply by the top.', examples:['¾ of 20 → 15', '⅖ of 30 → 12', '⅚ of 24 → 20'] },
     { title:'Level 3 — Harder Amounts', desc:'Larger amounts and trickier fractions; answers stay whole.', examples:['⅜ of 64 → 24', '⁴⁄₇ of 84 → 48', '⅚ of 90 → 75'] },
+    { title:'Level 4 — Word Problems', desc:'Find a fraction of an amount from a story. Divide by the denominator to find one part, then multiply by the numerator.', examples:['2/5 of 30 students walk \u2192 12', '3/4 of $60 spent \u2192 45', '5/8 of 24 games won \u2192 15'] },
   ],
   fcmp: [
     { title:'Level 1 — Which Sign?', desc:'Tap the correct sign (< > =) between two fractions. Compare by a common denominator or by converting to decimals.', examples:['½ ? ⅗', '¾ ? ⅔', '⅖ ? 0.4'] },
@@ -3592,6 +3669,7 @@ const LEVEL_DEFS = {
     { title:'Level 1 — Recognise It', desc:'Tap the correct prime factorisation (in index form) of the number.', examples:['36 → 2² × 3²', '60 → 2² × 3 × 5', '72 → 2³ × 3²'] },
     { title:'Level 2 — Missing Power', desc:'The prime factorisation is given with one power missing — type it in.', examples:['72 = 2^▢ × 3² → 3', '48 = 2^▢ × 3 → 4', '200 = 2³ × 5^▢ → 2'] },
     { title:'Level 3 — Count the Factors', desc:'How many prime factors does the number have, counting repeats?', examples:['120 = 2³×3×5 → 5', '36 = 2²×3² → 4', '90 = 2×3²×5 → 4'] },
+    { title:'Level 4 — Write in Prime Factor Form', desc:'Tap the number written as a product of primes, with repeats collected as powers \u2014 the answer a factor tree is built to give.', examples:['60 = 2\u00b2 \u00d7 3 \u00d7 5', '72 = 2\u00b3 \u00d7 3\u00b2', '45 = 3\u00b2 \u00d7 5'] },
   ],
   rear: [
     { title:'Level 1 — One Step', desc:'Rearrange a one-step formula to make the named letter the subject. Tap the correct new formula.', examples:['P = 4s → s = P/4', 'A = lw → w = A/l', 'C = πd → d = C/π'] },
@@ -3627,12 +3705,14 @@ const LEVEL_DEFS = {
     { title:'Level 1 — Two Parts',        desc:'Find the missing value in a two-part equivalent ratio. Multiplier or divisor is always a whole number.', examples:['2 : 5 = 8 : ?', '3 : 7 = ? : 21', '4 : 9 = 12 : ?'] },
     { title:'Level 2 — Three Parts',      desc:'Find the missing value in a three-part equivalent ratio. Multiplier or divisor is always a whole number.', examples:['1 : 2 : 3 = 4 : 8 : ?', '2 : 3 : 5 = ? : 9 : 15', '3 : 4 : 6 = 9 : 12 : ?'] },
     { title:'Level 3 — Decimal Multiplier',desc:'Three-part equivalent ratios where the multiplier is not a whole number (e.g. ×1.5 or ×2.5). Answer is always a whole number.', examples:['2 : 4 : 6 = 3 : 6 : ?', '4 : 6 : 8 = ? : 9 : 12', '2 : 3 : 5 = 5 : 7.5 : ?'] },
+    { title:'Level 4 — Combining Two Ratios', desc:'Two ratios share a middle quantity. Scale both so the shared part matches, then read off the outer pair and simplify.', examples:['R:B = 3:2 and B:W = 3:4 \u2192 R:W = 9:8'] },
   ],
   rsh: [
     { title:'Level 1 — Two-Part Share',   desc:'Share a total in a two-part ratio. All arithmetic stays within the 12× tables — focus is on the sharing method, not big multiplication.', examples:['Share $24 in 1 : 2 — larger?', 'Share 35 in 3 : 4 — smaller?', 'Share $60 in 5 : 7 — larger?'] },
     { title:'Level 2 — Three-Part Share', desc:'Share a total in a three-part ratio. Question tells you which share (smallest, middle or largest).', examples:['Share 60 kg in 2 : 3 : 5 — smallest?', 'Share $120 in 1 : 2 : 3 — middle?', 'Share 240 in 3 : 4 : 5 — largest?'] },
     { title:'Level 3 — Larger Numbers',   desc:'Three-part shares with larger totals and ratios. Same forward-share method, bigger numbers test fluency.', examples:['Share $840 in 4 : 7 : 9 — middle?', 'Share 1500 in 2 : 5 : 8 — largest?', 'Share $660 in 3 : 4 : 4 — smallest?'] },
     { title:'Level 4 — Given One Part', desc:'You are told one share or the difference between shares — work back to the amount asked for.', examples:['3 : 5, smaller is 18 — larger?', '2 : 7, difference is 20 — total?', '4 : 9, larger is 63 — smaller?'] },
+    { title:'Level 5 — Word Problems', desc:'Share an amount in a ratio from a story, and give the LARGER share. Add the parts, divide to find one part, then multiply.', examples:['$120 in 2:3 \u2192 larger share $72', '450 g in 4:5 \u2192 250 g', '$84 in 1:6 \u2192 $72'] },
   ],
   rtsim: [
     { title:'Level 1 — Simplify Rates',   desc:'Express a quantity as a unit rate by dividing. Whole-number answers.', examples:['$28 for 4 kg → $?/kg', '180 km in 3 h → ?km/h', '$45 for 5 L → $?/L'] },
@@ -3641,6 +3721,7 @@ const LEVEL_DEFS = {
   rtcv: [
     { title:'Level 1 — Whole-Number Answers', desc:'Convert between metric units (km/h ↔ m/s, m/s ↔ km/h, $/kg ↔ cents/g). Numbers chosen so answers are whole.', examples:['72 km/h → ?m/s (= 20)', '15 m/s → ?km/h (= 54)', '$3/kg → ?c/g (= 0.3)'] },
     { title:'Level 2 — Decimal Answers',      desc:'Convert rates including dollars per litre to cents per millilitre. Answers may be decimals to 2 d.p.', examples:['$1.20/L → ?c/mL (= 0.12)', '54 km/h → ?m/s (= 15)', '$2.50/kg → ?c/g (= 0.25)'] },
+    { title:'Level 3 — Word Problems', desc:'Rates in context \u2014 speed, price per kilogram and litres per minute. Decide whether to multiply or divide, then answer in the unit asked for.', examples:['240 km in 3 h \u2192 80 km/h', '$18 for 6 kg \u2192 $3/kg', '7 L/min for 5 min \u2192 35 L'] },
   ],
   /* ── ALGEBRA LEVELS ── */
   aparts: [
@@ -3653,6 +3734,7 @@ const LEVEL_DEFS = {
     { title:'Level 2 — Two Variables',    desc:'Substitute two whole-number values and evaluate. Answers stay positive.', examples:['a=3, b=2: 4a + 2b', 'x=5, y=1: 2x + 3y', 'm=4, n=6: m + 2n'] },
     { title:'Level 3 — Negatives & Squares', desc:'Negative values and a squared term. Answers may be negative — mind the order of operations.', examples:['x = −2: x² + 3x', 'x = −3: 2x + 5', 'x = −4: x² − 1'] },
     { title:'Level 4 — Substitute into Formulas', desc:'Substitute values into a real formula and evaluate — area, perimeter, speed and more.', examples:['A = ½bh, b=6 h=4', 'v = u + at, u=3 a=2 t=5', 'P = 2(l + w), l=8 w=3'] },
+    { title:'Level 5 — Word Problems', desc:'A formula is given in a real context. Substitute the values from the story and work out the answer.', examples:['C = 15 + 8h, h = 5 \u2192 55', 'P = 2(l + w), l = 9, w = 4 \u2192 26', 'd = vt, v = 12, t = 3 \u2192 36'] },
   ],
   alike: [
     { title:'Level 1 — One Variable, Add', desc:'Collect like terms in one variable. Type the coefficient; the variable is shown for you.', examples:['3x + 5x', '4y + 2y', '6a + a'] },
@@ -3695,6 +3777,7 @@ const LEVEL_DEFS = {
     { title:'Level 1 — Whole-Number Answers', desc:'Two steps: undo the + or − first, then the × or ÷. Positive whole-number solutions.', examples:['2x + 3 = 11', '5x − 4 = 21', '3x + 7 = 19'] },
     { title:'Level 2 — Negative Answers', desc:'Two-step equations with negative coefficients or negative solutions.', examples:['3x − 7 = −1', '4 − 3x = 19', '6x + 14 = 2'] },
     { title:'Level 3 — Fraction Answers', desc:'Two steps where the solution is a fraction in simplest form.', examples:['4x + 1 = 8  (x = 7/4)', '6x + 5 = 1', '3x − 2 = 6'] },
+    { title:'Level 4 — Word Problems', desc:'Form the equation from the story, then solve it. Every answer is a whole number \u2014 type it in the single box.', examples:['\u00d74 then +7 gives 35 \u2192 7', '$5 flagfall + $3/km, trip $26 \u2192 7 km', '8 per box + 5 loose = 61 \u2192 7 boxes'] },
   ],
   eq4: [
     { title:'Level 1 — Whole-Number Answers', desc:'The variable is inside a fraction. Undo the + or − first, then multiply both sides by the denominator. Positive whole-number solutions.', examples:['x/3 + 5 = 8', '(x − 2)/3 = 12', 'x/4 + 1 = 6'] },
@@ -3754,6 +3837,8 @@ const LEVEL_DEFS = {
     { title:'Level 3 — Mixed &amp; Tricky', desc:'A mix of 2D and 3D shapes, including the easily-confused ones: parallelogram vs rhombus vs trapezium vs kite, and prism vs pyramid vs cuboid.', examples:['parallelogram vs rhombus', 'trapezium vs kite', 'cuboid vs triangular prism'] },
     { title:'Level 4 — Regular or Irregular?', desc:'A regular polygon has all sides and all angles equal. Tap whether the polygon shown is regular or irregular.', examples:['regular hexagon → Regular', 'lopsided pentagon → Irregular'] },
     { title:'Level 5 — Convex or Concave?', desc:'A concave polygon has a corner that caves in (an angle over 180°). Tap whether the polygon is convex or concave.', examples:['all corners out → Convex', 'a dart / arrow → Concave'] },
+    { title:'Level 6 — Polygon or Not?', desc:'A polygon is a closed, FLAT shape made only of straight sides. Anything curved, or any solid, is not one.', examples:['hexagon \u2192 yes', 'circle \u2192 no (curved)', 'cylinder \u2192 no (3D)'] },
+    { title:'Level 7 — Count the Sides or Vertices', desc:'Count the sides, or the vertices (corners), of the polygon shown. In any polygon the two counts are always the same.', examples:['pentagon \u2192 5', 'octagon \u2192 8', 'trapezium \u2192 4'] },
   ],
   nal: [
     { title:'Level 1 — Points, Rays &amp; Lines', desc:'Tap whether it is a point, a ray, a line segment or a line — shown either as a diagram or in symbols. In symbols a bar (AB) is a segment, one arrow is a ray, and a double arrow is a line; a single letter is a point.', examples:['one dot / a letter → point', 'one arrow → ray', 'double arrow → line'] },
@@ -3873,7 +3958,24 @@ const LEVEL_DEFS = {
    Label-only: this never blocks any mode, it just guides students away from
    sprinting multi-step questions on a 60-second clock. Edit freely. */
 const LEVEL_REC = {
-  oo:    { 3: 'challenge' },   // Order of Operations — Mixed Challenge
+  oo:    { 3: 'challenge', 5: 'challenge' },   // Order of Operations — Mixed Challenge · word problems
+  /* v93 — every word-problem level is multi-step reading, so it is nudged to
+     Challenge rather than a 60-second sprint. Label only; Fluency still works. */
+  hcflcm:{ 4: 'challenge' }, int: { 4: 'challenge' }, foa: { 4: 'challenge' },
+  poa:   { 4: 'challenge' }, pcd: { 4: 'challenge', 5: 'challenge' },
+  rsh:   { 5: 'challenge' }, rtcv:{ 3: 'challenge' }, asub:{ 5: 'challenge' },
+  eq3:   { 4: 'challenge' },
+  npv:   { 3: 'challenge' },   // reading three labelled lengths off a diagram
+  /* v96 — multi-step reading or plotting, so nudged to Challenge. Label only. */
+  as:    { 4: 'challenge' }, div: { 4: 'challenge' }, fmp: { 4: 'challenge' },
+  pfac:  { 4: 'challenge' }, req: { 4: 'challenge' }, sqw: { 6: 'challenge' },
+  ase:   { 5: 'challenge' }, ttb: { 5: 'challenge' },
+  fid:   { 3: 'challenge' }, ixe: { 3: 'challenge' },
+  dqt:   { 3: 'challenge', 4: 'challenge', 5: 'challenge', 6: 'challenge' },
+  gre:   { 2: 'challenge', 3: 'practice' },
+  egm:   { 2: 'challenge', 3: 'challenge' },
+  skl:   { 2: 'practice', 3: 'practice', 4: 'practice' },
+  trd:   { 3: 'challenge' },   // recurring decimal to a fraction, then simplify
   ioo:   { 3: 'challenge' },   // Order of Operations (Integers)
   foo:   { 3: 'challenge' },   // Order of Operations (Fractions)
   doo:   { 3: 'challenge' },   // Order of Operations (Decimals)
@@ -3968,7 +4070,13 @@ function getSkillKind(id) { return RECALL_SKILLS.includes(id) ? 'recall' : 'meth
    (accuracy-first, no Fluent) on the top level. List those method levels here — the
    skill stays in RECALL_SKILLS (so it still counts as a Fluent skill overall), but the
    listed levels behave as method (no fluency target, 🐆 Cheetah goal, "accuracy first"). */
-const METHOD_LEVEL_OVERRIDE = { pctIdentify:[3], pctOfAmount:[3], decAddSub:[4], decMultiply:[4], decDivide:[4],
+const METHOD_LEVEL_OVERRIDE = {
+  /* v93: a word problem is never fact recall, however quick the arithmetic in
+     it is. These levels band accuracy-first like every other method level. */
+  intAddSub:[4], hcfLcm:[4], fracOfAmount:[4], pctIdentify:[3], pctOfAmount:[3, 4],
+  /* v96: four-digit column work, "how many are needed" and the describe-the-number
+     tap are all reasoning, not fact recall, on skills that are otherwise recall. */
+  addition:[4], subtraction:[4], division:[4], factorsMultiples:[4], decAddSub:[4], decMultiply:[4], decDivide:[4],
   // v77 — ticking six boxes is slower than a single tap, so L2 is accuracy-first
   numClass:[2],
   // v77.1 (Laura) — Verify Solutions L3 (substitute into a trinomial) stays accuracy-first
@@ -4291,6 +4399,15 @@ const METHOD_BAND_CEIL = {
   eqTwoStep:5, eqTwoStepFrac:5, eqVarDenom:5, eqBothSides:5, ineqLinear:5,
   fracOrderOps:5, orderOps:5, intOrderOps:5, decOrderOps:5, ratioShare:5,
   interiorAngles:5, angleQuad:5,   // (nameShapes/angleRel/angleParallel/pythagoras are now recall — see FLUENCY_TARGET)
+  /* v93 PLACEHOLDERS — recalibrate with class data (see the v74.9 spreadsheet
+     process). Nets/views are a read-the-diagram tap; recurring decimals L3 is a
+     convert-then-simplify job, so it is the slowest of the three. */
+  netsViews:[10, 10, 7, 10], decRecurring:[10, 9, 6],
+  /* v96 PLACEHOLDERS — recalibrate with class data. The plotting levels
+     (gre L3, skl) are deliberately the lowest: two taps and a check is slower
+     than a tap on a four-option grid. */
+  fracIdentify:[12, 12, 8], indexExpand:[10, 10, 8], dataQuartiles:[8, 8, 7, 6, 6, 8],
+  gradEqn:[10, 7, 5], eqnGraph:[9, 8, 8], sketchLinear:[7, 5, 6, 5],
   eulerRule:8,   // v59 placeholder — Lion 8 / Cheetah 12 (K3 G5 L8 A11 C12), PENDING Laura's Euler calibration
   // v71/v72 (Laura) — Compare & Order Decimals, METHOD skill. PROPOSED placeholders (recalibrate
   // with class data): L1 quick sign-tap (12), L2 order 4 decimals ascending (6), L3 mixed compare
@@ -4308,11 +4425,15 @@ const METHOD_BAND_CEIL = {
   // v74.2 (Laura) — new METHOD skills. PROPOSED placeholders — recalibrate with class data.
   fracCompare:[12, 6, 5],          // L1 sign-tap · L2 order asc · L3 order desc (mirrors Compare Decimals)
   negIndices:[10, 8, 6],           // evaluate zero/negative indices
-  surdSimplify:[10, 8, 6], surdAddSub:[8, 6, 5],
+  /* v95: surdAddSub/surdDivide L1 fallbacks follow the v95 overrides (which are
+     what actually apply); L2/L3 unchanged. */
+  surdSimplify:[10, 8, 6], surdAddSub:[7, 6, 5],
   /* v86: Multiply Surds gained a new L1 (rule only, no simplifying), so the old
      three ceilings shift down one and the new level takes an easier one.
      PLACEHOLDER for the new L1 — recalibrate with class data. */
-  surdMultiply:[12, 8, 6, 5], surdDivide:[8, 6, 5],
+  /* L1/L2 Lion ceilings follow the v94 overrides above (which are what actually
+     apply); L3/L4 are unchanged. */
+  surdMultiply:[7, 6, 6, 5], surdDivide:[7, 6, 5],
   pctReverse:[6, 5, 4],            // reverse percentages (multi-step)
   bestBuy:[6, 5, 4],               // unit price / best buy
   // v74.3 (Laura) — the final three skills. PROPOSED placeholders — recalibrate with class data.
@@ -4396,13 +4517,10 @@ Object.assign(BAND_OVERRIDE, {
   sciFrom_L1: [6, 12, 18, 26],   // Scientific Notation → Number L1
   sciFrom_L2: [6, 12, 18, 26],   // Scientific Notation → Number L2
   sciFrom_L3: [6, 12, 18, 26],   // Scientific Notation → Number L3
-  surdAddSub_L1: [6, 12, 18, 26],   // Add & Subtract Surds L1
-  /* v86: what was Multiply Surds L1 is now L2 — the override moves with it, so
-     the banding of that exact question type is unchanged. The new L1 is easier,
-     so it gets a slightly higher set of cut-offs. PLACEHOLDER. */
-  surdMultiply_L1: [8, 15, 22, 30],   // Multiply Surds L1 (NEW — rule only)
-  surdMultiply_L2: [6, 12, 18, 26],   // Multiply Surds L2 (was L1)
-  surdDivide_L1: [6, 12, 18, 26],   // Divide Surds L1
+  surdAddSub_L1: [6, 12, 18, 26],   // Add & Subtract Surds L1 — superseded, see the v95 block
+  /* v94/v95: the surd bands are set in the LAURA'S SURD CALLS block at the end
+     of this file, which is assigned last and therefore wins over anything here. */
+  surdDivide_L1: [6, 12, 18, 26],   // Divide Surds L1 — superseded, see the v95 block
   // ½ Fractions
   fracAddSub_L1: [6, 12, 18, 26],   // Add & Subtract Fractions L1
   fracMultiply_L1: [6, 12, 18, 26],   // Multiply Fractions L1
@@ -4482,6 +4600,41 @@ Object.assign(BAND_OVERRIDE, {
   timetables_L4:             [3, 7, 10, 14],   // Train & Bus Timetables L4
 });
 /* ── REVIEWED BANDS — END ── */
+
+/* ══════════════════════════════════════════════════════════════════
+   v95 (Laura) — LAURA'S SURD CALLS.  ASSIGNED LAST, SO THESE WIN.
+   ------------------------------------------------------------------
+   Every surd band Laura has called from the classroom lives here, in
+   one place, assigned after BOTH the literal above and the reviewed-
+   spreadsheet block. Two earlier maps already set some of these keys,
+   and "which one wins" was decided by line order — a trap for whoever
+   next runs a spreadsheet pass. Now it is decided by this block.
+
+   The whole family, in the order a student meets it:
+
+     Simplify Surds      Cheetah  8 ·  8 ·  7   (unchanged — already sane)
+     Add & Subtract      Cheetah 10 ·  9 ·  8   (L1 was 23)
+     Multiply Surds      Cheetah 10 · 10 ·  9 · 8   (v94: L1 was 31, L2 was 27)
+     Divide Surds        Cheetah 10 ·  9 ·  8   (L1 was 23)
+
+   The two L1s fixed here came from the 2026-08-28 reviewed spreadsheet at
+   [5, 10, 15, 22], not from a placeholder — so this is Laura revising her
+   own earlier call after seeing the skill run in class, and a future
+   spreadsheet pass must not silently undo it.
+
+   Why 10 and not something else: every answer in this family has to be
+   WRITTEN as an exact surd, which is slower than any of the arithmetic
+   skills banded above 20. The four cut-offs below Cheetah are rescaled in
+   the same proportions as the ladder they replace rather than squashed
+   under an unchanged one — a Lion ceiling of 15 beneath a Cheetah of 10
+   would be nonsense.
+══════════════════════════════════════════════════════════════════ */
+Object.assign(BAND_OVERRIDE, {
+  surdAddSub_L1:   [3, 5, 7, 9],    // Same Surd            → Cheetah 10 (was 23)
+  surdMultiply_L1: [3, 5, 7, 9],    // The Rule Only        → Cheetah 10 (was 31)
+  surdMultiply_L2: [2, 4, 6, 9],    // Multiply & Simplify  → Cheetah 10 (was 27)
+  surdDivide_L1:   [3, 5, 7, 9],    // Divide Roots         → Cheetah 10 (was 23)
+});
 
 const DEFAULT_METHOD_CEIL = 5;
 
@@ -5072,12 +5225,12 @@ const COURSES = {
     label: "Year 7 Mathematics", short: "Year 7",
     prereq: [["timesTables",[1,2,3]], ["division",[1,2,3]]],
     alts: [
-      { n: 1, title: "Number Theory", exam: true, skills: [["orderOps",[1,2,3,4]], ["factorsMultiples",[1,2,3]], ["primeFactor",[1,2,3]], ["hcfLcm",[1,2,3]], ["intAddSub",[1,2,3]], ["intMultDiv",[1,2,3]], ["intSquareCube",[1]], ["intOrderOps",[1,2,3]], ["squares",[1,2,3]], ["roots",[1,2,3]]] },
-      { n: 2, title: "Fractions & Ratios", exam: true, skills: [["fracSimplify",[1,2]], ["fracCompare",[1,2,3]], ["fracAddSub",[1,2,3,4]], ["fracMultiply",[1,2,3]], ["fracDivide",[1,2,3]], ["fracOfAmount",[1,2,3]], ["mixedToImp",[1,2,3]], ["impToMixed",[1,2,3]], ["fracOrderOps",[1,2,3,4]], ["ratioSimplify",[1,2,3]], ["ratioEquiv",[1,2,3]], ["ratioShare",[1,2,3,4]], ["bestBuy",[1,2,3]]] },
-      { n: 3, title: "Algebra & Equations", exam: true, skills: [["fracSimplify",[3]], ["algParts",[1,2,3]], ["algSub",[1,2,3,4]], ["algLikeTerms",[1,2,3]], ["algMultiply",[1,2,3,4]], ["algDivide",[1,2,3,4]], ["eqOneStepAddSub",[1,2,3]], ["eqOneStepMulDiv",[1,2,3]], ["eqTwoStep",[1,2,3]]] },
-      { n: 4, title: "Geometry", exam: true, skills: [["pythagoras",[1]], ["nameShapes",[1,2,3,4,5]], ["nameAnglesLines",[1,2,3,4]], ["eulerRule",[1,2]], ["interiorAngles",[1,2,3]], ["angleRel",[1,2,3,4]], ["angleParallel",[1,2,3,4]], ["angleQuad",[1,2,3,4]], ["anglePoly",[1,2]]] },
-      { n: 5, title: "Decimals & Percentages", exam: true, skills: [["decPlaceValue",[1,2,3]], ["decIdentify",[1,2,3]], ["decExpand",[1,2,3]], ["decToFrac",[1,2,3]], ["fracToDec",[1,2,3]], ["compareDec",[1,2,3,4,5]], ["decRound",[1,2,3]], ["decAdd",[1,2,3]], ["decSub",[1,2,3]], ["decAddSub",[1,2,3,4]], ["decAddSubNeg",[1,2,3]], ["fdAddSub",[1]], ["decPow10",[1,2,3,4]], ["decMultiply",[1,2,3,4]], ["fdMultiply",[1,2]], ["decSquareCube",[1]], ["decDivide",[1,2,3,4]], ["decLeadEst",[1,2,3]], ["decSqCubeRoot",[1]], ["decOrderOps",[1,2,3,4]], ["pctIdentify",[1,2,3]], ["pctDecConv",[1,2,3]], ["fracPctConv",[1,2,3,4]], ["pctFDP",[1,2,3]], ["pctOfAmount",[1,2,3]], ["pctExpress",[1,2,3]], ["pctChange",[1]], ["pctProfitLoss",[1]]] },
-      { n: 6, title: "Linear — Coordinates, Transformations & Patterns", exam: true, skills: [["cartesian",[1,2,3,4]], ["linearNonlinear",[1,2]], ["tableValues",[1,2]], ["intercepts",[1,2]], ["linearApps",[1,2,3]], ["seqWords",[1,2,3,4,5]], ["arithSeq",[1,2,3,4]], ["timeConvert",[1,2,3,4]], ["timetables",[1,2,3,4]], ["distTime",[1,2,3,4]], ["translate",[1,2,3,4,5,6]], ["reflect",[1,2,3,4,5]], ["dilate",[1,2,3,4]], ["rotate",[1,2,3,4,5]], ["shapeTrans",[1,2,3,4,5]]] },
+      { n: 1, title: "Number Theory", exam: true, skills: [["orderOps",[1,2,3,4,5]], ["factorsMultiples",[1,2,3,4]], ["primeFactor",[1,2,3,4]], ["hcfLcm",[1,2,3,4]], ["intAddSub",[1,2,3,4]], ["intMultDiv",[1,2,3]], ["intSquareCube",[1]], ["intOrderOps",[1,2,3]], ["squares",[1,2,3]], ["roots",[1,2,3]], ["indexExpand",[1,2,3]], ["addition",[4]], ["subtraction",[4]]] },
+      { n: 2, title: "Fractions & Ratios", exam: true, skills: [["fracSimplify",[1,2]], ["fracCompare",[1,2,3]], ["fracAddSub",[1,2,3,4]], ["fracMultiply",[1,2,3]], ["fracDivide",[1,2,3]], ["fracOfAmount",[1,2,3,4]], ["mixedToImp",[1,2,3]], ["impToMixed",[1,2,3]], ["fracOrderOps",[1,2,3,4]], ["ratioSimplify",[1,2,3]], ["ratioEquiv",[1,2,3]], ["ratioShare",[1,2,3,4,5]], ["bestBuy",[1,2,3]], ["fracIdentify",[1,2,3]]] },
+      { n: 3, title: "Algebra & Equations", exam: true, skills: [["fracSimplify",[3]], ["algParts",[1,2,3]], ["algSub",[1,2,3,4,5]], ["algLikeTerms",[1,2,3]], ["algMultiply",[1,2,3,4]], ["algDivide",[1,2,3,4]], ["eqOneStepAddSub",[1,2,3]], ["eqOneStepMulDiv",[1,2,3]], ["eqTwoStep",[1,2,3,4]], ["eqTwoStepFrac",[1,2,3]]] },
+      { n: 4, title: "Geometry", exam: true, skills: [["pythagoras",[1]], ["nameShapes",[1,2,3,4,5,6,7]], ["nameAnglesLines",[1,2,3,4]], ["eulerRule",[1,2]], ["interiorAngles",[1,2,3]], ["angleRel",[1,2,3,4]], ["angleParallel",[1,2,3,4]], ["angleQuad",[1,2,3,4]], ["anglePoly",[1,2]], ["netsViews",[1,2,3,4]]] },
+      { n: 5, title: "Decimals & Percentages", exam: true, skills: [["decPlaceValue",[1,2,3]], ["decIdentify",[1,2,3]], ["decExpand",[1,2,3]], ["decToFrac",[1,2,3]], ["fracToDec",[1,2,3]], ["compareDec",[1,2,3,4,5]], ["decRound",[1,2,3]], ["decAdd",[1,2,3]], ["decSub",[1,2,3]], ["decAddSub",[1,2,3,4]], ["decAddSubNeg",[1,2,3]], ["fdAddSub",[1]], ["decPow10",[1,2,3,4]], ["decMultiply",[1,2,3,4]], ["fdMultiply",[1,2]], ["decSquareCube",[1]], ["decDivide",[1,2,3,4]], ["decLeadEst",[1,2,3]], ["decSqCubeRoot",[1]], ["decOrderOps",[1,2,3,4]], ["pctIdentify",[1,2,3]], ["pctDecConv",[1,2,3]], ["fracPctConv",[1,2,3,4]], ["pctFDP",[1,2,3]], ["pctOfAmount",[1,2,3,4]], ["pctExpress",[1,2,3]], ["pctChange",[1,2,3,5]], ["pctProfitLoss",[1]]] },
+      { n: 6, title: "Linear — Coordinates, Transformations & Patterns", exam: true, skills: [["cartesian",[1,2,3,4]], ["linearNonlinear",[1,2]], ["tableValues",[1,2]], ["intercepts",[1,2]], ["linearApps",[1,2,3]], ["seqWords",[1,2,3,4,5,6]], ["arithSeq",[1,2,3,4]], ["timeConvert",[1,2,3,4]], ["timetables",[1,2,3,4,5]], ["distTime",[1,2,3,4]], ["translate",[1,2,3,4,5,6]], ["reflect",[1,2,3,4,5]], ["dilate",[1,2,3,4]], ["rotate",[1,2,3,4,5]], ["shapeTrans",[1,2,3,4,5]]] },
       { n: 7, title: "Statistics & Probability", exam: true, note: "Probability skills are still being built — this ALT currently covers the statistics half only.", skills: [["dataClassify",[1,2,3,4]], ["freqTables",[1,2,3,4]], ["dataRead",[1,2,3]], ["dataMean",[1,2,3,4,5]], ["dataMode",[1,2,3,4,5,6]], ["dataMedian",[1,2,3,4]], ["dataRange",[1,2,3,4]], ["dataShape",[1,2,3]], ["dataOutliers",[1]]] },
       { n: 8, title: "Measurement", exam: false, note: "Measurement skills are still being built. This topic is taught after the exam, so it is never on the exam.", skills: [] },
     ],
@@ -5086,13 +5239,13 @@ const COURSES = {
     label: "Year 7 SEAL Mathematics", short: "Year 7 SEAL",
     prereq: [["timesTables",[1,2,3]], ["division",[1,2,3]]],
     alts: [
-      { n: 1, title: "Integers & Indices", exam: true, skills: [["orderOps",[2,3,4]], ["primeFactor",[2,3]], ["hcfLcm",[1,2,3]], ["roundEst",[1,2,3,4]], ["sigFigs",[1,2]], ["intAddSub",[1,2,3]], ["intMultDiv",[1,2,3]], ["intSquareCube",[1,2,3]], ["intOrderOps",[1,2,3,4]], ["squares",[1,2,3]], ["roots",[1,2,3]], ["cubes",[1,2,3]], ["cubeRoots",[1,2,3]], ["indexMult",[1,2,3]], ["indexDiv",[1,2,3]], ["indexPow",[1,2,3]], ["negIndices",[1,2,3]], ["sciTo",[1,2,3]], ["sciFrom",[1,2,3]], ["surdAddSub",[3]]] },
-      { n: 2, title: "Fractions, Decimals, Rates & Ratios", exam: true, skills: [["fracSimplify",[1,2]], ["fracCompare",[1,2,3]], ["fracAddSub",[1,2,3,4]], ["fracMultiply",[1,2,3]], ["fracDivide",[1,2,3]], ["fracOfAmount",[1,2,3]], ["mixedToImp",[1,2,3]], ["impToMixed",[1,2,3]], ["fracOrderOps",[1,2,3,4]], ["decExpand",[1,2,3]], ["decToFrac",[1,2,3]], ["fracToDec",[1,2,3]], ["compareDec",[4,5]], ["decRound",[1,2,3]], ["decAdd",[1,2,3]], ["decSub",[1,2,3]], ["decAddSub",[1,2,3,4]], ["decAddSubNeg",[1,2,3]], ["fdAddSub",[1,2,3]], ["decPow10",[3,4]], ["decMultiply",[1,2,3,4]], ["fdMultiply",[1,2,3]], ["decSquareCube",[1,2,3]], ["decDivide",[1,2,3,4]], ["decMulDivNeg",[1,2,3]], ["decSqCubeRoot",[1,2,3]], ["decOrderOps",[1,2,3,4]], ["ratioSimplify",[1,2,3]], ["ratioEquiv",[1,2,3]], ["ratioShare",[1,2,3,4]], ["rateSimplify",[1,2]], ["rateConvert",[1,2]], ["bestBuy",[1,2,3]], ["distTime",[1,2,3,4]]] },
-      { n: 3, title: "Algebra & Equations", exam: true, skills: [["fracSimplify",[3]], ["algParts",[1,2,3]], ["algSub",[1,2,3,4]], ["algLikeTerms",[1,2,3]], ["algMultiply",[1,2,3,4]], ["algDivide",[1,2,3,4]], ["algExpand",[1,2,3]], ["algExpandTwo",[1,2,3]], ["algExpandBinom",[1,2]], ["algFactorHCF",[1,2]], ["eqOneStepAddSub",[1,2,3]], ["eqOneStepMulDiv",[1,2,3]], ["eqTwoStep",[1,2,3]], ["eqTwoStepFrac",[1,2,3]], ["eqVarDenom",[1,2,3]], ["eqBothSides",[1,2,3]], ["ineqLinear",[1,2]], ["seqWords",[1,2,3,4,5]], ["arithSeq",[1,2,3,4]], ["geoSeq",[1,2,3,4]], ["sequences",[1,2,3,4]]] },
+      { n: 1, title: "Integers & Indices", exam: true, skills: [["orderOps",[2,3,4,5]], ["primeFactor",[2,3,4]], ["hcfLcm",[1,2,3,4]], ["roundEst",[1,2,3,4]], ["sigFigs",[1,2]], ["intAddSub",[1,2,3,4]], ["intMultDiv",[1,2,3]], ["intSquareCube",[1,2,3]], ["intOrderOps",[1,2,3,4]], ["squares",[1,2,3]], ["roots",[1,2,3]], ["cubes",[1,2,3]], ["cubeRoots",[1,2,3]], ["indexMult",[1,2,3]], ["indexDiv",[1,2,3]], ["indexPow",[1,2,3]], ["negIndices",[1,2,3]], ["sciTo",[1,2,3]], ["sciFrom",[1,2,3]], ["surdAddSub",[3]], ["indexExpand",[1,2,3]]] },
+      { n: 2, title: "Fractions, Decimals, Rates & Ratios", exam: true, skills: [["fracSimplify",[1,2]], ["fracCompare",[1,2,3]], ["fracAddSub",[1,2,3,4]], ["fracMultiply",[1,2,3]], ["fracDivide",[1,2,3]], ["fracOfAmount",[1,2,3,4]], ["mixedToImp",[1,2,3]], ["impToMixed",[1,2,3]], ["fracOrderOps",[1,2,3,4]], ["decExpand",[1,2,3]], ["decToFrac",[1,2,3]], ["fracToDec",[1,2,3]], ["compareDec",[4,5]], ["decRound",[1,2,3]], ["decAdd",[1,2,3]], ["decSub",[1,2,3]], ["decAddSub",[1,2,3,4]], ["decAddSubNeg",[1,2,3]], ["fdAddSub",[1,2,3]], ["decPow10",[3,4]], ["decMultiply",[1,2,3,4]], ["fdMultiply",[1,2,3]], ["decSquareCube",[1,2,3]], ["decDivide",[1,2,3,4]], ["decMulDivNeg",[1,2,3]], ["decSqCubeRoot",[1,2,3]], ["decOrderOps",[1,2,3,4]], ["ratioSimplify",[1,2,3]], ["ratioEquiv",[1,2,3,4]], ["ratioShare",[1,2,3,4,5]], ["rateSimplify",[1,2]], ["rateConvert",[1,2,3]], ["bestBuy",[1,2,3]], ["distTime",[1,2,3,4]], ["decRecurring",[1,2,3]], ["fracIdentify",[1,2,3]], ["division",[4]], ["timetables",[5]]] },
+      { n: 3, title: "Algebra & Equations", exam: true, skills: [["fracSimplify",[3]], ["algParts",[1,2,3]], ["algSub",[1,2,3,4,5]], ["algLikeTerms",[1,2,3]], ["algMultiply",[1,2,3,4]], ["algDivide",[1,2,3,4]], ["algExpand",[1,2,3]], ["algExpandTwo",[1,2,3]], ["algExpandBinom",[1,2]], ["algFactorHCF",[1,2]], ["eqOneStepAddSub",[1,2,3]], ["eqOneStepMulDiv",[1,2,3]], ["eqTwoStep",[1,2,3,4]], ["eqTwoStepFrac",[1,2,3]], ["eqVarDenom",[1,2,3]], ["eqBothSides",[1,2,3]], ["ineqLinear",[1,2]], ["seqWords",[1,2,3,4,5]], ["arithSeq",[1,2,3,4,5]], ["geoSeq",[1,2,3,4]], ["sequences",[1,2,3,4]]] },
       { n: 4, title: "Geometry", exam: true, skills: [["pythagoras",[1,2,3]], ["nameShapes",[5]], ["nameAnglesLines",[1]], ["eulerRule",[1,2]], ["interiorAngles",[1,2,3]], ["angleRel",[1,2,3,4]], ["angleParallel",[1,2,3,4]], ["angleQuad",[1,2,3,4]], ["anglePoly",[1,2,3,4]], ["congruSimilar",[1,2,3,4]]] },
-      { n: 5, title: "Finance & Irrational", exam: true, skills: [["numClass",[1,2]], ["surdAddSub",[1]], ["surdMultiply",[1]], ["surdDivide",[1]], ["pctDecConv",[2,3]], ["fracPctConv",[1,2,3,4]], ["pctFDP",[1,2,3]], ["pctOfAmount",[1,2,3]], ["pctExpress",[1,2,3]], ["pctChange",[1,2,3]], ["pctReverse",[1,2,3]], ["pctProfitLoss",[1,2]], ["rearrange",[3]], ["quadVerify",[1,2,3]], ["quadSolve",[1,2]], ["gst",[1,2,3]], ["simpleInterest",[1,2,3,4,5,6]], ["recurrence",[1,2]], ["flatDep",[1,2,3,4,5,6]]] },
-      { n: 6, title: "Linear — Graphs & Transformations", exam: true, skills: [["cartesian",[1,2,3,4]], ["linearNonlinear",[1,2]], ["tableValues",[1,2,3,4]], ["intercepts",[1,2,3,4,5]], ["gradientSeg",[1,2,3,4]], ["linearApps",[1,2,3,4]], ["translate",[1,2,3,4,5,6]], ["reflect",[1,2,3,4,5,6]], ["dilate",[1,2,3,4,5]], ["rotate",[1,2,3,4,5,6]], ["combine",[1,2,3,4,5]], ["shapeTrans",[1,2,3,4,5,6]]] },
-      { n: 7, title: "Statistics & Probability", exam: true, note: "Probability skills are still being built — this ALT currently covers the statistics half only.", skills: [["dataClassify",[1,2,3,4]], ["freqTables",[1,2,3,4]], ["dataRead",[1,2,3]], ["dataMean",[1,2,3,4,5,6]], ["dataMode",[1,2,3,4,5,6]], ["dataMedian",[1,2,3,4,5,6]], ["dataRange",[1,2,3,4,5]], ["dataShape",[1,2,3]], ["dataOutliers",[1]]] },
+      { n: 5, title: "Finance & Irrational", exam: true, skills: [["numClass",[1,2]], ["surdAddSub",[1]], ["surdMultiply",[1]], ["surdDivide",[1]], ["pctDecConv",[2,3]], ["fracPctConv",[1,2,3,4]], ["pctFDP",[1,2,3]], ["pctOfAmount",[1,2,3,4]], ["pctExpress",[1,2,3]], ["pctChange",[1,2,3,4,5]], ["pctReverse",[1,2,3]], ["pctProfitLoss",[1,2]], ["rearrange",[3]], ["quadVerify",[1,2,3]], ["quadSolve",[1,2]], ["gst",[1,2,3]], ["simpleInterest",[1,2,3,4,5,6]], ["recurrence",[1,2]], ["flatDep",[1,2,3,4,5,6]]] },
+      { n: 6, title: "Linear — Graphs & Transformations", exam: true, skills: [["cartesian",[1,2,3,4]], ["linearNonlinear",[1,2]], ["tableValues",[1,2,3,4]], ["intercepts",[1,2,3,4,5]], ["gradientSeg",[1,2,3,4]], ["linearApps",[1,2,3,4]], ["translate",[1,2,3,4,5,6]], ["reflect",[1,2,3,4,5,6]], ["dilate",[1,2,3,4,5]], ["rotate",[1,2,3,4,5,6]], ["combine",[1,2,3,4,5]], ["shapeTrans",[1,2,3,4,5,6]], ["gradEqn",[1,2,3]], ["eqnGraph",[1,2,3]], ["sketchLinear",[1,2,3,4]]] },
+      { n: 7, title: "Statistics & Probability", exam: true, note: "Probability skills are still being built — this ALT currently covers the statistics half only.", skills: [["dataClassify",[1,2,3,4]], ["freqTables",[1,2,3,4]], ["dataRead",[1,2,3]], ["dataMean",[1,2,3,4,5,6]], ["dataMode",[1,2,3,4,5,6]], ["dataMedian",[1,2,3,4,5,6]], ["dataRange",[1,2,3,4,5]], ["dataShape",[1,2,3]], ["dataOutliers",[1]], ["dataQuartiles",[1,2,3,4,5,6]]] },
       { n: 8, title: "Measurement", exam: false, note: "Measurement skills are still being built. This topic is taught after the exam, so it is never on the exam.", skills: [] },
     ],
   },
@@ -8375,7 +8528,14 @@ function nextQCore() {
 
   qData = {};
 
-  if (skill === 'timesTables') {
+  /* v93: word-problem levels are appended to skills that already exist, and
+     percentage error is a new L4 on Percentage Increase & Decrease. Routing both
+     from here rather than from inside eleven generators means no existing
+     generator changed at all. */
+  if (skill === 'pctChange' && level === 4) { genPctError(el); }
+  else if (WORD_LEVEL[skill] === level) { genWordProblem(el); }
+  else if (isV96Level()) { genV96Level(el); }
+  else if (skill === 'timesTables') {
     const tbl = ttList();
     const n1 = tbl[ri(tbl.length)], n2 = tbl[ri(tbl.length)];
     qData.ans = n1 * n2;
@@ -8531,6 +8691,14 @@ function nextQCore() {
   else if (skill === 'nameShapes')      { genNameShapes(el); }
   else if (skill === 'nameAnglesLines') { genNameAnglesLines(el); }
   else if (skill === 'eulerRule')       { genEuler(el); }
+  else if (skill === 'netsViews')       { genNetsViews(el); }
+  else if (skill === 'decRecurring')    { genDecRecurring(el); }
+  else if (skill === 'fracIdentify')    { genFracIdentify(el); }
+  else if (skill === 'indexExpand')     { genIndexExpand(el); }
+  else if (skill === 'dataQuartiles')   { genDataQuartiles(el); }
+  else if (skill === 'gradEqn')         { genGradEqn(el); }
+  else if (skill === 'eqnGraph')        { genEqnGraph(el); }
+  else if (skill === 'sketchLinear')    { genSketchLinear(el); }
   else if (skill === 'angleRel')        { genAngleRel(el); }
   else if (skill === 'angleParallel')   { genAngleParallel(el); }
   else if (skill === 'angleQuad')       { genAngleQuad(el); }
@@ -10922,7 +11090,20 @@ function checkAnsCore() {
     const want = qData.plotAns || [];
     if (!chosen.length) { attempts--; id('feedback').style.color = 'var(--amber)'; setText('feedback', 'Tap the grid to plot a point'); return; }
     const key = function(p){ return p[0] + ',' + p[1]; };
-    if (qData.plotOrdered) {
+    if (qData.plotLine) {
+      /* v97: any set of points that actually lies on the line is a correct
+         sketch. Only the anchor points the named method needs are compulsory. */
+      correct = plotLineCorrect();
+      qData.plotMarked = true;
+      if (!correct) {
+        const missing = plotLineMissing();
+        feedbackStr = missing.length
+          ? 'Must include ' + missing.map(function(p){ return '(' + sgnNum(p[0]) + ', ' + sgnNum(p[1]) + ')'; }).join(' ')
+          : 'Those points are not both on the line';
+      }
+      plotRender();
+      const pcb0 = id('plotCheckBtn'); if (pcb0) pcb0.disabled = true;
+    } else if (qData.plotOrdered) {
       // a path: the same corners in the wrong ORDER is a different journey
       correct = chosen.length === want.length
         && want.every(function(p, i){ return key(chosen[i]) === key(p); });
@@ -10930,10 +11111,12 @@ function checkAnsCore() {
       const wantKeys = want.map(key);
       correct = chosen.length === want.length && wantKeys.every(function(k){ return chosen.some(function(c){ return key(c) === k; }); });
     }
-    qData.plotMarked = true;
-    if (!correct) feedbackStr = 'Answer: ' + want.map(function(p){ return '(' + sgnNum(p[0]) + ', ' + sgnNum(p[1]) + ')'; }).join(' ');
-    plotRender();            // re-draw showing right/wrong/missed
-    const pcb = id('plotCheckBtn'); if (pcb) pcb.disabled = true;
+    if (!qData.plotLine) {
+      qData.plotMarked = true;
+      if (!correct) feedbackStr = 'Answer: ' + want.map(function(p){ return '(' + sgnNum(p[0]) + ', ' + sgnNum(p[1]) + ')'; }).join(' ');
+      plotRender();            // re-draw showing right/wrong/missed
+      const pcb = id('plotCheckBtn'); if (pcb) pcb.disabled = true;
+    }
   }
   else if (mode === 'plToggle') {
     const raw = id('ansInput').value.trim();
@@ -14665,6 +14848,67 @@ function cgHitLayer(){
 function plotHas(x, y){
   return (qData.plotChosen || []).some(function(p){ return p[0] === x && p[1] === y; });
 }
+
+/* ══════════════════════════════════════════════════════════════════
+   v97 (Laura): SKETCHING IS MARKED AGAINST THE LINE, NOT A POINT LIST
+   ------------------------------------------------------------------
+   A sketch has infinitely many right answers. Marking it against one
+   fixed pair of points meant a student who stepped the gradient
+   BACKWARDS — for y = −x + 4, tapping (0, 4) then (−1, 5) — was told
+   they were wrong when they had drawn the correct line. The old fix
+   for that was to name the two points in the prompt, which handed over
+   the answer and turned the level into a copying exercise.
+
+   So a question can now describe the LINE instead of the points:
+     qData.plotLine = { m: gradient, c: y-intercept }   or   { vx: k }
+     qData.plotMust = [[0, c]]   points the METHOD requires (optional)
+     qData.plotNeed = how many points to plot (default 2)
+   Anything on the line counts. The named method's anchor points are
+   still required — plotting the y-intercept IS half of "the
+   gradient–intercept method" — but the free point is genuinely free.
+══════════════════════════════════════════════════════════════════ */
+function plotOnLine(p){
+  const L = qData.plotLine;
+  if (!L) return false;
+  if (L.vx !== undefined) return p[0] === L.vx;
+  return p[1] === L.m * p[0] + L.c;
+}
+function plotLineMissing(){
+  return (qData.plotMust || []).filter(function(m){ return !plotHas(m[0], m[1]); });
+}
+/* Marked right when: the required number of DISTINCT points is plotted,
+   every one of them lies on the line, and every point the method demands
+   is among them. */
+function plotLineCorrect(){
+  const chosen = qData.plotChosen || [], need = qData.plotNeed || 2;
+  if (chosen.length !== need) return false;
+  const seen = { };
+  for (let i = 0; i < chosen.length; i++){
+    const k = chosen[i][0] + ',' + chosen[i][1];
+    if (seen[k]) return false;
+    seen[k] = 1;
+    if (!plotOnLine(chosen[i])) return false;
+  }
+  return plotLineMissing().length === 0;
+}
+/* The whole line, drawn across the window, for the marked-up re-draw. */
+function plotLineSvg(G){
+  const L = qData.plotLine;
+  if (!L) return '';
+  const xs = G.xs, ys = G.ys;
+  const x0 = xs[0], x1 = xs[xs.length - 1];
+  if (L.vx !== undefined)
+    return '<line x1="' + G.px(L.vx) + '" y1="' + G.py(ys[0]) + '" x2="' + G.px(L.vx)
+      + '" y2="' + G.py(ys[ys.length - 1]) + '" stroke="var(--green)" stroke-width="2.5" stroke-dasharray="6 4"/>';
+  const clip = function(x){ return Math.max(ys[0], Math.min(ys[ys.length - 1], L.m * x + L.c)); };
+  const pts = [];
+  for (let x = x0; x <= x1; x += 0.25){
+    const y = L.m * x + L.c;
+    if (y >= ys[0] - 0.001 && y <= ys[ys.length - 1] + 0.001) pts.push(G.px(x).toFixed(1) + ',' + G.py(y).toFixed(1));
+  }
+  return pts.length > 1 ? '<polyline points="' + pts.join(' ') + '" fill="none" stroke="var(--green)" '
+    + 'stroke-width="2.5" stroke-dasharray="6 4" stroke-linecap="round"/>' : '';
+}
 function plotTap(x, y){
   if (gameOver || qData.plotMarked) return;
   const chosen = qData.plotChosen || (qData.plotChosen = []);
@@ -14696,7 +14940,20 @@ function plotRender(){
       + path.map(function(p){ return cgX(p[0]) + ',' + cgY(p[1]); }).join(' ')
       + '" fill="none" stroke="var(--accent)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>';
   }
-  if (qData.plotMarked) {
+  if (qData.plotMarked && qData.plotLine) {
+    /* v97: sketching questions show the LINE they should have drawn, dashed,
+       with each tap green if it sits on that line and red if it does not. A
+       correct point in an unexpected place now reads as correct, which is what
+       it is. */
+    marks += plotLineSvg(G);
+    chosen.forEach(function(p){
+      marks += '<circle cx="' + cgX(p[0]) + '" cy="' + cgY(p[1]) + '" r="6" fill="'
+        + (plotOnLine(p) ? 'var(--green)' : 'var(--red)') + '"/>';
+    });
+    plotLineMissing().forEach(function(p){
+      marks += '<circle cx="' + cgX(p[0]) + '" cy="' + cgY(p[1]) + '" r="7" fill="none" stroke="var(--amber)" stroke-width="3" stroke-dasharray="3 2"/>';
+    });
+  } else if (qData.plotMarked) {
     // green where they were right, red where they plotted something that isn't a
     // point of the table, and a hollow green ring on anything they missed
     chosen.forEach(function(p){
@@ -14712,7 +14969,7 @@ function plotRender(){
     chosen.forEach(function(p){
       marks += '<circle cx="' + cgX(p[0]) + '" cy="' + cgY(p[1]) + '" r="6" fill="var(--accent)"/>';
     });
-    setText('plotCount', chosen.length + ' of ' + want.length + ' '
+    setText('plotCount', chosen.length + ' of ' + (qData.plotLine ? (qData.plotNeed || 2) : want.length) + ' '
       + (qData.plotNoun || (qData.plotOrdered ? 'corners placed' : 'plotted')));
   }
   /* #qBox is display:flex — it must be given exactly ONE child, or the prompt, the
@@ -16559,7 +16816,7 @@ function kbShow() {
                   || ['tableValues','linearApps'].includes(skillId);   // v78.2 / v78.3
   const decSkillsWithDot = ['sciTo','sciFrom','decAddSub','decAdd','decSub','decMultiply','decDivide','decPow10','decSquareCube','decOrderOps','decRound','sigFigs',
                             'decAddSubNeg','decMulDivNeg','decLeadEst','decSqCubeRoot',
-                            'rateSimplify','rateConvert','decIdentify','decExpand','fracToDec',
+                            'rateSimplify','rateConvert','decIdentify','decExpand','fracToDec','decRecurring',
                             // v74 — percentages can have decimal answers
                             'pctIdentify','pctExpress','pctOfAmount','pctChange','pctProfitLoss',
                             // v77 — money answers and half-solutions
@@ -18316,6 +18573,1228 @@ try { if (localStorage.getItem('ff_theme') === 'dark') document.body.classList.a
 syncThemeButton();
 if (profiles.length === 0) { goWelcome(); }
 else { pidx = 0; goHome(); }
+
+/* ═══════════════════════════════════════════════════════════════════
+   v93 (Laura) — NETS, PLANS & VIEWS OF 3D OBJECTS   (VC2M7SP01)
+   -------------------------------------------------------------------
+   "represent three-dimensional objects in 2 dimensions" was the one
+   examinable Level 7 Space idea with nothing in the app: Naming 2D & 3D
+   Shapes covers the solids and Euler's Rule counts their parts, but
+   nothing asked a student to move between the solid and its flattened
+   or projected 2D form.
+
+   Every level is CHOICE with a drawing, and every option is TEXT — a
+   grid of four small net drawings is unreadable at 74px, and asking a
+   student to compare four pictures is a different (harder, visual)
+   task from the one the curriculum names.
+
+   The nets are drawn here rather than pulled from SHAPE_LIB because
+   SHAPE_LIB holds finished solids; a net is a different picture of the
+   same object, which is precisely the point of the skill.
+═══════════════════════════════════════════════════════════════════ */
+function npvRect(x, y, w, h) { return shPoly([[x,y],[x+w,y],[x+w,y+h],[x,y+h]]); }
+
+const NPV_LIB = {
+  cube: {
+    name: 'Cube', desc: '6 identical squares',
+    net: function () {
+      const u = 38, ox = 93, oy = 34; let s = '';
+      [[1,0],[1,1],[1,2],[1,3],[0,1],[2,1]].forEach(c => { s += npvRect(ox + c[0]*u, oy + c[1]*u, u, u); });
+      return shWrap(s);
+    },
+    views: { front: 'Square', side: 'Square', top: 'Square' },
+  },
+  cuboid: {
+    name: 'Rectangular prism', desc: '6 rectangles in 3 matching pairs',
+    net: function () {
+      const W = 54, H = 34, D = 24, ox = 99, oy = 52;
+      let s = npvRect(ox + D, oy,          W, H)
+            + npvRect(ox + D, oy + H,      W, D)
+            + npvRect(ox + D, oy + H + D,  W, H)
+            + npvRect(ox + D, oy + 2*H + D, W, D)
+            + npvRect(ox,          oy, D, H)
+            + npvRect(ox + D + W,  oy, D, H);
+      return shWrap(s);
+    },
+    views: { front: 'Rectangle', side: 'Rectangle', top: 'Rectangle' },
+  },
+  triangularPrism: {
+    name: 'Triangular prism', desc: '3 rectangles and 2 triangles',
+    net: function () {
+      let s = npvRect(60, 72, 52, 76) + npvRect(112, 72, 52, 76) + npvRect(164, 72, 52, 76);
+      s += shPoly([[112,72],[164,72],[138,26]]);
+      s += shPoly([[112,148],[164,148],[138,194]]);
+      return shWrap(s);
+    },
+    views: { front: 'Triangle', side: 'Rectangle', top: 'Rectangle' },
+  },
+  squarePyramid: {
+    name: 'Square pyramid', desc: '1 square and 4 triangles',
+    net: function () {
+      let s = npvRect(117, 77, 66, 66);
+      s += shPoly([[117,77],[183,77],[150,25]]);
+      s += shPoly([[117,143],[183,143],[150,195]]);
+      s += shPoly([[117,77],[117,143],[65,110]]);
+      s += shPoly([[183,77],[183,143],[235,110]]);
+      return shWrap(s);
+    },
+    views: { front: 'Triangle', side: 'Triangle', top: 'Square' },
+  },
+  triangularPyramid: {
+    name: 'Triangular pyramid', desc: '4 triangles',
+    net: function () {
+      let s = shPoly([[60,180],[240,180],[150,32]]);
+      s += shLine([150,180],[195,106]) + shLine([195,106],[105,106]) + shLine([105,106],[150,180]);
+      return shWrap(s);
+    },
+    views: { front: 'Triangle', side: 'Triangle', top: 'Triangle' },
+  },
+  cylinder: {
+    name: 'Cylinder', desc: '2 circles and 1 rectangle',
+    net: function () {
+      let s = npvRect(75, 72, 150, 76);
+      s += shCirc(150, 44, 26) + shCirc(150, 176, 26);
+      return shWrap(s);
+    },
+    views: { front: 'Rectangle', side: 'Rectangle', top: 'Circle' },
+  },
+  cone:   { name: 'Cone',   desc: '1 circle and 1 curved sector', views: { front: 'Triangle', side: 'Triangle', top: 'Circle' } },
+  sphere: { name: 'Sphere', desc: 'no net — a sphere cannot be flattened', views: { front: 'Circle', side: 'Circle', top: 'Circle' } },
+};
+const NPV_NET_KEYS = ['cube','cuboid','triangularPrism','squarePyramid','triangularPyramid','cylinder'];
+const NPV_ALL_KEYS = NPV_NET_KEYS.concat(['cone','sphere']);
+const NPV_VIEW_KEYS = ['cylinder','cone','sphere','cube','squarePyramid'];
+
+/* A labelled rectangular prism in oblique projection, for the views level.
+   The three lengths are drawn on, so front / side / top are genuinely
+   different rectangles and the question has one answer. */
+function npvPrismSvg(w, h, d) {
+  const x0 = 70, y0 = 95, W = 130, H = 70, ox = 48, oy = -38;
+  let s = npvRect(x0, y0, W, H);
+  s += npvRect(x0 + ox, y0 + oy, W, H);
+  s += shLine([x0, y0], [x0 + ox, y0 + oy]);
+  s += shLine([x0 + W, y0], [x0 + W + ox, y0 + oy]);
+  s += shLine([x0 + W, y0 + H], [x0 + W + ox, y0 + H + oy]);
+  s += shLine([x0, y0 + H], [x0 + ox, y0 + H + oy]);
+  s += pgLbl(x0 + W / 2, y0 + H + 18, w + ' cm');
+  s += pgLbl(x0 - 22, y0 + H / 2, h + ' cm');
+  s += pgLbl(x0 + W + ox + 24, y0 + oy / 2 - 12, d + ' cm');   // clear of the depth edge
+  return shWrap(s);
+}
+
+function npvPick(answer, pool, n) {
+  const bag = pool.filter(k => k !== answer);
+  const picks = [];
+  while (picks.length < n && bag.length) picks.push(bag.splice(ri(bag.length), 1)[0]);
+  return shuffleArr([answer].concat(picks));
+}
+
+function genNetsViews(el) {
+  qData.chosen = null;
+  el.style.fontSize = '1.1rem';
+
+  if (level === 1) {
+    const key = NPV_NET_KEYS[ri(NPV_NET_KEYS.length)];
+    const opts = npvPick(key, NPV_ALL_KEYS, 3);
+    qData.choiceAns = key;
+    qData.choices = opts.map(k => ({ code: k, html: NPV_LIB[k].name }));
+    qData.choiceText = {}; opts.forEach(k => { qData.choiceText[k] = NPV_LIB[k].name; });
+    qData.workSteps = 'This net folds up into a <b>' + NPV_LIB[key].name.toLowerCase() +
+      '</b> — ' + NPV_LIB[key].desc + '.';
+    el.innerHTML = '<div style="' + A_LBL + '">Which solid does this net fold into?</div>' + NPV_LIB[key].net();
+  }
+  else if (level === 2) {
+    const key = NPV_ALL_KEYS[ri(NPV_ALL_KEYS.length)];
+    const opts = npvPick(key, NPV_ALL_KEYS, 3);
+    qData.choiceAns = key;
+    qData.choices = opts.map(k => ({ code: k, html: NPV_LIB[k].desc }));
+    qData.choiceText = {}; opts.forEach(k => { qData.choiceText[k] = NPV_LIB[k].desc; });
+    qData.workSteps = 'A ' + NPV_LIB[key].name.toLowerCase() + ' has a net made of <b>' + NPV_LIB[key].desc + '</b>.';
+    el.innerHTML = '<div style="' + A_LBL + '">What is the net of this solid made from?</div>' +
+      shWrap(SHAPE_LIB[key].variants[0]);
+  }
+  else if (level === 3) {
+    /* w, h and d are kept distinct so the three views are three different
+       rectangles — otherwise the question would have two right answers. */
+    let w, h, d;
+    do { w = rr(3, 9); h = rr(2, 8); d = rr(2, 8); } while (w === h || h === d || w === d);
+    const views = { front: [w, h], side: [d, h], top: [w, d] };
+    const key = ['front','side','top'][ri(3)];
+    const dims = views[key];
+    const names = { front: 'The front view', side: 'The side view', top: 'The top view' };
+    const opts = shuffleArr(['front','side','top']);
+    qData.choiceAns = key;
+    qData.choices = opts.map(k => ({ code: k, html: names[k] }));
+    qData.choiceText = {}; opts.forEach(k => { qData.choiceText[k] = names[k]; });
+    qData.npvDims = dims.slice();
+    qData.npvWHD = [w, h, d];        // runtime-only test hook
+    qData.workSteps = 'Looking from the front you see width × height (' + w + ' by ' + h + '), ' +
+      'from the side depth × height (' + d + ' by ' + h + '), and from above width × depth (' + w + ' by ' + d + '). ' +
+      'So a ' + dims[0] + ' by ' + dims[1] + ' rectangle is <b>the ' + key + ' view</b>.';
+    el.innerHTML = '<div style="' + A_LBL + '">Which view of this prism is a ' + dims[0] + ' cm by ' +
+      dims[1] + ' cm rectangle?</div>' + npvPrismSvg(w, h, d);
+  }
+  else {
+    const key = NPV_VIEW_KEYS[ri(NPV_VIEW_KEYS.length)];
+    const view = ['front','side','top'][ri(3)];
+    const ans = NPV_LIB[key].views[view];
+    const pool = ['Circle','Square','Rectangle','Triangle'];
+    const opts = shuffleArr(pool.slice());
+    qData.choiceAns = ans;
+    qData.choices = opts.map(k => ({ code: k, html: k }));
+    qData.choiceText = {}; opts.forEach(k => { qData.choiceText[k] = k; });
+    qData.workSteps = 'Looking at a ' + NPV_LIB[key].name.toLowerCase() + ' from the ' +
+      (view === 'top' ? 'top' : view) + ', the outline you see is a <b>' + ans.toLowerCase() + '</b>.';
+    el.innerHTML = '<div style="' + A_LBL + '">This solid sits upright on its base. What shape is the ' +
+      view + ' view?</div>' + shWrap(SHAPE_LIB[key].variants[0]);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   v93 (Laura) — TERMINATING & RECURRING DECIMALS   (VC2M8N03)
+   -------------------------------------------------------------------
+   The test is done on the fraction in LOWEST TERMS: strip every factor
+   of 2 and 5 from the denominator and a terminating decimal is exactly
+   the case where 1 is left. Generating first and classifying second
+   (rather than picking from a hand-written list) means 6/8 can never
+   be mislabelled as recurring because its denominator looks like 8.
+═══════════════════════════════════════════════════════════════════ */
+function trdTerminates(n, d) {
+  const g = gcd(Math.abs(n), Math.abs(d));
+  let q = d / g;
+  while (q % 2 === 0) q /= 2;
+  while (q % 5 === 0) q /= 5;
+  return q === 1;
+}
+const TRD_TERM_DENS = [2,4,5,8,10,16,20,25,40,50];
+const TRD_REC_DENS  = [3,6,7,9,11,12,13,15,18,22,30,33];
+function trdMakeFrac(wantRecurring) {
+  for (let i = 0; i < 200; i++) {
+    const d = wantRecurring ? TRD_REC_DENS[ri(TRD_REC_DENS.length)] : TRD_TERM_DENS[ri(TRD_TERM_DENS.length)];
+    const n = rr(1, d - 1);
+    if (trdTerminates(n, d) !== wantRecurring) return [n, d];
+  }
+  return wantRecurring ? [1, 3] : [1, 4];
+}
+/* A dot ABOVE the repeating digit is the notation the students see in class.
+   Rendered as a positioned span rather than a combining character so it lands
+   in the same place in every font. */
+function trdDotted(intPart, digits) {
+  return intPart + '.' + digits.split('').map(c =>
+    '<span style="position:relative;display:inline-block">' + c +
+    '<span style="position:absolute;left:50%;top:-0.62em;transform:translateX(-50%);font-size:0.62em;line-height:1">&#9679;</span></span>'
+  ).join('');
+}
+
+function genDecRecurring(el) {
+  if (level === 1) {
+    qData.chosen = null;
+    el.style.fontSize = '1.1rem';
+    const wantRec = Math.random() < 0.5;      // the odd one out is recurring, or terminating
+    const seen = {}, opts = [];
+    const ansFrac = trdMakeFrac(wantRec);
+    opts.push(ansFrac); seen[ansFrac.join('/')] = 1;
+    let guard = 0;
+    while (opts.length < 4 && guard++ < 400) {
+      const f = trdMakeFrac(!wantRec);
+      const k = f.join('/');
+      if (!seen[k]) { seen[k] = 1; opts.push(f); }
+    }
+    shuffleArr(opts);
+    const codes = opts.map((f, i) => 'o' + i);
+    const ansCode = 'o' + opts.findIndex(f => f[0] === ansFrac[0] && f[1] === ansFrac[1]);
+    qData.choiceAns = ansCode;
+    qData.choices = opts.map((f, i) => ({ code: 'o' + i, html: tfrac(f[0], f[1]) }));
+    qData.choiceText = {}; opts.forEach((f, i) => { qData.choiceText['o' + i] = f[0] + '/' + f[1]; });
+    qData.trdWant = wantRec ? 'recurring' : 'terminating';
+    qData.workSteps = 'Simplify, then strip every factor of 2 and 5 from the denominator. If 1 is left the decimal ' +
+      'terminates; anything else recurs. Here <b>' + ansFrac[0] + '/' + ansFrac[1] + '</b> is the ' +
+      (wantRec ? 'recurring' : 'terminating') + ' one.';
+    el.innerHTML = '<div style="' + A_LBL + '">Which of these gives a <b>' +
+      (wantRec ? 'RECURRING' : 'TERMINATING') + '</b> decimal?</div>';
+  }
+  else if (level === 2) {
+    el.style.fontSize = '2.2rem';
+    const [n, d] = trdMakeFrac(false);
+    qData.ans = dp(n / d, 6);
+    qData.workSteps = 'Divide ' + n + ' by ' + d + ': the denominator has only 2s and 5s, so it stops. ' +
+      n + ' ÷ ' + d + ' = <b>' + qData.ans + '</b>.';
+    el.innerHTML = 'Write ' + tfrac(n, d) + ' as a decimal';
+  }
+  else {
+    el.style.fontSize = '2.2rem';
+    const twoDigit = Math.random() < 0.45;
+    let num, den;
+    if (twoDigit) {
+      // 0.ȧḃ = ab/99, with ab not a multiple of 11 so the two digits really differ
+      do { num = rr(10, 98); } while (num % 11 === 0);
+      den = 99;
+    } else {
+      num = rr(1, 8); den = 9;
+    }
+    const digits = twoDigit ? String(num) : String(num);
+    const [sn, sd] = simplify(num, den);
+    qData.ansNum = sn; qData.ansDen = sd;
+    qData.workSteps = 'One repeating digit sits over 9, two repeating digits over 99. So ' +
+      '0.' + digits + '… = ' + num + '/' + den + ' = <b>' + sn + '/' + sd + '</b> in simplest form.';
+    el.innerHTML = 'Write ' + trdDotted('0', digits) + ' as a fraction<br>' +
+      '<span style="font-size:0.44em;font-weight:800;color:var(--muted)">in simplest form — the dots mean those digits repeat forever</span>';
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   v93 (Laura) — WORD PROBLEMS   (VC2M7N10, VC2M7A03, VC2M8A03)
+   -------------------------------------------------------------------
+   Not a topic gap — a FORMAT gap. Until now the only worded questions
+   in the program were on three decimal skills, so students met worded
+   number, ratio and algebra questions for the first time in an ALT.
+
+   Each of these is an extra level on a skill that already exists, and
+   they are routed from ONE place at the top of nextQCore rather than
+   from inside ten different generators, so no existing generator was
+   touched. WORD_LEVEL is the whole contract: skill id → the level
+   number that is its word-problem level.
+═══════════════════════════════════════════════════════════════════ */
+const WORD_LEVEL = {
+  hcfLcm: 4, intAddSub: 4, orderOps: 5,
+  fracOfAmount: 4, pctOfAmount: 4, pctChange: 5,
+  ratioShare: 5, rateConvert: 3,
+  algSub: 5, eqTwoStep: 4,
+};
+const WP_NAMES = ['Ava','Noah','Mia','Liam','Zara','Kai','Ruby','Eli','Sana','Jack','Isla','Omar'];
+function wpName() { return WP_NAMES[ri(WP_NAMES.length)]; }
+function wpName2(a) { let b = wpName(); while (b === a) b = wpName(); return b; }
+function wpSetup(el) {
+  el.style.fontSize = '1.2rem';
+  el.style.lineHeight = '1.5';
+  el.style.textAlign = 'left';
+}
+function wpLcm(a, b) { return a * b / gcd(a, b); }
+
+function genWordProblem(el) {
+  wpSetup(el);
+  let text = '', ans = 0, work = '';
+
+  if (skill === 'hcfLcm') {
+    if (Math.random() < 0.5) {
+      const a = [4,6,8,9,10,12][ri(6)], b = [6,8,9,12,15,18][ri(6)];
+      ans = wpLcm(a, b);
+      text = `One bus leaves the stop every ${a} minutes and another every ${b} minutes. They both leave at 9:00 am. ` +
+             `How many minutes until they next leave together?`;
+      work = `"Next time together" means the lowest common multiple. LCM of ${a} and ${b} = <b>${ans}</b> minutes.`;
+    } else {
+      const g = [4,6,8,9,12][ri(5)], m = rr(2,6), n = (function(){ let k = rr(2,7); while (k === m) k = rr(2,7); return k; })();
+      const A = g*m, B = g*n;
+      ans = gcd(A, B);
+      text = `${wpName()} has ${A} pencils and ${B} erasers. They are packed into identical bags with nothing left over. ` +
+             `What is the greatest number of bags that can be made?`;
+      work = `"Identical bags, nothing left over, greatest number" means the highest common factor. HCF of ${A} and ${B} = <b>${ans}</b>.`;
+    }
+  }
+
+  else if (skill === 'intAddSub') {
+    const t = ri(4);
+    if (t === 0) {
+      const start = -rr(1,12), rise = rr(3,20);
+      ans = start + rise;
+      text = `At 6 am the temperature is ${f(start)}°C. By midday it has risen ${rise} degrees. What is the temperature at midday?`;
+      work = `Rising means add: ${f(start)} + ${rise} = <b>${ans}</b>°C.`;
+    } else if (t === 1) {
+      const start = rr(2,9), down = rr(4,14);
+      ans = start - down;
+      text = `A lift starts on floor ${start} and goes down ${down} floors into the car park. Which floor does it stop on? ` +
+             `(Below ground counts as a negative floor.)`;
+      work = `Going down means subtract: ${start} − ${down} = <b>${ans}</b>.`;
+    } else if (t === 2) {
+      const bal = -rr(15,80), dep = rr(20,150);
+      ans = bal + dep;
+      text = `${wpName()}'s account is overdrawn by $${Math.abs(bal)}. They deposit $${dep}. What is the new balance, in dollars?`;
+      work = `Overdrawn by $${Math.abs(bal)} means a balance of ${f(bal)}. ${f(bal)} + ${dep} = <b>${ans}</b>.`;
+    } else {
+      const a = -rr(20,60), b = -rr(5,40);
+      ans = a - b;
+      text = `A diver is at ${f(a)} m (below sea level) and a second diver is at ${f(b)} m. ` +
+             `How much lower is the first diver? Give the answer as a negative number if the first diver is higher.`;
+      work = `Find the difference: ${f(a)} − (${f(b)}) = <b>${ans}</b> m.`;
+    }
+  }
+
+  else if (skill === 'orderOps') {
+    const t = ri(3);
+    if (t === 0) {
+      const p = rr(2,9), np = rr(2,6), b = rr(4,15), nb = rr(2,5);
+      ans = p*np + b*nb;
+      text = `Pens cost $${p} each and notebooks cost $${b} each. ${wpName()} buys ${np} pens and ${nb} notebooks. ` +
+             `What is the total cost in dollars?`;
+      work = `Write it as one calculation and do the multiplying first: ${np} × ${p} + ${nb} × ${b} = ${np*p} + ${nb*b} = <b>${ans}</b>.`;
+    } else if (t === 1) {
+      const note = [50,100][ri(2)], c = rr(3,12), n = rr(2,6);
+      ans = note - c*n;
+      text = `${wpName()} pays with a $${note} note for ${n} tickets costing $${c} each. How much change do they get?`;
+      work = `${note} − ${n} × ${c} = ${note} − ${n*c} = <b>${ans}</b>.`;
+    } else {
+      const boxes = rr(3,8), per = rr(4,12), taken = rr(2,10);
+      ans = boxes*per - taken;
+      text = `There are ${boxes} boxes with ${per} muffins in each. ${taken} muffins are eaten. How many are left?`;
+      work = `${boxes} × ${per} − ${taken} = ${boxes*per} − ${taken} = <b>${ans}</b>.`;
+    }
+  }
+
+  else if (skill === 'fracOfAmount') {
+    const den = [3,4,5,6,8,10][ri(6)];
+    const num = rr(1, den - 1);
+    const mult = rr(2, 12);
+    const total = den * mult;
+    ans = num * mult;
+    const ctx = ri(3);
+    if (ctx === 0) {
+      text = `There are ${total} students in a year level and ${num}/${den} of them walk to school. How many walk to school?`;
+    } else if (ctx === 1) {
+      text = `${wpName()} has $${total} and spends ${num}/${den} of it. How many dollars do they spend?`;
+    } else {
+      text = `A netball team played ${total} games and won ${num}/${den} of them. How many games did they win?`;
+    }
+    work = `Divide by the denominator, then multiply by the numerator: ${total} ÷ ${den} = ${mult}, then ${mult} × ${num} = <b>${ans}</b>.`;
+  }
+
+  else if (skill === 'pctOfAmount') {
+    const pct = [10,20,25,50,5,15,30,40,75][ri(9)];
+    const base = 20 * rr(1, 25);
+    ans = dp(base * pct / 100, 2);
+    const ctx = ri(3);
+    if (ctx === 0) {
+      text = `A jacket costs $${base}. It is reduced by ${pct}%. How many dollars do you save?`;
+      work = `${pct}% of $${base} = ${pct}/100 × ${base} = <b>$${ans}</b> saved.`;
+    } else if (ctx === 1) {
+      text = `${pct}% of the ${base} students in a year level play a sport. How many students play a sport?`;
+      work = `${pct}% of ${base} = ${pct}/100 × ${base} = <b>${ans}</b> students.`;
+    } else {
+      text = `${wpName()} earns $${base} and saves ${pct}% of it. How many dollars do they save?`;
+      work = `${pct}% of $${base} = <b>$${ans}</b>.`;
+    }
+  }
+
+  else if (skill === 'pctChange') {
+    const pct = [5,10,15,20,25,40,50][ri(7)];
+    const base = 20 * rr(1, 25);
+    const up = Math.random() < 0.5;
+    ans = dp(up ? base * (100 + pct) / 100 : base * (100 - pct) / 100, 2);
+    if (up) {
+      text = `A phone plan costs $${base} a month. The price goes up by ${pct}%. What is the new monthly price in dollars?`;
+      work = `New price = ${100 + pct}% of $${base} = ${(100+pct)/100} × ${base} = <b>$${ans}</b>.`;
+    } else {
+      text = `A bike costs $${base}. In a sale it is discounted by ${pct}%. What is the sale price in dollars?`;
+      work = `Sale price = ${100 - pct}% of $${base} = ${(100-pct)/100} × ${base} = <b>$${ans}</b>.`;
+    }
+  }
+
+  else if (skill === 'ratioShare') {
+    const a = rr(1,5), b = (function(){ let k = rr(1,6); while (k === a) k = rr(1,6); return k; })();
+    const unit = rr(3, 20);
+    const total = (a + b) * unit;
+    const bigger = Math.max(a, b) * unit;
+    ans = bigger;
+    const ctx = ri(2);
+    const n1 = wpName(), n2 = wpName2(n1);
+    if (ctx === 0) {
+      text = `$${total} is shared between ${n1} and ${n2} in the ratio ${a} : ${b}. How many dollars does the person with the LARGER share get?`;
+      work = `There are ${a} + ${b} = ${a+b} parts, so one part is $${total} ÷ ${a+b} = $${unit}. The larger share is ${Math.max(a,b)} × $${unit} = <b>$${ans}</b>.`;
+    } else {
+      text = `A recipe mixes flour and sugar in the ratio ${a} : ${b}. Altogether there are ${total} grams. ` +
+             `How many grams of the LARGER ingredient are used?`;
+      work = `${a} + ${b} = ${a+b} parts; one part = ${total} ÷ ${a+b} = ${unit} g. The larger amount is ${Math.max(a,b)} × ${unit} = <b>${ans}</b> g.`;
+    }
+  }
+
+  else if (skill === 'rateConvert') {
+    const t = ri(3);
+    if (t === 0) {
+      const hrs = rr(2,8), speed = 10 * rr(4, 11);
+      ans = speed;
+      text = `A car travels ${speed * hrs} km in ${hrs} hours at a steady speed. What is its speed in km/h?`;
+      work = `Speed = distance ÷ time = ${speed*hrs} ÷ ${hrs} = <b>${ans}</b> km/h.`;
+    } else if (t === 1) {
+      const kg = rr(2,9), each = dp(rr(150, 900) / 100, 2);
+      ans = dp(each, 2);
+      text = `${kg} kg of apples costs $${dp(each*kg, 2)}. What is the price per kilogram, in dollars?`;
+      work = `Price per kg = total ÷ mass = ${dp(each*kg,2)} ÷ ${kg} = <b>$${ans}</b>.`;
+    } else {
+      const perMin = rr(2, 12), mins = rr(3, 12);
+      ans = perMin * mins;
+      text = `A tap fills a tank at ${perMin} litres per minute. How many litres go in during ${mins} minutes?`;
+      work = `Multiply the rate by the time: ${perMin} × ${mins} = <b>${ans}</b> litres.`;
+    }
+  }
+
+  else if (skill === 'algSub') {
+    const t = ri(3);
+    if (t === 0) {
+      const base = rr(5, 25), rate = rr(3, 15), h = rr(2, 9);
+      ans = base + rate * h;
+      text = `The cost of hiring a bike is C = ${base} + ${rate}h dollars, where h is the number of hours. ` +
+             `What is the cost of hiring it for ${h} hours?`;
+      work = `Substitute h = ${h}: C = ${base} + ${rate} × ${h} = ${base} + ${rate*h} = <b>${ans}</b>.`;
+    } else if (t === 1) {
+      const l = rr(3, 15), w = rr(2, 12);
+      ans = 2 * (l + w);
+      text = `The perimeter of a rectangle is P = 2(l + w), where l is the length and w is the width. ` +
+             `What is the perimeter when l = ${l} cm and w = ${w} cm?`;
+      work = `P = 2(${l} + ${w}) = 2 × ${l + w} = <b>${ans}</b>.`;
+    } else {
+      const v = rr(4, 20), t2 = rr(2, 9);
+      ans = v * t2;
+      text = `Distance is given by d = vt. A car travels at v = ${v} km/h for t = ${t2} hours. How far does it travel?`;
+      work = `d = ${v} × ${t2} = <b>${ans}</b> km.`;
+    }
+  }
+
+  else if (skill === 'eqTwoStep') {
+    const t = ri(3);
+    if (t === 0) {
+      const x = rr(2, 12), m = rr(2, 9), c = rr(3, 20);
+      ans = x;
+      text = `${wpName()} thinks of a number, multiplies it by ${m} and then adds ${c}. The answer is ${m*x + c}. ` +
+             `What was the number?`;
+      work = `Let the number be x: ${m}x + ${c} = ${m*x + c}. Subtract ${c}: ${m}x = ${m*x}. Divide by ${m}: x = <b>${x}</b>.`;
+    } else if (t === 1) {
+      const km = rr(3, 15), flag = rr(3, 8), per = rr(2, 5);
+      ans = km;
+      text = `A taxi charges $${flag} to start plus $${per} for every kilometre. A trip costs $${flag + per*km}. ` +
+             `How many kilometres was the trip?`;
+      work = `${per}k + ${flag} = ${flag + per*km}. Subtract ${flag}: ${per}k = ${per*km}. Divide by ${per}: k = <b>${km}</b> km.`;
+    } else {
+      const n = rr(3, 14), each = rr(2, 9), extra = rr(2, 15);
+      ans = n;
+      text = `A box holds ${each} pencils. ${wpName()} has some full boxes plus ${extra} loose pencils, ` +
+             `and ${each*n + extra} pencils altogether. How many full boxes are there?`;
+      work = `${each}b + ${extra} = ${each*n + extra}. Subtract ${extra}: ${each}b = ${each*n}. Divide by ${each}: b = <b>${n}</b>.`;
+    }
+  }
+
+  qData.ans = ans;
+  qData.workSteps = work;
+  el.textContent = text;
+}
+
+/* ── v93: Percentage Increase & Decrease, Level 4 — PERCENTAGE ERROR (VC2M8N05) ──
+   Values are chosen so the error is a whole number of units and the percentage
+   is exact — a percentage error that needs rounding teaches the rounding, not
+   the idea. */
+function genPctError(el) {
+  el.style.fontSize = '1.2rem';
+  el.style.lineHeight = '1.5';
+  el.style.textAlign = 'left';
+  const bases = [20,25,40,50,80,100,120,150,200,250,400,500];
+  const pcts  = [2,4,5,8,10,12,15,20,25];
+  let actual, pct, err, guard = 0;
+  do {
+    actual = bases[ri(bases.length)];
+    pct = pcts[ri(pcts.length)];
+    err = actual * pct / 100;
+  } while ((err !== Math.round(err) || err === 0) && guard++ < 200);
+  err = Math.round(err);
+  const over = Math.random() < 0.5;
+  const measured = over ? actual + err : actual - err;
+  const ctx = ri(3);
+  let text;
+  if (ctx === 0) {
+    text = `A length is actually ${actual} cm, but it is measured as ${measured} cm. What is the percentage error?`;
+  } else if (ctx === 1) {
+    text = `${wpName()} estimated a crowd at ${measured} people. The true number was ${actual}. What is the percentage error of the estimate?`;
+  } else {
+    text = `A bag should hold ${actual} g. It is filled with ${measured} g. What is the percentage error?`;
+  }
+  qData.ans = pct;
+  qData.ansDisplay = pct + '%';
+  qData.workSteps = 'Percentage error = (size of the error ÷ the true value) × 100. ' +
+    'The error is |' + measured + ' − ' + actual + '| = ' + err + ', so ' +
+    err + ' ÷ ' + actual + ' × 100 = <b>' + pct + '%</b>.';
+  el.textContent = text + ' (Give the answer as a number of percent, without the % sign.)';
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   v96 (Laura) — FROM THE 2026 EXAM AUDIT
+   Every generator below answers a question that is actually on one of
+   the two Year 7 papers. Where an engine already existed it is reused
+   rather than rewritten — the shaded-grid renderers, the Cartesian
+   plane, the tap-to-plot surface and the data displays are all shared.
+═══════════════════════════════════════════════════════════════════ */
+
+/* ── IDENTIFY FRACTIONS (Yr 7 MC Q1 and Section B Q8) ──────────────
+   The app could already read a decimal off a shaded grid and a
+   percentage off a shaded grid; the fraction — the thing the exam
+   actually asks for twice — was the one missing corner.
+
+   L1/L2 generate only fractions ALREADY in lowest terms, so "simplest
+   form" is never ambiguous while the student is learning to read the
+   diagram. L3 is where simplifying becomes the point. */
+function fidPieSVG(n, sh){
+  const cx = 150, cy = 92, r = 74;
+  let out = '';
+  for (let i = 0; i < n; i++){
+    const a0 = (-90 + i * 360 / n) * Math.PI / 180, a1 = (-90 + (i + 1) * 360 / n) * Math.PI / 180;
+    const x0 = cx + r * Math.cos(a0), y0 = cy + r * Math.sin(a0);
+    const x1 = cx + r * Math.cos(a1), y1 = cy + r * Math.sin(a1);
+    const big = (360 / n) > 180 ? 1 : 0;
+    out += '<path d="M ' + cx + ' ' + cy + ' L ' + x0.toFixed(1) + ' ' + y0.toFixed(1)
+        + ' A ' + r + ' ' + r + ' 0 ' + big + ' 1 ' + x1.toFixed(1) + ' ' + y1.toFixed(1) + ' Z" '
+        + 'fill="var(--accent)" fill-opacity="' + (i < sh ? 0.6 : 0) + '" stroke="var(--text)" stroke-width="1.5"/>';
+  }
+  return decSvg(out, cy + r + 20);
+}
+function fidCoprimePair(lo, hi){
+  for (let t = 0; t < 300; t++){
+    const n = rr(lo, hi), sh = rr(1, n - 1);
+    if (gcd(sh, n) === 1) return [sh, n];
+  }
+  return [1, 3];
+}
+function genFracIdentify(el){
+  el.style.fontSize = '1.05rem';
+  let sh, n, svg, what;
+  if (level === 1){
+    [sh, n] = fidCoprimePair(3, 10);
+    if (Math.random() < 0.5){ svg = fidPieSVG(n, sh); what = n + ' equal slices'; }
+    else { svg = decStripSVG(n, sh); what = n + ' equal parts'; }
+  } else if (level === 2){
+    const grid = ffPick([10, 100, 20, 25, 50]);
+    for (let t = 0; t < 300; t++){ sh = rr(1, grid - 1); if (gcd(sh, grid) === 1) break; }
+    n = grid; svg = pctGridSVG(n, sh); what = n + ' equal parts';
+  } else {
+    /* Deliberately NOT coprime — the shaded count and the answer differ. */
+    const grid = ffPick([8, 10, 12, 16, 20, 24]);
+    for (let t = 0; t < 300; t++){ sh = rr(2, grid - 2); if (gcd(sh, grid) > 1) break; }
+    n = grid;
+    svg = (Math.random() < 0.5) ? fidPieSVG(n, sh) : pctGridSVG(n, sh);
+    what = n + ' equal parts';
+  }
+  const [an, ad] = simplify(sh, n);
+  qData.ansNum = an; qData.ansDen = ad;
+  qData.workSteps = sh + ' of the ' + n + ' equal parts are shaded, so the fraction is ' + sh + '/' + n
+    + (an === sh ? ' — already in simplest form.' : ' = <b>' + an + '/' + ad + '</b> in simplest form.');
+  el.innerHTML = '<div style="' + A_LBL + '">What fraction is shaded? Give it in simplest form. (' + what + ')</div>' + svg;
+}
+
+/* ── QUARTILES & IQR (SEAL Section B Q9) ───────────────────────────
+   Q1 and Q3 use the method the students are taught: split at the
+   median and EXCLUDE it when there is an odd number of values.
+
+   Every data set is sized so each half has an ODD number of values
+   (n = 6, 7, 10, 11, 14, 15), which makes Q1 and Q3 real data values
+   rather than midpoints. A quartiles drill should not double as a
+   "halfway between 63 and 77" arithmetic drill — and the SEAL paper's
+   own question uses 11 values, which this hits exactly. */
+function daQ1Of(v){
+  const s = daSorted(v), h = Math.floor(s.length / 2);
+  return daMedianOf(s.slice(0, h));
+}
+function daQ3Of(v){
+  const s = daSorted(v), h = Math.floor(s.length / 2);
+  return daMedianOf(s.slice(s.length - h));
+}
+function daIqrOf(v){ return daQ3Of(v) - daQ1Of(v); }
+const DQT_N = [7, 11, 6, 10, 14, 15];          // each half is odd
+function dqtWork(vals, want){
+  const s = daSorted(vals), n = s.length, h = Math.floor(n / 2);
+  const lower = s.slice(0, h), upper = s.slice(n - h);
+  let w = 'In order: ' + s.join(', ') + '.<br>';
+  w += (n % 2
+    ? 'There are ' + n + ' values, so leave the middle one out and split into two halves of ' + h + '.'
+    : 'There are ' + n + ' values, so split into two halves of ' + h + '.') + '<br>';
+  w += 'Lower half: ' + lower.join(', ') + ' → Q1 = <b>' + daQ1Of(vals) + '</b>.<br>';
+  w += 'Upper half: ' + upper.join(', ') + ' → Q3 = <b>' + daQ3Of(vals) + '</b>.';
+  if (want === 'iqr') w += '<br>IQR = Q3 − Q1 = ' + daQ3Of(vals) + ' − ' + daQ1Of(vals)
+    + ' = <b>' + daIqrOf(vals) + '</b>.';
+  return w;
+}
+function genDataQuartiles(el){
+  el.style.fontSize = '1.05rem';
+  const ctx = ffPick(DA_CTX);
+  const say = function(prompt, body){ el.innerHTML = '<div style="' + A_LBL + '">' + prompt + '</div>' + body; };
+
+  if (level <= 3){
+    const n = ffPick(DQT_N), vals = [];
+    for (let i = 0; i < n; i++) vals.push(rr(1, 40));
+    const want = level === 1 ? 'q1' : level === 2 ? 'q3' : 'iqr';
+    qData.ans = want === 'q1' ? daQ1Of(vals) : want === 'q3' ? daQ3Of(vals) : daIqrOf(vals);
+    qData.workSteps = dqtWork(vals, want);
+    say('Find the <b>' + (want === 'q1' ? 'lower quartile (Q1)' : want === 'q3' ? 'upper quartile (Q3)'
+        : 'interquartile range (IQR)') + '</b> of this data set.', daListHtml(vals));
+    return;
+  }
+  if (level === 4){
+    const hi = rr(5, 8), n = ffPick(DQT_N), vals = [];
+    for (let i = 0; i < n; i++) vals.push(rr(0, hi));
+    qData.ans = daIqrOf(vals);
+    qData.workSteps = 'A dot plot is already in order — count in from each end. ' + dqtWork(vals, 'iqr');
+    say(ctx.axis + ' for ' + ctx.who + '.<br>Find the <b>interquartile range</b>.', daDotPlot(vals, 0, hi, ctx.axis));
+    return;
+  }
+  if (level === 5){
+    const vals = daStemSet(ffPick(DQT_N), {});
+    qData.ans = daIqrOf(vals);
+    qData.workSteps = 'A stem-and-leaf plot is already in order — count in from each end. ' + dqtWork(vals, 'iqr');
+    say('Find the <b>interquartile range</b> of the data in this stem-and-leaf plot.', daStemHtml(vals));
+    return;
+  }
+  /* L6 — read Q1, Q3 or the IQR straight off a box plot: the box IS the IQR. */
+  const tick = ffPick([2, 5, 10]), steps = rr(6, 8), lo = 0, hi = tick * steps;
+  const cand = [];
+  for (let v = lo + tick; v <= hi - tick; v += tick) cand.push(v);
+  const picks = shuffleArr(cand.slice()).slice(0, 5).sort(function(a, b){ return a - b; });
+  const fv = { min: picks[0], q1: picks[1], med: picks[2], q3: picks[3], max: picks[4] };
+  const askIqr = Math.random() < 0.6;
+  qData.ans = askIqr ? fv.q3 - fv.q1 : (Math.random() < 0.5 ? fv.q1 : fv.q3);
+  if (askIqr){
+    qData.workSteps = 'The BOX runs from Q1 to Q3, so its width is the IQR: ' + fv.q3 + ' − ' + fv.q1
+      + ' = <b>' + (fv.q3 - fv.q1) + '</b>. The whiskers are the range, not the IQR.';
+    say('Find the <b>interquartile range</b> from this box plot.', daBoxPlot(fv, lo, hi, tick, 'Score'));
+  } else {
+    const isQ1 = qData.ans === fv.q1;
+    qData.workSteps = (isQ1 ? 'Q1 is the LEFT edge of the box' : 'Q3 is the RIGHT edge of the box')
+      + ' — read it off the scale: <b>' + qData.ans + '</b>.';
+    say('Read <b>' + (isQ1 ? 'Q1' : 'Q3') + '</b> off this box plot.', daBoxPlot(fv, lo, hi, tick, 'Score'));
+  }
+}
+
+/* ── GRADIENT & Y-INTERCEPT FROM AN EQUATION (SEAL MC Q7) ──────────
+   Gradient of a Line Segment only ever worked from two points or a
+   drawn diagram. Nothing in the app rearranged ax + by = c into
+   y = mx + c, or read m straight off an equation — which is the MC
+   question on the SEAL paper and the idea behind two more.
+
+   L1/L2 are MULTIPLE CHOICE because a gradient is often a fraction and
+   a fraction will not go in a numeric gap-fill box. That also makes
+   them the same shape as the exam item. L3 is the sketching level
+   Laura asked for, built on the same tap-to-plot surface as the
+   distance-time graphs. */
+/* Everything on screen uses a real minus sign (−), not a hyphen. A student
+   reading "y = -3x" beside a printed exam that says "y = −3x" is one more thing
+   to second-guess. */
+function greNum(n){ return n < 0 ? '−' + Math.abs(n) : String(n); }
+function greFmtM(p, q){
+  if (q === 1) return greNum(p);
+  return (p < 0 ? '−' : '') + Math.abs(p) + '/' + q;
+}
+function greLineHtml(p, q, c){
+  const m = greFmtM(p, q);
+  const mPart = (p === q) ? 'x' : (p === -q) ? '−x' : (q === 1 ? greNum(p) + 'x' : m + 'x');
+  return 'y = ' + mPart + (c === 0 ? '' : (c > 0 ? ' + ' + c : ' − ' + (-c)));
+}
+function greOptText(p, q, c){ return 'gradient ' + greFmtM(p, q) + ', y-intercept (0, ' + greNum(c) + ')'; }
+function greDistinct(p, q, c){
+  /* Distractors are the mistakes students actually make: the sign of the
+     gradient, m and c swapped, and forgetting to divide through. */
+  const bag = [[-p, q, c], [p, q, -c], [q, p === 0 ? 1 : Math.abs(p), c], [p, q, c + rr(1, 3)]];
+  const out = [], seen = { }; seen[greOptText(p, q, c)] = 1;
+  bag.forEach(function(b){
+    if (b[1] === 0) return;
+    const t = greOptText(b[0], b[1], b[2]);
+    if (!seen[t]) { seen[t] = 1; out.push(t); }
+  });
+  while (out.length < 3){
+    const t = greOptText(p + rr(1, 4), q, c - rr(1, 3));
+    if (!seen[t]) { seen[t] = 1; out.push(t); }
+  }
+  return out.slice(0, 3);
+}
+function genGradEqn(el){
+  el.style.fontSize = '1.05rem';
+
+  if (level === 1){                       // read m and c straight off y = mx + c
+    const p = ffPick([1, 2, 3, 4, 5, -1, -2, -3, -4]), c = rr(-6, 6);
+    qData.workSteps = 'In y = mx + c the number in front of x is the gradient and c is the y-intercept.<br>'
+      + 'Here m = <b>' + p + '</b> and c = <b>' + c + '</b>, so the line crosses the y-axis at (0, ' + c + ').';
+    decSetChoice(el, '<div style="' + A_LBL + '">State the gradient and the y-intercept of</div>'
+      + '<div style="text-align:center;font-weight:900;font-size:1.8rem;margin:10px 0;">' + greLineHtml(p, 1, c) + '</div>',
+      shuffleArr([greOptText(p, 1, c)].concat(greDistinct(p, 1, c))), greOptText(p, 1, c), true);
+    return;
+  }
+
+  if (level === 2){                       // rearrange ax + by = c first
+    const b = ffPick([2, 3, 4, 5]);
+    const p = ffPick([1, 2, 3, -1, -2, -3]);
+    const c = rr(-4, 4);
+    /* Build it backwards from y = (p/b)x + c so the rearranged form is exact:
+       by = px + bc  →  −px + by = bc. */
+    const a = -p, rhs = b * c;
+    const eqn = (a === 0 ? '' : (a === 1 ? 'x' : a === -1 ? '−x' : a + 'x') + ' + ')
+              + (b === 1 ? 'y' : b + 'y') + ' = ' + rhs;
+    const g = simplify(Math.abs(p), b);
+    const sp = (p < 0 ? -g[0] : g[0]), sq = g[1];
+    qData.workSteps = 'Get y on its own. ' + eqn + ' → ' + (b === 1 ? 'y' : b + 'y') + ' = '
+      + (p === 1 ? 'x' : p === -1 ? '−x' : p + 'x') + (rhs === 0 ? '' : (rhs > 0 ? ' + ' + rhs : ' − ' + (-rhs)))
+      + ' → divide every term by ' + b + ': y = ' + greFmtM(sp, sq) + 'x'
+      + (c === 0 ? '' : (c > 0 ? ' + ' + c : ' − ' + (-c))) + '.<br>'
+      + 'So the gradient is <b>' + greFmtM(sp, sq) + '</b> and the y-intercept is <b>(0, ' + c + ')</b>.';
+    decSetChoice(el, '<div style="' + A_LBL + '">Rearrange into y = mx + c, then state the gradient and y-intercept.</div>'
+      + '<div style="text-align:center;font-weight:900;font-size:1.8rem;margin:10px 0;">' + eqn + '</div>',
+      shuffleArr([greOptText(sp, sq, c)].concat(greDistinct(sp, sq, c))), greOptText(sp, sq, c), true);
+    return;
+  }
+
+  /* L3 — sketch by the gradient-intercept method: plot (0, c), then step
+     one "run" across and "rise" up to a second point. Two taps, ordered,
+     exactly like building a distance-time graph. Both points are forced
+     inside the −5…5 window so there is always a legal answer. */
+  let m, c;
+  for (let t = 0; t < 300; t++){
+    m = ffPick([1, 2, 3, -1, -2, -3]);
+    c = rr(-4, 4);
+    if (Math.abs(c + m) <= CG_R) break;
+  }
+  qData.plotOrdered = true;
+  qData.plotAns = [[0, c], [1, c + m]];        // one valid answer, for reference
+  /* v97: marked against the LINE. The y-intercept is compulsory because plotting
+     it IS half of the gradient–intercept method; the second point is any other
+     point on the line, so stepping the gradient backwards is correct too. */
+  qData.plotLine = { m: m, c: c };
+  qData.plotMust = [[0, c]];
+  qData.plotNeed = 2;
+  qData.plotNoun = 'points placed';
+  qData.plotInstr = 'Plot the y-intercept, then use the gradient to plot one more point on the line.';
+  qData.workSteps = 'The y-intercept is c = ' + greNum(c) + ', so start at <b>(0, ' + greNum(c) + ')</b>.<br>'
+    + 'The gradient is ' + greNum(m) + ', which means ' + Math.abs(m) + ' ' + (m > 0 ? 'up' : 'down')
+    + ' for every 1 across — so (1, ' + greNum(c + m) + ') works. Stepping the other way to ('
+    + greNum(-1) + ', ' + greNum(c - m) + ') is just as correct: <b>any point on the line counts</b>.';
+  qData.plotAbove = '<div style="' + A_LBL + '">Sketch this line using the gradient and the y-intercept.</div>'
+    + '<div style="text-align:center;font-weight:900;font-size:1.6rem;margin:6px 0;">' + greLineHtml(m, 1, c) + '</div>';
+}
+
+/* ── MATCHING EQUATIONS & GRAPHS (SEAL MC Q10, Section B Q5c) ──────
+   The graph is DRAWN and the four options are EQUATIONS, not four
+   little pictures: four graphs in a 74px option button are unreadable,
+   and comparing four pictures is a different task from reading one. */
+function egmDistractors(m, c){
+  const seen = { }, out = [];
+  seen[greLineHtml(m, 1, c)] = 1;
+  [[-m, c], [m, -c], [m + 1, c], [-m, -c], [m, c + 2], [m - 1, c], [m + 2, c - 1], [-m, c + 1]]
+    .forEach(function(d){
+      const t = greLineHtml(d[0], 1, d[1]);
+      if (!seen[t] && d[0] !== 0 && out.length < 3) { seen[t] = 1; out.push(t); }
+    });
+  /* A distractor list can come up short when a mistake happens to land back on
+     the right answer (m = −1 makes "wrong sign" the same line as "gradient + 1"),
+     so top it up until there really are three. */
+  for (let g = 2; out.length < 3 && g < 40; g++){
+    const t = greLineHtml((g % 2 ? g : -g), 1, c + (g % 3) - 1);
+    if (!seen[t]) { seen[t] = 1; out.push(t); }
+  }
+  return out.slice(0, 3);
+}
+function genEqnGraph(el){
+  el.style.fontSize = '1.05rem';
+
+  if (level === 1 || level === 2){
+    let m, c;
+    for (let t = 0; t < 300; t++){
+      m = (level === 1) ? ffPick([1, 2, 3]) : ffPick([-1, -2, -3, 1, 2]);
+      c = (level === 1) ? rr(-3, 3) : rr(-4, 4);
+      if (Math.abs(c) + Math.abs(m) * CG_R <= CG_R * 3) break;   // stays sensible on the window
+    }
+    const line = cgCurve(function(x){ return m * x + c; });
+    qData.workSteps = 'The line crosses the y-axis at (0, ' + c + '), so c = <b>' + c + '</b>.<br>'
+      + 'From there it goes ' + Math.abs(m) + ' ' + (m > 0 ? 'up' : 'down') + ' for every 1 across, '
+      + 'so the gradient is <b>' + m + '</b>. The equation is <b>' + greLineHtml(m, 1, c) + '</b>.';
+    decSetChoice(el, '<div style="' + A_LBL + '">Which equation gives this graph?</div>'
+      + cgSvg(line),
+      shuffleArr([greLineHtml(m, 1, c)].concat(egmDistractors(m, c))), greLineHtml(m, 1, c), true);
+    return;
+  }
+
+  /* L3 — which point lies on the line. Every distractor is checked against
+     the rule, so a "wrong" point can never accidentally satisfy it. */
+  const m = ffPick([1, 2, 3, -1, -2, -3]), c = rr(-5, 5);
+  const x = rr(-6, 6), on = [x, m * x + c];
+  const opts = [on.join('|')], seen = { }; seen[on.join('|')] = 1;
+  for (let t = 0; t < 400 && opts.length < 4; t++){
+    const px = rr(-6, 6), py = m * px + c + (Math.random() < 0.5 ? rr(1, 5) : -rr(1, 5));
+    if (py === m * px + c) continue;
+    const k = px + '|' + py;
+    if (!seen[k]) { seen[k] = 1; opts.push(k); }
+  }
+  const asText = function(k){ const p = k.split('|'); return '(' + p[0] + ', ' + p[1] + ')'; };
+  qData.workSteps = 'Substitute each point into ' + greLineHtml(m, 1, c) + ' and see which one works.<br>'
+    + 'For (' + on[0] + ', ' + on[1] + '): ' + m + ' × ' + on[0] + (c === 0 ? '' : (c > 0 ? ' + ' + c : ' − ' + (-c)))
+    + ' = ' + on[1] + ' ✓';
+  decSetChoice(el, '<div style="' + A_LBL + '">Which of these points lies on the line?</div>'
+    + '<div style="text-align:center;font-weight:900;font-size:1.8rem;margin:10px 0;">' + greLineHtml(m, 1, c) + '</div>',
+    shuffleArr(opts.map(asText)), asText(on.join('|')), true);
+}
+
+/* ── SKETCHING LINEAR GRAPHS (Laura's spec) ────────────────────────
+   Same tap-to-plot surface as the distance-time build level. Every
+   level names EXACTLY which two points to plot, because the marking is
+   all-or-nothing on a point set — "sketch the line" without saying
+   which points would have infinitely many right answers. */
+function sklHorizVert(){
+  const vertical = Math.random() < 0.5;
+  const k = rr(-4, 4);
+  return vertical
+    ? { eqn: 'x = ' + greNum(k), pts: [[k, -CG_R], [k, CG_R]],
+        line: { vx: k }, must: [],
+        instr: 'Plot any two points on this line.',
+        why: 'x = ' + greNum(k) + ' is a VERTICAL line — every point on it has x = ' + greNum(k) + ', whatever y is. '
+           + 'It passes through (' + k + ', −' + CG_R + ') and (' + k + ', ' + CG_R + ').' }
+    : { eqn: 'y = ' + greNum(k), pts: [[-CG_R, k], [CG_R, k]],
+        line: { m: 0, c: k }, must: [],
+        instr: 'Plot any two points on this line.',
+        why: 'y = ' + greNum(k) + ' is a HORIZONTAL line — every point on it has y = ' + greNum(k) + ', whatever x is. '
+           + 'It passes through (−' + CG_R + ', ' + k + ') and (' + CG_R + ', ' + k + ').' };
+}
+function sklIntercepts(){
+  /* y = mx + c with BOTH intercepts on the grid and whole numbers. */
+  for (let t = 0; t < 400; t++){
+    const m = ffPick([1, 2, -1, -2]), xi = rr(-4, 4);
+    if (xi === 0) continue;
+    const c = -m * xi;
+    if (Math.abs(c) > CG_R) continue;
+    return { eqn: greLineHtml(m, 1, c), pts: [[0, c], [xi, 0]],
+             line: { m: m, c: c }, must: [[0, c], [xi, 0]],
+             instr: 'Plot the x-intercept and the y-intercept.',
+             why: 'y-intercept: put x = 0 → y = ' + c + ', so <b>(0, ' + c + ')</b>.<br>'
+                + 'x-intercept: put y = 0 → 0 = ' + m + 'x ' + (c > 0 ? '+ ' + c : '− ' + (-c))
+                + ' → x = ' + xi + ', so <b>(' + xi + ', 0)</b>.' };
+  }
+  return { eqn: 'y = x − 2', pts: [[0, -2], [2, 0]], line: { m: 1, c: -2 }, must: [[0, -2], [2, 0]],
+           instr: 'Plot the x-intercept and the y-intercept.',
+           why: 'y-intercept (0, −2); x-intercept (2, 0).' };
+}
+function sklOrigin(){
+  const m = ffPick([1, 2, 3, -1, -2, -3]);
+  return { eqn: 'y = ' + (m === 1 ? 'x' : m === -1 ? '−x' : greNum(m) + 'x'),
+           pts: [[0, 0], [1, m]],
+           line: { m: m, c: 0 }, must: [[0, 0]],
+           instr: 'Plot the origin, then use the gradient to plot one more point on the line.',
+           why: 'There is no + c, so the line goes through the <b>origin</b>. '
+              + 'The gradient is ' + greNum(m) + ', so when x = 1, y = ' + greNum(m) + ' — the point <b>(1, '
+              + greNum(m) + ')</b>. Any other point on the line, such as (' + greNum(-1) + ', '
+              + greNum(-m) + '), is just as correct.' };
+}
+function genSketchLinear(el){
+  const pick = level === 1 ? sklHorizVert()
+             : level === 2 ? sklIntercepts()
+             : level === 3 ? sklOrigin()
+             : [sklHorizVert, sklIntercepts, sklOrigin][ri(3)]();
+  qData.plotOrdered = true;
+  qData.plotAns = pick.pts;                    // one valid answer, for reference
+  qData.plotLine = pick.line;                  // v97: marked against the line
+  qData.plotMust = pick.must;
+  qData.plotNeed = 2;
+  qData.plotNoun = 'points placed';
+  qData.plotInstr = pick.instr;
+  qData.workSteps = pick.why;
+  /* The "which two points" instruction already sits in the plot strip beside the
+     grid, so the prompt above it just names the job. */
+  qData.plotAbove = '<div style="' + A_LBL + '">Sketch this line.</div>'
+    + '<div style="text-align:center;font-weight:900;font-size:1.7rem;margin:6px 0;">' + pick.eqn + '</div>';
+}
+
+/* ── INDEX NOTATION & EXPANDED FORM (Yr 7 Section B Q5) ────────────
+   VC2M7N02. "Write 2⁴ × 3² in expanded form" had nothing behind it. */
+function ixeExpanded(b, e){ const p = []; for (let i = 0; i < e; i++) p.push(b); return p.join(' × '); }
+function genIndexExpand(el){
+  el.style.fontSize = '1.05rem';
+  if (level === 1){                      // expanded → index form
+    const b = ffPick([2, 3, 4, 5, 6, 7, 10]), e = rr(2, 5);
+    qData.gapTemplate = ['base ', 0, '&nbsp;&nbsp;&nbsp;power ', 1];
+    qData.gapAns = [b, e];
+    qData.gapAnsText = b + ' to the power of ' + e;
+    qData.gapHint = 'The base is the number being multiplied; the power is how many times.';
+    qData.workSteps = b + ' is multiplied by itself ' + e + ' times, so it is written <b>' + b + '<sup>' + e + '</sup></b>.';
+    el.innerHTML = '<div style="' + A_LBL + '">Write this in index form.</div>'
+      + '<div style="text-align:center;font-weight:900;font-size:1.7rem;margin:10px 0;">' + ixeExpanded(b, e) + '</div>';
+    return;
+  }
+  if (level === 2){                      // index → expanded form
+    const b1 = ffPick([2, 3, 5]), e1 = rr(2, 4);
+    let b2 = ffPick([2, 3, 5, 7]); while (b2 === b1) b2 = ffPick([2, 3, 5, 7]);
+    const e2 = rr(2, 3);
+    const right = ixeExpanded(b1, e1) + ' × ' + ixeExpanded(b2, e2);
+    const opts = [right,
+      ixeExpanded(b1, e1 - 1) + ' × ' + ixeExpanded(b2, e2),
+      ixeExpanded(b1, e1) + ' × ' + ixeExpanded(b2, e2 + 1),
+      (b1 * e1) + ' × ' + (b2 * e2)];
+    qData.workSteps = b1 + '<sup>' + e1 + '</sup> means ' + b1 + ' multiplied ' + e1 + ' times and '
+      + b2 + '<sup>' + e2 + '</sup> means ' + b2 + ' multiplied ' + e2 + ' times — <b>not</b> base × power.';
+    decSetChoice(el, '<div style="' + A_LBL + '">Write this in expanded form.</div>'
+      + '<div style="text-align:center;font-weight:900;font-size:1.9rem;margin:10px 0;">'
+      + b1 + '<sup>' + e1 + '</sup> × ' + b2 + '<sup>' + e2 + '</sup></div>', opts, right);
+    return;
+  }
+  const b1 = ffPick([2, 3, 5]), e1 = rr(2, 4);
+  let b2 = ffPick([2, 3, 5, 7]); while (b2 === b1) b2 = ffPick([2, 3, 5, 7]);
+  const e2 = rr(1, 2);
+  const v = Math.pow(b1, e1) * Math.pow(b2, e2);
+  qData.ans = v;
+  qData.workSteps = b1 + '<sup>' + e1 + '</sup> = ' + Math.pow(b1, e1) + ' and ' + b2 + '<sup>' + e2
+    + '</sup> = ' + Math.pow(b2, e2) + ', so the product is ' + Math.pow(b1, e1) + ' × '
+    + Math.pow(b2, e2) + ' = <b>' + v + '</b>.';
+  el.innerHTML = '<div style="' + A_LBL + '">Evaluate.</div>'
+    + '<div style="text-align:center;font-weight:900;font-size:2.1rem;margin:10px 0;">'
+    + b1 + '<sup>' + e1 + '</sup> × ' + b2 + '<sup>' + e2 + '</sup></div>';
+}
+
+/* ── PRIME FACTOR FORM — Prime Factorisation L4 (Yr 7 Section B Q7) ─ */
+function pfacForm(n){
+  const f = { }; let x = n;
+  for (let p = 2; p * p <= x; p++) while (x % p === 0){ f[p] = (f[p] || 0) + 1; x /= p; }
+  if (x > 1) f[x] = (f[x] || 0) + 1;
+  return Object.keys(f).map(Number).sort(function(a, b){ return a - b; })
+    .map(function(p){ return f[p] === 1 ? String(p) : p + '<sup>' + f[p] + '</sup>'; }).join(' × ');
+}
+function genPrimeFactorForm(el){
+  el.style.fontSize = '1.05rem';
+  const N = ffPick([12, 18, 20, 24, 28, 36, 40, 45, 48, 50, 54, 56, 60, 72, 75, 80, 84, 90, 96, 100, 120, 126]);
+  const right = pfacForm(N);
+  const seen = { }; seen[right] = 1;
+  const opts = [right];
+  const near = shuffleArr([N + 2, N - 2, N * 2, Math.max(4, N - 6), N + 6, N + 4]);
+  for (let i = 0; i < near.length && opts.length < 4; i++){
+    const t = pfacForm(near[i]);
+    if (!seen[t]) { seen[t] = 1; opts.push(t); }
+  }
+  qData.workSteps = 'Divide by primes until only primes are left, then collect repeats as powers: '
+    + N + ' = <b>' + right + '</b>.';
+  decSetChoice(el, '<div style="' + A_LBL + '">Write this number in prime factor form.</div>'
+    + '<div style="text-align:center;font-weight:900;font-size:2.4rem;margin:10px 0;">' + N + '</div>', opts, right);
+}
+
+/* ── COMBINING TWO RATIOS — Equivalent Ratios L4 (SEAL Section B Q2) ─
+   a : b and b′ : c share the middle quantity. Scale both to the LCM of
+   the two middle terms, then read off the outer pair. */
+function genRatioChain(el){
+  el.style.fontSize = '1.05rem';
+  const a = rr(1, 5), b = rr(2, 6), b2 = rr(2, 6), c = rr(1, 5);
+  const L = b * b2 / gcd(b, b2);
+  const k1 = L / b, k2 = L / b2;
+  const outA = a * k1, outC = c * k2;
+  const g = gcd(outA, outC);
+  qData.ansA = outA / g; qData.ansB = outC / g;
+  const names = ffPick([['Red', 'Blue', 'White'], ['flour', 'sugar', 'butter'], ['sand', 'cement', 'gravel']]);
+  qData.workSteps = names[0] + ' : ' + names[1] + ' = ' + a + ' : ' + b + ' and ' + names[1] + ' : '
+    + names[2] + ' = ' + b2 + ' : ' + c + '.<br>The shared part is ' + names[1]
+    + ' — scale both ratios so it matches at ' + L + ':<br>' + a + ' : ' + b + ' → ' + (a * k1) + ' : ' + L
+    + ' and ' + b2 + ' : ' + c + ' → ' + L + ' : ' + (c * k2) + '.<br>So ' + names[0] + ' : ' + names[2]
+    + ' = ' + outA + ' : ' + outC + ' = <b>' + qData.ansA + ' : ' + qData.ansB + '</b>.';
+  el.innerHTML = '<div style="' + A_LBL + '">' + names[0] + ' : ' + names[1] + ' = ' + a + ' : ' + b
+    + ' and ' + names[1] + ' : ' + names[2] + ' = ' + b2 + ' : ' + c
+    + '.<br>Find ' + names[0] + ' : ' + names[2] + ' in simplest form.</div>';
+}
+
+/* ── FIND THE TERM NUMBER — Arithmetic Sequences L5 (SEAL Q10c) ──── */
+function genArithTermNumber(el){
+  el.style.fontSize = '1.05rem';
+  const a1 = rr(1, 12), d = ffPick([2, 3, 4, 5, 6, 7, 8, 10]);
+  const n = rr(12, 60);
+  const tn = a1 + (n - 1) * d;
+  qData.ans = n;
+  qData.workSteps = 'The rule is t<sub>n</sub> = ' + a1 + ' + (n − 1) × ' + d + '.<br>'
+    + 'Put t<sub>n</sub> = ' + tn + ': ' + tn + ' = ' + a1 + ' + (n − 1) × ' + d
+    + ' → ' + (tn - a1) + ' = (n − 1) × ' + d + ' → n − 1 = ' + ((tn - a1) / d)
+    + ' → n = <b>' + n + '</b>.';
+  el.innerHTML = '<div style="' + A_LBL + '">The sequence starts ' + a1 + ', ' + (a1 + d) + ', '
+    + (a1 + 2 * d) + ', ' + (a1 + 3 * d) + ', …<br>The number <b>' + tn
+    + '</b> is in this sequence. <b>Which term number</b> is it?</div>';
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   v96 — TIER 3: the smaller exam items
+═══════════════════════════════════════════════════════════════════ */
+
+/* Addition & Subtraction L4 — FOUR DIGITS (Yr 7 Section B Q9).
+   The exam works with 6431, 1009, 882 and 2988; the app stopped at
+   three digits. Same stacked column layout as L1–L3. */
+function genFourDigit(sub){
+  const el = id('qText');
+  let a = rr(1000, 9999), b = rr(1000, 9999);
+  if (sub){ if (b > a) { const t = a; a = b; b = t; } }
+  qData.ans = sub ? a - b : a + b;
+  qData.workSteps = 'Line the digits up in columns and work from the right, carrying '
+    + (sub ? 'or borrowing ' : '') + 'as you go: ' + a + (sub ? ' − ' : ' + ') + b
+    + ' = <b>' + qData.ans + '</b>.';
+  id('qBox').innerHTML = '<div style="font-family:\'Nunito\',sans-serif;font-weight:900;font-size:2.2rem;'
+    + 'text-align:right;line-height:1.4;border-bottom:3px solid var(--text);padding-bottom:6px;'
+    + 'min-width:170px;display:inline-block"><div>' + a + '</div><div>'
+    + (sub ? '−' : '+') + '&nbsp;' + b + '</div></div>';
+}
+
+/* Division L4 — HOW MANY ARE NEEDED (SEAL Section B Q8d).
+   Ceiling division in context: 152 croissants at 36 per oven is 4.2
+   ovens, which means 5. Students who divide and round the normal way
+   get this wrong every time, so it is its own level. */
+function genDivisionRoundUp(el){
+  el.style.fontSize = '1.2rem'; el.style.lineHeight = '1.5'; el.style.textAlign = 'left';
+  const per = ffPick([4, 6, 8, 10, 12, 15, 20, 24, 25, 36]);
+  const full = rr(2, 9);
+  const extra = rr(1, per - 1);                 // guarantees a partial last group
+  const total = per * full + extra;
+  qData.ans = full + 1;
+  const t = ri(3);
+  let text;
+  if (t === 0) text = 'A tray holds ' + per + ' muffins. How many trays are needed to bake ' + total + ' muffins?';
+  else if (t === 1) text = 'A minibus seats ' + per + ' people. How many minibuses are needed to carry ' + total + ' people?';
+  else text = 'A box holds ' + per + ' books. How many boxes are needed to pack ' + total + ' books?';
+  qData.workSteps = total + ' ÷ ' + per + ' = ' + full + ' remainder ' + extra + '.<br>'
+    + 'Those ' + extra + ' left over still need one more, so round <b>up</b>: <b>' + (full + 1) + '</b>. '
+    + 'Rounding the ordinary way would give ' + Math.round(total / per) + ' and leave some behind.';
+  el.textContent = text;
+}
+
+/* Factors, Multiples & Primes L4 — DESCRIBE THE NUMBER (Yr 7 MC Q3).
+   The exam asks which description fits 51 — a combined odd/even,
+   prime, square and multiple judgement that no single level covered. */
+function fmpDescribe(n){
+  const bits = [];
+  bits.push(n % 2 ? 'Odd' : 'Even');
+  const isPrime = (function(){ if (n < 2) return false; for (let i = 2; i * i <= n; i++) if (n % i === 0) return false; return true; })();
+  const isSq = Math.round(Math.sqrt(n)) * Math.round(Math.sqrt(n)) === n;
+  return { odd: n % 2 === 1, prime: isPrime, square: isSq,
+           mult: function(k){ return n % k === 0; } };
+}
+function genDescribeNumber(el){
+  el.style.fontSize = '1.05rem';
+  const N = rr(12, 99);
+  const d = fmpDescribe(N);
+  const parity = d.odd ? 'Odd' : 'Even';
+  const notParity = d.odd ? 'Even' : 'Odd';
+  /* The TRUE description is built from N itself, so it can never be wrong.
+     Each distractor is checked and only kept when it is genuinely false. */
+  let tail;
+  if (d.prime) tail = 'prime';
+  else if (d.square) tail = 'square';
+  else { const k = [3, 5, 7, 11].filter(function(x){ return d.mult(x); }); tail = k.length ? 'a multiple of ' + k[0] : 'composite'; }
+  const right = parity + ' and ' + tail;
+  const cand = [notParity + ' and ' + tail,
+                parity + ' and ' + (d.prime ? 'square' : 'prime'),
+                parity + ' and a multiple of ' + [3, 5, 7, 11].filter(function(x){ return !d.mult(x); })[0],
+                notParity + ' and ' + (d.square ? 'a multiple of 4' : 'square')];
+  const seen = { }; seen[right] = 1;
+  const opts = [right];
+  cand.forEach(function(t){ if (!seen[t] && opts.length < 4) { seen[t] = 1; opts.push(t); } });
+  qData.workSteps = N + ' is ' + parity.toLowerCase() + ', and it is ' + tail + '. '
+    + (d.prime ? 'A prime has exactly two factors: 1 and itself.'
+       : 'Check the factors: ' + N + ' = ' + (function(){ for (let i = 2; i * i <= N; i++) if (N % i === 0) return i + ' × ' + (N / i); return '1 × ' + N; })() + '.');
+  decSetChoice(el, '<div style="' + A_LBL + '">Which of these describes the number below?</div>'
+    + '<div style="text-align:center;font-weight:900;font-size:2.6rem;margin:10px 0;">' + N + '</div>', opts, right);
+}
+
+/* Sequence Rules in Words L6 — TWO-STEP RULES (Yr 7 MC Q10).
+   3, 7, 15, 31, … is ×2 + 1: neither arithmetic nor geometric, and
+   every existing sequence level assumes one single operation. */
+function genTwoStepPattern(el){
+  el.style.fontSize = '1.05rem';
+  const m = ffPick([2, 2, 2, 3]), c = ffPick([1, 1, 2, -1, 3]);
+  const a0 = rr(1, 5);
+  const seq = [a0];
+  for (let i = 0; i < 5; i++) seq.push(seq[seq.length - 1] * m + c);
+  const k = ffPick([3, 4]);                   // which term is hidden
+  qData.ans = seq[k];
+  const shown = seq.slice(0, 6).map(function(v, i){ return i === k ? '____' : v; });
+  qData.workSteps = 'Each term is the one before it × ' + m + (c > 0 ? ' + ' + c : ' − ' + (-c))
+    + '.<br>Check: ' + seq[0] + ' × ' + m + (c > 0 ? ' + ' + c : ' − ' + (-c)) + ' = ' + seq[1]
+    + ', and ' + seq[1] + ' × ' + m + (c > 0 ? ' + ' + c : ' − ' + (-c)) + ' = ' + seq[2] + '.<br>'
+    + 'So the missing term is ' + seq[k - 1] + ' × ' + m + (c > 0 ? ' + ' + c : ' − ' + (-c))
+    + ' = <b>' + seq[k] + '</b>.';
+  el.innerHTML = '<div style="' + A_LBL + '">The rule for this pattern takes TWO steps '
+    + '(multiply, then add or subtract). Find the missing term.</div>'
+    + '<div style="text-align:center;font-weight:900;font-size:1.9rem;margin:12px 0;">'
+    + shown.join(', &nbsp;') + ', &nbsp;…</div>';
+}
+
+/* Train & Bus Timetables L5 — WORKING BACKWARDS (SEAL Section B Q8e).
+   "It must be ready by 6:20 am — when do you start?" Every existing
+   timetable level moves forwards along the clock. */
+function ttbClock(mins){
+  let m = ((mins % 1440) + 1440) % 1440;
+  const h24 = Math.floor(m / 60), mm = m % 60;
+  const h12 = (h24 % 12) === 0 ? 12 : (h24 % 12);
+  return h12 + ':' + String(mm).padStart(2, '0') + ' ' + (h24 < 12 ? 'am' : 'pm');
+}
+function genTimetableBackwards(el){
+  el.style.fontSize = '1.05rem';
+  const finish = rr(6, 20) * 60 + ffPick([0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55]);
+  const dur = ffPick([25, 35, 40, 45, 50, 55, 70, 80, 95, 110]);
+  const start = finish - dur;
+  const right = ttbClock(start);
+  const seen = { }; seen[right] = 1;
+  const opts = [right];
+  [finish + dur, start + 60, start - 60, finish - 60, start + 10].forEach(function(v){
+    const t = ttbClock(v);
+    if (!seen[t] && opts.length < 4) { seen[t] = 1; opts.push(t); }
+  });
+  const ctx = ffPick([
+    ['the bread must be out of the oven', 'baking takes'],
+    ['the bus must arrive', 'the trip takes'],
+    ['the cake must be ready', 'it takes'],
+  ]);
+  qData.workSteps = 'Work BACKWARDS from the finish time: ' + ttbClock(finish) + ' minus '
+    + dur + ' minutes = <b>' + right + '</b>. Counting forwards from the finish time is the '
+    + 'usual mistake — that would give ' + ttbClock(finish + dur) + '.';
+  decSetChoice(el, '<div style="' + A_LBL + '">If ' + ctx[0] + ' by <b>' + ttbClock(finish)
+    + '</b> and ' + ctx[1] + ' <b>' + dur + ' minutes</b>, what time must it start?</div>', opts, right);
+}
+
+/* Naming 2D & 3D Shapes L6/L7 — POLYGON OR NOT, AND COUNTING PARTS
+   (Yr 7 Section B Q1a and Q1b). */
+const NSH_NOT_POLY = ['circle', 'sphere', 'cylinder', 'cone'];
+function genShapePolygon(el){
+  el.style.fontSize = '1.05rem';
+  const polyKeys = ['triangle', 'pentagon', 'hexagon', 'heptagon', 'octagon', 'nonagon', 'decagon',
+                    'square', 'rectangle', 'parallelogram', 'rhombus', 'trapezium', 'kite'];
+  const isPoly = Math.random() < 0.55;
+  const key = isPoly ? ffPick(polyKeys) : ffPick(NSH_NOT_POLY);
+  const sh = SHAPE_LIB[key];
+  const right = isPoly ? 'Yes — it is a polygon' : 'No — it is not a polygon';
+  qData.workSteps = isPoly
+    ? 'A polygon is a CLOSED 2D shape made only of straight sides. A ' + sh.name.toLowerCase()
+      + ' has straight sides and no gaps, so it <b>is</b> a polygon.'
+    : 'A ' + sh.name.toLowerCase() + ' is <b>not</b> a polygon — '
+      + (sh.dim === '3D' ? 'a polygon must be flat (2D), and this is a solid.'
+                         : 'a polygon must be made only of straight sides, and this has a curve.');
+  decSetChoice(el, '<div style="' + A_LBL + '">Is this shape a polygon?</div>'
+    + shWrap(sh.variants[0]), ['Yes — it is a polygon', 'No — it is not a polygon'], right, true);
+}
+const NSH_SIDES = { triangle:3, square:4, rectangle:4, parallelogram:4, rhombus:4, trapezium:4, kite:4,
+                    pentagon:5, hexagon:6, heptagon:7, octagon:8, nonagon:9, decagon:10 };
+function genShapeCount(el){
+  el.style.fontSize = '1.05rem';
+  const key = ffPick(Object.keys(NSH_SIDES));
+  const sh = SHAPE_LIB[key], n = NSH_SIDES[key];
+  const askVertices = Math.random() < 0.5;
+  qData.ans = n;
+  qData.workSteps = 'A ' + sh.name.toLowerCase() + ' has ' + n + ' sides and ' + n + ' vertices — '
+    + 'in any polygon the two counts are always <b>the same</b>, because each corner joins exactly two sides.';
+  el.innerHTML = '<div style="' + A_LBL + '">How many <b>' + (askVertices ? 'vertices (corners)' : 'sides')
+    + '</b> does this shape have?</div>' + shWrap(sh.variants[0]);
+}
+
+/* v96: levels appended to skills that already exist. Same approach as the v93
+   word problems — ONE map and ONE dispatcher, so not a single existing
+   generator was reopened to add a level to the end of it. */
+const V96_LEVELS = {
+  addition: [4], subtraction: [4], division: [4], factorsMultiples: [4],
+  primeFactor: [4], ratioEquiv: [4], seqWords: [6], arithSeq: [5],
+  timetables: [5], nameShapes: [6, 7],
+};
+function isV96Level(){
+  const a = V96_LEVELS[skill];
+  return !!a && a.indexOf(level) >= 0;
+}
+function genV96Level(el){
+  if (skill === 'addition')         return genFourDigit(false);
+  if (skill === 'subtraction')      return genFourDigit(true);
+  if (skill === 'division')         return genDivisionRoundUp(el);
+  if (skill === 'factorsMultiples') return genDescribeNumber(el);
+  if (skill === 'primeFactor')      return genPrimeFactorForm(el);
+  if (skill === 'ratioEquiv')       return genRatioChain(el);
+  if (skill === 'seqWords')         return genTwoStepPattern(el);
+  if (skill === 'arithSeq')         return genArithTermNumber(el);
+  if (skill === 'timetables')       return genTimetableBackwards(el);
+  if (skill === 'nameShapes')       return level === 6 ? genShapePolygon(el) : genShapeCount(el);
+}
+
 </script>
 </body>
 </html>
