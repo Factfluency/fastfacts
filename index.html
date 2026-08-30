@@ -1,4 +1,4 @@
-<!-- Sandy Fast Facts — v84 (Laura). 📊 NEW CATEGORY: DATA ANALYSIS (Release 1 of 3). Four reusable display engines — daDotPlot, daStemHtml, daHistogram, daBoxPlot — each driven by DATA and working out its own scale, so Release 2 (mean/mode/median/range) re-uses them unchanged. Three skills: Classifying Data, Frequency Tables (read · from a raw list · grouped class intervals · percentage frequency, with totals restricted to 20/25/50 so every percentage is exact) and Reading Data Displays (one level per display, so every engine is student-tested now rather than sitting unused until Release 2). All bands are PLACEHOLDERS and every level is METHOD (accuracy-first, no Fluent badge) until class data exists. Purely additive: no existing skill, level, id or band changed. v83 notes follow. internal v83: 🔍 DESKTOP SIZING, SPLIT THE DIFFERENCE: v82 over-reserved vertical space (420px) so diagrams came out smaller than they had to; the budget is now calc(100vh - 330px) and the cap 460px. Question CONTENT also scales on a big screen — A_LBL now reads its size from --qlbl (a CSS variable, because a media query cannot override an inline style) and the timetable from --qtbl, so prompts and tables grow with the column instead of staying at phone size. v82 notes follow. internal v82: 📏 TIGHTER GAME HEADER ON DESKTOP: the back link / stats / progress / nudge strip is trimmed from ~170px to ~105px and diagrams are capped at calc(100vh - 420px), so the tall coordinate-grid and plot questions fit without scrolling. CSS only, ≥900px only. v81 notes follow. internal v81: 🎯 START BUTTON IS ALWAYS REACHABLE: #levelStartBtn is position:sticky at every width, so on a 6-level skill it rides the bottom of the window instead of hiding below the cards, and settles into the flow once the list fits. On desktop the level grid is now auto-fill minmax(300px) — 3 across on a 1080px frame — so even the worst case (six levels) needs no scrolling. CSS only. v80 notes follow. internal v80: 🖥 DESKTOP LAYOUT: additive CSS in one @media (min-width:900px) block plus two harmless wrapper divs on the home screen (.home-top, .home-foot). The frame widens to 1080px, categories go 3-across, skills and levels 2-across, and the GAME screen becomes two columns (question left, answering right) via grid auto-placement — no JS, no ids, no question logic touched. Under 900px every rule is unchanged, so all phone layouts are byte-identical to v79. v79 notes follow. internal v79: 🧩 OTHER IS RENAMED 🔄 TIME & TRANSFORMATIONS — display only: the CATS key stays 'other', so every stored Personal Best, streak and share line is untouched, and the dashboard .bas keys on SKILL names so it is unaffected too. SIX NEW TRANSFORMATION SKILLS, all built on one engine: every transformation in the program is an affine map whose matrix has exactly one non-zero entry per row, so applying one is two lines, COMPOSING two stays in the same family (which is what lets the Combinations skill print a single mapping for a chain), and the mapping notation is rendered straight off the matrix so the words and the notation can never drift apart. Translations (L1 one-axis slide · L2 two-axis · L3 describe it from the drawn points · L4 read the mapping · L5 apply the mapping · L6 find the pre-image), Reflections (same six; L1 the axes, L2 adds y = x), Dilations from the Origin (ONE apply level per Laura — a dilation from the origin is always a single step — then the same four; factors 2, 3, 4, ½ and ⅓ on a ±10 window because a factor of 4 leaves the −5…5 box immediately), Rotations about the Origin (L1 half turns only, L2 the quarter turns clockwise and anticlockwise; the describe-it levels are restricted to the three CANONICAL names because 90° clockwise and 270° anticlockwise are the SAME map and would otherwise be two right answers), Combinations of Transformations (NO describe-in-words level, per Laura — two points can be joined by any number of chains — so L1/L2 apply a chain of two then three, and the mapping levels survive because a mapping IS the composite), and Transformations of 2D Shapes (Yr 7–8: translate, reflect, identify, dilate, rotate and un-transform a whole shape by TAPPING its image corners, on a coarser −4…4 grid so a corner is an easy tap on a phone). One subtle guard worth remembering: two DIFFERENT transformations can still agree on ONE point — (2, −2) goes to (−2, 2) under both a half turn and a reflection in y = x — so a describe-it distractor is only safe if it fails on THAT point, not merely if it is a different map. Purely additive apart from the category label: no existing skill, level, id or band changed. All new bands are PLACEHOLDERS pending class data. internal v78.4 FIXES: (1) TYPING WAS DEAD on any narrow screen — the "is this a phone" test was window width ALONE, so a laptop with a narrow window (or the app in a preview pane) got the readonly-input trick meant to suppress a phone keyboard, with no way to type. A phone must now ALSO have a coarse primary pointer, and the first real key press from a physical keyboard unlocks every box and hides the keypad for the rest of the session. (2) THE PLOT GRID WAS SQUASHED — #qBox is a flex container and plotRender was handing it two or three children, so the prompt, story and grid became columns; wrapped in a single .q-text child, and the plot/graph SVGs now scale to the available width (up to 460px) instead of sitting at a fixed 300px. (3) DISTANCE-TIME JOURNEYS CAN NOW RETURN HOME — a stage may head back towards home so the graph comes down, and some journeys finish at 0 km; the line can never go below 0, "fastest" and "speed" compare magnitudes, and the story says "back towards home" / "the last N km home". internal v78.3: NEW CATEGORY 🧩 OTHER (Laura) — the practical, everyday-maths corner, placed last: Converting Units of Time (Yr 7: sec/min/hour · hour/day/week · week/month/year · compound times both ways), Train & Bus Timetables (Yr 7: read the table · trip length in minutes · latest service that still arrives in time · minutes until the next service, with 24-hour and 12-hour clocks mixed) and Distance-Time Graphs (Yr 7–8: read the distance · which stage is stationary/fastest · BUILD or finish the graph by tapping the corner of each stage · speed of a labelled stage). Coordinate Geometry gains Applications of Linear Graphs (Yr 8–9: rate or starting amount from P = −35 + 4c · write y = a + bx from a story · build its table · write ax + by = d from a two-item total). The plotPts mode is now axis-agnostic and can mark an ORDERED path, which is what the distance-time construct level uses. Purely additive — no existing skill, level, id or band changed. internal v78.2: 📈 COORDINATE GEOMETRY grows (Laura). The Cartesian Plane gains L4 — three corners of a rectangle, square or labelled parallelogram ABCD are plotted and the student writes the coordinates of the fourth. NEW skill Table of Values (Yr 7–8: L1 build a linear table from a rule · L2 PLOT that table on the plane · L3 build a non-linear table (x², x³, 2ˣ) · L4 plot a non-linear table). x- and y-Intercepts gains a new L2 — read both intercepts off a table of values — pushing y-int/x-int/both down to L3/L4/L5 (safe: no student has played Coordinate Geometry yet). NEW INPUT MODE plotPts: the drawn Cartesian plane itself is the answer surface — every lattice point carries an invisible tap target, tap to place or remove a marker, all-or-nothing marking, and the marking is drawn back onto the grid. internal v78.0: Yr 7–9 SEQUENCES in 💰 Finance & Patterns (Laura). NEW Sequence Rules in Words (Yr 7: L1 first term · L2 the term-to-term rule in words as a 4-way tap (add / subtract / multiply / divide / square numbers) · L3 next two terms · L4 write the first five terms from a starting value and a worded rule · L5 read a term off the sequence from aₙ notation). NEW Arithmetic Sequences (Yr 7–8: L1 common difference d · L2 next three terms · L3 fill a₁ and d into aₙ = a₁ + (n − 1)d · L4 use the rule to find a required term). NEW Geometric Sequences (Yr 8–9: L1 common ratio r · L2 next three terms · L3 fill a₁ and r into aₙ = a₁ × rⁿ⁻¹ · L4 use the rule to find a required term). The existing Sequences skill is RENAMED "Arithmetic & Geometric Sequences" and otherwise untouched (id, lvKey, levels and bands all unchanged) — it stays as the higher-order one where the student decides which kind it is. gapFill grows from four boxes to FIVE (gap4), with narrower boxes on a five-box row. All new bands are PLACEHOLDERS pending class data. internal v77.0: THREE NEW CATEGORIES and one new Number skill. ◡ Quadratics — Verify Solutions to Quadratic Equations (L1 x²=k · L2 factorised · L3 trinomial, Yes/No) and Solve Quadratic Equations (L1 x²=k · L2 exact values/fractions as multiple choice · L3 Null Factor Law · L4 monic trinomials). 📈 Coordinate Geometry — The Cartesian Plane (quadrant · read a plotted coordinate), Linear or Non-Linear (from a graph · from an equation), x- and y-Intercepts (y-int · x-int · both from ax+by=c) and Gradient of a Line Segment (whole · from a diagram · fractions & negatives). 💰 Finance & Patterns — GST (10%: added · price incl · removed), Simple Interest (5 levels on Vn = V0 + nD, D = r/100 × V0), Sequences (classify · next term · arithmetic rule · geometric rule), Recurrence Relations (write · use) and Flat Rate Depreciation (5 levels on Vn = V0 − nD). Number gains Number Classification (rational/irrational · tick every set). TWO NEW INPUT MODES: gapFill (a rendered rule/coordinate/solution template with up to five numeric boxes, all-or-nothing, optional order-free marking) and multiSel (tick every box that applies, all-or-nothing). Purely additive — no existing skill, level, id or band changed; all new bands are PLACEHOLDERS pending class data. internal v76.0: Congruence & Similarity now distinguish "provably false" from "unknown". L3 adds a 6th button "Not similar" (sides given but not in a constant ratio — the case a student CAN disprove, e.g. 5,8,11 vs 10,18,22); L2 adds a 6th button "Not congruent" via a new DIFF scenario that labels side lengths that don't all match. "Not enough information" now means only the genuinely undetermined cases (SSA, AAA-for-congruence, one angle, two sides). csSimilarityVerdict/csCongruenceVerdict extended; fixed 6-button order; storage-safe (no skill/level renamed or reordered). v75.0: NEW Percentages skills — Convert Percentages & Decimals (pctDecConv, both directions, number box) and Convert Fractions & Percentages (fracPctConv: L1–2 fraction→% number box, L3–4 %→fraction box; direction fixed per level via levelModes). Both single-question (not the FDP fill-in table), placed before Convert FDP; recall/Fluent-eligible with PLACEHOLDER bands (recalibrate with class data). Recurring values (33⅓% etc.) accepted within a per-question tolerance via qData.ansTol. Storage-safe additive change. v74.9: band cut-offs revised across the whole program from Laura's reviewed spreadsheet — 95 skill-levels re-banded via explicit per-level BAND_OVERRIDE entries (app matches the sheet on all 330 rows). v74.8: Decimals band targets LOWERED (Laura) so quick+accurate students reach higher animals — Identify/Expanded Form/Convert D→F −2; Rounding & Add/Subtract Decimals −3; all ×/÷ decimal operations (Multiply, Divide, ×÷ by 10/100/1000, Squares & Cubes, Square/Cube Roots, signed ×÷, ×fractions) −4. Display-only/storage-safe; .bas regenerated. v74.7: more Decimals (Laura) — NEW skills Add & Subtract Decimals (Positive & Negative), Multiply Decimals & Fractions (decFrac), Multiply & Divide Decimals (Positive & Negative), Leading Digit Estimation (round-to-1sf → estimate → BODMAS), Square Roots & Cube Roots of Decimals; NEW word-problem L4 on Multiply Decimals and Divide Decimals; Squares & Cubes of Decimals moved after Multiply Decimals & Fractions. v74.6: Add & Subtract Decimals L4 word problems; Add & Subtract Fractions & Decimals; Rounding Decimals L3 round-then-estimate. v74.5: miss reviews work THIS question's numbers step-by-step; Angles-in-Polygons L4; deeper concave polygons) -->
+<!-- Sandy Fast Facts — v92 (Laura). 🎯 NEW: EXAM / ALT TRAINING + THREE USABILITY CHANGES. (1) HOME HEADER is one row — name and greeting left, class chip and Edit / Dark / Backup as icon buttons plus Switch profile right; Backup turns amber with a dot when the last backup is over 14 days old, because it is the only control there that protects data. (2) MODE IS CHOSEN AFTER THE LEVEL, not before. The home-screen segmented control is gone; the level screen's Start now opens a mode screen naming the skill and level, with one of the three RECOMMENDED from what the app already stores — an explicit LEVEL_REC wins, then a never-attempted or sub-85% level goes to Practice, and only an accurate student is sent to the clock. This is the fix for "everyone just does Fluency because it is pre-set". beginGame() is unchanged and still starts the game, so every existing test path (harness start = selectSkill -> lc<lv>.onclick -> beginGame -> launchSession) still works. (3) TOP ROW is streak strip + Daily Mix + Exam/ALT Training, three across at >=900px and stacked below; the streak card lost its progress text and shrank to a strip. EXAM / ALT TRAINING: a COURSES object of PURE METADATA (Year 7 Mathematics, Year 7 SEAL Mathematics) naming skill ids and level numbers that already exist — nothing in CATS, LEVEL_DEFS or any band changed, and no storage key moved. Course -> ALT list -> the skills and levels in that ALT, each level carrying a grey/amber/green READINESS dot read from the accuracy the app already saved after every session. Every ALT and the exam get a MIXED PRACTICE button (practice mode only, by design): nextQ() is now a wrapper that re-picks the skill between questions, weighting anything not yet green 3:1, and the round records one session plus a per-level accuracy stamp for every level that got at least 3 questions. EXAM PRACTICE is generated as the union of the examinable ALTs, so it can never drift; ALT 8 (Measurement) is exam:false because it is taught after the exam. PREREQUISITES (Times Tables, Division) sit greyed and dashed at the foot of every ALT — assumed knowledge, not assessed, but somewhere to drop back to. test_courses.js proves all 718 course->skill-level references resolve, that Exam Practice equals the union, and that Mixed Practice rotates skills and stays in practice mode. v84 notes follow. internal v84 (Laura). 📊 NEW CATEGORY: DATA ANALYSIS (Release 1 of 3). Four reusable display engines — daDotPlot, daStemHtml, daHistogram, daBoxPlot — each driven by DATA and working out its own scale, so Release 2 (mean/mode/median/range) re-uses them unchanged. Three skills: Classifying Data, Frequency Tables (read · from a raw list · grouped class intervals · percentage frequency, with totals restricted to 20/25/50 so every percentage is exact) and Reading Data Displays (one level per display, so every engine is student-tested now rather than sitting unused until Release 2). All bands are PLACEHOLDERS and every level is METHOD (accuracy-first, no Fluent badge) until class data exists. Purely additive: no existing skill, level, id or band changed. v83 notes follow. internal v83: 🔍 DESKTOP SIZING, SPLIT THE DIFFERENCE: v82 over-reserved vertical space (420px) so diagrams came out smaller than they had to; the budget is now calc(100vh - 330px) and the cap 460px. Question CONTENT also scales on a big screen — A_LBL now reads its size from --qlbl (a CSS variable, because a media query cannot override an inline style) and the timetable from --qtbl, so prompts and tables grow with the column instead of staying at phone size. v82 notes follow. internal v82: 📏 TIGHTER GAME HEADER ON DESKTOP: the back link / stats / progress / nudge strip is trimmed from ~170px to ~105px and diagrams are capped at calc(100vh - 420px), so the tall coordinate-grid and plot questions fit without scrolling. CSS only, ≥900px only. v81 notes follow. internal v81: 🎯 START BUTTON IS ALWAYS REACHABLE: #levelStartBtn is position:sticky at every width, so on a 6-level skill it rides the bottom of the window instead of hiding below the cards, and settles into the flow once the list fits. On desktop the level grid is now auto-fill minmax(300px) — 3 across on a 1080px frame — so even the worst case (six levels) needs no scrolling. CSS only. v80 notes follow. internal v80: 🖥 DESKTOP LAYOUT: additive CSS in one @media (min-width:900px) block plus two harmless wrapper divs on the home screen (.home-top, .home-foot). The frame widens to 1080px, categories go 3-across, skills and levels 2-across, and the GAME screen becomes two columns (question left, answering right) via grid auto-placement — no JS, no ids, no question logic touched. Under 900px every rule is unchanged, so all phone layouts are byte-identical to v79. v79 notes follow. internal v79: 🧩 OTHER IS RENAMED 🔄 TIME & TRANSFORMATIONS — display only: the CATS key stays 'other', so every stored Personal Best, streak and share line is untouched, and the dashboard .bas keys on SKILL names so it is unaffected too. SIX NEW TRANSFORMATION SKILLS, all built on one engine: every transformation in the program is an affine map whose matrix has exactly one non-zero entry per row, so applying one is two lines, COMPOSING two stays in the same family (which is what lets the Combinations skill print a single mapping for a chain), and the mapping notation is rendered straight off the matrix so the words and the notation can never drift apart. Translations (L1 one-axis slide · L2 two-axis · L3 describe it from the drawn points · L4 read the mapping · L5 apply the mapping · L6 find the pre-image), Reflections (same six; L1 the axes, L2 adds y = x), Dilations from the Origin (ONE apply level per Laura — a dilation from the origin is always a single step — then the same four; factors 2, 3, 4, ½ and ⅓ on a ±10 window because a factor of 4 leaves the −5…5 box immediately), Rotations about the Origin (L1 half turns only, L2 the quarter turns clockwise and anticlockwise; the describe-it levels are restricted to the three CANONICAL names because 90° clockwise and 270° anticlockwise are the SAME map and would otherwise be two right answers), Combinations of Transformations (NO describe-in-words level, per Laura — two points can be joined by any number of chains — so L1/L2 apply a chain of two then three, and the mapping levels survive because a mapping IS the composite), and Transformations of 2D Shapes (Yr 7–8: translate, reflect, identify, dilate, rotate and un-transform a whole shape by TAPPING its image corners, on a coarser −4…4 grid so a corner is an easy tap on a phone). One subtle guard worth remembering: two DIFFERENT transformations can still agree on ONE point — (2, −2) goes to (−2, 2) under both a half turn and a reflection in y = x — so a describe-it distractor is only safe if it fails on THAT point, not merely if it is a different map. Purely additive apart from the category label: no existing skill, level, id or band changed. All new bands are PLACEHOLDERS pending class data. internal v78.4 FIXES: (1) TYPING WAS DEAD on any narrow screen — the "is this a phone" test was window width ALONE, so a laptop with a narrow window (or the app in a preview pane) got the readonly-input trick meant to suppress a phone keyboard, with no way to type. A phone must now ALSO have a coarse primary pointer, and the first real key press from a physical keyboard unlocks every box and hides the keypad for the rest of the session. (2) THE PLOT GRID WAS SQUASHED — #qBox is a flex container and plotRender was handing it two or three children, so the prompt, story and grid became columns; wrapped in a single .q-text child, and the plot/graph SVGs now scale to the available width (up to 460px) instead of sitting at a fixed 300px. (3) DISTANCE-TIME JOURNEYS CAN NOW RETURN HOME — a stage may head back towards home so the graph comes down, and some journeys finish at 0 km; the line can never go below 0, "fastest" and "speed" compare magnitudes, and the story says "back towards home" / "the last N km home". internal v78.3: NEW CATEGORY 🧩 OTHER (Laura) — the practical, everyday-maths corner, placed last: Converting Units of Time (Yr 7: sec/min/hour · hour/day/week · week/month/year · compound times both ways), Train & Bus Timetables (Yr 7: read the table · trip length in minutes · latest service that still arrives in time · minutes until the next service, with 24-hour and 12-hour clocks mixed) and Distance-Time Graphs (Yr 7–8: read the distance · which stage is stationary/fastest · BUILD or finish the graph by tapping the corner of each stage · speed of a labelled stage). Coordinate Geometry gains Applications of Linear Graphs (Yr 8–9: rate or starting amount from P = −35 + 4c · write y = a + bx from a story · build its table · write ax + by = d from a two-item total). The plotPts mode is now axis-agnostic and can mark an ORDERED path, which is what the distance-time construct level uses. Purely additive — no existing skill, level, id or band changed. internal v78.2: 📈 COORDINATE GEOMETRY grows (Laura). The Cartesian Plane gains L4 — three corners of a rectangle, square or labelled parallelogram ABCD are plotted and the student writes the coordinates of the fourth. NEW skill Table of Values (Yr 7–8: L1 build a linear table from a rule · L2 PLOT that table on the plane · L3 build a non-linear table (x², x³, 2ˣ) · L4 plot a non-linear table). x- and y-Intercepts gains a new L2 — read both intercepts off a table of values — pushing y-int/x-int/both down to L3/L4/L5 (safe: no student has played Coordinate Geometry yet). NEW INPUT MODE plotPts: the drawn Cartesian plane itself is the answer surface — every lattice point carries an invisible tap target, tap to place or remove a marker, all-or-nothing marking, and the marking is drawn back onto the grid. internal v78.0: Yr 7–9 SEQUENCES in 💰 Finance & Patterns (Laura). NEW Sequence Rules in Words (Yr 7: L1 first term · L2 the term-to-term rule in words as a 4-way tap (add / subtract / multiply / divide / square numbers) · L3 next two terms · L4 write the first five terms from a starting value and a worded rule · L5 read a term off the sequence from aₙ notation). NEW Arithmetic Sequences (Yr 7–8: L1 common difference d · L2 next three terms · L3 fill a₁ and d into aₙ = a₁ + (n − 1)d · L4 use the rule to find a required term). NEW Geometric Sequences (Yr 8–9: L1 common ratio r · L2 next three terms · L3 fill a₁ and r into aₙ = a₁ × rⁿ⁻¹ · L4 use the rule to find a required term). The existing Sequences skill is RENAMED "Arithmetic & Geometric Sequences" and otherwise untouched (id, lvKey, levels and bands all unchanged) — it stays as the higher-order one where the student decides which kind it is. gapFill grows from four boxes to FIVE (gap4), with narrower boxes on a five-box row. All new bands are PLACEHOLDERS pending class data. internal v77.0: THREE NEW CATEGORIES and one new Number skill. ◡ Quadratics — Verify Solutions to Quadratic Equations (L1 x²=k · L2 factorised · L3 trinomial, Yes/No) and Solve Quadratic Equations (L1 x²=k · L2 exact values/fractions as multiple choice · L3 Null Factor Law · L4 monic trinomials). 📈 Coordinate Geometry — The Cartesian Plane (quadrant · read a plotted coordinate), Linear or Non-Linear (from a graph · from an equation), x- and y-Intercepts (y-int · x-int · both from ax+by=c) and Gradient of a Line Segment (whole · from a diagram · fractions & negatives). 💰 Finance & Patterns — GST (10%: added · price incl · removed), Simple Interest (5 levels on Vn = V0 + nD, D = r/100 × V0), Sequences (classify · next term · arithmetic rule · geometric rule), Recurrence Relations (write · use) and Flat Rate Depreciation (5 levels on Vn = V0 − nD). Number gains Number Classification (rational/irrational · tick every set). TWO NEW INPUT MODES: gapFill (a rendered rule/coordinate/solution template with up to five numeric boxes, all-or-nothing, optional order-free marking) and multiSel (tick every box that applies, all-or-nothing). Purely additive — no existing skill, level, id or band changed; all new bands are PLACEHOLDERS pending class data. internal v76.0: Congruence & Similarity now distinguish "provably false" from "unknown". L3 adds a 6th button "Not similar" (sides given but not in a constant ratio — the case a student CAN disprove, e.g. 5,8,11 vs 10,18,22); L2 adds a 6th button "Not congruent" via a new DIFF scenario that labels side lengths that don't all match. "Not enough information" now means only the genuinely undetermined cases (SSA, AAA-for-congruence, one angle, two sides). csSimilarityVerdict/csCongruenceVerdict extended; fixed 6-button order; storage-safe (no skill/level renamed or reordered). v75.0: NEW Percentages skills — Convert Percentages & Decimals (pctDecConv, both directions, number box) and Convert Fractions & Percentages (fracPctConv: L1–2 fraction→% number box, L3–4 %→fraction box; direction fixed per level via levelModes). Both single-question (not the FDP fill-in table), placed before Convert FDP; recall/Fluent-eligible with PLACEHOLDER bands (recalibrate with class data). Recurring values (33⅓% etc.) accepted within a per-question tolerance via qData.ansTol. Storage-safe additive change. v74.9: band cut-offs revised across the whole program from Laura's reviewed spreadsheet — 95 skill-levels re-banded via explicit per-level BAND_OVERRIDE entries (app matches the sheet on all 330 rows). v74.8: Decimals band targets LOWERED (Laura) so quick+accurate students reach higher animals — Identify/Expanded Form/Convert D→F −2; Rounding & Add/Subtract Decimals −3; all ×/÷ decimal operations (Multiply, Divide, ×÷ by 10/100/1000, Squares & Cubes, Square/Cube Roots, signed ×÷, ×fractions) −4. Display-only/storage-safe; .bas regenerated. v74.7: more Decimals (Laura) — NEW skills Add & Subtract Decimals (Positive & Negative), Multiply Decimals & Fractions (decFrac), Multiply & Divide Decimals (Positive & Negative), Leading Digit Estimation (round-to-1sf → estimate → BODMAS), Square Roots & Cube Roots of Decimals; NEW word-problem L4 on Multiply Decimals and Divide Decimals; Squares & Cubes of Decimals moved after Multiply Decimals & Fractions. v74.6: Add & Subtract Decimals L4 word problems; Add & Subtract Fractions & Decimals; Rounding Decimals L3 round-then-estimate. v74.5: miss reviews work THIS question's numbers step-by-step; Angles-in-Polygons L4; deeper concave polygons) -->
 <!-- Viewport (v48): dropped `maximum-scale=1.0, user-scalable=no`. iOS ignored it (so pinch worked there anyway) but Android obeyed it, blocking accessibility pinch-zoom. Accidental double-tap-to-zoom is killed per-control via `touch-action: manipulation` instead, which leaves deliberate pinch-zoom intact on every platform. -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1838,6 +1838,157 @@ body {
 @media (min-width: 1400px) {
   .app { max-width: 1180px; }
 }
+
+/* ══════════════════════════════════════════════════════════════════
+   v92 (Laura): USABILITY — HEADER, TOP ROW, MODE SCREEN, EXAM/ALT
+   All additive and appended last, so every earlier rule still wins
+   where it should and this block can be removed in one edit.
+══════════════════════════════════════════════════════════════════ */
+
+/* ── HEADER: one row instead of two ── */
+.home-header { padding: 20px 0 14px; flex-wrap: wrap; }
+.hh-name { min-width: 0; }
+.hh-tools { margin-left: auto; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.hh-tools .class-code-chip { margin-top: 0; }
+.hh-icon {
+  background: transparent; border: 1.5px solid var(--border); border-radius: 50%;
+  width: 34px; height: 34px; line-height: 1; font-size: 0.95rem; cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: 'Nunito', sans-serif; transition: border-color .18s, background .18s;
+}
+.hh-icon:hover { border-color: var(--accent); background: var(--accent-bg); }
+/* Backup is the only control here that protects data, so when it has gone
+   stale it stops being a quiet icon and asks to be pressed. */
+.hh-icon.stale {
+  border-color: var(--amber); background: rgba(217,119,6,0.10); position: relative;
+}
+.hh-icon.stale::after {
+  content: ''; position: absolute; top: -2px; right: -2px;
+  width: 9px; height: 9px; border-radius: 50%;
+  background: var(--amber); border: 2px solid var(--bg);
+}
+.hh-switch {
+  background: transparent; border: 1.5px solid var(--border); color: var(--muted);
+  font-size: 0.75rem; padding: 7px 13px; border-radius: 20px; cursor: pointer;
+  font-family: 'Nunito', sans-serif; font-weight: 700;
+  transition: border-color .18s, color .18s;
+}
+.hh-switch:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ── TOP ROW: streak strip · Daily Mix · Exam/ALT ──
+   The streak was a full card for one number. It is now a strip the same
+   height as the two tiles beside it. */
+.home-top { margin-bottom: 18px; }
+.habit-card { padding: 12px 14px; margin-bottom: 12px; }
+.hb-bar { margin: 8px 0 5px; height: 6px; }
+.hb-dots { margin-top: 8px; gap: 5px; }
+.hb-dot { width: 11px; height: 11px; }
+.hb-sub { font-size: 0.74rem; }
+.hb-streak { font-size: 0.88rem; }
+.hb-goal { font-size: 0.72rem; }
+
+.mix-btn, .exam-btn {
+  width: 100%; display: grid;
+  grid-template-columns: auto 1fr; grid-template-rows: auto auto;
+  column-gap: 9px; row-gap: 1px; align-items: center;
+  text-align: left; border-radius: var(--r);
+  font-family: 'Nunito', sans-serif; padding: 12px 14px; cursor: pointer;
+  margin-bottom: 12px; transition: transform .15s, box-shadow .15s;
+}
+.mix-btn { background: var(--accent-bg); color: var(--accent); border: 2px solid var(--accent); font-size: 1rem; }
+.mix-btn span { font-weight: 700; }
+.exam-btn {
+  background: var(--surface); color: var(--text);
+  border: 2px solid var(--amber);
+  box-shadow: 0 6px 18px -12px var(--amber);
+}
+.tile-icon { font-size: 1.2rem; grid-row: 1 / span 2; align-self: center; }
+.tile-name { font-weight: 900; font-size: 1.02rem; }
+.exam-btn .tile-name { color: var(--amber); }
+.tile-sub { font-weight: 700; font-size: 0.78rem; opacity: 0.85; grid-column: 2; }
+.mix-btn:hover, .exam-btn:hover { transform: scale(0.99); }
+
+/* ── MODE SCREEN ── */
+.mode-cards { margin-bottom: 14px; }
+.sess-toggle button.rec {
+  box-shadow: inset 0 0 0 2.5px var(--green);
+  border-radius: 12px;
+}
+.mode-rec-note {
+  text-align: center; font-weight: 800; font-size: 0.88rem;
+  color: var(--green); margin-bottom: 14px; min-height: 20px;
+}
+.mode-what {
+  background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--r);
+  padding: 12px 14px; font-size: 0.8rem; font-weight: 700; color: var(--muted); line-height: 1.7;
+}
+.mode-what b { color: var(--text); }
+
+/* ── EXAM / ALT TRAINING ── */
+.alt-card {
+  width: 100%; text-align: left; background: var(--surface);
+  border: 1.5px solid var(--border); border-radius: var(--r);
+  padding: 13px 15px; margin-bottom: 10px; cursor: pointer;
+  font-family: 'Nunito', sans-serif; display: block;
+  transition: border-color .18s, transform .15s;
+}
+.alt-card:hover { border-color: var(--accent); transform: translateX(3px); }
+.alt-card.exam { border-color: var(--amber); border-width: 2px; background: rgba(217,119,6,0.06); }
+.alt-card.empty { opacity: 0.62; cursor: default; }
+.alt-card.empty:hover { border-color: var(--border); transform: none; }
+.alt-n { font-size: 0.72rem; font-weight: 900; color: var(--muted); letter-spacing: 0.06em; }
+.alt-title { font-weight: 900; font-size: 1.02rem; color: var(--text); margin: 1px 0 5px; }
+.alt-meta { font-size: 0.76rem; font-weight: 700; color: var(--muted); }
+.alt-note { font-size: 0.74rem; font-weight: 700; color: var(--amber); margin-top: 5px; }
+
+.alt-ready-bar {
+  font-size: 0.8rem; font-weight: 800; color: var(--muted);
+  margin: 2px 0 12px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+}
+.alt-skill-list { margin-top: 16px; }
+.alt-skill-row {
+  background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--r);
+  padding: 10px 13px; margin-bottom: 8px;
+}
+.alt-skill-row.prereq { opacity: 0.72; border-style: dashed; }
+.alt-skill-name { font-weight: 800; font-size: 0.92rem; color: var(--text); margin-bottom: 7px; }
+.alt-lv-row { display: flex; gap: 7px; flex-wrap: wrap; }
+.alt-lv {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--surface2); border: 1.5px solid var(--border);
+  border-radius: 20px; padding: 5px 11px; cursor: pointer;
+  font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 0.78rem; color: var(--text);
+  transition: border-color .18s;
+}
+.alt-lv:hover { border-color: var(--accent); }
+.rd { display: inline-block; vertical-align: middle; width: 9px; height: 9px;
+      border-radius: 50%; flex-shrink: 0; margin-right: 1px;
+      background: var(--surface2); border: 1.5px solid var(--muted); }
+.rd.amber { background: var(--amber); border-color: var(--amber); }
+.rd.green { background: var(--green); border-color: var(--green); }
+.alt-prereq-head {
+  font-size: 0.78rem; font-weight: 900; color: var(--muted);
+  margin: 22px 0 4px; text-transform: uppercase; letter-spacing: 0.05em;
+}
+.alt-prereq-sub { font-size: 0.76rem; font-weight: 700; color: var(--muted); margin-bottom: 9px; }
+
+@media (min-width: 900px) {
+  /* Streak strip and the two tiles share one line. The streak gets the extra
+     width because it holds a bar and seven dots; the tiles are two lines of text. */
+  .home-top {
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr) minmax(0, 1fr);
+    gap: 12px; align-items: stretch; margin-bottom: 20px;
+  }
+  .home-top .habit-card, .home-top .mix-btn, .home-top .exam-btn { margin-bottom: 0; }
+  .home-top .mix-btn, .home-top .exam-btn { justify-content: center; }
+  .mode-cards { max-width: 640px; margin: 0 auto 14px; }
+  .mode-what { max-width: 640px; margin: 0 auto; }
+  #s-course, #s-alts, #s-altskills { max-width: 760px; margin: 0 auto; }
+  #s-mode { max-width: 640px; margin: 0 auto; }
+  .alt-skill-list { columns: 2; column-gap: 12px; }
+  .alt-skill-row { break-inside: avoid; }
+}
 </style>
 </head>
 <body>
@@ -1890,28 +2041,31 @@ body {
 <div id="s-home" class="screen">
   <div class="home-header">
     <div class="av-sm" id="homeAv"></div>
-    <div>
+    <div class="hh-name">
       <div class="greeting" id="homeGreeting"></div>
       <div class="greeting-sub" id="homeSub"></div>
     </div>
-    <div class="switch-btn" onclick="goWelcome()">Switch profile</div>
-  </div>
-  <div style="margin-bottom:16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-    <div class="class-code-chip" id="homeClassChip">🏫 <span id="homeClassCode">No class code set</span></div>
-    <span class="ob-replay-btn" onclick="editCurrentProfile()" style="font-size:0.75rem">✏️ Edit profile</span>
-    <span class="ob-replay-btn" id="themeToggleBtn" onclick="toggleTheme()" style="font-size:0.75rem">🌙 Dark</span>
-    <span class="ob-replay-btn" onclick="openBackup()" style="font-size:0.75rem">💾 Backup</span>
+    <div class="hh-tools">
+      <span class="class-code-chip" id="homeClassChip" title="Class code">🏫 <span id="homeClassCode">No class code set</span></span>
+      <button class="hh-icon" onclick="editCurrentProfile()" title="Edit profile" aria-label="Edit profile">✏️</button>
+      <button class="hh-icon" id="themeToggleBtn" onclick="toggleTheme()" title="Dark mode" aria-label="Dark mode">🌙</button>
+      <button class="hh-icon" id="backupIconBtn" onclick="openBackup()" title="Backup" aria-label="Backup">💾</button>
+      <button class="hh-switch" onclick="goWelcome()">Switch profile</button>
+    </div>
   </div>
 
   <div class="home-top">
     <div class="habit-card" id="habitCard"></div>
-    <button class="mix-btn" onclick="openDailyMix()">🎲 Daily Mix <span>— 4 skills picked for you</span></button>
-  </div>
-
-  <div class="sess-toggle">
-    <button id="btn-fluency"   onclick="setMode('fluency')">⏱ Fluency<br>60s</button>
-    <button id="btn-challenge" onclick="setMode('challenge')">⚡ Challenge<br>3 min</button>
-    <button id="btn-practice"  onclick="setMode('practice')">∞ Practice</button>
+    <button class="mix-btn" onclick="openDailyMix()">
+      <span class="tile-icon">🎲</span>
+      <span class="tile-name">Daily Mix</span>
+      <span class="tile-sub">4 skills picked for you</span>
+    </button>
+    <button class="exam-btn" onclick="openExamTraining()">
+      <span class="tile-icon">🎯</span>
+      <span class="tile-name">Exam / ALT Training</span>
+      <span class="tile-sub" id="examBtnSub">What you need to know</span>
+    </button>
   </div>
 
   <div class="slabel">Choose a Category</div>
@@ -2009,6 +2163,48 @@ body {
   </div>
 </div>
 
+<!-- ══════════════ v92 — CHOOSE A MODE (after skill + level) ══════════════ -->
+<div id="s-mode" class="screen">
+  <button class="back-btn" id="modeBackBtn" onclick="modeGoBack()">← Back to levels</button>
+  <div class="level-screen-header">
+    <h2 id="modeTitle">How do you want to train?</h2>
+    <p id="modeSub"></p>
+  </div>
+  <div class="sess-toggle mode-cards">
+    <button id="btn-fluency"   onclick="pickMode('fluency')">⏱ Fluency<br>60s</button>
+    <button id="btn-challenge" onclick="pickMode('challenge')">⚡ Challenge<br>3 min</button>
+    <button id="btn-practice"  onclick="pickMode('practice')">∞ Practice</button>
+  </div>
+  <div id="modeRecNote" class="mode-rec-note"></div>
+  <div id="modeWhat" class="mode-what"></div>
+</div>
+
+<!-- ══════════════ v92 — EXAM / ALT TRAINING ══════════════ -->
+<div id="s-course" class="screen">
+  <button class="back-btn" onclick="goHome()">← Back home</button>
+  <div class="slabel">🎯 Exam / ALT Training</div>
+  <p class="mix-intro">Choose your class. Everything after this shows the skills and levels for <b>your</b> assessments — you can change class any time.</p>
+  <div id="courseList" class="skill-list"></div>
+</div>
+
+<div id="s-alts" class="screen">
+  <button class="back-btn" onclick="goHome()">← Back home</button>
+  <div class="slabel" id="altsLabel"></div>
+  <p class="mix-intro" id="altsSub"></p>
+  <div id="altList"></div>
+  <div style="height:10px"></div>
+  <button class="btn-ghost" onclick="openCoursePicker(true)" style="font-size:0.85rem;padding:10px">🔄 Change class</button>
+</div>
+
+<div id="s-altskills" class="screen">
+  <button class="back-btn" onclick="openAltList()">← Back to ALTs</button>
+  <div class="slabel" id="altSkillsLabel"></div>
+  <div id="altReadyBar" class="alt-ready-bar"></div>
+  <button class="btn-primary" id="altMixBtn" onclick="startAltMix()">∞ Mixed Practice — every skill in this ALT</button>
+  <div id="altSkillList" class="alt-skill-list"></div>
+  <div id="altPrereq"></div>
+</div>
+
 <!-- ══════════════ DAILY MIX ══════════════ -->
 <div id="s-mix" class="screen">
   <button class="back-btn" onclick="goHome()">← Back home</button>
@@ -2052,7 +2248,7 @@ body {
     <p id="levelScreenSub"></p>
   </div>
   <div class="level-cards" id="levelCards"></div>
-  <button class="btn-primary" id="levelStartBtn" onclick="beginGame()" disabled>
+  <button class="btn-primary" id="levelStartBtn" onclick="chooseMode()" disabled>
     Start — Level <span id="levelStartLbl">?</span>
   </button>
   <div id="levelRecHint" style="display:none;text-align:center;margin-top:10px;font-weight:900;font-size:0.85rem;"></div>
@@ -4442,16 +4638,25 @@ function daysKey()     { return `ff_days_${pidx}`; }
 function getDays()     { try { return JSON.parse(localStorage.getItem(daysKey()) || '[]'); } catch { return []; } }
 
 /* Called at the end of EVERY session (fluency, challenge, practice). */
-function recordActivity(s, lv, accPct, secs) {
-  const today = ymd();
+/* v92: stamping a LEVEL and counting a SESSION used to be the same call. A
+   Mixed Practice round touches a dozen levels but is still one session, so the
+   two halves are now separate and recordActivity simply calls both. */
+function recordLevelAcc(s, lv, accPct) {
   localStorage.setItem(lastKey(s, lv), String(Date.now()));
   if (accPct != null && !isNaN(accPct)) localStorage.setItem(lastAccKey(s, lv), String(Math.round(accPct)));
+}
+function recordDayActivity(secs) {
+  const today = ymd();
   const d = getDay(today);
   d.sessions += 1;
   d.secs += Math.max(0, Math.round(secs || 0));
   localStorage.setItem(dayKey(today), JSON.stringify(d));
   const days = getDays();
   if (!days.includes(today)) { days.push(today); if (days.length > 400) days.shift(); localStorage.setItem(daysKey(), JSON.stringify(days)); }
+}
+function recordActivity(s, lv, accPct, secs) {
+  recordLevelAcc(s, lv, accPct);
+  recordDayActivity(secs);
 }
 
 /* Daily goal: 3 sessions OR 5 minutes of practice today (either counts). */
@@ -4712,12 +4917,25 @@ function goHome() {
 
   syncModeUI();
   renderHabitCard();
+  syncBackupNudge();
+  mixQueue = null;
+
+  const c = getCourse();
+  const sub = id('examBtnSub');
+  if (sub) {
+    if (!c) sub.textContent = 'Choose your class to get started';
+    else {
+      const r = readyCount(examPairs(c));
+      sub.textContent = c.short + ' · ' + r.green + '/' + r.total + ' exam levels ready';
+    }
+  }
 }
 function setMode(m) { sessionMode = m; syncModeUI(); }
 function syncModeUI() {
-  document.getElementById('btn-fluency').classList.toggle('active',   sessionMode === 'fluency');
-  document.getElementById('btn-challenge').classList.toggle('active', sessionMode === 'challenge');
-  document.getElementById('btn-practice').classList.toggle('active',  sessionMode === 'practice');
+  ['fluency','challenge','practice'].forEach(m => {
+    const b = document.getElementById('btn-' + m);
+    if (b) b.classList.toggle('active', sessionMode === m);
+  });
 }
 
 /* ── v27: habit card (streak + daily goal) on the home screen ── */
@@ -4742,10 +4960,9 @@ function renderHabitCard() {
   el.innerHTML = `
     <div class="hb-top">
       <span class="hb-streak">${fire}</span>
-      <span class="hb-goal ${g.done ? 'done' : ''}">${g.done ? '🎯 Goal done!' : `Goal: 5 sessions or 5 min`}</span>
+      <span class="hb-goal ${g.done ? 'done' : ''}">${g.done ? '🎯 Goal done!' : `${g.sessions}/5 today · ${timeStr}`}</span>
     </div>
     <div class="hb-bar"><div class="hb-fill" style="width:${pct}%"></div></div>
-    <div class="hb-sub">Today: ${g.sessions} session${g.sessions === 1 ? '' : 's'} · ${timeStr} min</div>
     <div class="hb-dots">${dots}</div>`;
 }
 
@@ -4787,6 +5004,7 @@ function startMixItem(sid, lv) {
 
 /* ── v27: backup / restore progress (this device only) ── */
 function openBackup() {
+  stampBackup();
   show('s-backup');
   const ta = document.getElementById('backupOut');
   if (ta) ta.value = buildBackup();
@@ -4836,6 +5054,380 @@ function restoreBackup() {
 /* ═══════════════════════════════════════════════
    SKILL SELECT
 ═══════════════════════════════════════════════ */
+
+/* ═══════════════════════════════════════════════════════════════════
+   v92 (Laura) — EXAM / ALT TRAINING
+   -------------------------------------------------------------------
+   A SECOND way into the same content. The app is organised by
+   mathematical topic, which is how a curriculum writer thinks;
+   students think in upcoming assessments. COURSES is pure METADATA —
+   it names skill ids and level numbers that already exist and adds
+   nothing to CATS, so adding a skill later is one edit here and
+   nothing to un-pick. test_courses.js proves every id and level
+   below is real, so a rename can never leave a student on a blank
+   screen.
+═══════════════════════════════════════════════════════════════════ */
+const COURSES = {
+  y7: {
+    label: "Year 7 Mathematics", short: "Year 7",
+    prereq: [["timesTables",[1,2,3]], ["division",[1,2,3]]],
+    alts: [
+      { n: 1, title: "Number Theory", exam: true, skills: [["orderOps",[1,2,3,4]], ["factorsMultiples",[1,2,3]], ["primeFactor",[1,2,3]], ["hcfLcm",[1,2,3]], ["intAddSub",[1,2,3]], ["intMultDiv",[1,2,3]], ["intSquareCube",[1]], ["intOrderOps",[1,2,3]], ["squares",[1,2,3]], ["roots",[1,2,3]]] },
+      { n: 2, title: "Fractions & Ratios", exam: true, skills: [["fracSimplify",[1,2]], ["fracCompare",[1,2,3]], ["fracAddSub",[1,2,3,4]], ["fracMultiply",[1,2,3]], ["fracDivide",[1,2,3]], ["fracOfAmount",[1,2,3]], ["mixedToImp",[1,2,3]], ["impToMixed",[1,2,3]], ["fracOrderOps",[1,2,3,4]], ["ratioSimplify",[1,2,3]], ["ratioEquiv",[1,2,3]], ["ratioShare",[1,2,3,4]], ["bestBuy",[1,2,3]]] },
+      { n: 3, title: "Algebra & Equations", exam: true, skills: [["fracSimplify",[3]], ["algParts",[1,2,3]], ["algSub",[1,2,3,4]], ["algLikeTerms",[1,2,3]], ["algMultiply",[1,2,3,4]], ["algDivide",[1,2,3,4]], ["eqOneStepAddSub",[1,2,3]], ["eqOneStepMulDiv",[1,2,3]], ["eqTwoStep",[1,2,3]]] },
+      { n: 4, title: "Geometry", exam: true, skills: [["pythagoras",[1]], ["nameShapes",[1,2,3,4,5]], ["nameAnglesLines",[1,2,3,4]], ["eulerRule",[1,2]], ["interiorAngles",[1,2,3]], ["angleRel",[1,2,3,4]], ["angleParallel",[1,2,3,4]], ["angleQuad",[1,2,3,4]], ["anglePoly",[1,2]]] },
+      { n: 5, title: "Decimals & Percentages", exam: true, skills: [["decPlaceValue",[1,2,3]], ["decIdentify",[1,2,3]], ["decExpand",[1,2,3]], ["decToFrac",[1,2,3]], ["fracToDec",[1,2,3]], ["compareDec",[1,2,3,4,5]], ["decRound",[1,2,3]], ["decAdd",[1,2,3]], ["decSub",[1,2,3]], ["decAddSub",[1,2,3,4]], ["decAddSubNeg",[1,2,3]], ["fdAddSub",[1]], ["decPow10",[1,2,3,4]], ["decMultiply",[1,2,3,4]], ["fdMultiply",[1,2]], ["decSquareCube",[1]], ["decDivide",[1,2,3,4]], ["decLeadEst",[1,2,3]], ["decSqCubeRoot",[1]], ["decOrderOps",[1,2,3,4]], ["pctIdentify",[1,2,3]], ["pctDecConv",[1,2,3]], ["fracPctConv",[1,2,3,4]], ["pctFDP",[1,2,3]], ["pctOfAmount",[1,2,3]], ["pctExpress",[1,2,3]], ["pctChange",[1]], ["pctProfitLoss",[1]]] },
+      { n: 6, title: "Linear — Coordinates, Transformations & Patterns", exam: true, skills: [["cartesian",[1,2,3,4]], ["linearNonlinear",[1,2]], ["tableValues",[1,2]], ["intercepts",[1,2]], ["linearApps",[1,2,3]], ["seqWords",[1,2,3,4,5]], ["arithSeq",[1,2,3,4]], ["timeConvert",[1,2,3,4]], ["timetables",[1,2,3,4]], ["distTime",[1,2,3,4]], ["translate",[1,2,3,4,5,6]], ["reflect",[1,2,3,4,5]], ["dilate",[1,2,3,4]], ["rotate",[1,2,3,4,5]], ["shapeTrans",[1,2,3,4,5]]] },
+      { n: 7, title: "Statistics & Probability", exam: true, note: "Probability skills are still being built — this ALT currently covers the statistics half only.", skills: [["dataClassify",[1,2,3,4]], ["freqTables",[1,2,3,4]], ["dataRead",[1,2,3]], ["dataMean",[1,2,3,4,5]], ["dataMode",[1,2,3,4,5,6]], ["dataMedian",[1,2,3,4]], ["dataRange",[1,2,3,4]], ["dataShape",[1,2,3]], ["dataOutliers",[1]]] },
+      { n: 8, title: "Measurement", exam: false, note: "Measurement skills are still being built. This topic is taught after the exam, so it is never on the exam.", skills: [] },
+    ],
+  },
+  y7seal: {
+    label: "Year 7 SEAL Mathematics", short: "Year 7 SEAL",
+    prereq: [["timesTables",[1,2,3]], ["division",[1,2,3]]],
+    alts: [
+      { n: 1, title: "Integers & Indices", exam: true, skills: [["orderOps",[2,3,4]], ["primeFactor",[2,3]], ["hcfLcm",[1,2,3]], ["roundEst",[1,2,3,4]], ["sigFigs",[1,2]], ["intAddSub",[1,2,3]], ["intMultDiv",[1,2,3]], ["intSquareCube",[1,2,3]], ["intOrderOps",[1,2,3,4]], ["squares",[1,2,3]], ["roots",[1,2,3]], ["cubes",[1,2,3]], ["cubeRoots",[1,2,3]], ["indexMult",[1,2,3]], ["indexDiv",[1,2,3]], ["indexPow",[1,2,3]], ["negIndices",[1,2,3]], ["sciTo",[1,2,3]], ["sciFrom",[1,2,3]], ["surdAddSub",[3]]] },
+      { n: 2, title: "Fractions, Decimals, Rates & Ratios", exam: true, skills: [["fracSimplify",[1,2]], ["fracCompare",[1,2,3]], ["fracAddSub",[1,2,3,4]], ["fracMultiply",[1,2,3]], ["fracDivide",[1,2,3]], ["fracOfAmount",[1,2,3]], ["mixedToImp",[1,2,3]], ["impToMixed",[1,2,3]], ["fracOrderOps",[1,2,3,4]], ["decExpand",[1,2,3]], ["decToFrac",[1,2,3]], ["fracToDec",[1,2,3]], ["compareDec",[4,5]], ["decRound",[1,2,3]], ["decAdd",[1,2,3]], ["decSub",[1,2,3]], ["decAddSub",[1,2,3,4]], ["decAddSubNeg",[1,2,3]], ["fdAddSub",[1,2,3]], ["decPow10",[3,4]], ["decMultiply",[1,2,3,4]], ["fdMultiply",[1,2,3]], ["decSquareCube",[1,2,3]], ["decDivide",[1,2,3,4]], ["decMulDivNeg",[1,2,3]], ["decSqCubeRoot",[1,2,3]], ["decOrderOps",[1,2,3,4]], ["ratioSimplify",[1,2,3]], ["ratioEquiv",[1,2,3]], ["ratioShare",[1,2,3,4]], ["rateSimplify",[1,2]], ["rateConvert",[1,2]], ["bestBuy",[1,2,3]], ["distTime",[1,2,3,4]]] },
+      { n: 3, title: "Algebra & Equations", exam: true, skills: [["fracSimplify",[3]], ["algParts",[1,2,3]], ["algSub",[1,2,3,4]], ["algLikeTerms",[1,2,3]], ["algMultiply",[1,2,3,4]], ["algDivide",[1,2,3,4]], ["algExpand",[1,2,3]], ["algExpandTwo",[1,2,3]], ["algExpandBinom",[1,2]], ["algFactorHCF",[1,2]], ["eqOneStepAddSub",[1,2,3]], ["eqOneStepMulDiv",[1,2,3]], ["eqTwoStep",[1,2,3]], ["eqTwoStepFrac",[1,2,3]], ["eqVarDenom",[1,2,3]], ["eqBothSides",[1,2,3]], ["ineqLinear",[1,2]], ["seqWords",[1,2,3,4,5]], ["arithSeq",[1,2,3,4]], ["geoSeq",[1,2,3,4]], ["sequences",[1,2,3,4]]] },
+      { n: 4, title: "Geometry", exam: true, skills: [["pythagoras",[1,2,3]], ["nameShapes",[5]], ["nameAnglesLines",[1]], ["eulerRule",[1,2]], ["interiorAngles",[1,2,3]], ["angleRel",[1,2,3,4]], ["angleParallel",[1,2,3,4]], ["angleQuad",[1,2,3,4]], ["anglePoly",[1,2,3,4]], ["congruSimilar",[1,2,3,4]]] },
+      { n: 5, title: "Finance & Irrational", exam: true, skills: [["numClass",[1,2]], ["surdAddSub",[1]], ["surdMultiply",[1]], ["surdDivide",[1]], ["pctDecConv",[2,3]], ["fracPctConv",[1,2,3,4]], ["pctFDP",[1,2,3]], ["pctOfAmount",[1,2,3]], ["pctExpress",[1,2,3]], ["pctChange",[1,2,3]], ["pctReverse",[1,2,3]], ["pctProfitLoss",[1,2]], ["rearrange",[3]], ["quadVerify",[1,2,3]], ["quadSolve",[1,2]], ["gst",[1,2,3]], ["simpleInterest",[1,2,3,4,5,6]], ["recurrence",[1,2]], ["flatDep",[1,2,3,4,5,6]]] },
+      { n: 6, title: "Linear — Graphs & Transformations", exam: true, skills: [["cartesian",[1,2,3,4]], ["linearNonlinear",[1,2]], ["tableValues",[1,2,3,4]], ["intercepts",[1,2,3,4,5]], ["gradientSeg",[1,2,3,4]], ["linearApps",[1,2,3,4]], ["translate",[1,2,3,4,5,6]], ["reflect",[1,2,3,4,5,6]], ["dilate",[1,2,3,4,5]], ["rotate",[1,2,3,4,5,6]], ["combine",[1,2,3,4,5]], ["shapeTrans",[1,2,3,4,5,6]]] },
+      { n: 7, title: "Statistics & Probability", exam: true, note: "Probability skills are still being built — this ALT currently covers the statistics half only.", skills: [["dataClassify",[1,2,3,4]], ["freqTables",[1,2,3,4]], ["dataRead",[1,2,3]], ["dataMean",[1,2,3,4,5,6]], ["dataMode",[1,2,3,4,5,6]], ["dataMedian",[1,2,3,4,5,6]], ["dataRange",[1,2,3,4,5]], ["dataShape",[1,2,3]], ["dataOutliers",[1]]] },
+      { n: 8, title: "Measurement", exam: false, note: "Measurement skills are still being built. This topic is taught after the exam, so it is never on the exam.", skills: [] },
+    ],
+  },
+};
+
+
+/* Exam Practice is the UNION of every examinable ALT, worked out at
+   render time. It is never hand-listed, so it cannot drift when an ALT
+   is edited. ALT 8 (Measurement) is exam:false — Laura teaches it after
+   the exam, so it is on the ALT list but never in the exam mix. */
+function courseKeys() { return Object.keys(COURSES); }
+function getCourseKey() { const p = ap(); return p && COURSES[p.course] ? p.course : null; }
+function getCourse() { const k = getCourseKey(); return k ? COURSES[k] : null; }
+function setCourseKey(k) { const p = ap(); if (!p) return; p.course = k; saveProfiles(); }
+
+function altPairs(alt) {
+  const out = [];
+  (alt.skills || []).forEach(([sid, lvs]) => lvs.forEach(lv => out.push({ s: sid, lv })));
+  return out;
+}
+function examAlts(course) { return course.alts.filter(a => a.exam && a.skills.length); }
+function examPairs(course) {
+  const seen = {}, out = [];
+  examAlts(course).forEach(a => altPairs(a).forEach(pr => {
+    const k = pr.s + '_' + pr.lv;
+    if (!seen[k]) { seen[k] = 1; out.push(pr); }
+  }));
+  return out;
+}
+
+/* ── Readiness: three states from data the app already stores. ──
+   green  = fluent here, or last round was 85%+ accurate
+   amber  = tried it, not there yet
+   grey   = never attempted
+   Nothing new is tracked; this is the accuracy that was already saved
+   after every session, finally shown where a student can act on it. */
+function levelReadiness(sid, lv) {
+  if (getFluent(sid, lv)) return 'green';
+  const acc = getLastAcc(sid, lv);
+  if (acc < 0) return 'grey';
+  return acc >= 85 ? 'green' : 'amber';
+}
+function readyCount(pairs) {
+  let g = 0, a = 0;
+  pairs.forEach(pr => { const r = levelReadiness(pr.s, pr.lv); if (r === 'green') g++; else if (r === 'amber') a++; });
+  return { green: g, amber: a, grey: pairs.length - g - a, total: pairs.length };
+}
+
+/* ── Screens ── */
+let altCtx = null;         /* { courseKey, altN }  — altN 0 means Exam Practice */
+
+function openExamTraining() {
+  if (!getCourseKey()) return openCoursePicker(false);
+  openAltList();
+}
+
+function openCoursePicker(isChange) {
+  show('s-course');
+  const list = id('courseList');
+  list.innerHTML = '';
+  const cur = getCourseKey();
+  courseKeys().forEach(k => {
+    const c = COURSES[k];
+    const pairs = examPairs(c);
+    const btn = document.createElement('button');
+    btn.className = 'skill-btn';
+    btn.innerHTML = '<span>' + c.label + (k === cur ? ' ✓' : '') + '</span>' +
+      '<span class="alt-meta">' + c.alts.filter(a => a.skills.length).length + ' ALTs · ' + pairs.length + ' levels</span>';
+    btn.onclick = () => { setCourseKey(k); openAltList(); };
+    list.appendChild(btn);
+  });
+}
+
+function openAltList() {
+  const c = getCourse();
+  if (!c) return openCoursePicker(false);
+  altCtx = { courseKey: getCourseKey(), altN: null };
+  show('s-alts');
+  setText('altsLabel', '🎯 ' + c.label);
+  const ex = readyCount(examPairs(c));
+  setText('altsSub', 'Everything you need to know, grouped by assessment. ' +
+    ex.green + ' of ' + ex.total + ' examinable levels are green.');
+  const list = id('altList');
+  list.innerHTML = '';
+
+  const exBtn = document.createElement('button');
+  exBtn.className = 'alt-card exam';
+  exBtn.innerHTML = '<div class="alt-n">EXAM</div>' +
+    '<div class="alt-title">Exam Practice</div>' +
+    '<div class="alt-meta">Every examinable ALT together · ' + ex.total + ' levels</div>' +
+    '<div class="alt-meta">' + readyDotsSummary(ex) + '</div>';
+  exBtn.onclick = () => openAlt(0);
+  list.appendChild(exBtn);
+
+  c.alts.forEach(a => {
+    const pairs = altPairs(a);
+    const r = readyCount(pairs);
+    const btn = document.createElement('button');
+    btn.className = 'alt-card' + (pairs.length ? '' : ' empty');
+    btn.innerHTML = '<div class="alt-n">ALT ' + a.n + (a.exam ? '' : ' · NOT ON THE EXAM') + '</div>' +
+      '<div class="alt-title">' + a.title + '</div>' +
+      (pairs.length
+        ? '<div class="alt-meta">' + a.skills.length + ' skills · ' + pairs.length + ' levels</div>' +
+          '<div class="alt-meta">' + readyDotsSummary(r) + '</div>'
+        : '<div class="alt-meta">No skills in the app yet</div>') +
+      (a.note ? '<div class="alt-note">' + a.note + '</div>' : '');
+    if (pairs.length) btn.onclick = () => openAlt(a.n);
+    list.appendChild(btn);
+  });
+}
+
+function readyDotsSummary(r) {
+  return '<span class="rd green"></span> ' + r.green + ' ready · ' +
+         '<span class="rd amber"></span> ' + r.amber + ' getting there · ' +
+         '<span class="rd"></span> ' + r.grey + ' not tried';
+}
+
+function openAlt(n) {
+  const c = getCourse();
+  if (!c) return openCoursePicker(false);
+  altCtx = { courseKey: getCourseKey(), altN: n };
+  show('s-altskills');
+  const groups = n === 0 ? examGroups(c) : (c.alts.find(a => a.n === n) || { skills: [] }).skills;
+  const title = n === 0 ? 'Exam Practice' : 'ALT ' + n + ' — ' + c.alts.find(a => a.n === n).title;
+  setText('altSkillsLabel', '🎯 ' + title);
+  const pairs = [];
+  groups.forEach(([sid, lvs]) => lvs.forEach(lv => pairs.push({ s: sid, lv })));
+  const r = readyCount(pairs);
+  id('altReadyBar').innerHTML = readyDotsSummary(r);
+  id('altMixBtn').innerHTML = '∞ Mixed Practice — all ' + pairs.length + ' levels in ' +
+    (n === 0 ? 'the exam' : 'this ALT');
+  id('altMixBtn').style.display = pairs.length ? 'block' : 'none';
+  renderAltSkillRows(id('altSkillList'), groups, false);
+
+  /* Prerequisites (Laura): times tables and division underpin every level in
+     every ALT but are assumed knowledge, not assessed content. They sit at the
+     bottom, greyed and dashed, so a struggling student can see where to drop
+     back to without them reading as "this is on the test". */
+  const pre = id('altPrereq');
+  pre.innerHTML = '<div class="alt-prereq-head">Prerequisites</div>' +
+    '<div class="alt-prereq-sub">Not assessed — but every skill above leans on these. ' +
+    'If an ALT skill feels slow, start here.</div>';
+  const holder = document.createElement('div');
+  holder.className = 'alt-skill-list';
+  pre.appendChild(holder);
+  renderAltSkillRows(holder, c.prereq, true);
+}
+
+/* The exam list keeps ALT order and merges a skill that appears in more than
+   one ALT into a single row, so a student sees each skill once. */
+function examGroups(c) {
+  const order = [], byId = {};
+  examAlts(c).forEach(a => a.skills.forEach(([sid, lvs]) => {
+    if (!byId[sid]) { byId[sid] = []; order.push(sid); }
+    lvs.forEach(lv => { if (byId[sid].indexOf(lv) < 0) byId[sid].push(lv); });
+  }));
+  return order.map(sid => [sid, byId[sid].slice().sort((x, y) => x - y)]);
+}
+
+function renderAltSkillRows(host, groups, isPrereq) {
+  host.innerHTML = '';
+  groups.forEach(([sid, lvs]) => {
+    const meta = findSkillMeta(sid);
+    if (!meta) return;
+    const row = document.createElement('div');
+    row.className = 'alt-skill-row' + (isPrereq ? ' prereq' : '');
+    const name = document.createElement('div');
+    name.className = 'alt-skill-name';
+    name.innerHTML = meta.name;
+    row.appendChild(name);
+    const lvRow = document.createElement('div');
+    lvRow.className = 'alt-lv-row';
+    lvs.forEach(lv => {
+      const b = document.createElement('button');
+      b.className = 'alt-lv';
+      b.innerHTML = '<span class="rd ' + levelReadiness(sid, lv) + '"></span>L' + lv;
+      b.onclick = () => startAltLevel(sid, lv);
+      lvRow.appendChild(b);
+    });
+    row.appendChild(lvRow);
+    host.appendChild(row);
+  });
+}
+
+function setSkillLevel(sid, lv) {
+  const meta = findSkillMeta(sid);
+  if (!meta) return false;
+  skill = sid; skillMeta = meta; lvKey = meta.lvKey; level = lv;
+  return true;
+}
+
+/* Tapping a level inside an ALT still goes through the mode screen — the
+   point of the mode screen is that no session starts without a decision. */
+function startAltLevel(sid, lv) {
+  if (!setSkillLevel(sid, lv)) return;
+  chooseMode('alt');
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   v92 (Laura) — CHOOSE A MODE, AFTER THE LEVEL
+   -------------------------------------------------------------------
+   Mode used to be a pre-set toggle on the home screen, so every
+   student took the default (Fluency) without thinking — and Fluency is
+   the wrong mode for a level you cannot yet do accurately. Choosing it
+   here, with the skill and level named, makes it a decision about THIS
+   level, and lets the app recommend from what it already knows.
+═══════════════════════════════════════════════════════════════════ */
+let modeFrom = 'levels';
+
+function chooseMode(from) {
+  if (!skill || !level) return;
+  mixQueue = null;
+  modeFrom = from || 'levels';
+  show('s-mode');
+  setText('modeTitle', (skillMeta ? skillMeta.name.replace(/&amp;/g, '&') : '') + ' — Level ' + level);
+  const defs = LEVEL_DEFS[lvKey] || [];
+  const d = defs[level - 1];
+  setText('modeSub', d ? d.title.replace(/^Level \d+ — /, '') : '');
+  id('modeBackBtn').textContent = modeFrom === 'alt' ? '← Back to the ALT' : '← Back to levels';
+
+  const rec = recommendMode();
+  ['fluency', 'challenge', 'practice'].forEach(m => {
+    const b = id('btn-' + m);
+    if (b) { b.classList.toggle('rec', m === rec.mode); b.classList.remove('active'); }
+  });
+  id('modeRecNote').innerHTML = '✓ <strong>' + modeLabel(rec.mode) + ' recommended</strong> — ' + rec.why;
+  id('modeWhat').innerHTML =
+    '<b>⏱ Fluency</b> — 60 seconds, scored, sets a personal best.<br>' +
+    '<b>⚡ Challenge</b> — 3 minutes, scored. Better for levels with working out.<br>' +
+    '<b>∞ Practice</b> — no timer, no score. Where accuracy is built.';
+}
+function modeLabel(m) { return m === 'fluency' ? 'Fluency' : m === 'challenge' ? 'Challenge' : 'Practice'; }
+
+/* The recommendation is deliberately conservative: an explicit LEVEL_REC on
+   the level always wins (those exist because the level is too slow to band in
+   60 seconds), then a never-attempted or low-accuracy level goes to Practice,
+   and only an accurate student is sent to Fluency. */
+function recommendMode() {
+  const rec = getLevelRec(lvKey, level);
+  if (rec === 'practice')  return { mode: 'practice',  why: 'this level has too much working out for a 60-second round.' };
+  if (rec === 'challenge') return { mode: 'challenge', why: 'this level needs more than 60 seconds to show what you can do.' };
+  const acc = getLastAcc(skill, level);
+  if (acc < 0)   return { mode: 'practice', why: 'you have not tried this level yet — build accuracy before adding a clock.' };
+  if (acc < 85)  return { mode: 'practice', why: 'you were ' + acc + '% accurate last time — another untimed run will pay off.' };
+  if (getFluent(skill, level)) return { mode: 'challenge', why: 'you are already fluent here — stretch it.' };
+  return { mode: 'fluency', why: 'you were ' + acc + '% accurate last time — you are ready for the clock.' };
+}
+function pickMode(m) { setMode(m); beginGame(); }
+function modeGoBack() { if (modeFrom === 'alt') openAlt(altCtx ? altCtx.altN : 0); else show('s-levels'); }
+
+/* ═══════════════════════════════════════════════════════════════════
+   v92 — MIXED PRACTICE
+   Practice mode only, by design: mixing a dozen skills under a 60-second
+   clock measures nothing. The round re-picks the skill between questions
+   (see the nextQ wrapper) and weights whatever is not green yet, so
+   revision time lands where it is needed.
+═══════════════════════════════════════════════════════════════════ */
+let mixQueue = null, mixStats = null, mixLabel = '';
+
+function startAltMix() {
+  const c = getCourse();
+  if (!c || !altCtx) return;
+  const n = altCtx.altN;
+  const groups = n === 0 ? examGroups(c) : (c.alts.find(a => a.n === n) || { skills: [] }).skills;
+  const pairs = [];
+  groups.forEach(([sid, lvs]) => lvs.forEach(lv => { if (findSkillMeta(sid)) pairs.push({ s: sid, lv }); }));
+  if (!pairs.length) return;
+  mixQueue = pairs;
+  mixStats = {};
+  mixLabel = c.short + ' · ' + (n === 0 ? 'Exam Practice' : 'ALT ' + n);
+  setMode('practice');
+  setSkillLevel(pairs[0].s, pairs[0].lv);
+  prepGameScreen();
+  id('pbNudge').innerHTML = '∞ <strong>Mixed Practice</strong> — ' + mixLabel +
+    ' · ' + pairs.length + ' levels';
+}
+
+/* Weighting: a level that is not green yet is three times as likely to come
+   up as one that is. Still random, so a green level is never dropped. */
+function mixAdvance() {
+  const bag = [];
+  mixQueue.forEach(pr => {
+    const w = levelReadiness(pr.s, pr.lv) === 'green' ? 1 : 3;
+    for (let i = 0; i < w; i++) bag.push(pr);
+  });
+  const pick = bag[ri(bag.length)];
+  setSkillLevel(pick.s, pick.lv);
+  resetAnswerInputs();
+}
+
+function mixTally(sid, lv, correct) {
+  const k = sid + '_L' + lv;
+  if (!mixStats[k]) mixStats[k] = { s: sid, lv: lv, a: 0, c: 0 };
+  mixStats[k].a++;
+  if (correct) mixStats[k].c++;
+}
+
+function stopMixedPractice() {
+  clearInterval(timer);
+  ['ansInput','fracNum','fracDen','mixedWhole','mixedNum','mixedDen',
+   'idxCoeff','idxExp','idxExpB','idxExpC','sciCoeff','sciExp'].forEach(i => {
+    const el = document.getElementById(i); if (el) el.disabled = true;
+  });
+  kbHide();
+  const acc = attempts > 0 ? score / attempts : 0;
+  const secs = startTime ? (Date.now() - startTime) / 1000 : 0;
+  const mins = secs / 60;
+  const cpm = mins > 0 ? Math.round(score / mins) : 0;
+  const practiceScore = Math.round(score * acc);
+
+  /* A level only re-stamps its readiness dot after three questions in the
+     round — one lucky or unlucky question should not flip a colour. */
+  Object.keys(mixStats).forEach(k => {
+    const t = mixStats[k];
+    if (t.a >= 3) recordLevelAcc(t.s, t.lv, t.c / t.a * 100);
+  });
+  recordDayActivity(secs);
+  recordSession('Mixed Practice · ' + mixLabel, 0, practiceScore, score, Math.round(acc * 100), cpm, false);
+  sessionBandUp = false;
+  showResults(practiceScore, score, acc, cpm, 'practice', 0, []);
+  setText('rSparkSkill', 'Mixed Practice · ' + mixLabel);
+}
+
+/* ── Backup nudge: the only control on the home screen that protects data. ── */
+function bkKey() { return 'ff_bk_' + pidx; }
+function stampBackup() { try { localStorage.setItem(bkKey(), String(Date.now())); } catch (e) {} }
+function syncBackupNudge() {
+  const b = id('backupIconBtn');
+  if (!b) return;
+  const last = +(localStorage.getItem(bkKey()) || 0);
+  const stale = (Date.now() - last) > 14 * 24 * 3600 * 1000;
+  b.classList.toggle('stale', stale);
+  b.title = last ? (stale ? 'Backup — last saved over two weeks ago' : 'Backup') : 'Backup — never saved';
+}
+
 function openCat(cat) {
   currentCat = cat;
   show('s-skills');
@@ -4878,9 +5470,7 @@ function selectSkill(smeta) {
   show('s-levels');
   document.getElementById('levelScreenTitle').textContent = smeta.name.replace(/&amp;/g,'&');
   document.getElementById('levelScreenSub').textContent =
-    sessionMode === 'fluency'   ? 'Fluency mode — 60 seconds. Answer as many as you can.' :
-    sessionMode === 'challenge' ? 'Challenge mode — 3 minutes. More time, bigger score.' :
-    'Practice mode — unlimited time. Build confidence at your own pace.';
+    'Pick the level you want, then choose how you want to train it.';
 
   document.getElementById('levelStartBtn').disabled = true;
   document.getElementById('levelStartLbl').textContent = '?';
@@ -5054,6 +5644,11 @@ function prepGameScreen() {
     setText('gTimeLbl','Secs'); setText('gTime','0');
     id('progWrap').style.display = 'none';
     id('pbNudge').innerHTML = kind === 'method' ? methodNudge : '';
+  }
+  // v92: a Mixed Practice round keeps its own banner through Try again.
+  if (mixQueue && mixQueue.length) {
+    id('pbNudge').innerHTML = '∞ <strong>Mixed Practice</strong> — ' + mixLabel +
+      ' · ' + mixQueue.length + ' levels';
   }
 }
 
@@ -5666,6 +6261,7 @@ function launchSession() {
 }
 
 function stopPractice() {
+  if (mixQueue && mixQueue.length) return stopMixedPractice();
   clearInterval(timer);
   // Disable all inputs
   ['ansInput','fracNum','fracDen','mixedWhole','mixedNum','mixedDen',
@@ -5697,7 +6293,13 @@ function stopPractice() {
 
 function abortGame() {
   clearInterval(timer);
+  // v92: a Mixed Practice round has no single level list to go back to, and a
+  // level opened from an ALT belongs to that ALT — Back should retrace the way
+  // the student actually came in.
+  const wasMix = !!(mixQueue && mixQueue.length);
+  mixQueue = null;
   level = null;
+  if (wasMix || modeFrom === 'alt') { if (altCtx) return openAlt(altCtx.altN || 0); return goHome(); }
   // v69 (Laura): the in-game Back returns to THIS skill's level list, not the
   // category menu. Keep skill/skillMeta so selectSkill rebuilds the level cards.
   if (skillMeta) selectSkill(skillMeta);
@@ -7751,7 +8353,15 @@ function genAngleQuad(el){
 /* ═══════════════════════════════════════════════
    QUESTION ENGINE
 ═══════════════════════════════════════════════ */
+/* v92: in a Mixed Practice round the skill and level change between
+   questions. Everything below this wrapper still reads the module-scoped
+   `skill` / `level`, so the only thing needed is to set them (and re-derive the
+   answer panel) before the generator runs. Nothing else in the app changed. */
 function nextQ() {
+  if (mixQueue && mixQueue.length) mixAdvance();
+  nextQCore();
+}
+function nextQCore() {
   // Reset input state
   clearInputState();
   setText('feedback','');
@@ -9871,6 +10481,15 @@ function readUserAnswer(mode) {
 }
 
 function checkAns() {
+  if (mixQueue && mixQueue.length) {
+    const s0 = skill, l0 = level, sc0 = score, at0 = attempts;
+    checkAnsCore();
+    if (attempts > at0) mixTally(s0, l0, score > sc0);
+    return;
+  }
+  checkAnsCore();
+}
+function checkAnsCore() {
   const mode = getInputMode();
   let correct = false;
   let feedbackStr = '';
@@ -10617,7 +11236,16 @@ function toggleTheme() {
 }
 function syncThemeButton() {
   const b = document.getElementById('themeToggleBtn');
-  if (b) b.textContent = document.body.classList.contains('dark') ? '☀️ Light' : '🌙 Dark';
+  if (!b) return;
+  const dark = document.body.classList.contains('dark');
+  // v92: the header control is an icon button now, so the label lives in the
+  // tooltip rather than beside the glyph.
+  if (b.classList.contains('hh-icon')) {
+    b.textContent = dark ? '\u2600\ufe0f' : '\ud83c\udf19';
+    b.title = dark ? 'Switch to light mode' : 'Switch to dark mode';
+  } else {
+    b.textContent = dark ? '\u2600\ufe0f Light' : '\ud83c\udf19 Dark';
+  }
 }
 
 function tryAgain() { prepGameScreen(); }
