@@ -1,4 +1,4 @@
-<!-- Sandy Fast Facts — v97 (Laura). 📉 A SKETCH IS MARKED AGAINST THE LINE, NOT A POINT LIST. Laura, on y = −x + 4: she plotted (0, 4) and stepped the gradient BACKWARDS to (−1, 5) — a correct point on a correctly drawn line — and was marked wrong, because plotPts compared her taps against ONE fixed pair. The old way of hiding that flaw was to name the two points in the prompt ("step 1 across and 1 down"), which handed over the answer and turned the level into a copying exercise. Both are fixed together. A plotting question can now describe the LINE instead of the points: qData.plotLine = {m, c} or {vx} for a vertical, qData.plotMust = the anchor points the named METHOD requires, qData.plotNeed = how many to plot. Marked right when the required number of DISTINCT points is plotted, every one lies on the line, and every compulsory point is among them. So on Gradient & y-Intercept L3 the y-intercept is still compulsory — plotting it IS half of "the gradient–intercept method" — but the second point is genuinely free, and stepping the gradient either way is correct. On Sketching Linear Graphs L1 (horizontal/vertical) ANY two points on the line count; L2 still requires both intercepts and L3 the origin, because those anchors ARE the method each level is named for. Every giveaway instruction is gone: "Plot the y-intercept, then use the gradient to plot one more point on the line" and "Plot any two points on this line". The marked-up re-draw now shows the whole correct LINE dashed in green with each tap green or red against it, instead of hollow rings on the two points the app happened to have in mind — better feedback, and it makes the "any point counts" rule visible. PURELY ADDITIVE: the exact-point-set path is untouched, so Table of Values, Distance-Time Graphs and Transformations of 2D Shapes mark exactly as before (regression-checked). test_v96.js now asserts the backwards step is accepted on every question, that an off-line point and a pair missing the compulsory anchor are still rejected, and that the instruction no longer names the second point. No band, storage key, level count or .bas row changed — FastFactsBands_v96.bas is still current. v96 notes follow. internal v96 (Laura). 📝 THE 2026 EXAM AUDIT, BUILT. Both Year 7 papers were mapped question by question against Exam Practice mode; everything below answers a question that is actually on one of them. 514 → 547 skill-levels. ⚠ THE TWO MAPPING FIXES FIRST, because they needed no new content at all: Year 7 Section B Q14 IS "solve 2x/5 − 8 = −4" and Two-Step Equations with Fractions was not in the Year 7 exam pool, so a student revising in the app would never have met the question type — it is now in ALT 3; and Q11c needs an 18% increase while Year 7 carried only Percentage Increase & Decrease L1 (friendly percentages) — L2 and L3 are now in ALT 5. SIX NEW SKILLS. Identify Fractions (the app could read a decimal and a percentage off a shaded grid but not a FRACTION, which the Year 7 paper asks for twice; L1/L2 generate only fractions already in lowest terms so "simplest form" is never ambiguous while the diagram is the thing being learned, L3 is where simplifying becomes the point). Index Notation & Expanded Form (VC2M7N02, Section B Q5). Quartiles & Interquartile Range (SEAL Section B Q9 — and the Outliers & Fences levels already in the app computed fences from Q1 and Q3 without ever teaching them; every data set is sized so BOTH halves are odd, so Q1 and Q3 are real data values and a quartiles drill is not also a "halfway between 63 and 77" drill). Gradient & y-Intercept from an Equation (SEAL MC Q7 — Gradient of a Line Segment only ever worked from two points or a diagram; L1/L2 are MULTIPLE CHOICE because a gradient is often a fraction and a fraction will not go in a numeric box, and L3 is the sketch-by-gradient-intercept level on the same tap-to-plot surface as the distance-time graphs). Matching Equations & Graphs (SEAL MC Q10 and Section B Q5c — the graph is DRAWN and the four options are EQUATIONS, because four graphs in a 74px button are unreadable; L3 checks every distractor against the rule so a "wrong" point can never accidentally satisfy it). Sketching Linear Graphs (Laura's spec: L1 horizontal and vertical, L2 by the intercepts, L3 through the origin, L4 mixed — every level names EXACTLY which two points to plot, because the marking is all-or-nothing on a point set and "sketch the line" alone would have infinitely many right answers). TEN NEW LEVELS on existing skills: four-digit column addition and subtraction, Division L4 (how many are needed — ceiling division, where rounding the ordinary way is wrong every time), Describe the Number (Yr 7 MC Q3), Prime Factor Form (Q7), Combining Two Ratios (SEAL Q2), Two-Step Number Patterns (Yr 7 MC Q10 — ×2 + 1 is neither arithmetic nor geometric), Find the Term Number (SEAL Q10c), Working Backwards from a finish time (SEAL Q8e), and Polygon-or-Not plus Count the Sides/Vertices (Section B Q1). All ten route from ONE map and ONE dispatcher (V96_LEVELS / genV96Level), the same pattern as the v93 word problems, so not a single existing generator was reopened. Levels added to recall skills go into METHOD_LEVEL_OVERRIDE. test_v96.js re-derives every answer INDEPENDENTLY of the generator that produced it — quartiles recomputed from the sorted list, prime factor form refactorised, ratio chains recombined, plotted points substituted back into their own equation — so a generator and its own working can never be wrong together. All v96 bands are PLACEHOLDERS. FastFactsBands_v96.bas regenerated, parity-checked 547/547, no existing row changed. v95 notes follow. internal v95 (Laura). 🏆 THE REST OF THE SURD FAMILY. Add & Subtract Surds L1 and Divide Surds L1 were still asking for 23 correct answers in a round; both are now Cheetah 10, matching Multiply Surds. The family now reads Simplify 8·8·7 (unchanged — already sane), Add & Subtract 10·9·8, Multiply 10·10·9·8, Divide 10·9·8. Every answer in this family has to be WRITTEN as an exact surd, which is slower than any of the arithmetic skills banded above 20. Nothing outside the family moved: the same [6,12,18,26] placeholder is still on Scientific Notation L1–L3 and several fraction L1s, deliberately left for a separate call. ⚠ STRUCTURAL FIX WORTH KNOWING: these two L1s came from the 2026-08-28 REVIEWED SPREADSHEET at [5,10,15,22], not from a placeholder — so which of the three maps setting them won was decided by LINE ORDER (the literal, then the v74.9 spreadsheet block, then the reviewed block). Every surd band Laura has called now lives in ONE "LAURA'S SURD CALLS" Object.assign block appended AFTER the reviewed block, so a future spreadsheet pass cannot silently revert a classroom call, and the superseded lines above carry a pointer to it. METHOD_BAND_CEIL surdAddSub/surdDivide L1 fallbacks follow the overrides. Bands are DISPLAY-ONLY over the stored Fluency Score: no storage key, PB, streak or share line changes and no score is lost — a past round simply reads as a higher animal. test_bands_surd.js now locks the WHOLE family (96 assertions): every Cheetah value, cut-offs in order, Cheetah = Antelope+1, a harder level never easier to top out than an easier one, the five non-surd skills that keep the old placeholder, and no surd level ever earning Fluent. FastFactsBands_v95.bas regenerated and parity-checked 514/514. v94 notes follow. internal v94 (Laura). 🏆 BAND FIX: MULTIPLY SURDS L1 AND L2. Laura: "the bands are too high, move Cheetah down to 10". The v86 PLACEHOLDER overrides asked for 31 (L1) and 27 (L2) correct answers in a round on a skill where every answer has to be written as an exact surd. BAND_OVERRIDE surdMultiply_L1 [8,15,22,30] → [3,5,7,9] and surdMultiply_L2 [6,12,18,26] → [2,4,6,9]; Cheetah is Antelope max + 1, so both are now 10. The four cut-offs below Cheetah are rescaled in the SAME PROPORTIONS as the old ladder rather than squashed under an unchanged one — a Lion ceiling of 22 beneath a Cheetah of 10 would be nonsense — and L2 keeps slightly easier lower bands than L1 because the simplifying step makes it slower. L3 and L4 are untouched (Cheetah 9 and 8), and no other skill moved: the identical [6,12,18,26] placeholder is still shared by Add & Subtract Surds L1, Divide Surds L1, Scientific Notation → Number L3 and several fraction L1s, all of which are LEFT AS THEY WERE because Laura only called this one. METHOD_BAND_CEIL surdMultiply is updated to [7,6,6,5] so the fallback no longer contradicts the overrides that actually apply. Bands are DISPLAY-ONLY over the stored Fluency Score — no storage key, PB, streak or share line changes, and no student loses a recorded score; a past round simply reads as a higher animal than it did. test_bands_surd.js locks the new numbers in the style of test_bands.js. FastFactsBands_v94.bas is regenerated and parity-checked (514/514 rows match bandCutoffs) — the dashboard module had not been regenerated since v79, so it was leaving the Animal column BLANK for all 65 skill-levels added in v80–v93 (the whole Data Analysis category included). v93 notes follow. internal v93 (Laura). 📐 CURRICULUM FILL: NETS/VIEWS, RECURRING DECIMALS, PERCENTAGE ERROR AND TEN WORD-PROBLEM LEVELS. NEW SKILL Nets, Plans & Views of 3D Objects (Geometry, VC2M7SP01 — the one examinable Level 7 Space idea with nothing in the app): L1 name the solid from a drawn net, L2 what the net of a drawn solid is made from, L3 front/side/top of a labelled rectangular prism (w, h and d forced distinct so exactly one view fits the stated rectangle), L4 the shape of a named view. Every level is CHOICE with a drawing and TEXT options — four small net pictures in a 74px option grid are unreadable, and comparing four pictures is a different task from the one the curriculum names. The nets are drawn here rather than taken from SHAPE_LIB because a net is a DIFFERENT picture of the same solid, which is the skill. NEW SKILL Terminating & Recurring Decimals (Decimals, VC2M8N03): L1 pick the odd one out, L2 write a terminating fraction as a decimal, L3 a dotted recurring decimal back to a fraction in simplest form. The terminate/recur test is done on the fraction in LOWEST TERMS (strip every 2 and 5, terminating iff 1 remains) and questions are GENERATED then CLASSIFIED, so 6/8 can never be mislabelled. NEW LEVEL Percentage Increase & Decrease L4 — PERCENTAGE ERROR (VC2M8N05), with values chosen so the error is a whole number of units and the percentage is exact. TEN WORD-PROBLEM LEVELS (VC2M7N10 / VC2M7A03 / VC2M8A03) — a FORMAT gap, not a topic gap: until now only three decimal skills had worded questions, so students met worded number, ratio and algebra questions for the first time in an ALT. HCF/LCM L4, Add/Subtract Integers L4, Order of Operations L5, Fraction of an Amount L4, Percentage of an Amount L4, Percentage Increase & Decrease L5, Sharing in a Ratio L5, Converting Rates L3, Substitute into Expressions L5, Two-Step Equations L4 (levelModes 4:number — the answer is a whole number, one box). All eleven are routed from ONE line at the top of nextQCore via the WORD_LEVEL map, so not one existing generator was touched. Word-problem levels on recall skills are added to METHOD_LEVEL_OVERRIDE — a word problem is never fact recall — and all carry a Challenge hint. test_v93.js compares the number inside the <b> of every worked solution against the stored answer on every question (the realistic bug is the story and the working drifting apart) and re-derives the HCF/LCM, ratio and equation answers from the story text itself. Nets/views and recurring-decimal bands are PLACEHOLDERS pending class data. v92 notes follow. internal v92 (Laura). 🎯 NEW: EXAM / ALT TRAINING + THREE USABILITY CHANGES. (1) HOME HEADER is one row — name and greeting left, class chip and Edit / Dark / Backup as icon buttons plus Switch profile right; Backup turns amber with a dot when the last backup is over 14 days old, because it is the only control there that protects data. (2) MODE IS CHOSEN AFTER THE LEVEL, not before. The home-screen segmented control is gone; the level screen's Start now opens a mode screen naming the skill and level, with one of the three RECOMMENDED from what the app already stores — an explicit LEVEL_REC wins, then a never-attempted or sub-85% level goes to Practice, and only an accurate student is sent to the clock. This is the fix for "everyone just does Fluency because it is pre-set". beginGame() is unchanged and still starts the game, so every existing test path (harness start = selectSkill -> lc<lv>.onclick -> beginGame -> launchSession) still works. (3) TOP ROW is streak strip + Daily Mix + Exam/ALT Training, three across at >=900px and stacked below; the streak card lost its progress text and shrank to a strip. EXAM / ALT TRAINING: a COURSES object of PURE METADATA (Year 7 Mathematics, Year 7 SEAL Mathematics) naming skill ids and level numbers that already exist — nothing in CATS, LEVEL_DEFS or any band changed, and no storage key moved. Course -> ALT list -> the skills and levels in that ALT, each level carrying a grey/amber/green READINESS dot read from the accuracy the app already saved after every session. Every ALT and the exam get a MIXED PRACTICE button (practice mode only, by design): nextQ() is now a wrapper that re-picks the skill between questions, weighting anything not yet green 3:1, and the round records one session plus a per-level accuracy stamp for every level that got at least 3 questions. EXAM PRACTICE is generated as the union of the examinable ALTs, so it can never drift; ALT 8 (Measurement) is exam:false because it is taught after the exam. PREREQUISITES (Times Tables, Division) sit greyed and dashed at the foot of every ALT — assumed knowledge, not assessed, but somewhere to drop back to. test_courses.js proves all 718 course->skill-level references resolve, that Exam Practice equals the union, and that Mixed Practice rotates skills and stays in practice mode. v84 notes follow. internal v84 (Laura). 📊 NEW CATEGORY: DATA ANALYSIS (Release 1 of 3). Four reusable display engines — daDotPlot, daStemHtml, daHistogram, daBoxPlot — each driven by DATA and working out its own scale, so Release 2 (mean/mode/median/range) re-uses them unchanged. Three skills: Classifying Data, Frequency Tables (read · from a raw list · grouped class intervals · percentage frequency, with totals restricted to 20/25/50 so every percentage is exact) and Reading Data Displays (one level per display, so every engine is student-tested now rather than sitting unused until Release 2). All bands are PLACEHOLDERS and every level is METHOD (accuracy-first, no Fluent badge) until class data exists. Purely additive: no existing skill, level, id or band changed. v83 notes follow. internal v83: 🔍 DESKTOP SIZING, SPLIT THE DIFFERENCE: v82 over-reserved vertical space (420px) so diagrams came out smaller than they had to; the budget is now calc(100vh - 330px) and the cap 460px. Question CONTENT also scales on a big screen — A_LBL now reads its size from --qlbl (a CSS variable, because a media query cannot override an inline style) and the timetable from --qtbl, so prompts and tables grow with the column instead of staying at phone size. v82 notes follow. internal v82: 📏 TIGHTER GAME HEADER ON DESKTOP: the back link / stats / progress / nudge strip is trimmed from ~170px to ~105px and diagrams are capped at calc(100vh - 420px), so the tall coordinate-grid and plot questions fit without scrolling. CSS only, ≥900px only. v81 notes follow. internal v81: 🎯 START BUTTON IS ALWAYS REACHABLE: #levelStartBtn is position:sticky at every width, so on a 6-level skill it rides the bottom of the window instead of hiding below the cards, and settles into the flow once the list fits. On desktop the level grid is now auto-fill minmax(300px) — 3 across on a 1080px frame — so even the worst case (six levels) needs no scrolling. CSS only. v80 notes follow. internal v80: 🖥 DESKTOP LAYOUT: additive CSS in one @media (min-width:900px) block plus two harmless wrapper divs on the home screen (.home-top, .home-foot). The frame widens to 1080px, categories go 3-across, skills and levels 2-across, and the GAME screen becomes two columns (question left, answering right) via grid auto-placement — no JS, no ids, no question logic touched. Under 900px every rule is unchanged, so all phone layouts are byte-identical to v79. v79 notes follow. internal v79: 🧩 OTHER IS RENAMED 🔄 TIME & TRANSFORMATIONS — display only: the CATS key stays 'other', so every stored Personal Best, streak and share line is untouched, and the dashboard .bas keys on SKILL names so it is unaffected too. SIX NEW TRANSFORMATION SKILLS, all built on one engine: every transformation in the program is an affine map whose matrix has exactly one non-zero entry per row, so applying one is two lines, COMPOSING two stays in the same family (which is what lets the Combinations skill print a single mapping for a chain), and the mapping notation is rendered straight off the matrix so the words and the notation can never drift apart. Translations (L1 one-axis slide · L2 two-axis · L3 describe it from the drawn points · L4 read the mapping · L5 apply the mapping · L6 find the pre-image), Reflections (same six; L1 the axes, L2 adds y = x), Dilations from the Origin (ONE apply level per Laura — a dilation from the origin is always a single step — then the same four; factors 2, 3, 4, ½ and ⅓ on a ±10 window because a factor of 4 leaves the −5…5 box immediately), Rotations about the Origin (L1 half turns only, L2 the quarter turns clockwise and anticlockwise; the describe-it levels are restricted to the three CANONICAL names because 90° clockwise and 270° anticlockwise are the SAME map and would otherwise be two right answers), Combinations of Transformations (NO describe-in-words level, per Laura — two points can be joined by any number of chains — so L1/L2 apply a chain of two then three, and the mapping levels survive because a mapping IS the composite), and Transformations of 2D Shapes (Yr 7–8: translate, reflect, identify, dilate, rotate and un-transform a whole shape by TAPPING its image corners, on a coarser −4…4 grid so a corner is an easy tap on a phone). One subtle guard worth remembering: two DIFFERENT transformations can still agree on ONE point — (2, −2) goes to (−2, 2) under both a half turn and a reflection in y = x — so a describe-it distractor is only safe if it fails on THAT point, not merely if it is a different map. Purely additive apart from the category label: no existing skill, level, id or band changed. All new bands are PLACEHOLDERS pending class data. internal v78.4 FIXES: (1) TYPING WAS DEAD on any narrow screen — the "is this a phone" test was window width ALONE, so a laptop with a narrow window (or the app in a preview pane) got the readonly-input trick meant to suppress a phone keyboard, with no way to type. A phone must now ALSO have a coarse primary pointer, and the first real key press from a physical keyboard unlocks every box and hides the keypad for the rest of the session. (2) THE PLOT GRID WAS SQUASHED — #qBox is a flex container and plotRender was handing it two or three children, so the prompt, story and grid became columns; wrapped in a single .q-text child, and the plot/graph SVGs now scale to the available width (up to 460px) instead of sitting at a fixed 300px. (3) DISTANCE-TIME JOURNEYS CAN NOW RETURN HOME — a stage may head back towards home so the graph comes down, and some journeys finish at 0 km; the line can never go below 0, "fastest" and "speed" compare magnitudes, and the story says "back towards home" / "the last N km home". internal v78.3: NEW CATEGORY 🧩 OTHER (Laura) — the practical, everyday-maths corner, placed last: Converting Units of Time (Yr 7: sec/min/hour · hour/day/week · week/month/year · compound times both ways), Train & Bus Timetables (Yr 7: read the table · trip length in minutes · latest service that still arrives in time · minutes until the next service, with 24-hour and 12-hour clocks mixed) and Distance-Time Graphs (Yr 7–8: read the distance · which stage is stationary/fastest · BUILD or finish the graph by tapping the corner of each stage · speed of a labelled stage). Coordinate Geometry gains Applications of Linear Graphs (Yr 8–9: rate or starting amount from P = −35 + 4c · write y = a + bx from a story · build its table · write ax + by = d from a two-item total). The plotPts mode is now axis-agnostic and can mark an ORDERED path, which is what the distance-time construct level uses. Purely additive — no existing skill, level, id or band changed. internal v78.2: 📈 COORDINATE GEOMETRY grows (Laura). The Cartesian Plane gains L4 — three corners of a rectangle, square or labelled parallelogram ABCD are plotted and the student writes the coordinates of the fourth. NEW skill Table of Values (Yr 7–8: L1 build a linear table from a rule · L2 PLOT that table on the plane · L3 build a non-linear table (x², x³, 2ˣ) · L4 plot a non-linear table). x- and y-Intercepts gains a new L2 — read both intercepts off a table of values — pushing y-int/x-int/both down to L3/L4/L5 (safe: no student has played Coordinate Geometry yet). NEW INPUT MODE plotPts: the drawn Cartesian plane itself is the answer surface — every lattice point carries an invisible tap target, tap to place or remove a marker, all-or-nothing marking, and the marking is drawn back onto the grid. internal v78.0: Yr 7–9 SEQUENCES in 💰 Finance & Patterns (Laura). NEW Sequence Rules in Words (Yr 7: L1 first term · L2 the term-to-term rule in words as a 4-way tap (add / subtract / multiply / divide / square numbers) · L3 next two terms · L4 write the first five terms from a starting value and a worded rule · L5 read a term off the sequence from aₙ notation). NEW Arithmetic Sequences (Yr 7–8: L1 common difference d · L2 next three terms · L3 fill a₁ and d into aₙ = a₁ + (n − 1)d · L4 use the rule to find a required term). NEW Geometric Sequences (Yr 8–9: L1 common ratio r · L2 next three terms · L3 fill a₁ and r into aₙ = a₁ × rⁿ⁻¹ · L4 use the rule to find a required term). The existing Sequences skill is RENAMED "Arithmetic & Geometric Sequences" and otherwise untouched (id, lvKey, levels and bands all unchanged) — it stays as the higher-order one where the student decides which kind it is. gapFill grows from four boxes to FIVE (gap4), with narrower boxes on a five-box row. All new bands are PLACEHOLDERS pending class data. internal v77.0: THREE NEW CATEGORIES and one new Number skill. ◡ Quadratics — Verify Solutions to Quadratic Equations (L1 x²=k · L2 factorised · L3 trinomial, Yes/No) and Solve Quadratic Equations (L1 x²=k · L2 exact values/fractions as multiple choice · L3 Null Factor Law · L4 monic trinomials). 📈 Coordinate Geometry — The Cartesian Plane (quadrant · read a plotted coordinate), Linear or Non-Linear (from a graph · from an equation), x- and y-Intercepts (y-int · x-int · both from ax+by=c) and Gradient of a Line Segment (whole · from a diagram · fractions & negatives). 💰 Finance & Patterns — GST (10%: added · price incl · removed), Simple Interest (5 levels on Vn = V0 + nD, D = r/100 × V0), Sequences (classify · next term · arithmetic rule · geometric rule), Recurrence Relations (write · use) and Flat Rate Depreciation (5 levels on Vn = V0 − nD). Number gains Number Classification (rational/irrational · tick every set). TWO NEW INPUT MODES: gapFill (a rendered rule/coordinate/solution template with up to five numeric boxes, all-or-nothing, optional order-free marking) and multiSel (tick every box that applies, all-or-nothing). Purely additive — no existing skill, level, id or band changed; all new bands are PLACEHOLDERS pending class data. internal v76.0: Congruence & Similarity now distinguish "provably false" from "unknown". L3 adds a 6th button "Not similar" (sides given but not in a constant ratio — the case a student CAN disprove, e.g. 5,8,11 vs 10,18,22); L2 adds a 6th button "Not congruent" via a new DIFF scenario that labels side lengths that don't all match. "Not enough information" now means only the genuinely undetermined cases (SSA, AAA-for-congruence, one angle, two sides). csSimilarityVerdict/csCongruenceVerdict extended; fixed 6-button order; storage-safe (no skill/level renamed or reordered). v75.0: NEW Percentages skills — Convert Percentages & Decimals (pctDecConv, both directions, number box) and Convert Fractions & Percentages (fracPctConv: L1–2 fraction→% number box, L3–4 %→fraction box; direction fixed per level via levelModes). Both single-question (not the FDP fill-in table), placed before Convert FDP; recall/Fluent-eligible with PLACEHOLDER bands (recalibrate with class data). Recurring values (33⅓% etc.) accepted within a per-question tolerance via qData.ansTol. Storage-safe additive change. v74.9: band cut-offs revised across the whole program from Laura's reviewed spreadsheet — 95 skill-levels re-banded via explicit per-level BAND_OVERRIDE entries (app matches the sheet on all 330 rows). v74.8: Decimals band targets LOWERED (Laura) so quick+accurate students reach higher animals — Identify/Expanded Form/Convert D→F −2; Rounding & Add/Subtract Decimals −3; all ×/÷ decimal operations (Multiply, Divide, ×÷ by 10/100/1000, Squares & Cubes, Square/Cube Roots, signed ×÷, ×fractions) −4. Display-only/storage-safe; .bas regenerated. v74.7: more Decimals (Laura) — NEW skills Add & Subtract Decimals (Positive & Negative), Multiply Decimals & Fractions (decFrac), Multiply & Divide Decimals (Positive & Negative), Leading Digit Estimation (round-to-1sf → estimate → BODMAS), Square Roots & Cube Roots of Decimals; NEW word-problem L4 on Multiply Decimals and Divide Decimals; Squares & Cubes of Decimals moved after Multiply Decimals & Fractions. v74.6: Add & Subtract Decimals L4 word problems; Add & Subtract Fractions & Decimals; Rounding Decimals L3 round-then-estimate. v74.5: miss reviews work THIS question's numbers step-by-step; Angles-in-Polygons L4; deeper concave polygons) -->
+<!-- Sandy Fast Facts — v98 (Laura). 🎯 THE 2026 ALT AUDIT, PART 1: THE MAPPING FIXES AND THE ENHANCEMENTS. The ten ALT papers for ALTs 1–5 were mapped question by question against each course's OWN ALT pool — a tighter question than the exam audit asked, because the exam is a sample and an ALT is the whole unit, and because a student who opens "ALT 3" three days before ALT 3 has an exact expectation about what is inside. 75% of the assessed tasks were already fully covered; the failures clustered in three recognisable ways and only one of them needed building. ⚠ THIRTEEN MAPPING FIXES FIRST, because they needed no new content at all — the level exists and was simply in the wrong ALT, which is invisible to every test, every band and every generator, and visible only to a student revising for that paper. Four of them were severe: Year 7 ALT 3 tests expanding brackets and had NO expanding level at all; SEAL ALT 5 asks a surd to be simplified and Simplify Surds was not in the pool (Add & Subtract, Multiply and Divide all were); SEAL ALT 5 sets (2x + 3)(x − 5) = 0 without the Null Factor Law level; and SEAL ALT 2 sets a 3-significant-figure question while Significant Figures sat in ALT 1. The other nine: the two index laws and integer comparison into Yr 7 ALT 1, Applications of Linear Graphs into BOTH ALT 3s (the party-room rule C = 12 + 5h is on both papers), substitution into Yr 7 ALT 5, rearranging into SEAL ALT 3, polygon naming and angle naming into SEAL ALT 4, and Table of Values and time conversion into SEAL ALT 2. 791 → 848 course→skill-level references. TWENTY-EIGHT NEW LEVELS, every one APPENDED so no stored Personal Best moves, and every one answering a question that is actually on one of the ten papers. The pattern the audit found is the part worth remembering: the app was very good at DO THE CALCULATION and thin on RECOGNISE / CHOOSE / CLASSIFY / GO BACKWARDS — which is exactly where the cheap one-mark ALT items live. So: which fraction is already in simplest form, which sign makes −2 ? −2 = 4 true, which is the correct working line for "27 out of 93 as a percentage", which drink has the higher percentage of sugar, are these two lines parallel, is this triangle right-angled (the CONVERSE of Pythagoras), which set is all prime, between which two whole numbers does √34 lie, how many decimal places will the answer have, which decimal is closest to 7.5, which expression has exactly three terms and two pronumerals, is 5² × 5³ = 5⁶ true or false, and find the missing term in 4x + ? = 7x. Plus the content gaps the papers exposed: mixed-number addition and subtraction (on BOTH ALT 2 papers, two marks each, and there was no level for it at all), signed fraction multiplication and division, ratio read off a diagram, ratios in different units, three- and four-part ratios, ratio as a fraction, four-part shares, decimal substitution, decimal one-step equations, mixed numbers to decimals, and an FDP table carrying values over 100% and recurring ones. All 28 route from ONE map and ONE dispatcher (V98_LEVELS / genV98Level), the same discipline as the v93 word problems and the v96 exam levels, so not a single existing generator was reopened to bolt a level onto the end of it. Levels added to recall skills go into METHOD_LEVEL_OVERRIDE — a recognition tap and a converse are not fact recall. ⚠ ONE STRUCTURAL THING WORTH KNOWING: Square Numbers and Square Roots SHARE the lvKey 'sq', so appending one level to it appends a level to BOTH skills. Renaming a lvKey would orphan stored data, so the estimate-a-square-root level is deliberately served to both — which is consistent rather than sloppy, because their L1–L3 are already the same content under two names. Check for a shared lvKey before appending a level; only 'sq', 'as', 'cu', 'sci' and 'mi' are shared. THREE GENERATOR WIDENINGS, no new level and therefore no .bas row and no storage key moved: Rounding Decimals L2 now mixes 1, 2 AND 3 d.p. (both papers round to three), Multiply & Divide by 10, 100, 1000 now includes 10 000 (Yr 7 MC Q2 — the SKILL NAME is deliberately left alone because the dashboard .bas keys on it), and Add / Subtract Integers L3 now chains a THIRD term, because both ALT 1 papers open with (−13) + (−12) + 5. test_v98.js re-derives every answer INDEPENDENTLY of the generator that produced it: the sign question is re-tested against all four operations to prove exactly one of them works, primality by trial division, the shapes in a ratio diagram are COUNTED from the drawn SVG, the parallel-lines verdict is recomputed from the two angles actually on screen, the closest-decimal minimum is checked to be unique, and the missing term is substituted back into its own printed statement. It also asserts all 13 mapping fixes directly, because that is the class of change nothing else notices. 547 → 575 skill-levels. All v98 bands are PLACEHOLDERS pending class data. FastFactsBands_v98.bas regenerated, parity-checked 575/575, and a row-by-row diff against v97 confirms NO existing row changed. v97 notes follow. internal v97 (Laura). 📉 A SKETCH IS MARKED AGAINST THE LINE, NOT A POINT LIST. Laura, on y = −x + 4: she plotted (0, 4) and stepped the gradient BACKWARDS to (−1, 5) — a correct point on a correctly drawn line — and was marked wrong, because plotPts compared her taps against ONE fixed pair. The old way of hiding that flaw was to name the two points in the prompt ("step 1 across and 1 down"), which handed over the answer and turned the level into a copying exercise. Both are fixed together. A plotting question can now describe the LINE instead of the points: qData.plotLine = {m, c} or {vx} for a vertical, qData.plotMust = the anchor points the named METHOD requires, qData.plotNeed = how many to plot. Marked right when the required number of DISTINCT points is plotted, every one lies on the line, and every compulsory point is among them. So on Gradient & y-Intercept L3 the y-intercept is still compulsory — plotting it IS half of "the gradient–intercept method" — but the second point is genuinely free, and stepping the gradient either way is correct. On Sketching Linear Graphs L1 (horizontal/vertical) ANY two points on the line count; L2 still requires both intercepts and L3 the origin, because those anchors ARE the method each level is named for. Every giveaway instruction is gone: "Plot the y-intercept, then use the gradient to plot one more point on the line" and "Plot any two points on this line". The marked-up re-draw now shows the whole correct LINE dashed in green with each tap green or red against it, instead of hollow rings on the two points the app happened to have in mind — better feedback, and it makes the "any point counts" rule visible. PURELY ADDITIVE: the exact-point-set path is untouched, so Table of Values, Distance-Time Graphs and Transformations of 2D Shapes mark exactly as before (regression-checked). test_v96.js now asserts the backwards step is accepted on every question, that an off-line point and a pair missing the compulsory anchor are still rejected, and that the instruction no longer names the second point. No band, storage key, level count or .bas row changed — FastFactsBands_v96.bas is still current. v96 notes follow. internal v96 (Laura). 📝 THE 2026 EXAM AUDIT, BUILT. Both Year 7 papers were mapped question by question against Exam Practice mode; everything below answers a question that is actually on one of them. 514 → 547 skill-levels. ⚠ THE TWO MAPPING FIXES FIRST, because they needed no new content at all: Year 7 Section B Q14 IS "solve 2x/5 − 8 = −4" and Two-Step Equations with Fractions was not in the Year 7 exam pool, so a student revising in the app would never have met the question type — it is now in ALT 3; and Q11c needs an 18% increase while Year 7 carried only Percentage Increase & Decrease L1 (friendly percentages) — L2 and L3 are now in ALT 5. SIX NEW SKILLS. Identify Fractions (the app could read a decimal and a percentage off a shaded grid but not a FRACTION, which the Year 7 paper asks for twice; L1/L2 generate only fractions already in lowest terms so "simplest form" is never ambiguous while the diagram is the thing being learned, L3 is where simplifying becomes the point). Index Notation & Expanded Form (VC2M7N02, Section B Q5). Quartiles & Interquartile Range (SEAL Section B Q9 — and the Outliers & Fences levels already in the app computed fences from Q1 and Q3 without ever teaching them; every data set is sized so BOTH halves are odd, so Q1 and Q3 are real data values and a quartiles drill is not also a "halfway between 63 and 77" drill). Gradient & y-Intercept from an Equation (SEAL MC Q7 — Gradient of a Line Segment only ever worked from two points or a diagram; L1/L2 are MULTIPLE CHOICE because a gradient is often a fraction and a fraction will not go in a numeric box, and L3 is the sketch-by-gradient-intercept level on the same tap-to-plot surface as the distance-time graphs). Matching Equations & Graphs (SEAL MC Q10 and Section B Q5c — the graph is DRAWN and the four options are EQUATIONS, because four graphs in a 74px button are unreadable; L3 checks every distractor against the rule so a "wrong" point can never accidentally satisfy it). Sketching Linear Graphs (Laura's spec: L1 horizontal and vertical, L2 by the intercepts, L3 through the origin, L4 mixed — every level names EXACTLY which two points to plot, because the marking is all-or-nothing on a point set and "sketch the line" alone would have infinitely many right answers). TEN NEW LEVELS on existing skills: four-digit column addition and subtraction, Division L4 (how many are needed — ceiling division, where rounding the ordinary way is wrong every time), Describe the Number (Yr 7 MC Q3), Prime Factor Form (Q7), Combining Two Ratios (SEAL Q2), Two-Step Number Patterns (Yr 7 MC Q10 — ×2 + 1 is neither arithmetic nor geometric), Find the Term Number (SEAL Q10c), Working Backwards from a finish time (SEAL Q8e), and Polygon-or-Not plus Count the Sides/Vertices (Section B Q1). All ten route from ONE map and ONE dispatcher (V96_LEVELS / genV96Level), the same pattern as the v93 word problems, so not a single existing generator was reopened. Levels added to recall skills go into METHOD_LEVEL_OVERRIDE. test_v96.js re-derives every answer INDEPENDENTLY of the generator that produced it — quartiles recomputed from the sorted list, prime factor form refactorised, ratio chains recombined, plotted points substituted back into their own equation — so a generator and its own working can never be wrong together. All v96 bands are PLACEHOLDERS. FastFactsBands_v96.bas regenerated, parity-checked 547/547, no existing row changed. v95 notes follow. internal v95 (Laura). 🏆 THE REST OF THE SURD FAMILY. Add & Subtract Surds L1 and Divide Surds L1 were still asking for 23 correct answers in a round; both are now Cheetah 10, matching Multiply Surds. The family now reads Simplify 8·8·7 (unchanged — already sane), Add & Subtract 10·9·8, Multiply 10·10·9·8, Divide 10·9·8. Every answer in this family has to be WRITTEN as an exact surd, which is slower than any of the arithmetic skills banded above 20. Nothing outside the family moved: the same [6,12,18,26] placeholder is still on Scientific Notation L1–L3 and several fraction L1s, deliberately left for a separate call. ⚠ STRUCTURAL FIX WORTH KNOWING: these two L1s came from the 2026-08-28 REVIEWED SPREADSHEET at [5,10,15,22], not from a placeholder — so which of the three maps setting them won was decided by LINE ORDER (the literal, then the v74.9 spreadsheet block, then the reviewed block). Every surd band Laura has called now lives in ONE "LAURA'S SURD CALLS" Object.assign block appended AFTER the reviewed block, so a future spreadsheet pass cannot silently revert a classroom call, and the superseded lines above carry a pointer to it. METHOD_BAND_CEIL surdAddSub/surdDivide L1 fallbacks follow the overrides. Bands are DISPLAY-ONLY over the stored Fluency Score: no storage key, PB, streak or share line changes and no score is lost — a past round simply reads as a higher animal. test_bands_surd.js now locks the WHOLE family (96 assertions): every Cheetah value, cut-offs in order, Cheetah = Antelope+1, a harder level never easier to top out than an easier one, the five non-surd skills that keep the old placeholder, and no surd level ever earning Fluent. FastFactsBands_v95.bas regenerated and parity-checked 514/514. v94 notes follow. internal v94 (Laura). 🏆 BAND FIX: MULTIPLY SURDS L1 AND L2. Laura: "the bands are too high, move Cheetah down to 10". The v86 PLACEHOLDER overrides asked for 31 (L1) and 27 (L2) correct answers in a round on a skill where every answer has to be written as an exact surd. BAND_OVERRIDE surdMultiply_L1 [8,15,22,30] → [3,5,7,9] and surdMultiply_L2 [6,12,18,26] → [2,4,6,9]; Cheetah is Antelope max + 1, so both are now 10. The four cut-offs below Cheetah are rescaled in the SAME PROPORTIONS as the old ladder rather than squashed under an unchanged one — a Lion ceiling of 22 beneath a Cheetah of 10 would be nonsense — and L2 keeps slightly easier lower bands than L1 because the simplifying step makes it slower. L3 and L4 are untouched (Cheetah 9 and 8), and no other skill moved: the identical [6,12,18,26] placeholder is still shared by Add & Subtract Surds L1, Divide Surds L1, Scientific Notation → Number L3 and several fraction L1s, all of which are LEFT AS THEY WERE because Laura only called this one. METHOD_BAND_CEIL surdMultiply is updated to [7,6,6,5] so the fallback no longer contradicts the overrides that actually apply. Bands are DISPLAY-ONLY over the stored Fluency Score — no storage key, PB, streak or share line changes, and no student loses a recorded score; a past round simply reads as a higher animal than it did. test_bands_surd.js locks the new numbers in the style of test_bands.js. FastFactsBands_v94.bas is regenerated and parity-checked (514/514 rows match bandCutoffs) — the dashboard module had not been regenerated since v79, so it was leaving the Animal column BLANK for all 65 skill-levels added in v80–v93 (the whole Data Analysis category included). v93 notes follow. internal v93 (Laura). 📐 CURRICULUM FILL: NETS/VIEWS, RECURRING DECIMALS, PERCENTAGE ERROR AND TEN WORD-PROBLEM LEVELS. NEW SKILL Nets, Plans & Views of 3D Objects (Geometry, VC2M7SP01 — the one examinable Level 7 Space idea with nothing in the app): L1 name the solid from a drawn net, L2 what the net of a drawn solid is made from, L3 front/side/top of a labelled rectangular prism (w, h and d forced distinct so exactly one view fits the stated rectangle), L4 the shape of a named view. Every level is CHOICE with a drawing and TEXT options — four small net pictures in a 74px option grid are unreadable, and comparing four pictures is a different task from the one the curriculum names. The nets are drawn here rather than taken from SHAPE_LIB because a net is a DIFFERENT picture of the same solid, which is the skill. NEW SKILL Terminating & Recurring Decimals (Decimals, VC2M8N03): L1 pick the odd one out, L2 write a terminating fraction as a decimal, L3 a dotted recurring decimal back to a fraction in simplest form. The terminate/recur test is done on the fraction in LOWEST TERMS (strip every 2 and 5, terminating iff 1 remains) and questions are GENERATED then CLASSIFIED, so 6/8 can never be mislabelled. NEW LEVEL Percentage Increase & Decrease L4 — PERCENTAGE ERROR (VC2M8N05), with values chosen so the error is a whole number of units and the percentage is exact. TEN WORD-PROBLEM LEVELS (VC2M7N10 / VC2M7A03 / VC2M8A03) — a FORMAT gap, not a topic gap: until now only three decimal skills had worded questions, so students met worded number, ratio and algebra questions for the first time in an ALT. HCF/LCM L4, Add/Subtract Integers L4, Order of Operations L5, Fraction of an Amount L4, Percentage of an Amount L4, Percentage Increase & Decrease L5, Sharing in a Ratio L5, Converting Rates L3, Substitute into Expressions L5, Two-Step Equations L4 (levelModes 4:number — the answer is a whole number, one box). All eleven are routed from ONE line at the top of nextQCore via the WORD_LEVEL map, so not one existing generator was touched. Word-problem levels on recall skills are added to METHOD_LEVEL_OVERRIDE — a word problem is never fact recall — and all carry a Challenge hint. test_v93.js compares the number inside the <b> of every worked solution against the stored answer on every question (the realistic bug is the story and the working drifting apart) and re-derives the HCF/LCM, ratio and equation answers from the story text itself. Nets/views and recurring-decimal bands are PLACEHOLDERS pending class data. v92 notes follow. internal v92 (Laura). 🎯 NEW: EXAM / ALT TRAINING + THREE USABILITY CHANGES. (1) HOME HEADER is one row — name and greeting left, class chip and Edit / Dark / Backup as icon buttons plus Switch profile right; Backup turns amber with a dot when the last backup is over 14 days old, because it is the only control there that protects data. (2) MODE IS CHOSEN AFTER THE LEVEL, not before. The home-screen segmented control is gone; the level screen's Start now opens a mode screen naming the skill and level, with one of the three RECOMMENDED from what the app already stores — an explicit LEVEL_REC wins, then a never-attempted or sub-85% level goes to Practice, and only an accurate student is sent to the clock. This is the fix for "everyone just does Fluency because it is pre-set". beginGame() is unchanged and still starts the game, so every existing test path (harness start = selectSkill -> lc<lv>.onclick -> beginGame -> launchSession) still works. (3) TOP ROW is streak strip + Daily Mix + Exam/ALT Training, three across at >=900px and stacked below; the streak card lost its progress text and shrank to a strip. EXAM / ALT TRAINING: a COURSES object of PURE METADATA (Year 7 Mathematics, Year 7 SEAL Mathematics) naming skill ids and level numbers that already exist — nothing in CATS, LEVEL_DEFS or any band changed, and no storage key moved. Course -> ALT list -> the skills and levels in that ALT, each level carrying a grey/amber/green READINESS dot read from the accuracy the app already saved after every session. Every ALT and the exam get a MIXED PRACTICE button (practice mode only, by design): nextQ() is now a wrapper that re-picks the skill between questions, weighting anything not yet green 3:1, and the round records one session plus a per-level accuracy stamp for every level that got at least 3 questions. EXAM PRACTICE is generated as the union of the examinable ALTs, so it can never drift; ALT 8 (Measurement) is exam:false because it is taught after the exam. PREREQUISITES (Times Tables, Division) sit greyed and dashed at the foot of every ALT — assumed knowledge, not assessed, but somewhere to drop back to. test_courses.js proves all 718 course->skill-level references resolve, that Exam Practice equals the union, and that Mixed Practice rotates skills and stays in practice mode. v84 notes follow. internal v84 (Laura). 📊 NEW CATEGORY: DATA ANALYSIS (Release 1 of 3). Four reusable display engines — daDotPlot, daStemHtml, daHistogram, daBoxPlot — each driven by DATA and working out its own scale, so Release 2 (mean/mode/median/range) re-uses them unchanged. Three skills: Classifying Data, Frequency Tables (read · from a raw list · grouped class intervals · percentage frequency, with totals restricted to 20/25/50 so every percentage is exact) and Reading Data Displays (one level per display, so every engine is student-tested now rather than sitting unused until Release 2). All bands are PLACEHOLDERS and every level is METHOD (accuracy-first, no Fluent badge) until class data exists. Purely additive: no existing skill, level, id or band changed. v83 notes follow. internal v83: 🔍 DESKTOP SIZING, SPLIT THE DIFFERENCE: v82 over-reserved vertical space (420px) so diagrams came out smaller than they had to; the budget is now calc(100vh - 330px) and the cap 460px. Question CONTENT also scales on a big screen — A_LBL now reads its size from --qlbl (a CSS variable, because a media query cannot override an inline style) and the timetable from --qtbl, so prompts and tables grow with the column instead of staying at phone size. v82 notes follow. internal v82: 📏 TIGHTER GAME HEADER ON DESKTOP: the back link / stats / progress / nudge strip is trimmed from ~170px to ~105px and diagrams are capped at calc(100vh - 420px), so the tall coordinate-grid and plot questions fit without scrolling. CSS only, ≥900px only. v81 notes follow. internal v81: 🎯 START BUTTON IS ALWAYS REACHABLE: #levelStartBtn is position:sticky at every width, so on a 6-level skill it rides the bottom of the window instead of hiding below the cards, and settles into the flow once the list fits. On desktop the level grid is now auto-fill minmax(300px) — 3 across on a 1080px frame — so even the worst case (six levels) needs no scrolling. CSS only. v80 notes follow. internal v80: 🖥 DESKTOP LAYOUT: additive CSS in one @media (min-width:900px) block plus two harmless wrapper divs on the home screen (.home-top, .home-foot). The frame widens to 1080px, categories go 3-across, skills and levels 2-across, and the GAME screen becomes two columns (question left, answering right) via grid auto-placement — no JS, no ids, no question logic touched. Under 900px every rule is unchanged, so all phone layouts are byte-identical to v79. v79 notes follow. internal v79: 🧩 OTHER IS RENAMED 🔄 TIME & TRANSFORMATIONS — display only: the CATS key stays 'other', so every stored Personal Best, streak and share line is untouched, and the dashboard .bas keys on SKILL names so it is unaffected too. SIX NEW TRANSFORMATION SKILLS, all built on one engine: every transformation in the program is an affine map whose matrix has exactly one non-zero entry per row, so applying one is two lines, COMPOSING two stays in the same family (which is what lets the Combinations skill print a single mapping for a chain), and the mapping notation is rendered straight off the matrix so the words and the notation can never drift apart. Translations (L1 one-axis slide · L2 two-axis · L3 describe it from the drawn points · L4 read the mapping · L5 apply the mapping · L6 find the pre-image), Reflections (same six; L1 the axes, L2 adds y = x), Dilations from the Origin (ONE apply level per Laura — a dilation from the origin is always a single step — then the same four; factors 2, 3, 4, ½ and ⅓ on a ±10 window because a factor of 4 leaves the −5…5 box immediately), Rotations about the Origin (L1 half turns only, L2 the quarter turns clockwise and anticlockwise; the describe-it levels are restricted to the three CANONICAL names because 90° clockwise and 270° anticlockwise are the SAME map and would otherwise be two right answers), Combinations of Transformations (NO describe-in-words level, per Laura — two points can be joined by any number of chains — so L1/L2 apply a chain of two then three, and the mapping levels survive because a mapping IS the composite), and Transformations of 2D Shapes (Yr 7–8: translate, reflect, identify, dilate, rotate and un-transform a whole shape by TAPPING its image corners, on a coarser −4…4 grid so a corner is an easy tap on a phone). One subtle guard worth remembering: two DIFFERENT transformations can still agree on ONE point — (2, −2) goes to (−2, 2) under both a half turn and a reflection in y = x — so a describe-it distractor is only safe if it fails on THAT point, not merely if it is a different map. Purely additive apart from the category label: no existing skill, level, id or band changed. All new bands are PLACEHOLDERS pending class data. internal v78.4 FIXES: (1) TYPING WAS DEAD on any narrow screen — the "is this a phone" test was window width ALONE, so a laptop with a narrow window (or the app in a preview pane) got the readonly-input trick meant to suppress a phone keyboard, with no way to type. A phone must now ALSO have a coarse primary pointer, and the first real key press from a physical keyboard unlocks every box and hides the keypad for the rest of the session. (2) THE PLOT GRID WAS SQUASHED — #qBox is a flex container and plotRender was handing it two or three children, so the prompt, story and grid became columns; wrapped in a single .q-text child, and the plot/graph SVGs now scale to the available width (up to 460px) instead of sitting at a fixed 300px. (3) DISTANCE-TIME JOURNEYS CAN NOW RETURN HOME — a stage may head back towards home so the graph comes down, and some journeys finish at 0 km; the line can never go below 0, "fastest" and "speed" compare magnitudes, and the story says "back towards home" / "the last N km home". internal v78.3: NEW CATEGORY 🧩 OTHER (Laura) — the practical, everyday-maths corner, placed last: Converting Units of Time (Yr 7: sec/min/hour · hour/day/week · week/month/year · compound times both ways), Train & Bus Timetables (Yr 7: read the table · trip length in minutes · latest service that still arrives in time · minutes until the next service, with 24-hour and 12-hour clocks mixed) and Distance-Time Graphs (Yr 7–8: read the distance · which stage is stationary/fastest · BUILD or finish the graph by tapping the corner of each stage · speed of a labelled stage). Coordinate Geometry gains Applications of Linear Graphs (Yr 8–9: rate or starting amount from P = −35 + 4c · write y = a + bx from a story · build its table · write ax + by = d from a two-item total). The plotPts mode is now axis-agnostic and can mark an ORDERED path, which is what the distance-time construct level uses. Purely additive — no existing skill, level, id or band changed. internal v78.2: 📈 COORDINATE GEOMETRY grows (Laura). The Cartesian Plane gains L4 — three corners of a rectangle, square or labelled parallelogram ABCD are plotted and the student writes the coordinates of the fourth. NEW skill Table of Values (Yr 7–8: L1 build a linear table from a rule · L2 PLOT that table on the plane · L3 build a non-linear table (x², x³, 2ˣ) · L4 plot a non-linear table). x- and y-Intercepts gains a new L2 — read both intercepts off a table of values — pushing y-int/x-int/both down to L3/L4/L5 (safe: no student has played Coordinate Geometry yet). NEW INPUT MODE plotPts: the drawn Cartesian plane itself is the answer surface — every lattice point carries an invisible tap target, tap to place or remove a marker, all-or-nothing marking, and the marking is drawn back onto the grid. internal v78.0: Yr 7–9 SEQUENCES in 💰 Finance & Patterns (Laura). NEW Sequence Rules in Words (Yr 7: L1 first term · L2 the term-to-term rule in words as a 4-way tap (add / subtract / multiply / divide / square numbers) · L3 next two terms · L4 write the first five terms from a starting value and a worded rule · L5 read a term off the sequence from aₙ notation). NEW Arithmetic Sequences (Yr 7–8: L1 common difference d · L2 next three terms · L3 fill a₁ and d into aₙ = a₁ + (n − 1)d · L4 use the rule to find a required term). NEW Geometric Sequences (Yr 8–9: L1 common ratio r · L2 next three terms · L3 fill a₁ and r into aₙ = a₁ × rⁿ⁻¹ · L4 use the rule to find a required term). The existing Sequences skill is RENAMED "Arithmetic & Geometric Sequences" and otherwise untouched (id, lvKey, levels and bands all unchanged) — it stays as the higher-order one where the student decides which kind it is. gapFill grows from four boxes to FIVE (gap4), with narrower boxes on a five-box row. All new bands are PLACEHOLDERS pending class data. internal v77.0: THREE NEW CATEGORIES and one new Number skill. ◡ Quadratics — Verify Solutions to Quadratic Equations (L1 x²=k · L2 factorised · L3 trinomial, Yes/No) and Solve Quadratic Equations (L1 x²=k · L2 exact values/fractions as multiple choice · L3 Null Factor Law · L4 monic trinomials). 📈 Coordinate Geometry — The Cartesian Plane (quadrant · read a plotted coordinate), Linear or Non-Linear (from a graph · from an equation), x- and y-Intercepts (y-int · x-int · both from ax+by=c) and Gradient of a Line Segment (whole · from a diagram · fractions & negatives). 💰 Finance & Patterns — GST (10%: added · price incl · removed), Simple Interest (5 levels on Vn = V0 + nD, D = r/100 × V0), Sequences (classify · next term · arithmetic rule · geometric rule), Recurrence Relations (write · use) and Flat Rate Depreciation (5 levels on Vn = V0 − nD). Number gains Number Classification (rational/irrational · tick every set). TWO NEW INPUT MODES: gapFill (a rendered rule/coordinate/solution template with up to five numeric boxes, all-or-nothing, optional order-free marking) and multiSel (tick every box that applies, all-or-nothing). Purely additive — no existing skill, level, id or band changed; all new bands are PLACEHOLDERS pending class data. internal v76.0: Congruence & Similarity now distinguish "provably false" from "unknown". L3 adds a 6th button "Not similar" (sides given but not in a constant ratio — the case a student CAN disprove, e.g. 5,8,11 vs 10,18,22); L2 adds a 6th button "Not congruent" via a new DIFF scenario that labels side lengths that don't all match. "Not enough information" now means only the genuinely undetermined cases (SSA, AAA-for-congruence, one angle, two sides). csSimilarityVerdict/csCongruenceVerdict extended; fixed 6-button order; storage-safe (no skill/level renamed or reordered). v75.0: NEW Percentages skills — Convert Percentages & Decimals (pctDecConv, both directions, number box) and Convert Fractions & Percentages (fracPctConv: L1–2 fraction→% number box, L3–4 %→fraction box; direction fixed per level via levelModes). Both single-question (not the FDP fill-in table), placed before Convert FDP; recall/Fluent-eligible with PLACEHOLDER bands (recalibrate with class data). Recurring values (33⅓% etc.) accepted within a per-question tolerance via qData.ansTol. Storage-safe additive change. v74.9: band cut-offs revised across the whole program from Laura's reviewed spreadsheet — 95 skill-levels re-banded via explicit per-level BAND_OVERRIDE entries (app matches the sheet on all 330 rows). v74.8: Decimals band targets LOWERED (Laura) so quick+accurate students reach higher animals — Identify/Expanded Form/Convert D→F −2; Rounding & Add/Subtract Decimals −3; all ×/÷ decimal operations (Multiply, Divide, ×÷ by 10/100/1000, Squares & Cubes, Square/Cube Roots, signed ×÷, ×fractions) −4. Display-only/storage-safe; .bas regenerated. v74.7: more Decimals (Laura) — NEW skills Add & Subtract Decimals (Positive & Negative), Multiply Decimals & Fractions (decFrac), Multiply & Divide Decimals (Positive & Negative), Leading Digit Estimation (round-to-1sf → estimate → BODMAS), Square Roots & Cube Roots of Decimals; NEW word-problem L4 on Multiply Decimals and Divide Decimals; Squares & Cubes of Decimals moved after Multiply Decimals & Fractions. v74.6: Add & Subtract Decimals L4 word problems; Add & Subtract Fractions & Decimals; Rounding Decimals L3 round-then-estimate. v74.5: miss reviews work THIS question's numbers step-by-step; Angles-in-Polygons L4; deeper concave polygons) -->
 <!-- Viewport (v48): dropped `maximum-scale=1.0, user-scalable=no`. iOS ignored it (so pinch worked there anyway) but Android obeyed it, blocking accessibility pinch-zoom. Accidental double-tap-to-zoom is killed per-control via `touch-action: manipulation` instead, which leaves deliberate pinch-zoom intact on every platform. -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1989,6 +1989,9 @@ body {
   .alt-skill-list { columns: 2; column-gap: 12px; }
   .alt-skill-row { break-inside: avoid; }
 }
+
+/* v98 — the blanked-out term in a Find the Missing Term question */
+.v98-box{display:inline-block;min-width:38px;padding:0 10px;border:2px dashed var(--accent);border-radius:8px;color:var(--accent);}
 </style>
 </head>
 <body>
@@ -2750,7 +2753,7 @@ const CATS = {
       { id:'timesTables', name:'Times Tables',          inputMode:'number', lvKey:'tt'  },
       { id:'division',    name:'Division',               inputMode:'number', lvKey:'div' },
       { id:'orderOps',    name:'Order of Operations',    inputMode:'number', lvKey:'oo'  },
-      { id:'factorsMultiples', name:'Factors, Multiples &amp; Primes', inputMode:'number', lvKey:'fmp', levelModes:{1:'choice',2:'choice',3:'number',4:'choice'} },
+      { id:'factorsMultiples', name:'Factors, Multiples &amp; Primes', inputMode:'number', lvKey:'fmp', levelModes:{1:'choice',2:'choice',3:'number',4:'choice',5:'choice'} },
       { id:'primeFactor', name:'Prime Factorisation', inputMode:'number', lvKey:'pfac', levelModes:{1:'choice',2:'number',3:'number',4:'choice'} },
       { id:'hcfLcm',      name:'Highest Common Factor &amp; Lowest Common Multiple', inputMode:'number', lvKey:'hcflcm' },
       { id:'roundEst',    name:'Rounding &amp; Estimation', inputMode:'number', lvKey:'rest' },
@@ -2762,7 +2765,7 @@ const CATS = {
     label: '± Integers',
     skills: [
       { id:'intAddSub',    name:'Add / Subtract Integers',         inputMode:'number', lvKey:'int'  },
-      { id:'intMultDiv',   name:'Multiply / Divide Integers',      inputMode:'number', lvKey:'intmd'  },
+      { id:'intMultDiv',   name:'Multiply / Divide Integers',      inputMode:'number', lvKey:'intmd', levelModes:{4:'choice'}  },
       { id:'intSquareCube',name:'Squares &amp; Cubes of Integers', inputMode:'number', lvKey:'isc'  },
       { id:'intOrderOps',  name:'Order of Operations (Integers)',   inputMode:'number', lvKey:'ioo'  },
     ]
@@ -2770,12 +2773,12 @@ const CATS = {
   exponents: {
     label: 'x² Exponents',
     skills: [
-      { id:'squares',    name:'Square Numbers',          inputMode:'number', lvKey:'sq'   },
-      { id:'roots',      name:'Square Roots',            inputMode:'number', lvKey:'sq'   },
+      { id:'squares',    name:'Square Numbers',          inputMode:'number', lvKey:'sq', levelModes:{4:'gapFill'}   },
+      { id:'roots',      name:'Square Roots',            inputMode:'number', lvKey:'sq', levelModes:{4:'gapFill'}   },
       { id:'cubes',      name:'Cube Numbers',            inputMode:'number', lvKey:'cu'   },
       { id:'cubeRoots',  name:'Cube Roots',              inputMode:'number', lvKey:'cu'   },
       { id:'indexExpand', name:'Index Notation &amp; Expanded Form', inputMode:'number', lvKey:'ixe', levelModes:{1:'gapFill',2:'choice'} },
-      { id:'indexMult',  name:'Index Law (Multiplication Law)',  inputMode:'index',  lvKey:'imul' },
+      { id:'indexMult',  name:'Index Law (Multiplication Law)',  inputMode:'index',  lvKey:'imul', levelModes:{4:'choice'} },
       { id:'indexDiv',   name:'Index Law (Division Law)',        inputMode:'index',  lvKey:'idiv' },
       { id:'indexPow',   name:'Index Law (Power of a Power)',    inputMode:'index',  lvKey:'ipow' },
       { id:'negIndices', name:'Negative &amp; Zero Indices',  inputMode:'fraction', lvKey:'nidx' },
@@ -2791,9 +2794,9 @@ const CATS = {
   fractions: {
     label: '½ Fractions',
     skills: [
-      { id:'fracSimplify',   name:'Simplify Fractions',                inputMode:'fraction', lvKey:'fs'   },
+      { id:'fracSimplify',   name:'Simplify Fractions',                inputMode:'fraction', lvKey:'fs', levelModes:{4:'choice'}   },
       { id:'fracCompare',    name:'Compare &amp; Order Fractions',     inputMode:'choice',   lvKey:'fcmp', levelModes:{1:'choice',2:'arrange',3:'arrange'} },
-      { id:'fracAddSub',     name:'Add &amp; Subtract Fractions',      inputMode:'fraction', lvKey:'fas'  },
+      { id:'fracAddSub',     name:'Add &amp; Subtract Fractions',      inputMode:'fraction', lvKey:'fas', levelModes:{5:'mixed'}  },
       { id:'fracMultiply',   name:'Multiply Fractions',                inputMode:'fraction', lvKey:'fmu'  },
       { id:'fracDivide',     name:'Divide Fractions',                  inputMode:'fraction', lvKey:'fd'   },
       { id:'fracIdentify',   name:'Identify Fractions',                 inputMode:'fraction', lvKey:'fid'  },
@@ -2812,7 +2815,7 @@ const CATS = {
       { id:'decToFrac',    name:'Convert Decimals to Fractions',  inputMode:'number', lvKey:'dtf', levelModes:{1:'fraction',2:'fraction',3:'fraction'} },
       { id:'fracToDec',    name:'Convert Fractions to Decimals',  inputMode:'number', lvKey:'ftd'  },
       { id:'decRecurring', name:'Terminating &amp; Recurring Decimals', inputMode:'number', lvKey:'trd', levelModes:{1:'choice',2:'number',3:'fraction'} },
-      { id:'compareDec',   name:'Compare &amp; Order Decimals',   inputMode:'choice', lvKey:'cmp', levelModes:{1:'choice',2:'arrange',3:'choice',4:'arrange',5:'arrange'} },
+      { id:'compareDec',   name:'Compare &amp; Order Decimals',   inputMode:'choice', lvKey:'cmp', levelModes:{1:'choice',2:'arrange',3:'choice',4:'arrange',5:'arrange',6:'choice'} },
       { id:'decRound',     name:'Rounding Decimals',              inputMode:'number', lvKey:'dr'   },
       { id:'decAdd',       name:'Add Decimals',                  inputMode:'number', lvKey:'da'   },
       { id:'decSub',       name:'Subtract Decimals',             inputMode:'number', lvKey:'dsu'  },
@@ -2820,7 +2823,7 @@ const CATS = {
       { id:'decAddSubNeg', name:'Add &amp; Subtract Decimals (Positive &amp; Negative)', inputMode:'number', lvKey:'dasn' },
       { id:'fdAddSub',     name:'Add &amp; Subtract Fractions &amp; Decimals', inputMode:'decFrac', lvKey:'fda' },
       { id:'decPow10',     name:'Multiply &amp; Divide by 10, 100, 1000', inputMode:'number', lvKey:'dp10' },
-      { id:'decMultiply',  name:'Multiply Decimals',              inputMode:'number', lvKey:'dmu'  },
+      { id:'decMultiply',  name:'Multiply Decimals',              inputMode:'number', lvKey:'dmu', levelModes:{5:'choice'}  },
       { id:'fdMultiply',   name:'Multiply Decimals &amp; Fractions', inputMode:'decFrac', lvKey:'fdm' },
       { id:'decSquareCube',name:'Squares &amp; Cubes of Decimals',inputMode:'number', lvKey:'dsc'  },
       { id:'decDivide',    name:'Divide Decimals',                inputMode:'number', lvKey:'dd'   },
@@ -2838,7 +2841,7 @@ const CATS = {
       { id:'fracPctConv',  name:'Convert Fractions &amp; Percentages',  inputMode:'number',   lvKey:'fpc', levelModes:{3:'fraction',4:'fraction'} },
       { id:'pctFDP',       name:'Convert Fractions, Decimals &amp; Percentages', inputMode:'pctTable', lvKey:'pfdp' },
       { id:'pctOfAmount',  name:'Finding a Percentage of an Amount',    inputMode:'number',   lvKey:'poa' },
-      { id:'pctExpress',   name:'One Amount as a Percentage of Another', inputMode:'number',  lvKey:'pex' },
+      { id:'pctExpress',   name:'One Amount as a Percentage of Another', inputMode:'number',  lvKey:'pex', levelModes:{4:'choice',5:'choice'} },
       { id:'pctChange',    name:'Percentage Increase &amp; Decrease',   inputMode:'number',   lvKey:'pcd' },
       { id:'pctReverse',   name:'Reverse Percentages',                 inputMode:'number',   lvKey:'prev' },
       { id:'pctProfitLoss',name:'Profit &amp; Loss',                    inputMode:'plToggle', lvKey:'ppl' },
@@ -2847,9 +2850,9 @@ const CATS = {
   ratiosrates: {
     label: '➡️ Ratios & Rates',
     skills: [
-      { id:'ratioSimplify', name:'Simplifying Ratios',     inputMode:'ratio',  lvKey:'rsim' },
+      { id:'ratioSimplify', name:'Simplifying Ratios',     inputMode:'ratio',  lvKey:'rsim', levelModes:{4:'gapFill',6:'gapFill'} },
       { id:'ratioEquiv',    name:'Equivalent Ratios',      inputMode:'number', lvKey:'req', levelModes:{4:'ratio'} },
-      { id:'ratioShare',    name:'Sharing in a Ratio',     inputMode:'number', lvKey:'rsh'  },
+      { id:'ratioShare',    name:'Sharing in a Ratio',     inputMode:'number', lvKey:'rsh', levelModes:{6:'fraction',7:'gapFill'}  },
       { id:'rateSimplify',  name:'Simplifying Rates',      inputMode:'number', lvKey:'rtsim' },
       { id:'rateConvert',   name:'Converting Rates',       inputMode:'number', lvKey:'rtcv'  },
       { id:'bestBuy',       name:'Best Buys &amp; Unit Price', inputMode:'number', lvKey:'bbuy', levelModes:{2:'choice'} },
@@ -2858,7 +2861,7 @@ const CATS = {
   algebra: {
     label: '𝑥 Algebra',
     skills: [
-      { id:'algParts',       name:'Parts of Expressions',                 inputMode:'number',  lvKey:'aparts' },
+      { id:'algParts',       name:'Parts of Expressions',                 inputMode:'number',  lvKey:'aparts', levelModes:{4:'choice'} },
       { id:'algSub',         name:'Substitute into Expressions',          inputMode:'number',  lvKey:'asub'   },
       { id:'algLikeTerms',   name:'Add &amp; Subtract Like Terms',        inputMode:'algebra', lvKey:'alike'  },
       { id:'algMultiply',    name:'Multiply Terms',                       inputMode:'algebra', lvKey:'amul'   },
@@ -2876,8 +2879,8 @@ const CATS = {
     // skill id is untouched, so this is display-only and storage-safe.
     label: '⚖️ Linear Equations',
     skills: [
-      { id:'eqOneStepAddSub', name:'One-Step Equations (+ / −)', inputMode:'fraction', lvKey:'eq1' },
-      { id:'eqOneStepMulDiv', name:'One-Step Equations (× / ÷)', inputMode:'fraction', lvKey:'eq2' },
+      { id:'eqOneStepAddSub', name:'One-Step Equations (+ / −)', inputMode:'fraction', lvKey:'eq1', levelModes:{4:'number'} },
+      { id:'eqOneStepMulDiv', name:'One-Step Equations (× / ÷)', inputMode:'fraction', lvKey:'eq2', levelModes:{4:'number'} },
       { id:'eqTwoStep',       name:'Two-Step Linear Equations',  inputMode:'fraction', lvKey:'eq3', levelModes:{4:'number'} },
       { id:'eqTwoStepFrac',   name:'Two-Step Equations with Fractions',    inputMode:'fraction', lvKey:'eq4' },
       { id:'eqVarDenom',      name:'Equations with x on the Denominator',  inputMode:'fraction', lvKey:'eq5' },
@@ -2931,7 +2934,7 @@ const CATS = {
   trig: {
     label: '📐 Trigonometry & Pythagoras',
     skills: [
-      { id:'pythagoras',   name:'Pythagoras\u2019 Theorem',            inputMode:'surd', lvKey:'pyth' },
+      { id:'pythagoras',   name:'Pythagoras\u2019 Theorem',            inputMode:'surd', lvKey:'pyth', levelModes:{5:'choice'} },
       { id:'trigExactDeg', name:'Sin / Cos / Tan Exact Values (Degrees)', inputMode:'choice', lvKey:'tdeg' },
       { id:'trigExactRad', name:'Sin / Cos / Tan Exact Values (Radians)', inputMode:'choice', lvKey:'trad' },
     ]
@@ -2945,7 +2948,7 @@ const CATS = {
       { id:'netsViews', name:'Nets, Plans &amp; Views of 3D Objects', inputMode:'choice', lvKey:'npv' },
       { id:'interiorAngles', name:'Interior Angles of a Triangle', inputMode:'number', lvKey:'iat' },
       { id:'angleRel', name:'Angle Relationships', inputMode:'number', lvKey:'arl', levelModes:{1:'choice'} },
-      { id:'angleParallel', name:'Angles on Parallel Lines', inputMode:'number', lvKey:'apl', levelModes:{1:'choice'} },
+      { id:'angleParallel', name:'Angles on Parallel Lines', inputMode:'number', lvKey:'apl', levelModes:{1:'choice',5:'choice'} },
       { id:'angleQuad', name:'Angles in Quadrilaterals', inputMode:'number', lvKey:'aqd' },
       { id:'anglePoly', name:'Angles in Polygons', inputMode:'number', lvKey:'apoly' },
       { id:'congruSimilar', name:'Congruence &amp; Similarity', inputMode:'number', lvKey:'cs', levelModes:{1:'choice',2:'choice',3:'choice'} },
@@ -3345,11 +3348,13 @@ const LEVEL_DEFS = {
     { title:'Level 1 — Factors to 6',  desc:'Multiply and divide integers with factors up to 6. Watch the signs: − × − = +.', examples:['(−4) × 3', '(−18) ÷ 6', '5 × (−2)'] },
     { title:'Level 2 — Factors to 10', desc:'Factors up to 10. Apply the sign rule first, then the times-table fact.', examples:['(−7) × 8', '(−54) ÷ 9', '6 × (−5)'] },
     { title:'Level 3 — Factors to 15', desc:'Factors up to 15 for a tougher challenge. Mind the signs throughout.', examples:['(−13) × 4', '(−120) ÷ 12', '11 × (−9)'] },
+    { title:'Level 4 — Which Sign?', desc:'A sign is missing from the statement. Tap the operation (+ − × ÷) that makes it true. Only one ever works.', examples:["−2 ? −2 = 4 → ×","−12 ? 3 = −4 → ÷"] },
   ],
   sq: [
     { title:'Level 1 — Squares 1–10',  desc:'Square numbers and roots from 1² to 10². The essential set.', examples:['3²', '√64', '7²'] },
     { title:'Level 2 — Squares 1–15',  desc:'Extends to 15² = 225. Adds the trickier values above 100.', examples:['11²', '√169', '14²'] },
     { title:'Level 3 — Squares 1–20',  desc:'Up to 20² = 400. For students aiming for fluent recall of all common squares.', examples:['17²', '√256', '19²'] },
+    { title:'Level 4 — Estimating a Square Root', desc:'A square root that is not exact. Type the two consecutive whole numbers it lies between — the two squares it falls between. (Square Numbers and Square Roots share this level.)', examples:["√34 → 5 and 6","√128 → 11 and 12"] },
   ],
   oo: [
     { title:'Level 1 — No Brackets',   desc:'Two operations, no brackets. Focuses on multiplication before addition/subtraction.', examples:['3 + 4 × 2', '6 × 5 − 8', '2 + 9 × 3'] },
@@ -3363,6 +3368,7 @@ const LEVEL_DEFS = {
     { title:'Level 1 — Factors of 2 and 5',  desc:'Simplify fractions whose numerator and denominator share a factor of 2 or 5 only. Good entry point.', examples:['6/10', '4/8', '15/20'] },
     { title:'Level 2 — Any Common Factor',    desc:'Simplify any fraction by finding the highest common factor (HCF). Numbers up to 12.', examples:['8/12', '9/15', '14/21'] },
     { title:'Level 3 — Algebraic Fractions',  desc:'Simplify fractions with the variable x. Enter the numeric coefficient of x on top, and the denominator below.', examples:['6x/10 → 3/5', '4x/12 → x/3', '15x/25 → 3/5'] },
+    { title:'Level 4 — Which Is in Simplest Form?', desc:'Four fractions, one of them already in lowest terms. Cancel each of the others to see why it is not the one.', examples:["6/21 · 16/48 · 9/36 · 7/22 → 7/22"] },
   ],
 
   fas: [
@@ -3370,16 +3376,19 @@ const LEVEL_DEFS = {
     { title:'Level 2 — Related Denominators',desc:'One denominator is a multiple of the other — convert just one fraction before adding or subtracting.', examples:['1/2 + 1/4', '5/6 − 1/3', '3/4 + 1/8'] },
     { title:'Level 3 — All Fractions',       desc:'Any combination including unrelated denominators and negative fractions. Find the LCM to add or subtract.', examples:['2/3 + 3/4', '5/6 − 2/5', '−1/3 + 3/4'] },
     { title:'Level 4 — Mixed Numbers',       desc:'Add or subtract mixed numbers. Convert to improper fractions, find the LCM, then give the answer as a simplified improper fraction.', examples:['1½ + 2⅓', '3¾ − 1½', '2⅔ + 1¼'] },
+    { title:'Level 5 — Mixed Numbers', desc:'Add or subtract MIXED numbers. Convert to improper fractions, find a common denominator, then write the answer back as a mixed number in simplest form.', examples:["3 4/5 − 1 2/3"] },
   ],
   fmu: [
     { title:'Level 1 — Multiply (No Simplifying)',  desc:'Multiply numerators together and denominators together. Answers will not need simplifying.', examples:['2/3 × 3/5', '1/4 × 3/7', '2/5 × 5/6'] },
     { title:'Level 2 — Multiply with Simplifying',  desc:'Multiply fractions and then simplify the answer to its lowest terms using the HCF.', examples:['2/3 × 3/4', '4/5 × 5/8', '3/7 × 7/9'] },
     { title:'Level 3 — Negatives Included',         desc:'Multiply fractions that may include negative values. Apply the sign rules before simplifying.', examples:['−2/3 × 3/4', '−1/2 × −4/5', '3/7 × −7/9'] },
+    { title:'Level 4 — With Negatives', desc:'Multiply fractions where one or both are negative. Decide the sign first, then multiply across and simplify.', examples:["−30/27 × 18/15"] },
   ],
   fd: [
     { title:'Level 1 — Divide (No Simplifying)',  desc:'Flip the second fraction (find its reciprocal) then multiply. Answers will not need simplifying.', examples:['2/3 ÷ 4/5', '1/2 ÷ 3/7', '3/5 ÷ 6/7'] },
     { title:'Level 2 — Divide with Simplifying',  desc:'Keep–Change–Flip, then simplify the result to its lowest terms.', examples:['2/3 ÷ 4/9', '5/6 ÷ 5/8', '3/4 ÷ 9/10'] },
     { title:'Level 3 — Negatives Included',       desc:'Division of fractions including negative values. Apply sign rules after the Keep–Change–Flip step.', examples:['−2/3 ÷ 4/5', '−1/2 ÷ −3/4', '3/7 ÷ −7/9'] },
+    { title:'Level 4 — With Negatives', desc:'Divide fractions where one or both are negative. Flip the second fraction, decide the sign, then multiply and simplify.', examples:["−6/14 ÷ 18/7"] },
   ],
     /* ── NEW EXPONENT LEVELS ── */
   cu: [
@@ -3391,6 +3400,7 @@ const LEVEL_DEFS = {
     { title:'Level 1 — Numbers Only',    desc:'Add the indices when multiplying powers with the same base. Enter the resulting power.', examples:['2³ × 2⁴ = 2?'] },
     { title:'Level 2 — One Variable',    desc:'Multiply expressions with one variable. Multiply the coefficients and add the powers of x. Enter the coefficient and power.', examples:['2x² × 3x³ = ?'] },
     { title:'Level 3 — Two Variables',   desc:'Multiply expressions with two variables x and y. Enter the coefficient and power of x (power of y shown in hint).', examples:['2x²y × 3xy² = ?'] },
+    { title:'Level 4 — True or False?', desc:'An index-law statement is shown. Decide whether it is true. Each false one is a classic slip — multiplying the indices instead of adding, or thinking a power of 0 gives 0.', examples:["5² × 5³ = 5⁶ → False"] },
   ],
   idiv: [
     { title:'Level 1 — Numbers Only',    desc:'Subtract the indices when dividing powers with the same base. Enter the resulting power.', examples:['5⁶ ÷ 5² = 5?'] },
@@ -3466,6 +3476,7 @@ const LEVEL_DEFS = {
     { title:'Level 2 — Decimal × Decimal',  desc:'Multiply two decimals together. Count decimal places in factors to place the decimal correctly.', examples:['0.3 × 0.4', '1.2 × 0.5', '2.4 × 1.3'] },
     { title:'Level 3 — Harder Products',    desc:'Multiply decimals with more digits. Demands careful place-value thinking.', examples:['3.6 × 2.5', '0.12 × 0.4', '4.5 × 1.8'] },
     { title:'Level 4 — Word Problems',      desc:'Real-life multiplying problems — areas, total costs and rates. Pick out the two numbers, multiply, and type the answer.', examples:['A rug is 2.4 m by 3.5 m — what area?', '6 tickets at $12.50 each — total?', 'Petrol is $1.80 a litre — cost of 15 L?'] },
+    { title:'Level 5 — How Many Decimal Places?', desc:'Do not multiply — just count. The number of decimal places in the answer is the number in the first factor plus the number in the second.', examples:["2.456 × 3.1234 → 7"] },
   ],
   dd: [
     { title:'Level 1 — Decimal ÷ Whole',    desc:'Divide a decimal by a single-digit whole number. Think of sharing into equal parts.', examples:['0.8 ÷ 4', '3.6 ÷ 3', '2.4 ÷ 6'] },
@@ -3495,8 +3506,8 @@ const LEVEL_DEFS = {
     { title:'Level 3 — Mixed Roots',    desc:'A random mix of square roots and cube roots of decimals. Read the root symbol carefully.', examples:['√0.81 → 0.9', '∛0.064 → 0.4', '√2.25 → 1.5'] },
   ],
   dp10: [
-    { title:'Level 1 — Multiply by 10, 100, 1000', desc:'Multiply a decimal by 10, 100 or 1000. Every digit shifts LEFT — one place for 10, two for 100, three for 1000.', examples:['3.4 × 10', '0.62 × 100', '5.7 × 1000'] },
-    { title:'Level 2 — Divide by 10, 100, 1000',   desc:'Divide by 10, 100 or 1000. Every digit shifts RIGHT — one place for 10, two for 100, three for 1000.', examples:['34 ÷ 10', '6.2 ÷ 100', '380 ÷ 1000'] },
+    { title:'Level 1 — Multiply by 10, 100, 1000, 10 000', desc:'Multiply a decimal by 10, 100, 1000 or 10 000. Every digit shifts LEFT — one place for 10, two for 100, three for 1000.', examples:['3.4 × 10', '0.62 × 100', '5.7 × 1000'] },
+    { title:'Level 2 — Divide by 10, 100, 1000, 10 000',   desc:'Divide by 10, 100, 1000 or 10 000. Every digit shifts RIGHT — one place for 10, two for 100, three for 1000.', examples:['34 ÷ 10', '6.2 ÷ 100', '380 ÷ 1000'] },
     { title:'Level 3 — Mixed × and ÷',             desc:'A random mix of multiplying and dividing by 10, 100 or 1000. Read the sign carefully before you shift the digits.', examples:['4.5 × 100', '80 ÷ 10', '0.9 × 1000'] },
     { title:'Level 4 — Multiples of 10',           desc:'Multiply and divide by multiples like 20, 50 or 400. Split it up: shift for the power of ten, then multiply or divide by the leading digit.', examples:['3.2 × 40', '84 ÷ 20', '0.5 × 400'] },
   ],
@@ -3517,10 +3528,11 @@ const LEVEL_DEFS = {
     { title:'Level 3 — Compare Mixed Numbers', desc:'Compare a mix of fractions, decimals and whole numbers with the correct sign. Convert to the same form first (usually decimals) so you are comparing like with like.', examples:['3/4 > 0.7', '1/2 = 0.5', '2 > 1.75'] },
     { title:'Level 4 — Order Mixed Numbers (Descending)', desc:'Tap fractions, decimals and whole numbers into descending order — largest first. Convert each to a decimal in your head, then arrange.', examples:['2, 1.5, 3/4, 0.4', '1, 0.75, 1/2, 0.3'] },
     { title:'Level 5 — Order Positive & Negative', desc:'Order a mix of positive AND negative integers, fractions and decimals. The question says ascending or descending. Remember: with negatives, the number furthest from zero is the smallest (−2 is less than −0.5).', examples:['ascending: −2, −0.5, 1/4, 1.5', 'descending: 2, 0.3, −3/4, −1.2'] },
+    { title:'Level 6 — Which Is Closest?', desc:'Four decimals and a target value. Work out how far each one is from the target — more digits does not mean further away.', examples:["closest to 7.5 → 7.515"] },
   ],
   dr: [
     { title:'Level 1 — Round to 1 d.p.',       desc:'Round a decimal to 1 decimal place. Look at the second decimal place to decide.', examples:['3.47 → 3.5', '8.23 → 8.2', '6.75 → 6.8'] },
-    { title:'Level 2 — Round to 1 or 2 d.p.',  desc:'A mix of rounding to 1 or 2 decimal places. The question tells you how many.', examples:['3.467 to 2 d.p.', '8.235 to 1 d.p.', '12.744 to 2 d.p.'] },
+    { title:'Level 2 — Round to 1, 2 or 3 d.p.',  desc:'A mix of rounding to 1, 2 or 3 decimal places. The question tells you how many — look at the digit one place further along.', examples:['3.467 to 2 d.p.', '8.235 to 1 d.p.', '12.744 to 2 d.p.'] },
     { title:'Level 3 — Round then Estimate',   desc:'Round BOTH numbers to the place shown in the brackets, then add or subtract the rounded values to estimate the answer. The bracket tells you the place — whole number, tenths or hundredths.', examples:['4.81 + 3.2231 (tenths) → 4.8 + 3.2 = 8', '7.36 − 2.91 (whole) → 7 − 3 = 4', '5.267 + 1.482 (hundredths) → 5.27 + 1.48 = 6.75'] },
   ],
 
@@ -3548,6 +3560,7 @@ const LEVEL_DEFS = {
     { title:'Level 1 — Tenths, Hundredths, Thousandths', desc:'Write a fraction with a denominator of 10, 100 or 1000 as a decimal (already in simplest form).', examples:['7/10 → 0.7', '9/100 → 0.09', '137/1000 → 0.137'] },
     { title:'Level 2 — Factors of 100', desc:'Denominators that divide into 100 (2, 4, 5, 20, 25, 50). Rewrite over 100 or divide top by bottom.', examples:['3/4 → 0.75', '3/5 → 0.6', '9/25 → 0.36'] },
     { title:'Level 3 — Wider Denominators', desc:'Trickier terminating conversions (eighths, sixteenths, fortieths, …). Every answer still stops — no recurring decimals.', examples:['5/8 → 0.625', '3/40 → 0.075', '7/16 → 0.4375'] },
+    { title:'Level 4 — Mixed Numbers', desc:'Write a mixed number as a decimal. The whole number stays as it is — divide the fraction part out.', examples:["2 6/48 → 2.125"] },
   ],
 
   /* ── PERCENTAGES (v74, Laura) ── */
@@ -3571,11 +3584,14 @@ const LEVEL_DEFS = {
     { title:'Level 1 — Nice Values', desc:'Fill the blanks in the table. Convert between fraction, decimal and percentage for friendly values. You score 1 point for every box you fill in correctly.', examples:['½ = 0.5 = 50%', '¼ = 0.25 = 25%', '1/5 = 0.2 = 20%'] },
     { title:'Level 2 — Less Nice Values', desc:'The same table, with trickier values like 16% or 24%. One point per correct box.', examples:['4/25 = 0.16 = 16%', '3/20 = 0.15 = 15%', '9/25 = 0.36 = 36%'] },
     { title:'Level 3 — Thirds &amp; Over 100%', desc:'Recurring values like 1/3 (accept 33.3%) and amounts over 100%. One point per correct box.', examples:['1/3 = 0.33… = 33⅓%', '2/3 ≈ 66.7%', '6/5 = 1.2 = 120%'] },
+    { title:'Level 4 — Over 100% &amp; Recurring', desc:'The same table, with values above 100% and recurring decimals in the mix. A rounded decimal is accepted for a recurring value.', examples:["164% · 6/11 · 9/4"] },
   ],
   pex: [
     { title:'Level 1 — Friendly Totals', desc:'Write one amount as a percentage of another when the total divides neatly. Type your answer as a percentage.', examples:['35 as a % of 50 → 70%', '18 as a % of 25 → 72%', '9 as a % of 20 → 45%'] },
     { title:'Level 2 — Round to the Nearest Percent', desc:'The division does not come out exactly — round your answer to the nearest whole percent.', examples:['17 out of 30 → 57%', '25 out of 40 → 63%', '11 out of 60 → 18%'] },
     { title:'Level 3 — Different Units', desc:'The two amounts use different units — convert to the same unit first (cents/dollars, grams/kilograms, mm/cm).', examples:['20c as a % of $2 → 10%', '300 g as a % of 2 kg → 15%', '15 mm as a % of 60 cm → 2.5%'] },
+    { title:'Level 4 — Pick the Working Line', desc:'Do not work it out — choose the correct working line for writing one amount as a percentage of another.', examples:["27 out of 93 → 27/93 × 100"] },
+    { title:'Level 5 — Which Is the Greater Percentage?', desc:'Two amounts out of two different totals. Work out both percentages and tap the higher (or lower) one.', examples:["50g of 250g vs 57g of 300g"] },
   ],
   poa: [
     { title:'Level 1 — Friendly Percentages', desc:'Find 10%, 20%, 25%, 50% and other easy percentages of an amount.', examples:['10% of 80 → 8', '25% of 60 → 15', '20% of 45 → 9'] },
@@ -3601,6 +3617,7 @@ const LEVEL_DEFS = {
     { title:'Level 2 — Is It a Factor?', desc:'Tap whether the first number is a factor of the second (divides it exactly).', examples:['6 a factor of 24? Yes', '7 a factor of 20? No', '9 a factor of 54? Yes'] },
     { title:'Level 3 — Multiples', desc:'Type the multiple asked for — the Nth multiple of a number.', examples:['4th multiple of 7 → 28', '6th multiple of 8 → 48', '3rd multiple of 12 → 36'] },
     { title:'Level 4 — Describe the Number', desc:'Tap the description that fits: odd or even, and prime, square or a multiple of something. Two facts about the same number at once.', examples:['51 \u2192 odd and a multiple of 3', '49 \u2192 odd and square', '23 \u2192 odd and prime'] },
+    { title:'Level 5 — Which Set Is All Prime?', desc:'Four sets of numbers. Only one contains nothing but primes — watch for 1, and for odd numbers that are not prime.', examples:["2, 11, 31, 37, 53"] },
   ],
   hcflcm: [
     { title:'Level 1 — Highest Common Factor', desc:'Type the largest number that divides into both — the HCF.', examples:['HCF of 12 & 18 → 6', 'HCF of 20 & 30 → 10', 'HCF of 9 & 24 → 3'] },
@@ -3700,6 +3717,9 @@ const LEVEL_DEFS = {
     { title:'Level 1 — Whole Numbers',  desc:'Simplify ratios using the highest common factor (HCF). Both parts are whole numbers.', examples:['8 : 10 → 4 : 5', '24 : 54 → 4 : 9', '12 : 18 → 2 : 3'] },
     { title:'Level 2 — Decimals',       desc:'Simplify ratios that involve decimals. First multiply both sides to clear the decimals, then divide by the HCF.', examples:['1.2 : 3.2 → 3 : 8', '0.6 : 1.5 → 2 : 5', '2.5 : 4.0 → 5 : 8'] },
     { title:'Level 3 — Fractions',      desc:'Simplify ratios that involve fractions or mixed numbers. Convert to whole numbers using a common denominator, then simplify.', examples:['½ : ¾ → 2 : 3', '1½ : 2 → 3 : 4', '⅔ : ⅖ → 10 : 6 → 5 : 3'] },
+    { title:'Level 4 — Ratio from a Diagram', desc:'Count each kind of shape in the picture, then write the ratio in simplest form. Two or three parts.', examples:["4 squares : 6 circles → 2 : 3"] },
+    { title:'Level 5 — Different Units', desc:'The two amounts use different units — convert to the SAME unit first, then simplify.', examples:["40 cents to $2 → 1 : 5"] },
+    { title:'Level 6 — Three &amp; Four Parts', desc:'Simplify a three- or four-part ratio by dividing every part by their highest common factor.', examples:["10 : 55 : 110 → 2 : 11 : 22"] },
   ],
   req: [
     { title:'Level 1 — Two Parts',        desc:'Find the missing value in a two-part equivalent ratio. Multiplier or divisor is always a whole number.', examples:['2 : 5 = 8 : ?', '3 : 7 = ? : 21', '4 : 9 = 12 : ?'] },
@@ -3713,6 +3733,8 @@ const LEVEL_DEFS = {
     { title:'Level 3 — Larger Numbers',   desc:'Three-part shares with larger totals and ratios. Same forward-share method, bigger numbers test fluency.', examples:['Share $840 in 4 : 7 : 9 — middle?', 'Share 1500 in 2 : 5 : 8 — largest?', 'Share $660 in 3 : 4 : 4 — smallest?'] },
     { title:'Level 4 — Given One Part', desc:'You are told one share or the difference between shares — work back to the amount asked for.', examples:['3 : 5, smaller is 18 — larger?', '2 : 7, difference is 20 — total?', '4 : 9, larger is 63 — smaller?'] },
     { title:'Level 5 — Word Problems', desc:'Share an amount in a ratio from a story, and give the LARGER share. Add the parts, divide to find one part, then multiply.', examples:['$120 in 2:3 \u2192 larger share $72', '450 g in 4:5 \u2192 250 g', '$84 in 1:6 \u2192 $72'] },
+    { title:'Level 6 — Ratio as a Fraction', desc:'Add the parts to find the total, then write the named part over that total and simplify.', examples:["blue : green : yellow = 2 : 3 : 5 → green is 3/10"] },
+    { title:'Level 7 — Four-Part Share', desc:'Share a total in a FOUR-part ratio. Add the parts, divide to find one part, then multiply out each share in order.', examples:["240 in 6 : 7 : 8 : 9"] },
   ],
   rtsim: [
     { title:'Level 1 — Simplify Rates',   desc:'Express a quantity as a unit rate by dividing. Whole-number answers.', examples:['$28 for 4 kg → $?/kg', '180 km in 3 h → ?km/h', '$45 for 5 L → $?/L'] },
@@ -3728,6 +3750,7 @@ const LEVEL_DEFS = {
     { title:'Level 1 — Two Terms',        desc:'Read the coefficient of a pronumeral, or the constant term, in a two-term expression. Type just the number.', examples:['3x + 5 — coeff of x?', '7 + 4y — constant?', '2a + 9 — coeff of a?'] },
     { title:'Level 2 — Three Terms',      desc:'Three-term expressions with two pronumerals. Read off the coefficient of the named pronumeral, or the constant.', examples:['4x + 7y + 2 — coeff of y?', '5a + 3b + 8 — coeff of a?', '6m + 2n + 5 — constant?'] },
     { title:'Level 3 — Negatives & Unit Coefficients', desc:'Coefficients can be negative or 1 (e.g. the coefficient of x in x + 7 is 1, and in 8 − 5x is −5).', examples:['8 − 5x — coeff of x?', 'x + 7 — coeff of x?', '4 − y — coeff of y?'] },
+    { title:'Level 4 — Count the Terms &amp; Pronumerals', desc:'Terms are the parts separated by + or −; pronumerals are the different letters. Tap the expression with the counts named.', examples:["3 terms, 2 pronumerals → 3m + 6n + 2p"] },
   ],
   asub: [
     { title:'Level 1 — One Variable',     desc:'Substitute one whole-number value and evaluate. Answers stay positive.', examples:['x = 4: 2x + 5', 'x = 3: 4x − 2', 'a = 5: 3a + 1'] },
@@ -3735,6 +3758,7 @@ const LEVEL_DEFS = {
     { title:'Level 3 — Negatives & Squares', desc:'Negative values and a squared term. Answers may be negative — mind the order of operations.', examples:['x = −2: x² + 3x', 'x = −3: 2x + 5', 'x = −4: x² − 1'] },
     { title:'Level 4 — Substitute into Formulas', desc:'Substitute values into a real formula and evaluate — area, perimeter, speed and more.', examples:['A = ½bh, b=6 h=4', 'v = u + at, u=3 a=2 t=5', 'P = 2(l + w), l=8 w=3'] },
     { title:'Level 5 — Word Problems', desc:'A formula is given in a real context. Substitute the values from the story and work out the answer.', examples:['C = 15 + 8h, h = 5 \u2192 55', 'P = 2(l + w), l = 9, w = 4 \u2192 26', 'd = vt, v = 12, t = 3 \u2192 36'] },
+    { title:'Level 6 — Decimal Values', desc:'Substitute decimal values and evaluate. Answers to 2 decimal places — multiplying still happens before adding or subtracting.', examples:["a = 2.46, b = 11.31 → b − 2a"] },
   ],
   alike: [
     { title:'Level 1 — One Variable, Add', desc:'Collect like terms in one variable. Type the coefficient; the variable is shown for you.', examples:['3x + 5x', '4y + 2y', '6a + a'] },
@@ -3746,12 +3770,14 @@ const LEVEL_DEFS = {
     { title:'Level 2 — Two Terms',         desc:'Multiply two terms with different letters. Type the whole answer including every letter.', examples:['3xy × 4z = 12xyz', '7y × 4p = 28py', '2x × 5y = 10xy'] },
     { title:'Level 3 — Answers with Powers', desc:'A letter appears in both terms, so the answer carries a power. Type the letters and powers (use the ² key).', examples:['5xy × 2yz = 10xy²z', '3x × 4x = 12x²', '2ab × 3b = 6ab²'] },
     { title:'Level 4 — Negatives & Three Terms', desc:'Three terms multiplied, with negatives. Answers can reach a cube (use the ³ key). Best played in Practice or Challenge.', examples:['−3x × 2y × 4x = −24x²y', '2x × 3x × x = 6x³', '−2a × −3a × b = 6a²b'] },
+    { title:'Level 5 — Find the Missing Term', desc:'One term of a true statement has been blanked out. Work backwards to find it, then type the whole term.', examples:["? × 3y = 12xy → 4x","4x + ? = 7x → 3x"] },
   ],
   adiv: [
     { title:'Level 1 — Term ÷ Number',     desc:'Divide an algebraic term by a number that goes in evenly. Type the whole answer, e.g. 3x.', examples:['12x ÷ 4 = 3x', '20m ÷ 5 = 4m', '18y ÷ 3 = 6y'] },
     { title:'Level 2 — A Letter Cancels',  desc:'Divide one term by another so a letter cancels. Type the whole answer.', examples:['28xy ÷ 7y = 4x', '20ab ÷ 5a = 4b', '18pq ÷ 6q = 3p'] },
     { title:'Level 3 — Answers with Powers', desc:'The top carries a higher power, so the answer keeps one. Type the letters and powers (use the ² key).', examples:['10x³y ÷ 2x = 5x²y', '12a³ ÷ 3a = 4a²', '15m³n ÷ 5m = 3m²n'] },
     { title:'Level 4 — Divide then Multiply', desc:'Work left to right: divide first, then multiply. Negatives allowed. Best played in Practice or Challenge.', examples:['24x²y ÷ 6x × 2y = 8xy²', '20a²b ÷ 5a × 3b = 12ab²', '18m²n ÷ 3m × 2n = 12mn²'] },
+    { title:'Level 5 — Find the Missing Term', desc:'A division statement with one part missing. Divide the other way, or multiply back up, then type the whole term.', examples:["8x² ÷ ? = 2x → 4x"] },
   ],
   aexp: [
     { title:'Level 1 — k(x + a)',         desc:'Expand a single bracket with a number outside. Fill the coefficient of each term in the template.', examples:['3(x + 2)', '5(y + 1)', '2(a + 6)'] },
@@ -3767,11 +3793,13 @@ const LEVEL_DEFS = {
     { title:'Level 1 — Whole-Number Answers', desc:'Undo one addition or subtraction. Every solution is a positive whole number.', examples:['x + 7 = 12', '15 + x = 23', 'x − 4 = 9'] },
     { title:'Level 2 — Negative Answers', desc:'The same one step, but the solution can be a negative number now.', examples:['x + 9 = 4', 'x − 3 = −8', '6 + x = 1'] },
     { title:'Level 3 — Bigger Numbers', desc:'Larger numbers, positive or negative solutions. Take care with the signs.', examples:['28 + x = 12', 'x − 15 = −23', 'x + 31 = 17'] },
+    { title:'Level 4 — Decimal Values', desc:'One-step equations where the numbers are decimals. Undo the + or − exactly as you would with whole numbers.', examples:["x + 4.3 = −3 → x = −7.3"] },
   ],
   eq2: [
     { title:'Level 1 — Whole-Number Answers', desc:'Undo one multiplication or division. Every solution is a positive whole number.', examples:['4x = 20', 'x ÷ 3 = 6', '7x = 56'] },
     { title:'Level 2 — Negative Answers', desc:'The same one step with negatives — the coefficient or the solution can be negative.', examples:['−3x = 18', '−5x = −35', 'x ÷ 4 = −6'] },
     { title:'Level 3 — Fraction Answers', desc:'The number does not divide evenly, so the solution is a fraction in simplest form.', examples:['2x = 7  (x = 7/2)', '5x = −12', '4x = 9'] },
+    { title:'Level 4 — Decimal Values', desc:'One-step equations with a decimal coefficient or divisor. Divide (or multiply) to undo it — watch the signs.', examples:["−3.2y = 27.2 → y = −8.5"] },
   ],
   eq3: [
     { title:'Level 1 — Whole-Number Answers', desc:'Two steps: undo the + or − first, then the × or ÷. Positive whole-number solutions.', examples:['2x + 3 = 11', '5x − 4 = 21', '3x + 7 = 19'] },
@@ -3825,6 +3853,7 @@ const LEVEL_DEFS = {
     { title:'Level 2 — Larger Triples', desc:'Same idea, larger whole-number triangles. The unknown is still mixed between the hypotenuse and a shorter side.', examples:['legs 7, 24 → 25', 'c 29, leg 20 → 21', 'legs 9, 12 → 15'] },
     { title:'Level 3 — Exact Surds', desc:'Answers are exact surds. Type the exact value using √ (e.g. √13 or 2√5) — no rounded decimals. Any equivalent exact form is accepted.', examples:['legs 2, 3 → √13', 'legs 2, 4 → 2√5', 'c 6, leg 2 → 4√2'] },
     { title:'Level 4 — Surds, Varied', desc:'Exact surds with larger numbers and varied orientations, plus the occasional clean triple. Type the exact value using √.', examples:['legs 5, 6 → √61', 'c 9, leg 3 → 6√2', 'legs 4, 7 → √65'] },
+    { title:'Level 5 — Is It Right-Angled?', desc:'Three side lengths are given. Use the CONVERSE of Pythagoras: square the two shorter sides, add them, and compare with the longest side squared.', examples:["8, 15, 17 → Yes","8, 15, 18 → No"] },
   ],
   iat: [
     { title:'Level 1 — Acute Triangles', desc:'Two angles are given; find the third using angles in a triangle add to 180°. Round numbers, all angles acute.', examples:['60°, 70° → 50°', '45°, 55° → 80°', '30°, 90°… → uses acute only'] },
@@ -3861,6 +3890,7 @@ const LEVEL_DEFS = {
     { title:'Level 2 — Find the Angle', desc:'One step. Use the relationship (equal, or add to 180° for co-interior) to find x.', examples:['corresponding 70° → 70°', 'co-interior 110° → 70°'] },
     { title:'Level 3 — Two-Step', desc:'The unknown is two hops away — combine two relationships to reach x.', examples:['co-interior then vertically opposite', 'alternate then vertically opposite'] },
     { title:'Level 4 — Solve for x', desc:'Angles given as algebraic expressions. Use the relationship to form an equation and solve for x.', examples:['(3x+10)°=(x+50)° → x = 20', 'co-interior (2x+30)°+(x+30)° = 180° → x = 40'] },
+    { title:'Level 5 — Are the Lines Parallel?', desc:'Two angles are marked at a transversal. Decide whether the rule for that pair is satisfied — if it is not, the lines are not parallel.', examples:["co-interior 110° and 65° → No"] },
   ],
   aqd: [
     { title:'Level 1 — Missing Angle', desc:'Three angles of a quadrilateral are given (they add to 360°). Find the fourth. Friendly numbers.', examples:['90°, 100°, 80° → 90°', '120°, 60°, 100° → 80°'] },
@@ -4076,7 +4106,7 @@ const METHOD_LEVEL_OVERRIDE = {
   intAddSub:[4], hcfLcm:[4], fracOfAmount:[4], pctIdentify:[3], pctOfAmount:[3, 4],
   /* v96: four-digit column work, "how many are needed" and the describe-the-number
      tap are all reasoning, not fact recall, on skills that are otherwise recall. */
-  addition:[4], subtraction:[4], division:[4], factorsMultiples:[4], decAddSub:[4], decMultiply:[4], decDivide:[4],
+  addition:[4], subtraction:[4], division:[4], factorsMultiples:[4, 5], decAddSub:[4], decMultiply:[4, 5], decDivide:[4],
   // v77 — ticking six boxes is slower than a single tap, so L2 is accuracy-first
   numClass:[2],
   // v77.1 (Laura) — Verify Solutions L3 (substitute into a trinomial) stays accuracy-first
@@ -4087,7 +4117,11 @@ const METHOD_LEVEL_OVERRIDE = {
   timeConvert:[4],
   /* v90 — only L1 of Multiply/Divide Terms is recall; two-variable and
      power-of-a-power questions are multi-step. */
-  algMultiply:[2, 3, 4], algDivide:[2, 3, 4] };
+  algMultiply:[2, 3, 4, 5], algDivide:[2, 3, 4, 5],
+  /* v98: the ALT-audit levels. Every one of these is recognition, a converse or a
+     backwards step on a skill that is otherwise fact recall — none of them is
+     something a student should be racing a 60-second clock to do. */
+  roots:[4], squares:[4], intMultDiv:[4], pythagoras:[5], angleParallel:[5], fracToDec:[4] };
 function getLevelKind(id, lv) {
   if (RECALL_SKILLS.includes(id) && !((METHOD_LEVEL_OVERRIDE[id] || []).includes(lv))) return 'recall';
   return 'method';
@@ -4640,6 +4674,47 @@ const DEFAULT_METHOD_CEIL = 5;
 
 /* The Lion ceiling T for a skill+level. Recall → FLUENCY_TARGET; method → map
    (number or per-level array). */
+
+/* ═══════════════════════════════════════════════════════════════════
+   v98 (Laura) — ALT-AUDIT LEVELS. ASSIGNED LAST, LIKE EVERY OTHER BLOCK.
+   ALL PLACEHOLDERS pending class data. They are written as EXPLICIT rows
+   rather than left to the thirds-of-Lion formula so that every one of the
+   27 new levels has a number somebody can see and argue with, and so the
+   .bas regeneration has something real to mirror. Recognition levels band
+   higher (one tap); the multi-step ones — mixed numbers, four-part shares,
+   signed fractions — band low.
+═══════════════════════════════════════════════════════════════════ */
+Object.assign(BAND_OVERRIDE, {
+  fracSimplify_L4: [5, 10, 15, 22],
+  intMultDiv_L4: [5, 10, 15, 22],
+  pctExpress_L4: [5, 10, 15, 22],
+  pctExpress_L5: [3, 6, 9, 13],
+  angleParallel_L5: [4, 8, 12, 17],
+  pythagoras_L5: [4, 8, 12, 17],
+  factorsMultiples_L5: [4, 8, 12, 17],
+  roots_L4: [4, 8, 12, 17],
+  squares_L4: [4, 8, 12, 17],
+  decMultiply_L5: [5, 10, 15, 22],
+  compareDec_L6: [4, 8, 12, 17],
+  algParts_L4: [4, 8, 12, 17],
+  indexMult_L4: [5, 10, 15, 22],
+  algMultiply_L5: [4, 8, 12, 17],
+  algDivide_L5: [4, 8, 12, 17],
+  ratioShare_L6: [4, 8, 12, 17],
+  ratioShare_L7: [2, 4, 6, 9],
+  ratioSimplify_L4: [3, 6, 9, 13],
+  ratioSimplify_L5: [3, 6, 9, 13],
+  ratioSimplify_L6: [3, 6, 9, 13],
+  algSub_L6: [3, 6, 9, 13],
+  eqOneStepAddSub_L4: [4, 8, 12, 17],
+  eqOneStepMulDiv_L4: [3, 6, 9, 13],
+  fracAddSub_L5: [2, 4, 6, 9],
+  fracMultiply_L4: [3, 6, 9, 13],
+  fracDivide_L4: [3, 6, 9, 13],
+  fracToDec_L4: [4, 8, 12, 17],
+  pctFDP_L4: [6, 12, 18, 26],
+});
+
 function bandCeil(s, lv) {
   const t = getFluencyTarget(s, lv);          // 0 for method skills
   if (t > 0) return t;
@@ -5225,11 +5300,11 @@ const COURSES = {
     label: "Year 7 Mathematics", short: "Year 7",
     prereq: [["timesTables",[1,2,3]], ["division",[1,2,3]]],
     alts: [
-      { n: 1, title: "Number Theory", exam: true, skills: [["orderOps",[1,2,3,4,5]], ["factorsMultiples",[1,2,3,4]], ["primeFactor",[1,2,3,4]], ["hcfLcm",[1,2,3,4]], ["intAddSub",[1,2,3,4]], ["intMultDiv",[1,2,3]], ["intSquareCube",[1]], ["intOrderOps",[1,2,3]], ["squares",[1,2,3]], ["roots",[1,2,3]], ["indexExpand",[1,2,3]], ["addition",[4]], ["subtraction",[4]]] },
-      { n: 2, title: "Fractions & Ratios", exam: true, skills: [["fracSimplify",[1,2]], ["fracCompare",[1,2,3]], ["fracAddSub",[1,2,3,4]], ["fracMultiply",[1,2,3]], ["fracDivide",[1,2,3]], ["fracOfAmount",[1,2,3,4]], ["mixedToImp",[1,2,3]], ["impToMixed",[1,2,3]], ["fracOrderOps",[1,2,3,4]], ["ratioSimplify",[1,2,3]], ["ratioEquiv",[1,2,3]], ["ratioShare",[1,2,3,4,5]], ["bestBuy",[1,2,3]], ["fracIdentify",[1,2,3]]] },
-      { n: 3, title: "Algebra & Equations", exam: true, skills: [["fracSimplify",[3]], ["algParts",[1,2,3]], ["algSub",[1,2,3,4,5]], ["algLikeTerms",[1,2,3]], ["algMultiply",[1,2,3,4]], ["algDivide",[1,2,3,4]], ["eqOneStepAddSub",[1,2,3]], ["eqOneStepMulDiv",[1,2,3]], ["eqTwoStep",[1,2,3,4]], ["eqTwoStepFrac",[1,2,3]]] },
-      { n: 4, title: "Geometry", exam: true, skills: [["pythagoras",[1]], ["nameShapes",[1,2,3,4,5,6,7]], ["nameAnglesLines",[1,2,3,4]], ["eulerRule",[1,2]], ["interiorAngles",[1,2,3]], ["angleRel",[1,2,3,4]], ["angleParallel",[1,2,3,4]], ["angleQuad",[1,2,3,4]], ["anglePoly",[1,2]], ["netsViews",[1,2,3,4]]] },
-      { n: 5, title: "Decimals & Percentages", exam: true, skills: [["decPlaceValue",[1,2,3]], ["decIdentify",[1,2,3]], ["decExpand",[1,2,3]], ["decToFrac",[1,2,3]], ["fracToDec",[1,2,3]], ["compareDec",[1,2,3,4,5]], ["decRound",[1,2,3]], ["decAdd",[1,2,3]], ["decSub",[1,2,3]], ["decAddSub",[1,2,3,4]], ["decAddSubNeg",[1,2,3]], ["fdAddSub",[1]], ["decPow10",[1,2,3,4]], ["decMultiply",[1,2,3,4]], ["fdMultiply",[1,2]], ["decSquareCube",[1]], ["decDivide",[1,2,3,4]], ["decLeadEst",[1,2,3]], ["decSqCubeRoot",[1]], ["decOrderOps",[1,2,3,4]], ["pctIdentify",[1,2,3]], ["pctDecConv",[1,2,3]], ["fracPctConv",[1,2,3,4]], ["pctFDP",[1,2,3]], ["pctOfAmount",[1,2,3,4]], ["pctExpress",[1,2,3]], ["pctChange",[1,2,3,5]], ["pctProfitLoss",[1]]] },
+      { n: 1, title: "Number Theory", exam: true, skills: [["orderOps",[1,2,3,4,5]], ["factorsMultiples",[1,2,3,4,5]], ["primeFactor",[1,2,3,4]], ["hcfLcm",[1,2,3,4]], ["intAddSub",[1,2,3,4]], ["compareDec",[5]], ["intMultDiv",[1,2,3,4]], ["intSquareCube",[1]], ["intOrderOps",[1,2,3]], ["squares",[1,2,3]], ["roots",[1,2,3,4]], ["indexExpand",[1,2,3]], ["indexMult",[1]], ["indexDiv",[1]], ["addition",[4]], ["subtraction",[4]]] },
+      { n: 2, title: "Fractions & Ratios", exam: true, skills: [["fracSimplify",[1,2,4]], ["fracCompare",[1,2,3]], ["fracAddSub",[1,2,3,4,5]], ["fracMultiply",[1,2,3,4]], ["fracDivide",[1,2,3,4]], ["fracOfAmount",[1,2,3,4]], ["mixedToImp",[1,2,3]], ["impToMixed",[1,2,3]], ["fracOrderOps",[1,2,3,4]], ["ratioSimplify",[1,2,3,4,6]], ["ratioEquiv",[1,2,3]], ["ratioShare",[1,2,3,4,5,6]], ["bestBuy",[1,2,3]], ["fracIdentify",[1,2,3]]] },
+      { n: 3, title: "Algebra & Equations", exam: true, skills: [["fracSimplify",[3]], ["algParts",[1,2,3,4]], ["algSub",[1,2,3,4,5]], ["algLikeTerms",[1,2,3]], ["algMultiply",[1,2,3,4,5]], ["algDivide",[1,2,3,4,5]], ["algExpand",[1,2]], ["eqOneStepAddSub",[1,2,3]], ["eqOneStepMulDiv",[1,2,3]], ["eqTwoStep",[1,2,3,4]], ["eqTwoStepFrac",[1,2,3]], ["linearApps",[1,2]]] },
+      { n: 4, title: "Geometry", exam: true, skills: [["pythagoras",[1]], ["nameShapes",[1,2,3,4,5,6,7]], ["nameAnglesLines",[1,2,3,4]], ["eulerRule",[1,2]], ["interiorAngles",[1,2,3]], ["angleRel",[1,2,3,4]], ["angleParallel",[1,2,3,4,5]], ["angleQuad",[1,2,3,4]], ["anglePoly",[1,2]], ["netsViews",[1,2,3,4]]] },
+      { n: 5, title: "Decimals & Percentages", exam: true, skills: [["decPlaceValue",[1,2,3]], ["decIdentify",[1,2,3]], ["decExpand",[1,2,3]], ["decToFrac",[1,2,3]], ["fracToDec",[1,2,3]], ["compareDec",[1,2,3,4,5,6]], ["decRound",[1,2,3]], ["decAdd",[1,2,3]], ["decSub",[1,2,3]], ["decAddSub",[1,2,3,4]], ["decAddSubNeg",[1,2,3]], ["fdAddSub",[1]], ["decPow10",[1,2,3,4]], ["decMultiply",[1,2,3,4,5]], ["fdMultiply",[1,2]], ["decSquareCube",[1]], ["decDivide",[1,2,3,4]], ["decLeadEst",[1,2,3]], ["decSqCubeRoot",[1]], ["decOrderOps",[1,2,3,4]], ["pctIdentify",[1,2,3]], ["pctDecConv",[1,2,3]], ["fracPctConv",[1,2,3,4]], ["pctFDP",[1,2,3]], ["pctOfAmount",[1,2,3,4]], ["pctExpress",[1,2,3,4,5]], ["pctChange",[1,2,3,5]], ["pctProfitLoss",[1]], ["algSub",[4,6]]] },
       { n: 6, title: "Linear — Coordinates, Transformations & Patterns", exam: true, skills: [["cartesian",[1,2,3,4]], ["linearNonlinear",[1,2]], ["tableValues",[1,2]], ["intercepts",[1,2]], ["linearApps",[1,2,3]], ["seqWords",[1,2,3,4,5,6]], ["arithSeq",[1,2,3,4]], ["timeConvert",[1,2,3,4]], ["timetables",[1,2,3,4,5]], ["distTime",[1,2,3,4]], ["translate",[1,2,3,4,5,6]], ["reflect",[1,2,3,4,5]], ["dilate",[1,2,3,4]], ["rotate",[1,2,3,4,5]], ["shapeTrans",[1,2,3,4,5]]] },
       { n: 7, title: "Statistics & Probability", exam: true, note: "Probability skills are still being built — this ALT currently covers the statistics half only.", skills: [["dataClassify",[1,2,3,4]], ["freqTables",[1,2,3,4]], ["dataRead",[1,2,3]], ["dataMean",[1,2,3,4,5]], ["dataMode",[1,2,3,4,5,6]], ["dataMedian",[1,2,3,4]], ["dataRange",[1,2,3,4]], ["dataShape",[1,2,3]], ["dataOutliers",[1]]] },
       { n: 8, title: "Measurement", exam: false, note: "Measurement skills are still being built. This topic is taught after the exam, so it is never on the exam.", skills: [] },
@@ -5239,11 +5314,11 @@ const COURSES = {
     label: "Year 7 SEAL Mathematics", short: "Year 7 SEAL",
     prereq: [["timesTables",[1,2,3]], ["division",[1,2,3]]],
     alts: [
-      { n: 1, title: "Integers & Indices", exam: true, skills: [["orderOps",[2,3,4,5]], ["primeFactor",[2,3,4]], ["hcfLcm",[1,2,3,4]], ["roundEst",[1,2,3,4]], ["sigFigs",[1,2]], ["intAddSub",[1,2,3,4]], ["intMultDiv",[1,2,3]], ["intSquareCube",[1,2,3]], ["intOrderOps",[1,2,3,4]], ["squares",[1,2,3]], ["roots",[1,2,3]], ["cubes",[1,2,3]], ["cubeRoots",[1,2,3]], ["indexMult",[1,2,3]], ["indexDiv",[1,2,3]], ["indexPow",[1,2,3]], ["negIndices",[1,2,3]], ["sciTo",[1,2,3]], ["sciFrom",[1,2,3]], ["surdAddSub",[3]], ["indexExpand",[1,2,3]]] },
-      { n: 2, title: "Fractions, Decimals, Rates & Ratios", exam: true, skills: [["fracSimplify",[1,2]], ["fracCompare",[1,2,3]], ["fracAddSub",[1,2,3,4]], ["fracMultiply",[1,2,3]], ["fracDivide",[1,2,3]], ["fracOfAmount",[1,2,3,4]], ["mixedToImp",[1,2,3]], ["impToMixed",[1,2,3]], ["fracOrderOps",[1,2,3,4]], ["decExpand",[1,2,3]], ["decToFrac",[1,2,3]], ["fracToDec",[1,2,3]], ["compareDec",[4,5]], ["decRound",[1,2,3]], ["decAdd",[1,2,3]], ["decSub",[1,2,3]], ["decAddSub",[1,2,3,4]], ["decAddSubNeg",[1,2,3]], ["fdAddSub",[1,2,3]], ["decPow10",[3,4]], ["decMultiply",[1,2,3,4]], ["fdMultiply",[1,2,3]], ["decSquareCube",[1,2,3]], ["decDivide",[1,2,3,4]], ["decMulDivNeg",[1,2,3]], ["decSqCubeRoot",[1,2,3]], ["decOrderOps",[1,2,3,4]], ["ratioSimplify",[1,2,3]], ["ratioEquiv",[1,2,3,4]], ["ratioShare",[1,2,3,4,5]], ["rateSimplify",[1,2]], ["rateConvert",[1,2,3]], ["bestBuy",[1,2,3]], ["distTime",[1,2,3,4]], ["decRecurring",[1,2,3]], ["fracIdentify",[1,2,3]], ["division",[4]], ["timetables",[5]]] },
-      { n: 3, title: "Algebra & Equations", exam: true, skills: [["fracSimplify",[3]], ["algParts",[1,2,3]], ["algSub",[1,2,3,4,5]], ["algLikeTerms",[1,2,3]], ["algMultiply",[1,2,3,4]], ["algDivide",[1,2,3,4]], ["algExpand",[1,2,3]], ["algExpandTwo",[1,2,3]], ["algExpandBinom",[1,2]], ["algFactorHCF",[1,2]], ["eqOneStepAddSub",[1,2,3]], ["eqOneStepMulDiv",[1,2,3]], ["eqTwoStep",[1,2,3,4]], ["eqTwoStepFrac",[1,2,3]], ["eqVarDenom",[1,2,3]], ["eqBothSides",[1,2,3]], ["ineqLinear",[1,2]], ["seqWords",[1,2,3,4,5]], ["arithSeq",[1,2,3,4,5]], ["geoSeq",[1,2,3,4]], ["sequences",[1,2,3,4]]] },
-      { n: 4, title: "Geometry", exam: true, skills: [["pythagoras",[1,2,3]], ["nameShapes",[5]], ["nameAnglesLines",[1]], ["eulerRule",[1,2]], ["interiorAngles",[1,2,3]], ["angleRel",[1,2,3,4]], ["angleParallel",[1,2,3,4]], ["angleQuad",[1,2,3,4]], ["anglePoly",[1,2,3,4]], ["congruSimilar",[1,2,3,4]]] },
-      { n: 5, title: "Finance & Irrational", exam: true, skills: [["numClass",[1,2]], ["surdAddSub",[1]], ["surdMultiply",[1]], ["surdDivide",[1]], ["pctDecConv",[2,3]], ["fracPctConv",[1,2,3,4]], ["pctFDP",[1,2,3]], ["pctOfAmount",[1,2,3,4]], ["pctExpress",[1,2,3]], ["pctChange",[1,2,3,4,5]], ["pctReverse",[1,2,3]], ["pctProfitLoss",[1,2]], ["rearrange",[3]], ["quadVerify",[1,2,3]], ["quadSolve",[1,2]], ["gst",[1,2,3]], ["simpleInterest",[1,2,3,4,5,6]], ["recurrence",[1,2]], ["flatDep",[1,2,3,4,5,6]]] },
+      { n: 1, title: "Integers & Indices", exam: true, skills: [["orderOps",[2,3,4,5]], ["primeFactor",[2,3,4]], ["hcfLcm",[1,2,3,4]], ["roundEst",[1,2,3,4]], ["sigFigs",[1,2]], ["intAddSub",[1,2,3,4]], ["intMultDiv",[1,2,3,4]], ["intSquareCube",[1,2,3]], ["intOrderOps",[1,2,3,4]], ["squares",[1,2,3]], ["roots",[1,2,3]], ["cubes",[1,2,3]], ["cubeRoots",[1,2,3]], ["indexMult",[1,2,3,4]], ["indexDiv",[1,2,3]], ["indexPow",[1,2,3]], ["negIndices",[1,2,3]], ["sciTo",[1,2,3]], ["sciFrom",[1,2,3]], ["surdAddSub",[3]], ["indexExpand",[1,2,3]]] },
+      { n: 2, title: "Fractions, Decimals, Rates & Ratios", exam: true, skills: [["fracSimplify",[1,2,4]], ["fracCompare",[1,2,3]], ["fracAddSub",[1,2,3,4,5]], ["fracMultiply",[1,2,3,4]], ["fracDivide",[1,2,3,4]], ["fracOfAmount",[1,2,3,4]], ["mixedToImp",[1,2,3]], ["impToMixed",[1,2,3]], ["fracOrderOps",[1,2,3,4]], ["decExpand",[1,2,3]], ["decToFrac",[1,2,3]], ["fracToDec",[1,2,3,4]], ["compareDec",[4,5]], ["decRound",[1,2,3]], ["sigFigs",[1,2]], ["decAdd",[1,2,3]], ["decSub",[1,2,3]], ["decAddSub",[1,2,3,4]], ["decAddSubNeg",[1,2,3]], ["fdAddSub",[1,2,3]], ["decPow10",[3,4]], ["decMultiply",[1,2,3,4]], ["fdMultiply",[1,2,3]], ["decSquareCube",[1,2,3]], ["decDivide",[1,2,3,4]], ["decMulDivNeg",[1,2,3]], ["decSqCubeRoot",[1,2,3]], ["decOrderOps",[1,2,3,4]], ["ratioSimplify",[1,2,3,5,6]], ["ratioEquiv",[1,2,3,4]], ["ratioShare",[1,2,3,4,5,6,7]], ["rateSimplify",[1,2]], ["rateConvert",[1,2,3]], ["bestBuy",[1,2,3]], ["distTime",[1,2,3,4]], ["tableValues",[1,2]], ["decRecurring",[1,2,3]], ["fracIdentify",[1,2,3]], ["division",[4]], ["timetables",[5]], ["timeConvert",[1,2,3,4]]] },
+      { n: 3, title: "Algebra & Equations", exam: true, skills: [["fracSimplify",[3]], ["algParts",[1,2,3,4]], ["algSub",[1,2,3,4,5]], ["algLikeTerms",[1,2,3]], ["algMultiply",[1,2,3,4,5]], ["algDivide",[1,2,3,4,5]], ["algExpand",[1,2,3]], ["algExpandTwo",[1,2,3]], ["algExpandBinom",[1,2]], ["algFactorHCF",[1,2]], ["eqOneStepAddSub",[1,2,3,4]], ["eqOneStepMulDiv",[1,2,3,4]], ["eqTwoStep",[1,2,3,4]], ["eqTwoStepFrac",[1,2,3]], ["linearApps",[1,2]], ["eqVarDenom",[1,2,3]], ["eqBothSides",[1,2,3]], ["ineqLinear",[1,2]], ["rearrange",[1,2]], ["seqWords",[1,2,3,4,5]], ["arithSeq",[1,2,3,4,5]], ["geoSeq",[1,2,3,4]], ["sequences",[1,2,3,4]]] },
+      { n: 4, title: "Geometry", exam: true, skills: [["pythagoras",[1,2,3,5]], ["nameShapes",[1,4,5]], ["nameAnglesLines",[1,3,4]], ["eulerRule",[1,2]], ["interiorAngles",[1,2,3]], ["angleRel",[1,2,3,4]], ["angleParallel",[1,2,3,4,5]], ["angleQuad",[1,2,3,4]], ["anglePoly",[1,2,3,4]], ["congruSimilar",[1,2,3,4]]] },
+      { n: 5, title: "Finance & Irrational", exam: true, skills: [["numClass",[1,2]], ["surdSimplify",[1,2,3]], ["surdAddSub",[1]], ["surdMultiply",[1]], ["surdDivide",[1]], ["pctDecConv",[2,3]], ["fracPctConv",[1,2,3,4]], ["pctFDP",[1,2,3,4]], ["pctOfAmount",[1,2,3,4]], ["pctExpress",[1,2,3,4,5]], ["pctChange",[1,2,3,4,5]], ["pctReverse",[1,2,3]], ["pctProfitLoss",[1,2]], ["rearrange",[3]], ["quadVerify",[1,2,3]], ["quadSolve",[1,2,3,4]], ["gst",[1,2,3]], ["simpleInterest",[1,2,3,4,5,6]], ["recurrence",[1,2]], ["flatDep",[1,2,3,4,5,6]]] },
       { n: 6, title: "Linear — Graphs & Transformations", exam: true, skills: [["cartesian",[1,2,3,4]], ["linearNonlinear",[1,2]], ["tableValues",[1,2,3,4]], ["intercepts",[1,2,3,4,5]], ["gradientSeg",[1,2,3,4]], ["linearApps",[1,2,3,4]], ["translate",[1,2,3,4,5,6]], ["reflect",[1,2,3,4,5,6]], ["dilate",[1,2,3,4,5]], ["rotate",[1,2,3,4,5,6]], ["combine",[1,2,3,4,5]], ["shapeTrans",[1,2,3,4,5,6]], ["gradEqn",[1,2,3]], ["eqnGraph",[1,2,3]], ["sketchLinear",[1,2,3,4]]] },
       { n: 7, title: "Statistics & Probability", exam: true, note: "Probability skills are still being built — this ALT currently covers the statistics half only.", skills: [["dataClassify",[1,2,3,4]], ["freqTables",[1,2,3,4]], ["dataRead",[1,2,3]], ["dataMean",[1,2,3,4,5,6]], ["dataMode",[1,2,3,4,5,6]], ["dataMedian",[1,2,3,4,5,6]], ["dataRange",[1,2,3,4,5]], ["dataShape",[1,2,3]], ["dataOutliers",[1]], ["dataQuartiles",[1,2,3,4,5,6]]] },
       { n: 8, title: "Measurement", exam: false, note: "Measurement skills are still being built. This topic is taught after the exam, so it is never on the exam.", skills: [] },
@@ -8535,6 +8610,7 @@ function nextQCore() {
   if (skill === 'pctChange' && level === 4) { genPctError(el); }
   else if (WORD_LEVEL[skill] === level) { genWordProblem(el); }
   else if (isV96Level()) { genV96Level(el); }
+  else if (isV98Level()) { genV98Level(el); }
   else if (skill === 'timesTables') {
     const tbl = ttList();
     const n1 = tbl[ri(tbl.length)], n2 = tbl[ri(tbl.length)];
@@ -8561,7 +8637,19 @@ function nextQCore() {
   else if (skill === 'intAddSub') {
     const mx = [10,20,50][level-1];
     const a = rr(-mx,mx), b = rr(-mx,mx);
-    if (Math.random() < 0.5) {
+    /* v98: on L3 only, half the questions chain a THIRD term — both ALT 1
+       papers open with (−13) + (−12) + 5 and the generator stopped at two. */
+    if (level === 3 && Math.random() < 0.5) {
+      const c = rr(-mx, mx);
+      const op1 = Math.random() < 0.5, op2 = Math.random() < 0.5;
+      const v1 = op1 ? a + b : a - b;
+      qData.ans = op2 ? v1 + c : v1 - c;
+      el.textContent = `${f(a)} ${op1 ? '+' : '−'} ${f(b)} ${op2 ? '+' : '−'} ${f(c)}`;
+      qData.workSteps = 'Work from the left: ' + a + (op1 ? ' + ' : ' − ') + b + ' = ' + v1
+        + ', then ' + v1 + (op2 ? ' + ' : ' − ') + c + ' = <b>' + qData.ans + '</b>.'
+        + ' Remember + (−n) is the same as − n, and − (−n) is the same as + n.';
+    }
+    else if (Math.random() < 0.5) {
       qData.ans = a+b; el.textContent = `${f(a)} + ${f(b)}`;
       qData.workSteps = (b<0)
         ? `Adding a negative is the same as subtracting: ${f(a)} + (${b}) = ${a} − ${Math.abs(b)} = <b>${a+b}</b>.`
@@ -12176,7 +12264,7 @@ function genFracDecMultiply() {
 function genDecPow10() {
   const el = id('qText');
   el.style.fontSize = '2rem';
-  const POW = [10, 100, 1000];
+  const POW = [10, 100, 1000, 10000];   // v98: the Yr 7 paper asks about 10 000
   // a decimal with a genuine fractional part (1–3 dp, at most 3 significant digits)
   function decVal() {
     const d = rr(1, 3);
@@ -12189,11 +12277,11 @@ function genDecPow10() {
 
   let m, txt;
   if (level === 1) {                      // multiply by a pure power of ten
-    m = POW[rr(0, 2)]; txt = doMultiply(m);
+    m = POW[rr(0, 3)]; txt = doMultiply(m);
   } else if (level === 2) {               // divide by a pure power of ten
-    m = POW[rr(0, 2)]; txt = doDivide(m);
+    m = POW[rr(0, 3)]; txt = doDivide(m);
   } else if (level === 3) {               // mixed × / ÷ by a pure power of ten
-    m = POW[rr(0, 2)]; txt = (Math.random() < 0.5) ? doMultiply(m) : doDivide(m);
+    m = POW[rr(0, 3)]; txt = (Math.random() < 0.5) ? doMultiply(m) : doDivide(m);
   } else {                                // L4: multiples of ten (20, 50, 400, …)
     m = rr(2, 9) * POW[rr(0, 2)];         // leading digit 2–9 × a power of ten
     txt = (Math.random() < 0.5) ? doMultiply(m) : doDivide(m);
@@ -12321,13 +12409,19 @@ function genDecRound() {
   // Generate a decimal then ask student to round it
   let num, places, ans;
   if (level === 1) {
-    // Always round to 1 d.p.
-    num = dp(rr(100, 999) / 100, 2); // e.g. 3.47
+    // Always round to 1 d.p. v98: the last digit is forced non-zero, so the
+    // number always HAS a hundredths digit to decide on — the old version could
+    // hand a student "6 to 1 d.p.", which is not a rounding question.
+    let raw; do { raw = rr(100, 999); } while (raw % 10 === 0);
+    num = dp(raw / 100, 2); // e.g. 3.47
     places = 1;
   } else {
-    // Mix of 1 and 2 d.p.
-    places = Math.random() < 0.5 ? 1 : 2;
-    num = dp(rr(1000, 9999) / 1000, 3); // e.g. 3.467
+    // v98: a mix of 1, 2 AND 3 d.p. — both ALT papers round to three. Same
+    // non-zero-last-digit guard, so the number always has one more decimal
+    // place than the question asks for.
+    places = rr(1, 3);
+    let raw; do { raw = rr(10000, 99999); } while (raw % 10 === 0);
+    num = dp(raw / 10000, 4); // e.g. 3.4672
   }
   ans = dp(Math.round(num * Math.pow(10, places)) / Math.pow(10, places), places);
   qData.ans = ans;
@@ -19793,6 +19887,956 @@ function genV96Level(el){
   if (skill === 'arithSeq')         return genArithTermNumber(el);
   if (skill === 'timetables')       return genTimetableBackwards(el);
   if (skill === 'nameShapes')       return level === 6 ? genShapePolygon(el) : genShapeCount(el);
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════
+   v98 — THE ALT AUDIT, PART 1: MAPPING FIXES + ENHANCEMENTS
+   -----------------------------------------------------------------------
+   27 levels APPENDED to skills that already exist. Same discipline as v93
+   and v96: ONE map and ONE dispatcher, so not a single existing generator
+   was reopened to bolt a level onto the end of it.
+
+   The pattern the audit found, and what these levels are: the app was very
+   good at "do the calculation" and thin on RECOGNISE / CHOOSE / CLASSIFY /
+   GO BACKWARDS — which is where the cheap 1-mark ALT items live.
+═══════════════════════════════════════════════════════════════════════ */
+const V98_LEVELS = {
+  fracSimplify: [4], intMultDiv: [4], pctExpress: [4, 5], angleParallel: [5],
+  pythagoras: [5], factorsMultiples: [5], roots: [4], decMultiply: [5],
+  compareDec: [6], algParts: [4], indexMult: [4], algMultiply: [5], squares: [4],
+  algDivide: [5], ratioShare: [6, 7], ratioSimplify: [4, 5, 6], algSub: [6],
+  eqOneStepAddSub: [4], eqOneStepMulDiv: [4], fracAddSub: [5],
+  fracMultiply: [4], fracDivide: [4], fracToDec: [4], pctFDP: [4],
+};
+function isV98Level(){
+  const a = V98_LEVELS[skill];
+  return !!a && a.indexOf(level) >= 0;
+}
+function genV98Level(el){
+  if (skill === 'fracSimplify')    return genWhichSimplest(el);
+  if (skill === 'intMultDiv')      return genWhichSign(el);
+  if (skill === 'pctExpress')      return level === 4 ? genWorkingLine(el) : genGreaterPct(el);
+  if (skill === 'angleParallel')   return genParallelDecide(el);
+  if (skill === 'pythagoras')      return genRightAngled(el);
+  if (skill === 'factorsMultiples')return genAllPrimeSet(el);
+  if (skill === 'roots' || skill === 'squares') return genRootBetween(el);
+  if (skill === 'decMultiply')     return genDecPlacesCount(el);
+  if (skill === 'compareDec')      return genClosestTo(el);
+  if (skill === 'algParts')        return genCountTerms(el);
+  if (skill === 'indexMult')       return genIndexTrueFalse(el);
+  if (skill === 'algMultiply')     return genMissingFactor(el);
+  if (skill === 'algDivide')       return genMissingDivisor(el);
+  if (skill === 'ratioShare')      return level === 6 ? genRatioAsFraction(el) : genFourPartShare(el);
+  if (skill === 'ratioSimplify')   return level === 4 ? genRatioFromDiagram(el)
+                                        : level === 5 ? genRatioUnits(el) : genRatioThreeFour(el);
+  if (skill === 'algSub')          return genSubDecimals(el);
+  if (skill === 'eqOneStepAddSub') return genOneStepDecAddSub(el);
+  if (skill === 'eqOneStepMulDiv') return genOneStepDecMulDiv(el);
+  if (skill === 'fracAddSub')      return genMixedAddSub(el);
+  if (skill === 'fracMultiply')    return genFracSignedMul(el);
+  if (skill === 'fracDivide')      return genFracSignedDiv(el);
+  if (skill === 'fracToDec')       return genMixedToDecimal(el);
+  if (skill === 'pctFDP')          return genPctFDPHard(el);
+}
+
+/* A small inline fraction for OPTION BUTTONS. fracHTML() is a block element
+   sized for the question box; an option button needs something that sits on
+   one line inside a 74px cell. */
+function v98Frac(n, d){
+  return '<span style="display:inline-block;text-align:center;vertical-align:middle;line-height:1.05;">'
+    + '<span style="display:block;border-bottom:2px solid currentColor;padding:0 3px;">' + n + '</span>'
+    + '<span style="display:block;">' + d + '</span></span>';
+}
+function v98Neg(n){ return n < 0 ? '−' + Math.abs(n) : String(n); }
+/* A signed fraction, sign carried on the numerator, denominator always positive. */
+function v98Sign(n, d){
+  if (d < 0) { n = -n; d = -d; }
+  const g = gcd(Math.abs(n), Math.abs(d)) || 1;
+  return [n / g, d / g];
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   1. Simplify Fractions L4 — WHICH IS IN SIMPLEST FORM?
+   Yr 7 ALT 2 MC Q2 · SEAL ALT 2 MC Q1.
+   Exactly one option has gcd 1 — the three distractors are built AS a
+   multiple of a reduced fraction, so "already simplest" can never be
+   true of two of them at once.
+───────────────────────────────────────────────────────────────── */
+function genWhichSimplest(el){
+  el.style.fontSize = '1.05rem';
+  let rn = 0, rd = 0, guard = 0;
+  while (guard++ < 200){ const d = rr(3, 12), n = rr(1, d - 1); if (gcd(n, d) === 1){ rn = n; rd = d; break; } }
+  const right = v98Frac(rn, rd);
+  const opts = [right], seen = {}; seen[rn + '/' + rd] = 1;
+  const steps = [];
+  let g2 = 0;
+  while (opts.length < 4 && g2++ < 400){
+    const d0 = rr(2, 11), n0 = rr(1, d0 - 1), k = rr(2, 5);
+    if (gcd(n0, d0) !== 1) continue;
+    const n = n0 * k, d = d0 * k;
+    if (d > 60) continue;
+    const key = n + '/' + d;
+    if (seen[key]) continue;
+    seen[key] = 1;
+    opts.push(v98Frac(n, d));
+    steps.push(n + '/' + d + ' cancels by ' + k + ' → ' + n0 + '/' + d0);
+  }
+  qData.workSteps = 'A fraction is in simplest form when the top and bottom share no common factor.<br>'
+    + steps.join('<br>') + '<br>Only <b>' + rn + '/' + rd + '</b> cannot be cancelled — its HCF is 1.';
+  decSetChoice(el, '<div style="' + A_LBL + '">Which fraction is in <b>simplest form</b>?</div>', opts, right);
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   2. Multiply / Divide Integers L4 — WHICH SIGN?
+   Yr 7 ALT 1 MC Q6 · SEAL ALT 1 MC Q4.
+   The answer is generated FIRST and then every one of the four
+   operations is tested against it — the question is only kept when
+   EXACTLY ONE produces that answer. (−2 ÷ −2 = 1 and −2 × −2 = 4 is
+   fine; a = b = 1 would give two right answers and is thrown away.)
+───────────────────────────────────────────────────────────────── */
+function genWhichSign(el){
+  el.style.fontSize = '1.05rem';
+  const OPS = ['+', '−', '×', '÷'];
+  let a = 0, b = 0, opi = 0, res = 0, ok = false, guard = 0;
+  while (guard++ < 400){
+    a = nz(rr(-12, 12)); b = nz(rr(-12, 12));
+    const vals = [a + b, a - b, a * b, (a % b === 0) ? a / b : NaN];
+    opi = ri(4);
+    res = vals[opi];
+    if (!isFinite(res)) continue;
+    let hits = 0;
+    for (let i = 0; i < 4; i++) if (isFinite(vals[i]) && vals[i] === res) hits++;
+    if (hits === 1){ ok = true; break; }
+  }
+  if (!ok){ a = -2; b = -2; opi = 2; res = 4; }
+  const A = v98Neg(a), B = v98Neg(b), R = v98Neg(res);
+  qData.workSteps = 'Try each sign: ' + A + ' + ' + B + ' = ' + v98Neg(a + b)
+    + ' · ' + A + ' − ' + B + ' = ' + v98Neg(a - b)
+    + ' · ' + A + ' × ' + B + ' = ' + v98Neg(a * b)
+    + (a % b === 0 ? ' · ' + A + ' ÷ ' + B + ' = ' + v98Neg(a / b) : '')
+    + '.<br>Only <b>' + OPS[opi] + '</b> gives ' + R + '.';
+  decSetChoice(el, '<div style="' + A_LBL + '">What sign goes in the box to make this true?</div>'
+    + '<div style="text-align:center;font-weight:900;font-size:2.2rem;margin:14px 0;">'
+    + A + ' &nbsp;<span style="border:2px dashed var(--accent);padding:0 12px;border-radius:6px;">?</span>&nbsp; '
+    + B + ' = ' + R + '</div>', OPS, OPS[opi], true);
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   3. One Amount as a Percentage L4 — PICK THE WORKING LINE
+   Yr 7 ALT 5 MC Q5 · SEAL ALT 5 MC Q5 (identical question).
+   Recognition, not arithmetic — which is exactly the exam item.
+───────────────────────────────────────────────────────────────── */
+function genWorkingLine(el){
+  el.style.fontSize = '1.05rem';
+  let a = 0, b = 0, guard = 0;
+  while (guard++ < 200){
+    a = rr(7, 70); b = rr(a + 6, 130);
+    if (b - a !== a) break;                    // else two options would read the same
+  }
+  const right = v98Frac(a, b) + ' × 100';
+  const opts = [right, v98Frac(b, a) + ' × 100', v98Frac(a, b) + ' ÷ 100', v98Frac(b - a, b) + ' × 100'];
+  qData.workSteps = '"' + a + ' out of ' + b + '" is the fraction ' + a + '/' + b
+    + '. To turn a fraction into a percentage you multiply by 100.<br>'
+    + 'So the working line is <b>' + a + '/' + b + ' × 100</b>. '
+    + b + '/' + a + ' is upside down, ÷ 100 goes the wrong way, and ' + (b - a) + '/' + b
+    + ' is the percentage that is NOT ' + a + '.';
+  decSetChoice(el, '<div style="' + A_LBL + '">Which is the correct working line to express <b>'
+    + a + ' out of ' + b + '</b> as a percentage?</div>', opts, right);
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   4. One Amount as a Percentage L5 — WHICH IS THE GREATER PERCENTAGE?
+   Both ALT 5 papers, Q8 (the sports-drink sugar question).
+   The two percentages must differ by at least 1.5 points, so the answer
+   is never a rounding argument. Fixed option positions: the two labels
+   are the same shape every question, so the buttons never move.
+───────────────────────────────────────────────────────────────── */
+const V98_PCT_CTX = [
+  { n1: 'Yellow drink', n2: 'Blue drink', what: 'sugar', unit: 'g', of: 'drink' },
+  { n1: 'Bag A', n2: 'Bag B', what: 'red lollies', unit: '', of: 'lollies' },
+  { n1: 'Class 7A', n2: 'Class 7B', what: 'students who walk to school', unit: '', of: 'students' },
+  { n1: 'Team Blue', n2: 'Team Green', what: 'games won', unit: '', of: 'games played' },
+];
+function genGreaterPct(el){
+  el.style.fontSize = '1.05rem';
+  const c = V98_PCT_CTX[ri(V98_PCT_CTX.length)];
+  let t1 = 0, t2 = 0, a1 = 0, a2 = 0, p1 = 0, p2 = 0, guard = 0;
+  while (guard++ < 400){
+    t1 = ffPick([20, 25, 40, 50, 200, 250, 300]); t2 = ffPick([20, 25, 40, 50, 200, 250, 300]);
+    a1 = rr(2, t1 - 2); a2 = rr(2, t2 - 2);
+    p1 = 100 * a1 / t1; p2 = 100 * a2 / t2;
+    if (p1 < 5 || p1 > 95 || p2 < 5 || p2 > 95) continue;
+    if (Math.abs(p1 - p2) >= 1.5) break;
+  }
+  const wantHigher = Math.random() < 0.5;
+  const firstWins = wantHigher ? (p1 > p2) : (p1 < p2);
+  const correct = firstWins ? c.n1 : c.n2;
+  const u = c.unit ? c.unit : '';
+  qData.workSteps = c.n1 + ': ' + a1 + ' out of ' + t1 + ' = ' + a1 + '/' + t1 + ' × 100 = <b>'
+    + dp(p1, 1) + '%</b>.<br>' + c.n2 + ': ' + a2 + ' out of ' + t2 + ' = ' + a2 + '/' + t2
+    + ' × 100 = <b>' + dp(p2, 1) + '%</b>.<br>The ' + (wantHigher ? 'higher' : 'lower')
+    + ' percentage is <b>' + correct + '</b>.';
+  decSetChoice(el, '<div style="' + A_LBL + '">' + c.n1 + ' has <b>' + a1 + u + '</b> ' + c.what
+    + ' out of ' + t1 + u + ' ' + c.of + '.<br>' + c.n2 + ' has <b>' + a2 + u + '</b> ' + c.what
+    + ' out of ' + t2 + u + ' ' + c.of + '.<br>Which has the <b>' + (wantHigher ? 'higher' : 'lower')
+    + ' percentage</b> of ' + c.what + '?</div>', [c.n1, c.n2], correct, true);
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   5. Angles on Parallel Lines L5 — ARE THE LINES PARALLEL?
+   Yr 7 ALT 4 Q5 · SEAL ALT 4 Q3 (identical question, 2 marks each).
+   L1 identifies the relationship; this level asks the JUDGEMENT that
+   follows from it. The angles are generated first and the verdict read
+   off them — the picture is never labelled from a decision.
+   NOTE: no parallel arrow-marks are drawn. Marking the lines parallel
+   would answer the question.
+───────────────────────────────────────────────────────────────── */
+function genParallelDecide(el){
+  el.style.fontSize = '1.05rem';
+  const kind = ffPick(['co-interior', 'alternate', 'corresponding']);
+  const parallel = Math.random() < 0.5;
+  const base = rr(35, 145);
+  let a = base, b;
+  if (kind === 'co-interior') b = parallel ? 180 - base : 180 - base + ffPick([-25, -20, -15, -10, 10, 15, 20, 25]);
+  else                        b = parallel ? base       : base       + ffPick([-25, -20, -15, -10, 10, 15, 20, 25]);
+  if (b <= 10 || b >= 170) b = parallel ? b : (b > 90 ? b - 30 : b + 30);
+  const y1 = 52, y2 = 132, tx1 = 72, ty1 = 18, tx2 = 214, ty2 = 166;
+  const m = (ty2 - ty1) / (tx2 - tx1);
+  const x1 = tx1 + (y1 - ty1) / m, x2 = tx1 + (y2 - ty1) / m;
+  /* label positions: co-interior = both inside, same side · alternate =
+     inside, opposite sides · corresponding = same corner at each crossing */
+  let la, lb;
+  if (kind === 'co-interior')      { la = [x1 + 20, y1 + 22]; lb = [x2 + 20, y2 - 12]; }
+  else if (kind === 'alternate')   { la = [x1 + 20, y1 + 22]; lb = [x2 - 30, y2 - 12]; }
+  else                             { la = [x1 + 20, y1 + 22]; lb = [x2 + 20, y2 + 24]; }
+  const svg = '<svg viewBox="0 0 300 190" style="width:100%;max-width:320px;display:block;margin:6px auto;">'
+    + '<line x1="18" y1="' + y1 + '" x2="282" y2="' + y1 + '" stroke="var(--text)" stroke-width="3"/>'
+    + '<line x1="18" y1="' + y2 + '" x2="282" y2="' + y2 + '" stroke="var(--text)" stroke-width="3"/>'
+    + '<line x1="' + tx1 + '" y1="' + ty1 + '" x2="' + tx2 + '" y2="' + ty2 + '" stroke="var(--accent)" stroke-width="3"/>'
+    + '<text x="' + la[0] + '" y="' + la[1] + '" font-size="17" font-weight="800" fill="var(--accent)">' + a + '°</text>'
+    + '<text x="' + lb[0] + '" y="' + lb[1] + '" font-size="17" font-weight="800" fill="var(--accent)">' + b + '°</text>'
+    + '</svg>';
+  const rule = kind === 'co-interior'
+    ? 'Co-interior angles on parallel lines add to 180°'
+    : (kind === 'alternate' ? 'Alternate angles on parallel lines are equal'
+                            : 'Corresponding angles on parallel lines are equal');
+  const check = kind === 'co-interior'
+    ? (a + ' + ' + b + ' = ' + (a + b) + '°')
+    : (a + ' and ' + b + (a === b ? ' are equal' : ' are not equal'));
+  qData.workSteps = 'The marked angles are <b>' + kind + '</b>. ' + rule + '.<br>Here ' + check + ' — '
+    + (parallel ? 'that is exactly what the rule requires, so the lines <b>are</b> parallel.'
+                : 'that breaks the rule, so the lines are <b>not</b> parallel.');
+  decSetChoice(el, '<div style="' + A_LBL + '">Are the two lines cut by the transversal parallel?</div>' + svg,
+    ['Yes', 'No'], parallel ? 'Yes' : 'No', true);
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   6. Pythagoras L5 — IS IT RIGHT-ANGLED? (the converse)
+   SEAL ALT 4 Q5, "show that the following triangle is right-angled".
+   Half the sets are genuine triples; the other half miss by 1 or 2, so
+   the check is real arithmetic and not eyeballing the shape.
+───────────────────────────────────────────────────────────────── */
+const V98_TRIPLES = [[3,4,5],[6,8,10],[5,12,13],[9,12,15],[8,15,17],[7,24,25],[12,16,20],[20,21,29],[10,24,26],[9,40,41]];
+function genRightAngled(el){
+  el.style.fontSize = '1.05rem';
+  const t = V98_TRIPLES[ri(V98_TRIPLES.length)].slice();
+  const yes = Math.random() < 0.5;
+  let s = t;
+  if (!yes){
+    let guard = 0;
+    while (guard++ < 100){
+      const w = t.slice();
+      const i = ri(3), d = ffPick([-2, -1, 1, 2]);
+      w[i] = w[i] + d;
+      if (w[0] <= 0 || w[1] <= 0) continue;
+      if (w[0] + w[1] <= w[2]) continue;              // still a real triangle
+      if (w[2] <= w[0] || w[2] <= w[1]) continue;     // longest side stays longest
+      if (w[0] * w[0] + w[1] * w[1] === w[2] * w[2]) continue;
+      s = w; break;
+    }
+  }
+  const u = ffPick(['cm', 'm', 'mm']);
+  const sq = s[0] * s[0] + s[1] * s[1], hy = s[2] * s[2];
+  qData.workSteps = 'Test the two shorter sides against the longest one: ' + s[0] + '² + ' + s[1] + '² = '
+    + (s[0] * s[0]) + ' + ' + (s[1] * s[1]) + ' = ' + sq + ', and ' + s[2] + '² = ' + hy + '.<br>'
+    + (sq === hy ? 'They are equal, so a² + b² = c² and the triangle <b>is</b> right-angled.'
+                 : 'They are not equal, so a² + b² ≠ c² and the triangle is <b>not</b> right-angled.');
+  decSetChoice(el, '<div style="' + A_LBL + '">A triangle has sides <b>' + s[0] + ' ' + u + '</b>, <b>'
+    + s[1] + ' ' + u + '</b> and <b>' + s[2] + ' ' + u + '</b>.<br>Is it right-angled?</div>',
+    ['Yes', 'No'], sq === hy ? 'Yes' : 'No', true);
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   7. Factors, Multiples & Primes L5 — WHICH SET IS ALL PRIME?
+   Yr 7 ALT 1 MC Q5. Every distractor carries exactly ONE non-prime, and
+   it is one of the three classic ones: 1 (not prime), an odd composite
+   (9, 15, 21, 25, 27, 33, 35, 49) or a square.
+───────────────────────────────────────────────────────────────── */
+const V98_PRIMES   = [2,3,5,7,11,13,17,19,23,29,31,37,41,43,47,53,59,61,67,71,73];
+const V98_NONPRIME = [1,9,15,21,25,27,33,35,49,51,55,57,63,77,81,91];
+function genAllPrimeSet(el){
+  el.style.fontSize = '1.05rem';
+  function pickPrimes(k){ return shuffleArr(V98_PRIMES.slice()).slice(0, k).sort(function(x,y){ return x-y; }); }
+  const right = pickPrimes(5);
+  const opts = [right.join(', ')], seen = {}; seen[right.join(',')] = 1;
+  const spoilers = [];
+  let guard = 0;
+  while (opts.length < 4 && guard++ < 200){
+    const bad = V98_NONPRIME[ri(V98_NONPRIME.length)];
+    const set = pickPrimes(4).concat([bad]).sort(function(x,y){ return x-y; });
+    const key = set.join(',');
+    if (seen[key]) continue;
+    seen[key] = 1;
+    opts.push(set.join(', '));
+    spoilers.push(bad === 1 ? '1 is not prime (it has only ONE factor)'
+      : bad + ' = ' + v98SmallFactor(bad) + ' × ' + (bad / v98SmallFactor(bad)) + ', so it is not prime');
+  }
+  qData.workSteps = 'A prime number has exactly two factors — 1 and itself.<br>'
+    + spoilers.join('<br>') + '<br>Only <b>' + right.join(', ') + '</b> is prime all the way through.';
+  decSetChoice(el, '<div style="' + A_LBL + '">Which of the following is a set of <b>prime numbers</b>?</div>',
+    opts, right.join(', '));
+}
+function v98SmallFactor(n){ for (let i = 2; i * i <= n; i++) if (n % i === 0) return i; return n; }
+
+/* ─────────────────────────────────────────────────────────────────
+   8. Square Roots L4 — BETWEEN WHICH WHOLE NUMBERS?
+   Yr 7 ALT 1 Section A Q9 ("which two whole numbers does √34 lie
+   between"). Two boxes, all-or-nothing; never a perfect square.
+───────────────────────────────────────────────────────────────── */
+function genRootBetween(el){
+  el.style.fontSize = '1.05rem';
+  let N = 0, lo = 0;
+  do { N = rr(5, 399); lo = Math.floor(Math.sqrt(N)); } while (lo * lo === N);
+  qData.gapTemplate = [0, '&nbsp; &lt; &nbsp;√' + N + '&nbsp; &lt; &nbsp;', 1];
+  qData.gapAns = [lo, lo + 1];
+  qData.gapHint = 'Fill in the two whole numbers.';
+  qData.gapAnsText = lo + ' and ' + (lo + 1);
+  qData.workSteps = lo + '² = ' + (lo * lo) + ' and ' + (lo + 1) + '² = ' + ((lo + 1) * (lo + 1))
+    + '.<br>' + N + ' sits between them, so √' + N + ' is between <b>' + lo + '</b> and <b>' + (lo + 1) + '</b>.';
+  el.innerHTML = '<div style="' + A_LBL + '">Which two whole numbers does this square root lie between?</div>'
+    + '<div style="text-align:center;font-weight:900;font-size:2.6rem;margin:12px 0;">√' + N + '</div>';
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   9. Multiply Decimals L5 — HOW MANY DECIMAL PLACES?
+   Yr 7 ALT 5 MC Q1. Do NOT evaluate — count. The product's last digit is
+   forced non-zero, so the count rule (places in the factors add) is never
+   contradicted by a trailing zero disappearing.
+───────────────────────────────────────────────────────────────── */
+function genDecPlacesCount(el){
+  el.style.fontSize = '1.05rem';
+  let pa = 0, pb = 0, ra = 0, rb = 0, guard = 0;
+  while (guard++ < 500){
+    pa = rr(1, 3); pb = rr(1, 4);
+    ra = rr(11, Math.pow(10, pa + 1) - 1);
+    rb = rr(11, Math.pow(10, pb + 1) - 1);
+    if (ra % 10 === 0 || rb % 10 === 0) continue;
+    if ((ra * rb) % 10 === 0) continue;         // no trailing zero in the product
+    break;
+  }
+  const a = dp(ra / Math.pow(10, pa), pa), b = dp(rb / Math.pow(10, pb), pb);
+  const ans = pa + pb;
+  const cand = [ans, ans - 1, ans + 1, Math.max(pa, pb), pa * pb, ans + 2];
+  const opts = [], seen = {};
+  cand.forEach(function(v){ if (v > 0 && !seen[v] && opts.length < 4){ seen[v] = 1; opts.push(String(v)); } });
+  qData.workSteps = a + ' has ' + pa + ' decimal place' + (pa === 1 ? '' : 's') + ' and ' + b + ' has '
+    + pb + '. Multiplying adds them: ' + pa + ' + ' + pb + ' = <b>' + ans + '</b> decimal places.';
+  decSetChoice(el, '<div style="' + A_LBL + '">How many decimal places will there be in the answer?<br>'
+    + '<span style="font-size:0.9em;opacity:0.75;">(Do not work it out — count.)</span></div>'
+    + '<div style="text-align:center;font-weight:900;font-size:2rem;margin:12px 0;">' + a + ' × ' + b + '</div>',
+    opts, String(ans));
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   10. Compare & Order Decimals L6 — WHICH IS CLOSEST?
+   Yr 7 ALT 5 MC Q3. Distances are all different and the minimum is
+   unique, so there is exactly one defensible answer; at least one
+   distractor carries MORE digits than the winner (the classic trap).
+───────────────────────────────────────────────────────────────── */
+function genClosestTo(el){
+  el.style.fontSize = '1.05rem';
+  let T = 0, vals = [], guard = 0;
+  while (guard++ < 500){
+    T = dp(rr(15, 95) / 10, 1);
+    const offs = shuffleArr([0.015, 0.05, 0.1, 0.4, 0.45, 0.085, 0.25]).slice(0, 4);
+    vals = offs.map(function(o, i){ return dp(T + (i % 2 ? o : -o), 3); });
+    const ds = vals.map(function(v){ return Math.abs(v - T); });
+    const uniq = {}; let clash = 0;
+    ds.forEach(function(d){ const k = d.toFixed(4); if (uniq[k]) clash = 1; uniq[k] = 1; });
+    if (clash) continue;
+    if (vals.some(function(v){ return v <= 0; })) continue;
+    break;
+  }
+  let bi = 0;
+  vals.forEach(function(v, i){ if (Math.abs(v - T) < Math.abs(vals[bi] - T)) bi = i; });
+  const opts = vals.map(function(v){ return String(v); });
+  qData.workSteps = 'Find how far each one is from ' + T + ':<br>'
+    + vals.map(function(v){ return v + ' is ' + dp(Math.abs(v - T), 3) + ' away'; }).join('<br>')
+    + '<br>The smallest gap belongs to <b>' + vals[bi] + '</b>. More digits does not mean further away.';
+  decSetChoice(el, '<div style="' + A_LBL + '">Which number is <b>closest in value</b> to ' + T + '?</div>',
+    opts, String(vals[bi]));
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   11. Parts of Expressions L4 — COUNT THE TERMS & PRONUMERALS
+   Yr 7 ALT 3 MC Q4 and Q7 · SEAL ALT 3 MC Q2.
+   Expressions are built as DATA and counted from that data, so the
+   printed expression and the counts can never drift apart. Exactly one
+   option matches both counts.
+───────────────────────────────────────────────────────────────── */
+const V98_LETTERS = ['x','y','a','b','m','n','p','t'];
+function v98MakeExpr(nTerms, nVars){
+  const letters = shuffleArr(V98_LETTERS.slice()).slice(0, nVars);
+  const terms = [];
+  for (let i = 0; i < nTerms; i++) terms.push({ c: rr(2, 12), v: letters[i % nVars] });
+  /* guarantee every chosen letter really appears */
+  shuffleArr(terms);
+  const hasConst = Math.random() < 0.5 && nTerms > nVars;
+  if (hasConst) terms[terms.length - 1] = { c: rr(2, 20), v: null };
+  const used = {}; terms.forEach(function(t){ if (t.v) used[t.v] = 1; });
+  return { terms: terms, nTerms: terms.length, nVars: Object.keys(used).length };
+}
+function v98ExprHTML(e){
+  return e.terms.map(function(t, i){
+    const sign = i === 0 ? '' : (Math.random() < 0 ? '' : ' + ');
+    return (i === 0 ? '' : ' + ') + (t.v ? (t.c === 1 ? '' : t.c) + t.v : t.c);
+  }).join('');
+}
+function genCountTerms(el){
+  el.style.fontSize = '1.05rem';
+  const wantT = rr(2, 4), wantV = Math.min(rr(1, 2), wantT);
+  let right = null, guard = 0;
+  while (guard++ < 200){
+    const e = v98MakeExpr(wantT, wantV);
+    if (e.nTerms === wantT && e.nVars === wantV){ right = e; break; }
+  }
+  if (!right) right = v98MakeExpr(3, 2);
+  const rHTML = v98ExprHTML(right);
+  const opts = [rHTML], seen = {}; seen[rHTML] = 1;
+  let g2 = 0;
+  while (opts.length < 4 && g2++ < 400){
+    const t = rr(2, 4), v = Math.min(rr(1, 3), t);
+    if (t === right.nTerms && v === right.nVars) continue;   // no second right answer
+    const e = v98MakeExpr(t, v);
+    if (e.nTerms === right.nTerms && e.nVars === right.nVars) continue;
+    const h = v98ExprHTML(e);
+    if (seen[h]) continue;
+    seen[h] = 1; opts.push(h);
+  }
+  qData.workSteps = 'Terms are the parts separated by + or −; pronumerals are the different letters used.<br>'
+    + '<b>' + rHTML + '</b> has ' + right.nTerms + ' terms and ' + right.nVars + ' pronumeral'
+    + (right.nVars === 1 ? '' : 's') + '.';
+  decSetChoice(el, '<div style="' + A_LBL + '">Which expression contains exactly <b>' + right.nTerms
+    + ' terms</b> and <b>' + right.nVars + ' pronumeral' + (right.nVars === 1 ? '' : 's') + '</b>?</div>',
+    opts, rHTML);
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   12. Index Law (Multiplication) L4 — TRUE OR FALSE?
+   SEAL ALT 1 Section A Q6 — three marks in one question, and every
+   statement family below is a NAMED misconception. The worked step says
+   which one, rather than just giving the right value.
+───────────────────────────────────────────────────────────────── */
+function genIndexTrueFalse(el){
+  el.style.fontSize = '1.05rem';
+  const fam = ri(3);
+  let stmt = '', isTrue = false, why = '';
+  if (fam === 0){
+    const b = ffPick([2,3,4,5,6,7,10]), p = rr(2, 6), q = rr(2, 6);
+    const shown = (Math.random() < 0.5) ? p + q : p * q;
+    isTrue = (shown === p + q);
+    stmt = b + aSupChar(p) + ' × ' + b + aSupChar(q) + ' = ' + b + aSupChar(shown);
+    why = 'Multiplying powers of the same base ADDS the indices: ' + p + ' + ' + q + ' = ' + (p + q)
+      + '. The trap is multiplying them (' + p + ' × ' + q + ' = ' + (p * q) + ').<br>The statement is <b>'
+      + (isTrue ? 'TRUE' : 'FALSE') + '</b>.';
+  } else if (fam === 1){
+    const a = rr(2, 9), b = rr(2, 9);
+    const form = ri(3);
+    if (form === 0){ stmt = '(−' + a + ')' + aSupChar(0) + ' + ' + b + aSupChar(0) + ' = 0'; isTrue = false;
+      why = 'Anything (except 0) to the power 0 is 1, so this is 1 + 1 = 2, not 0.<br>The statement is <b>FALSE</b>.'; }
+    else if (form === 1){ stmt = a + aSupChar(0) + ' = 1'; isTrue = true;
+      why = 'Any non-zero number to the power 0 is 1.<br>The statement is <b>TRUE</b>.'; }
+    else { stmt = a + aSupChar(0) + ' = 0'; isTrue = false;
+      why = 'The power 0 does not make the number zero — ' + a + aSupChar(0) + ' = 1.<br>The statement is <b>FALSE</b>.'; }
+  } else {
+    const b = ffPick([2,3,5,7]), P = ffPick([6,8,10,12]);
+    const addForm = Math.random() < 0.5;
+    isTrue = !addForm;
+    stmt = 'If (' + b + aSupChar('x') + ')' + aSupChar('y') + ' = ' + b + aSupChar(P) + ', then x '
+      + (addForm ? '+' : '×') + ' y = ' + P;
+    why = 'A power of a power MULTIPLIES the indices, so x × y = ' + P + ' — not x + y.<br>The statement is <b>'
+      + (isTrue ? 'TRUE' : 'FALSE') + '</b>.';
+  }
+  qData.workSteps = why;
+  decSetChoice(el, '<div style="' + A_LBL + '">Is this statement true or false?</div>'
+    + '<div style="text-align:center;font-weight:900;font-size:1.9rem;margin:14px 0;">' + stmt + '</div>',
+    ['True', 'False'], isTrue ? 'True' : 'False', true);
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   13/14. Multiply Terms L5 and Divide Terms L5 — FIND THE MISSING TERM
+   Yr 7 ALT 3 Section B Q3 · SEAL ALT 1 Section C Q2.
+   The same reasoning as the level above, run BACKWARDS: the generator
+   builds a TRUE statement first and then blanks one part of it, so the
+   missing term is correct by construction.
+───────────────────────────────────────────────────────────────── */
+function v98Term(c, L, p){ const v = {}; if (L) v[L] = (p || 1); return { coeff: c, vars: v }; }
+function genMissingFactor(el){
+  el.style.fontSize = '1.05rem';
+  const L1 = ffPick(['x','a','m','p']);
+  let L2 = ffPick(['y','b','n','t']);
+  const form = ri(3);
+  let shown = '', ans = null, steps = '';
+  if (form === 0){                                    /* ☐ × 3y = 12xy */
+    const m = rr(2, 9), b = rr(2, 9);
+    ans = v98Term(m, L1);
+    const other = v98Term(b, L2);
+    const prod = multiplyFactors([ans, other]);
+    shown = '<span class="v98-box">?</span> × ' + prodAnsHtml(other) + ' = ' + prodAnsHtml(prod);
+    steps = 'Divide the answer by the term you can see: ' + prodAnsHtml(prod) + ' ÷ ' + prodAnsHtml(other)
+      + ' = <b>' + prodAnsHtml(ans) + '</b>.';
+  } else if (form === 1){                             /* 4x + ☐ = 7x */
+    const k = rr(2, 9), m = rr(2, 9);
+    ans = v98Term(m, L1);
+    shown = prodAnsHtml(v98Term(k, L1)) + ' + <span class="v98-box">?</span> = ' + prodAnsHtml(v98Term(k + m, L1));
+    steps = 'These are like terms, so the coefficients add: ' + k + ' + ? = ' + (k + m)
+      + ', giving ? = ' + m + '.<br>The missing term is <b>' + prodAnsHtml(ans) + '</b>.';
+  } else {                                            /* ☐ × 2a = 10a² */
+    const m = rr(2, 9), b = rr(2, 6);
+    ans = v98Term(m, L1);
+    const other = v98Term(b, L1);
+    const prod = multiplyFactors([ans, other]);
+    shown = '<span class="v98-box">?</span> × ' + prodAnsHtml(other) + ' = ' + prodAnsHtml(prod);
+    steps = 'The letter appears in both, so its powers added to make ' + prodAnsHtml(prod) + '. Divide back: '
+      + prodAnsHtml(prod) + ' ÷ ' + prodAnsHtml(other) + ' = <b>' + prodAnsHtml(ans) + '</b>.';
+  }
+  qData.prodAns = ans;
+  qData.workSteps = steps;
+  el.innerHTML = '<div style="' + A_LBL + '">Find the missing term.</div>'
+    + '<div style="text-align:center;font-weight:900;font-size:2rem;margin:14px 0;">' + shown + '</div>';
+}
+function genMissingDivisor(el){
+  el.style.fontSize = '1.05rem';
+  const L = ffPick(['x','a','m','y']);
+  const missDivisor = Math.random() < 0.5;
+  const q = rr(2, 9), d = rr(2, 9), pw = ri(2) + 1;
+  const divisor = v98Term(d, L, 1);
+  const quot    = v98Term(q, L, pw);
+  const num     = multiplyFactors([divisor, quot]);
+  let shown, ans, steps;
+  if (missDivisor){
+    ans = divisor;
+    shown = prodAnsHtml(num) + ' ÷ <span class="v98-box">?</span> = ' + prodAnsHtml(quot);
+    steps = 'Divide the top by the answer: ' + prodAnsHtml(num) + ' ÷ ' + prodAnsHtml(quot)
+      + ' = <b>' + prodAnsHtml(ans) + '</b>.';
+  } else {
+    ans = num;
+    shown = '<span class="v98-box">?</span> ÷ ' + prodAnsHtml(divisor) + ' = ' + prodAnsHtml(quot);
+    steps = 'Multiply back up: ' + prodAnsHtml(divisor) + ' × ' + prodAnsHtml(quot)
+      + ' = <b>' + prodAnsHtml(ans) + '</b>.';
+  }
+  qData.prodAns = ans;
+  qData.workSteps = steps;
+  el.innerHTML = '<div style="' + A_LBL + '">Find the missing term.</div>'
+    + '<div style="text-align:center;font-weight:900;font-size:2rem;margin:14px 0;">' + shown + '</div>';
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   15. Sharing in a Ratio L6 — RATIO AS A FRACTION
+   Yr 7 ALT 2 Q8(a). The engine already worked out the total number of
+   parts for every share question; this level just asks for it.
+───────────────────────────────────────────────────────────────── */
+const V98_RATIO_SETS = [
+  { items: ['blue', 'green', 'yellow'], thing: 'lollies' },
+  { items: ['red', 'white', 'black'],   thing: 'counters' },
+  { items: ['sand', 'cement', 'gravel'],thing: 'mix' },
+  { items: ['apples', 'pears', 'plums'],thing: 'fruit' },
+];
+function genRatioAsFraction(el){
+  el.style.fontSize = '1.05rem';
+  const set = V98_RATIO_SETS[ri(V98_RATIO_SETS.length)];
+  const p = [rr(1, 7), rr(1, 7), rr(1, 7)];
+  const total = p[0] + p[1] + p[2];
+  const k = ri(3);
+  const s = v98Sign(p[k], total);
+  qData.ansNum = s[0]; qData.ansDen = s[1];
+  qData.workSteps = 'Add the parts: ' + p.join(' + ') + ' = ' + total + ' parts altogether.<br>'
+    + set.items[k] + ' is ' + p[k] + ' of those ' + total + ' parts → ' + p[k] + '/' + total
+    + (s[1] === total ? '' : ' = ' + s[0] + '/' + s[1]) + '.<br>The answer is <b>' + s[0] + '/' + s[1] + '</b>.';
+  el.innerHTML = '<div style="' + A_LBL + '">In a packet of ' + set.thing + ', the ratio '
+    + set.items.join(' : ') + ' is <b>' + p.join(' : ') + '</b>.<br>What fraction of the ' + set.thing
+    + ' are <b>' + set.items[k] + '</b>? Give your answer in simplest form.</div>';
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   16. Sharing in a Ratio L7 — FOUR-PART SHARE
+   SEAL ALT 2 Q2(a) shares a relay time in 6 : 7 : 8 : 9. Every share
+   engine before this stopped at three parts.
+───────────────────────────────────────────────────────────────── */
+const V98_FOUR_CTX = [
+  { story: 'A relay team runs a total time of', unit: 'seconds', who: 'the four runners' },
+  { story: 'Four friends share', unit: 'dollars', who: 'the four friends' },
+  { story: 'A garden bed of', unit: 'plants', who: 'the four rows' },
+  { story: 'A journey of', unit: 'kilometres', who: 'the four stages' },
+];
+function genFourPartShare(el){
+  el.style.fontSize = '1.02rem';
+  const c = V98_FOUR_CTX[ri(V98_FOUR_CTX.length)];
+  const p = [rr(1, 8), rr(1, 8), rr(1, 8), rr(1, 8)];
+  const S = p[0] + p[1] + p[2] + p[3];
+  const one = rr(3, 25);
+  const total = S * one;
+  qData.gapTemplate = [0, ' : ', 1, ' : ', 2, ' : ', 3];
+  qData.gapAns = p.map(function(x){ return x * one; });
+  qData.gapHint = 'Fill in the four shares, in the order given.';
+  qData.gapAnsText = qData.gapAns.join(' : ');
+  qData.workSteps = 'Add the parts: ' + p.join(' + ') + ' = ' + S + '.<br>One part = ' + total + ' ÷ ' + S
+    + ' = ' + one + ' ' + c.unit + '.<br>Now multiply: ' + p.map(function(x){ return x + ' × ' + one + ' = ' + (x * one); }).join(', ')
+    + '.<br>The shares are <b>' + qData.gapAns.join(' : ') + '</b>.';
+  el.innerHTML = '<div style="' + A_LBL + '">' + c.story + ' <b>' + total + ' ' + c.unit
+    + '</b> is divided between ' + c.who + ' in the ratio <b>' + p.join(' : ')
+    + '</b>.<br>Work out each share, in the same order.</div>';
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   17. Simplifying Ratios L4 — RATIO FROM A DIAGRAM
+   Yr 7 ALT 2 MC Q5 and Q9(a). Counting the picture IS the skill, so the
+   shapes are drawn and the answer boxes take the simplified ratio.
+───────────────────────────────────────────────────────────────── */
+function v98ShapeSVG(kind, x, y, s){
+  if (kind === 'square')   return '<rect x="' + (x - s) + '" y="' + (y - s) + '" width="' + (2*s) + '" height="' + (2*s) + '" fill="var(--accent)" opacity="0.85"/>';
+  if (kind === 'circle')   return '<circle cx="' + x + '" cy="' + y + '" r="' + s + '" fill="var(--green)" opacity="0.85"/>';
+  if (kind === 'triangle') return '<polygon points="' + x + ',' + (y - s) + ' ' + (x + s) + ',' + (y + s) + ' ' + (x - s) + ',' + (y + s) + '" fill="var(--gold, #e0a030)" opacity="0.9"/>';
+  return '<rect x="' + (x - s) + '" y="' + (y - s) + '" width="' + (2*s) + '" height="' + (2*s) + '" fill="var(--accent)"/>';
+}
+function genRatioFromDiagram(el){
+  el.style.fontSize = '1.02rem';
+  const three = Math.random() < 0.5;
+  const kinds = three ? ['square', 'triangle', 'circle'] : shuffleArr(['square', 'triangle', 'circle']).slice(0, 2);
+  const names = { square: 'squares', triangle: 'triangles', circle: 'circles' };
+  const counts = kinds.map(function(){ return rr(2, 8); });
+  let g = counts[0];
+  counts.forEach(function(c){ g = gcd(g, c); });
+  const simp = counts.map(function(c){ return c / g; });
+  /* draw them in a shuffled row so the student has to count, not read off runs */
+  const cells = [];
+  kinds.forEach(function(k, i){ for (let j = 0; j < counts[i]; j++) cells.push(k); });
+  shuffleArr(cells);
+  const perRow = 6, s = 14, gapx = 44, gapy = 42;
+  const rows = Math.ceil(cells.length / perRow);
+  let body = '';
+  cells.forEach(function(k, i){
+    const cx = 30 + (i % perRow) * gapx, cy = 26 + Math.floor(i / perRow) * gapy;
+    body += v98ShapeSVG(k, cx, cy, s);
+  });
+  const svg = '<svg viewBox="0 0 ' + (30 + perRow * gapx) + ' ' + (10 + rows * gapy)
+    + '" style="width:100%;max-width:340px;display:block;margin:8px auto;">' + body + '</svg>';
+  qData.gapTemplate = three ? [0, ' : ', 1, ' : ', 2] : [0, ' : ', 1];
+  qData.gapAns = simp;
+  qData.gapHint = 'Fill in the ratio in simplest form.';
+  qData.gapAnsText = simp.join(' : ');
+  qData.workSteps = 'Count each shape: ' + kinds.map(function(k, i){ return counts[i] + ' ' + names[k]; }).join(', ')
+    + '.<br>That is ' + counts.join(' : ') + (g > 1 ? ', and both sides divide by ' + g : '')
+    + ' → <b>' + simp.join(' : ') + '</b>.';
+  el.innerHTML = '<div style="' + A_LBL + '">Write the ratio of <b>'
+    + kinds.map(function(k){ return names[k]; }).join(' : ') + '</b> in simplest form.</div>' + svg;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   18. Simplifying Ratios L5 — DIFFERENT UNITS
+   SEAL ALT 2 MC Q2 ("40 cents to $2"). Same shape as One Amount as a
+   Percentage L3, which already converts before it compares.
+───────────────────────────────────────────────────────────────── */
+const V98_UNIT_PAIRS = [
+  { small: 'cents', big: '$', k: 100, bigFirstSym: true },
+  { small: 'g', big: 'kg', k: 1000 },
+  { small: 'mm', big: 'cm', k: 10 },
+  { small: 'cm', big: 'm', k: 100 },
+  { small: 'm', big: 'km', k: 1000 },
+  { small: 'minutes', big: 'hours', k: 60 },
+  { small: 'seconds', big: 'minutes', k: 60 },
+];
+function genRatioUnits(el){
+  el.style.fontSize = '1.05rem';
+  const u = V98_UNIT_PAIRS[ri(V98_UNIT_PAIRS.length)];
+  const smallVal = rr(2, 90) * (u.k >= 100 ? 5 : 1);
+  const bigVal = rr(1, 6);
+  const bigInSmall = bigVal * u.k;
+  const s = v98Sign(smallVal, bigInSmall);
+  const smallFirst = Math.random() < 0.5;
+  const bigTxt = u.bigFirstSym ? ('$' + bigVal) : (bigVal + ' ' + u.big);
+  const smallTxt = u.bigFirstSym ? (smallVal + ' cents') : (smallVal + ' ' + u.small);
+  qData.ansA = smallFirst ? s[0] : s[1];
+  qData.ansB = smallFirst ? s[1] : s[0];
+  qData.workSteps = 'Change both to the same unit first: ' + bigTxt + ' = ' + bigInSmall + ' ' + u.small + '.<br>'
+    + (smallFirst ? smallVal + ' : ' + bigInSmall : bigInSmall + ' : ' + smallVal)
+    + ', and dividing both sides by their HCF gives <b>' + qData.ansA + ' : ' + qData.ansB + '</b>.';
+  el.innerHTML = '<div style="' + A_LBL + '">Write this as a ratio in simplest form.</div>'
+    + '<div style="text-align:center;font-weight:900;font-size:1.9rem;margin:14px 0;">'
+    + (smallFirst ? smallTxt + ' &nbsp;to&nbsp; ' + bigTxt : bigTxt + ' &nbsp;to&nbsp; ' + smallTxt) + '</div>';
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   19. Simplifying Ratios L6 — THREE AND FOUR PARTS
+   Yr 7 ALT 2 Q7(b) and SEAL ALT 2 Q7(b) both simplify 10 : 55 : 110.
+   The given ratio is built as a MULTIPLE of an already-reduced one, so
+   the target answer is reduced by construction.
+───────────────────────────────────────────────────────────────── */
+function genRatioThreeFour(el){
+  el.style.fontSize = '1.05rem';
+  const n = Math.random() < 0.6 ? 3 : 4;
+  let base = [], guard = 0;
+  while (guard++ < 300){
+    base = []; for (let i = 0; i < n; i++) base.push(rr(1, 12));
+    let g = base[0]; base.forEach(function(x){ g = gcd(g, x); });
+    if (g === 1) break;
+  }
+  const k = rr(2, 11);
+  const given = base.map(function(x){ return x * k; });
+  qData.gapTemplate = n === 3 ? [0, ' : ', 1, ' : ', 2] : [0, ' : ', 1, ' : ', 2, ' : ', 3];
+  qData.gapAns = base;
+  qData.gapHint = 'Fill in the ratio in simplest form.';
+  qData.gapAnsText = base.join(' : ');
+  qData.workSteps = 'The highest common factor of ' + given.join(', ') + ' is ' + k
+    + '.<br>Divide every part by ' + k + ': <b>' + base.join(' : ') + '</b>.';
+  el.innerHTML = '<div style="' + A_LBL + '">Write this ratio in simplest form.</div>'
+    + '<div style="text-align:center;font-weight:900;font-size:2rem;margin:14px 0;">' + given.join(' : ') + '</div>';
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   20. Substitute into Expressions L6 — DECIMAL VALUES
+   Yr 7 ALT 5 Q10 ("if a = 2.46, b = 11.31, find b − 2a"). Every level
+   before this substitutes whole numbers.
+───────────────────────────────────────────────────────────────── */
+function genSubDecimals(el){
+  el.style.fontSize = '1.05rem';
+  /* both values must genuinely BE decimals — a raw value ending in 0 renders as
+     a whole number, and "substitute decimal values" handing a student b = 3 is
+     the same defect the rounding level had. */
+  let ra, rb;
+  do { ra = rr(105, 990); }  while (ra % 10 === 0);
+  do { rb = rr(105, 1500); } while (rb % 10 === 0);
+  const a = dp(ra / 100, 2), b = dp(rb / 100, 2);
+  const forms = [
+    { txt: 'b − 2a',  f: function(){ return b - 2 * a; },     how: b + ' − 2 × ' + a },
+    { txt: '2b − a',  f: function(){ return 2 * b - a; },     how: '2 × ' + b + ' − ' + a },
+    { txt: '3a + b',  f: function(){ return 3 * a + b; },     how: '3 × ' + a + ' + ' + b },
+    { txt: 'a + b',   f: function(){ return a + b; },         how: a + ' + ' + b },
+    { txt: 'b − a',   f: function(){ return b - a; },         how: b + ' − ' + a },
+  ];
+  const F = forms[ri(forms.length)];
+  const ans = dp(F.f(), 2);
+  qData.ans = ans;
+  qData.ansTol = 0.005;
+  qData.workSteps = 'Put the values in: ' + F.how + ' = <b>' + ans + '</b>. '
+    + 'Multiplying happens before adding or subtracting.';
+  el.innerHTML = '<div style="' + A_LBL + '">If <b>a = ' + a + '</b> and <b>b = ' + b
+    + '</b>, find the value of the expression. Give your answer to 2 decimal places.</div>'
+    + '<div style="text-align:center;font-weight:900;font-size:2.4rem;margin:12px 0;">' + F.txt + '</div>';
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   21/22. One-Step Equations L4 (both skills) — DECIMAL VALUES
+   SEAL ALT 3 opens with x + 4.3 = −3 and −3.2y = 27.4. Every one-step
+   level before this sets whole numbers.
+   levelModes puts these on the single number box: a decimal solution
+   will not go in the numerator/denominator pair.
+───────────────────────────────────────────────────────────────── */
+function genOneStepDecAddSub(el){
+  el.style.fontSize = '1.05rem';
+  const V = ffPick(['x','y','a','m']);
+  const c = dp(rr(11, 199) / 10, 1);
+  const ansV = dp(rr(-199, 199) / 10, 1);
+  const plus = Math.random() < 0.5;
+  const rhs = dp(plus ? ansV + c : ansV - c, 1);
+  qData.ans = ansV;
+  qData.ansTol = 0.0005;
+  qData.solveVar = V;
+  qData.workSteps = (plus
+    ? 'Undo the + ' + c + ' by subtracting it from both sides: ' + V + ' = ' + v98Neg(rhs) + ' − ' + c
+    : 'Undo the − ' + c + ' by adding it to both sides: ' + V + ' = ' + v98Neg(rhs) + ' + ' + c)
+    + ' = <b>' + v98Neg(ansV) + '</b>.';
+  el.innerHTML = '<div style="' + A_LBL + '">Solve for ' + V + '.</div>'
+    + '<div style="text-align:center;font-weight:900;font-size:2.4rem;margin:12px 0;">'
+    + V + ' ' + (plus ? '+' : '−') + ' ' + c + ' = ' + v98Neg(rhs) + '</div>';
+}
+function genOneStepDecMulDiv(el){
+  el.style.fontSize = '1.05rem';
+  const V = ffPick(['x','y','a','m']);
+  const k = dp(nz(rr(-95, 95)) / 10, 1);
+  const ansV = dp(nz(rr(-95, 95)) / 10, 1);
+  const divide = Math.random() < 0.4;
+  if (divide){
+    /* pick the SHOWN value first and multiply up, so the equation is exact —
+       dividing a random answer by d and rounding leaves a statement that does
+       not quite balance, which the suite caught. */
+    const d = nz(rr(2, 9));
+    const shown = dp(nz(rr(-95, 95)) / 10, 1);
+    const ansV2 = dp(shown * d, 1);
+    qData.ans = ansV2; qData.ansTol = 0.0005; qData.solveVar = V;
+    qData.workSteps = 'Undo the ÷ ' + d + ' by multiplying both sides by ' + d + ': ' + V + ' = '
+      + shown + ' × ' + d + ' = <b>' + v98Neg(ansV2) + '</b>.';
+    el.innerHTML = '<div style="' + A_LBL + '">Solve for ' + V + '.</div>'
+      + '<div style="text-align:center;font-weight:900;font-size:2.2rem;margin:12px 0;">'
+      + V + ' ÷ ' + d + ' = ' + v98Neg(shown) + '</div>';
+    return;
+  }
+  const rhs = dp(k * ansV, 2);
+  qData.ans = ansV; qData.ansTol = 0.0005; qData.solveVar = V;
+  qData.workSteps = 'Undo the × ' + k + ' by dividing both sides by it: ' + V + ' = ' + v98Neg(rhs)
+    + ' ÷ ' + v98Neg(k) + ' = <b>' + v98Neg(ansV) + '</b>. Two negatives divide to a positive.';
+  el.innerHTML = '<div style="' + A_LBL + '">Solve for ' + V + '. Give your answer to 1 decimal place.</div>'
+    + '<div style="text-align:center;font-weight:900;font-size:2.4rem;margin:12px 0;">'
+    + v98Neg(k) + V + ' = ' + v98Neg(rhs) + '</div>';
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   23. Add & Subtract Fractions L5 — MIXED NUMBERS
+   3⅘ − 1⅔ is on BOTH ALT 2 papers, 2 marks each, and there was no level
+   for it — L1–L3 are proper fractions and L4 is word problems.
+   The answer is generated as a mixed number with a genuine fractional
+   part, so the mixed-number boxes are always the right shape.
+───────────────────────────────────────────────────────────────── */
+function genMixedAddSub(el){
+  el.style.fontSize = '1.05rem';
+  const DENS = [2,3,4,5,6,8,10,12];
+  let w1, n1, d1, w2, n2, d2, sub, tn, td, guard = 0;
+  while (guard++ < 600){
+    d1 = ffPick(DENS); d2 = ffPick(DENS);
+    n1 = rr(1, d1 - 1); n2 = rr(1, d2 - 1);
+    if (gcd(n1, d1) !== 1 || gcd(n2, d2) !== 1) continue;
+    w1 = rr(1, 6); w2 = rr(1, 5);
+    sub = Math.random() < 0.5;
+    const v1 = (w1 * d1 + n1) / d1, v2 = (w2 * d2 + n2) / d2;
+    const v = sub ? v1 - v2 : v1 + v2;
+    if (v <= 1) continue;
+    const D = d1 * d2 / gcd(d1, d2);
+    const N = Math.round(v * D);
+    if (Math.abs(v * D - N) > 1e-9) continue;
+    if (N % D === 0) continue;                       // must have a fractional part
+    const g = gcd(N % D, D);
+    tn = (N % D) / g; td = D / g;
+    qData.ansWhole = Math.floor(N / D);
+    qData.ansNum = tn; qData.ansDen = td;
+    break;
+  }
+  qData.mixedMode = 'toMixed';
+  const D = d1 * d2 / gcd(d1, d2);
+  const a1 = (w1 * d1 + n1) * (D / d1), a2 = (w2 * d2 + n2) * (D / d2);
+  qData.workSteps = 'Turn both into improper fractions: ' + w1 + ' ' + n1 + '/' + d1 + ' = '
+    + (w1 * d1 + n1) + '/' + d1 + ' and ' + w2 + ' ' + n2 + '/' + d2 + ' = ' + (w2 * d2 + n2) + '/' + d2 + '.<br>'
+    + 'Common denominator ' + D + ': ' + a1 + '/' + D + (sub ? ' − ' : ' + ') + a2 + '/' + D + ' = '
+    + (sub ? a1 - a2 : a1 + a2) + '/' + D + '.<br>Back to a mixed number in simplest form: <b>'
+    + qData.ansWhole + ' ' + qData.ansNum + '/' + qData.ansDen + '</b>.';
+  id('qBox').innerHTML = '<div class="q-text" style="' + A_LBL + '">Work this out. '
+    + 'Give your answer as a <b>mixed number in simplest form</b>.'
+    + '<div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-top:14px;font-size:1.6rem;font-weight:900;">'
+    + '<span>' + w1 + '</span>' + fracHTML(n1, d1)
+    + '<span>' + (sub ? '−' : '+') + '</span>'
+    + '<span>' + w2 + '</span>' + fracHTML(n2, d2)
+    + '</div></div>';
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   24. Multiply / Divide Fractions L4 — WITH NEGATIVES
+   −30/27 × 18/15 is on both ALT 2 papers. The sign rule sits on top of a
+   cancelling engine that already worked; the answer is stored with the
+   sign on the NUMERATOR and a positive denominator.
+───────────────────────────────────────────────────────────────── */
+function v98SignedPair(){
+  const d = rr(3, 15);
+  let n = rr(2, 24);
+  if (n % d === 0) n += 1;
+  const s = Math.random() < 0.55 ? -1 : 1;
+  return [s * n, d];
+}
+function genFracSignedMul(el){
+  el.style.fontSize = '1.05rem';
+  const A = v98SignedPair(), B = v98SignedPair();
+  const s = v98Sign(A[0] * B[0], A[1] * B[1]);
+  qData.ansNum = s[0]; qData.ansDen = s[1];
+  qData.workSteps = 'Signs first: ' + (A[0] < 0 ? 'negative' : 'positive') + ' × '
+    + (B[0] < 0 ? 'negative' : 'positive') + ' = ' + (s[0] < 0 ? 'negative' : 'positive') + '.<br>'
+    + 'Then multiply straight across: ' + Math.abs(A[0]) + ' × ' + Math.abs(B[0]) + ' = '
+    + Math.abs(A[0] * B[0]) + ' over ' + A[1] + ' × ' + B[1] + ' = ' + (A[1] * B[1])
+    + ', which simplifies to <b>' + s[0] + '/' + s[1] + '</b>.';
+  id('qBox').innerHTML = '<div class="q-text" style="' + A_LBL + '">Work this out, in simplest form.'
+    + '<div style="display:flex;align-items:center;justify-content:center;gap:12px;margin-top:14px;">'
+    + v98FracSigned(A) + '<span style="font-size:1.6rem;font-weight:900;">×</span>' + v98FracSigned(B)
+    + '</div></div>';
+}
+function genFracSignedDiv(el){
+  el.style.fontSize = '1.05rem';
+  const A = v98SignedPair(), B = v98SignedPair();
+  const s = v98Sign(A[0] * B[1], A[1] * B[0]);
+  qData.ansNum = s[0]; qData.ansDen = s[1];
+  qData.workSteps = 'Dividing by a fraction means multiplying by its reciprocal: flip '
+    + B[0] + '/' + B[1] + ' to ' + B[1] + '/' + B[0] + '.<br>Signs: '
+    + (A[0] < 0 ? 'negative' : 'positive') + ' ÷ ' + (B[0] < 0 ? 'negative' : 'positive') + ' = '
+    + (s[0] < 0 ? 'negative' : 'positive') + '.<br>That gives <b>' + s[0] + '/' + s[1] + '</b>.';
+  id('qBox').innerHTML = '<div class="q-text" style="' + A_LBL + '">Work this out, in simplest form.'
+    + '<div style="display:flex;align-items:center;justify-content:center;gap:12px;margin-top:14px;">'
+    + v98FracSigned(A) + '<span style="font-size:1.6rem;font-weight:900;">÷</span>' + v98FracSigned(B)
+    + '</div></div>';
+}
+function v98FracSigned(P){
+  const neg = P[0] < 0;
+  return '<span style="display:inline-flex;align-items:center;gap:4px;font-weight:900;font-size:1.5rem;">'
+    + (neg ? '<span>−</span>' : '') + fracHTML(Math.abs(P[0]), P[1]) + '</span>';
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   25. Convert Fractions to Decimals L4 — MIXED NUMBERS
+   SEAL ALT 2 Q5(a), "convert 2 6/48 to a decimal". Denominators are
+   restricted to ones that terminate, so the answer is always exact.
+───────────────────────────────────────────────────────────────── */
+function genMixedToDecimal(el){
+  el.style.fontSize = '1.05rem';
+  const DENS = [2,4,5,8,10,16,20,25,40,50];
+  const d = ffPick(DENS);
+  const n = rr(1, d - 1);
+  const w = rr(1, 9);
+  const dec = dp(w + n / d, 6);
+  qData.ans = dec;
+  qData.ansTol = 0.0000005;
+  qData.workSteps = 'The whole number stays as it is. Divide the fraction out: ' + n + ' ÷ ' + d + ' = '
+    + dp(n / d, 6) + '.<br>So ' + w + ' ' + n + '/' + d + ' = <b>' + dec + '</b>.';
+  id('qBox').innerHTML = '<div class="q-text" style="' + A_LBL + '">Write this mixed number as a decimal.'
+    + '<div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-top:14px;font-size:1.7rem;font-weight:900;">'
+    + '<span>' + w + '</span>' + fracHTML(n, d) + '</div></div>';
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   26. Convert FDP L4 — OVER 100% AND RECURRING
+   The SEAL ALT 5 table contains 164% and 6/11. The pctTable tolerance
+   logic already handled recurring values; the ROW generator simply never
+   produced either. Same rows, same marking, a wider pool — and every
+   table on this level carries at least one of each.
+───────────────────────────────────────────────────────────────── */
+const V98_FDP_OVER = [[41,25],[6,5],[3,2],[7,5],[11,10],[9,4],[5,2],[9,5],[7,4],[13,10],[8,5],[12,5]];
+const V98_FDP_REC  = [[1,3],[2,3],[1,6],[5,6],[6,11],[2,9],[4,9],[1,11],[5,9],[7,12]];
+function genPctFDPHard(el){
+  el.style.fontSize = '1.05rem';
+  const rows = [], usedVals = [];
+  function push(base){
+    const v = base[0] / base[1];
+    if (usedVals.some(function(x){ return Math.abs(x - v) < 1e-9; })) return false;
+    usedVals.push(v); rows.push(pctMakeRow(base)); return true;
+  }
+  let guard = 0;
+  while (!push(V98_FDP_OVER[ri(V98_FDP_OVER.length)]) && guard++ < 50) {}
+  guard = 0;
+  while (!push(V98_FDP_REC[ri(V98_FDP_REC.length)]) && guard++ < 50) {}
+  guard = 0;
+  while (rows.length < 3 && guard++ < 200){
+    push(Math.random() < 0.5 ? V98_FDP_OVER[ri(V98_FDP_OVER.length)] : V98_FDP_REC[ri(V98_FDP_REC.length)]);
+  }
+  shuffleArr(rows);
+  qData.pctRows = rows;
+  qData.workSteps = pctFDPReviewHTML(rows);
+  el.innerHTML = '<div style="' + A_LBL + '">Fill in the missing boxes. Some values are over 100% and some '
+    + 'recur — a rounded decimal is accepted. You score 1 point for each correct box.</div>';
 }
 
 </script>
