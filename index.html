@@ -1,4 +1,5 @@
-<!-- Sandy Fast Facts — v101 (Laura). 🎲 PROBABILITY — THE SECOND MISSING STRAND, BUILT. 14 skills and 80 levels, mapped from the 7MAT and 7MAS (SEAL) Statistics & Probability booklets and Laura's Year 7 / Year 7 SEAL topic lists: Sample Space, Language of Chance, Theoretical Probability, Complement, Experimental Probability, Expected Number of Outcomes and Two-Step Experiments for both courses; Tree Diagrams, Two-Way Tables, Venn Diagrams, Probability Notation, Mutually Exclusive Events and the Addition Rule for SEAL; and Conditional Probability built ahead for Year 10 because the engines were already there. ALT 7 in BOTH courses now carries the probability half and its "still being built" note is gone — 682 skill-levels, 1001 course references. THIS RELEASE IS STORAGE-SAFE: all new ids, all new levels, nothing renamed and nothing reordered, so no Personal Best moves (the .bas still has to be redeployed, or the dashboard leaves the Animal column blank for every probability row). THREE THINGS WORTH KNOWING. (1) THE FRACTION RULE TIGHTENS AS THE LADDER CLIMBS, which was Laura's call: Theoretical L1–L2 and Experimental L1–L2 accept any equivalent fraction, so a student meeting probability for the first time is marked on the probability and not on the simplifying; from Theoretical L3 up, simplest form is required and the miss review says WHICH of the two things went wrong ("Right probability — now simplify it"). PROB_LENIENT is the one list that decides it, read by both the marking and the on-screen notice. (2) ONE NEW INPUT MODE, gridFill — the v74 FDP table generalised into a reusable table filler, 1 POINT PER CORRECT BOX, which is what completing a two-way table needed. (3) NO NEW MODE WAS NEEDED FOR THE PROBABILITY LINE: plotPts takes its geometry from qData.plotGeom, so the 0–1 line is the v99 number-line surface in twelfths. Three new drawing helpers (spinner, Venn incl. shaded regions, tree) and a dice-totals grid; everything else re-uses daFreqTable and the existing panels. ALL 80 BANDS ARE PLACEHOLDERS — written out per level in an explicit BAND_OVERRIDE stage so every one is a number somebody can see and argue with, and the next thing to recalibrate with a class. Previously: v100 (Laura). 🪜 LEVELS IN ORDER, EASIEST TO HARDEST — AND THE NINE CONTENT GAPS BUILT. Two things in one release, both of them Laura's call. 🪜 THE REORDER. Levels had been APPENDED for four releases running, because appending is the storage-safe move: the level number is part of the storage key, so inserting one re-points every Personal Best recorded on that skill. That kept the data safe and let the ladder drift — "how many decimal places" (the rule, with no arithmetic in it) sat at Level 5 of Multiply Decimals, "which fraction is in simplest form" sat AFTER algebraic fractions, and "polygon or not?" sat at Level 6 of Naming Shapes, three levels below naming a rhombus. Laura: the classes have not used the app enough for the stored data to outweigh a sensible order, and most students start a fresh profile anyway. So 21 skills are reordered and a student with an old best on a moved level will see it against a different question type — the known, accepted cost, and the ONLY change in the program's history that is not storage-safe. HOW IT IS DONE, because this is the part worth keeping: LEVEL_ORDER[lvKey] lists the OLD level numbers in their NEW order, and one block applies it at load time to everything keyed by level — the level cards (renumbering their own titles), the per-level input modes, the recall/method flags, the fluency targets, the band cut-offs across all five BAND_OVERRIDE stages, the mode recommendations and both ALT pools. The GENERATORS were not touched at all: nextQCore swaps in the old number for the length of one question and puts it back before enableInputs(). Reordering another skill later is now ONE LINE in LEVEL_ORDER. ⚠ THREE LEVELS WERE REMOVED, and finding them is what the reorder was worth on its own: v98 added "Mixed Numbers" to Add & Subtract Fractions, and "With Negatives" to Multiply and to Divide Fractions — all three ALREADY EXISTED (fas L4 is genFracAddSubMixed; fmu/fd L3 already turn a numerator negative). Sorting the levels put the duplicate titles next to each other and made it obvious. The v98 copies are gone, the originals stay, and the ALT pools now point at them. The lesson: an audit that reads a level LIST can miss what a level DOES — the duplicate check belongs in the add-a-level checklist, and it is now in the guide. 🧱 THE NINE CONTENT GAPS, all built — 575 → 605 → 602 skill-levels after the three removals, and 848 → 886 ALT references. SIX NEW SKILLS. Writing Expressions from Words (the highest-value gap in the audit: it appears four times across the two ALT 3 papers, and the app could read a coefficient, substitute, expand, factorise and solve but nothing turned ENGLISH into algebra — five levels, phrase to expression, expression to phrase, two operations, generalise a number pattern, and story to equation to answer; the phrase bank is DATA, so the words and the algebra cannot drift apart, and every distractor is the expression a student produces by MIS-READING those exact words). Algebraic Fractions (5r/6 − 12r/18 is on BOTH ALT 3 papers word for word — six levels built as one family because it is one method: same denominator, different denominators, multiply, divide, with indices including a negative one, and simplify by factorising, which is SEAL MC Q8). Perimeter & Area as an Expression (SEAL Q11 and Q12, 9 marks — this looks like the Measurement gap and is NOT: no unit conversion and no formula recall, just adding labelled sides and collecting like terms, so it is an Algebra item wearing a Measurement costume and did not have to wait). Number Lines (read a fraction off the line, which arrow is closest, mark every integer that fits, and show an inequality solution — NO new input mode: plotPts already takes its geometry from qData.plotGeom, so a one-dimensional line is the same tap surface with one row, which is exactly what "axis-agnostic" was for in v78). Written Multiplication, and Long Division as Division L4 (both ALT 1 papers set 132 × 29 and 5932 ÷ 4 explicitly — worth naming the tension: the ALT marks are for the SETTING OUT and a fluency app can only check the answer, but a student who cannot get the answer will not get the setting-out marks either). Absolute Value & Factorials (|−10 + 4!| − |3| is one mark on both ALT 1 papers and neither notation existed anywhere). Direct & Inverse Proportion (the plotting half was already built — v98 mapped Table of Values into SEAL ALT 2 — so only the naming needed a skill). THREE APPENDED LEVELS: HCF & LCM in Index Form (multiple choice, because a keypad cannot type 3² × 7, and every distractor is a named misconception — the higher power for the HCF, the lower for the LCM, or adding the indices), and Currency Conversion on Converting Rates (half the questions go BACKWARDS, because dividing when you expect to multiply is the whole error). test_v100.js checks the two things a reorder can silently get wrong: that every map keyed by level number moved with its level, and that the question a student now gets at Level n is the one the Level n card promises — probed by its own signature rather than by trusting the map. test_v99.js re-derives all 30 new answers independently, and its two most useful assertions are that EVERY integer drawn on a number line which satisfies the condition is in the answer set (or a student can be right and be marked wrong), and that the proportion table is classified from its own numbers rather than from the label the generator gave it. Suites: smoke 602 levels · v100 · v99 · v98 · v96 · v93 all green. Every band for the 30 new levels is a PLACEHOLDER. FastFactsBands_v100.bas regenerated and parity-checked 602/602 — and this time many existing rows DID change, because a reordered level takes its band with it; that is the release where the .bas must be redeployed alongside the app rather than after it. v98 notes follow. internal v98 (Laura). 🎯 THE 2026 ALT AUDIT, PART 1: THE MAPPING FIXES AND THE ENHANCEMENTS. The ten ALT papers for ALTs 1–5 were mapped question by question against each course's OWN ALT pool — a tighter question than the exam audit asked, because the exam is a sample and an ALT is the whole unit, and because a student who opens "ALT 3" three days before ALT 3 has an exact expectation about what is inside. 75% of the assessed tasks were already fully covered; the failures clustered in three recognisable ways and only one of them needed building. ⚠ THIRTEEN MAPPING FIXES FIRST, because they needed no new content at all — the level exists and was simply in the wrong ALT, which is invisible to every test, every band and every generator, and visible only to a student revising for that paper. Four of them were severe: Year 7 ALT 3 tests expanding brackets and had NO expanding level at all; SEAL ALT 5 asks a surd to be simplified and Simplify Surds was not in the pool (Add & Subtract, Multiply and Divide all were); SEAL ALT 5 sets (2x + 3)(x − 5) = 0 without the Null Factor Law level; and SEAL ALT 2 sets a 3-significant-figure question while Significant Figures sat in ALT 1. The other nine: the two index laws and integer comparison into Yr 7 ALT 1, Applications of Linear Graphs into BOTH ALT 3s (the party-room rule C = 12 + 5h is on both papers), substitution into Yr 7 ALT 5, rearranging into SEAL ALT 3, polygon naming and angle naming into SEAL ALT 4, and Table of Values and time conversion into SEAL ALT 2. 791 → 848 course→skill-level references. TWENTY-EIGHT NEW LEVELS, every one APPENDED so no stored Personal Best moves, and every one answering a question that is actually on one of the ten papers. The pattern the audit found is the part worth remembering: the app was very good at DO THE CALCULATION and thin on RECOGNISE / CHOOSE / CLASSIFY / GO BACKWARDS — which is exactly where the cheap one-mark ALT items live. So: which fraction is already in simplest form, which sign makes −2 ? −2 = 4 true, which is the correct working line for "27 out of 93 as a percentage", which drink has the higher percentage of sugar, are these two lines parallel, is this triangle right-angled (the CONVERSE of Pythagoras), which set is all prime, between which two whole numbers does √34 lie, how many decimal places will the answer have, which decimal is closest to 7.5, which expression has exactly three terms and two pronumerals, is 5² × 5³ = 5⁶ true or false, and find the missing term in 4x + ? = 7x. Plus the content gaps the papers exposed: mixed-number addition and subtraction (on BOTH ALT 2 papers, two marks each, and there was no level for it at all), signed fraction multiplication and division, ratio read off a diagram, ratios in different units, three- and four-part ratios, ratio as a fraction, four-part shares, decimal substitution, decimal one-step equations, mixed numbers to decimals, and an FDP table carrying values over 100% and recurring ones. All 28 route from ONE map and ONE dispatcher (V98_LEVELS / genV98Level), the same discipline as the v93 word problems and the v96 exam levels, so not a single existing generator was reopened to bolt a level onto the end of it. Levels added to recall skills go into METHOD_LEVEL_OVERRIDE — a recognition tap and a converse are not fact recall. ⚠ ONE STRUCTURAL THING WORTH KNOWING: Square Numbers and Square Roots SHARE the lvKey 'sq', so appending one level to it appends a level to BOTH skills. Renaming a lvKey would orphan stored data, so the estimate-a-square-root level is deliberately served to both — which is consistent rather than sloppy, because their L1–L3 are already the same content under two names. Check for a shared lvKey before appending a level; only 'sq', 'as', 'cu', 'sci' and 'mi' are shared. THREE GENERATOR WIDENINGS, no new level and therefore no .bas row and no storage key moved: Rounding Decimals L2 now mixes 1, 2 AND 3 d.p. (both papers round to three), Multiply & Divide by 10, 100, 1000 now includes 10 000 (Yr 7 MC Q2 — the SKILL NAME is deliberately left alone because the dashboard .bas keys on it), and Add / Subtract Integers L3 now chains a THIRD term, because both ALT 1 papers open with (−13) + (−12) + 5. test_v98.js re-derives every answer INDEPENDENTLY of the generator that produced it: the sign question is re-tested against all four operations to prove exactly one of them works, primality by trial division, the shapes in a ratio diagram are COUNTED from the drawn SVG, the parallel-lines verdict is recomputed from the two angles actually on screen, the closest-decimal minimum is checked to be unique, and the missing term is substituted back into its own printed statement. It also asserts all 13 mapping fixes directly, because that is the class of change nothing else notices. 547 → 575 skill-levels. All v98 bands are PLACEHOLDERS pending class data. FastFactsBands_v98.bas regenerated, parity-checked 575/575, and a row-by-row diff against v97 confirms NO existing row changed. v97 notes follow. internal v97 (Laura). 📉 A SKETCH IS MARKED AGAINST THE LINE, NOT A POINT LIST. Laura, on y = −x + 4: she plotted (0, 4) and stepped the gradient BACKWARDS to (−1, 5) — a correct point on a correctly drawn line — and was marked wrong, because plotPts compared her taps against ONE fixed pair. The old way of hiding that flaw was to name the two points in the prompt ("step 1 across and 1 down"), which handed over the answer and turned the level into a copying exercise. Both are fixed together. A plotting question can now describe the LINE instead of the points: qData.plotLine = {m, c} or {vx} for a vertical, qData.plotMust = the anchor points the named METHOD requires, qData.plotNeed = how many to plot. Marked right when the required number of DISTINCT points is plotted, every one lies on the line, and every compulsory point is among them. So on Gradient & y-Intercept L3 the y-intercept is still compulsory — plotting it IS half of "the gradient–intercept method" — but the second point is genuinely free, and stepping the gradient either way is correct. On Sketching Linear Graphs L1 (horizontal/vertical) ANY two points on the line count; L2 still requires both intercepts and L3 the origin, because those anchors ARE the method each level is named for. Every giveaway instruction is gone: "Plot the y-intercept, then use the gradient to plot one more point on the line" and "Plot any two points on this line". The marked-up re-draw now shows the whole correct LINE dashed in green with each tap green or red against it, instead of hollow rings on the two points the app happened to have in mind — better feedback, and it makes the "any point counts" rule visible. PURELY ADDITIVE: the exact-point-set path is untouched, so Table of Values, Distance-Time Graphs and Transformations of 2D Shapes mark exactly as before (regression-checked). test_v96.js now asserts the backwards step is accepted on every question, that an off-line point and a pair missing the compulsory anchor are still rejected, and that the instruction no longer names the second point. No band, storage key, level count or .bas row changed — FastFactsBands_v96.bas is still current. v96 notes follow. internal v96 (Laura). 📝 THE 2026 EXAM AUDIT, BUILT. Both Year 7 papers were mapped question by question against Exam Practice mode; everything below answers a question that is actually on one of them. 514 → 547 skill-levels. ⚠ THE TWO MAPPING FIXES FIRST, because they needed no new content at all: Year 7 Section B Q14 IS "solve 2x/5 − 8 = −4" and Two-Step Equations with Fractions was not in the Year 7 exam pool, so a student revising in the app would never have met the question type — it is now in ALT 3; and Q11c needs an 18% increase while Year 7 carried only Percentage Increase & Decrease L1 (friendly percentages) — L2 and L3 are now in ALT 5. SIX NEW SKILLS. Identify Fractions (the app could read a decimal and a percentage off a shaded grid but not a FRACTION, which the Year 7 paper asks for twice; L1/L2 generate only fractions already in lowest terms so "simplest form" is never ambiguous while the diagram is the thing being learned, L3 is where simplifying becomes the point). Index Notation & Expanded Form (VC2M7N02, Section B Q5). Quartiles & Interquartile Range (SEAL Section B Q9 — and the Outliers & Fences levels already in the app computed fences from Q1 and Q3 without ever teaching them; every data set is sized so BOTH halves are odd, so Q1 and Q3 are real data values and a quartiles drill is not also a "halfway between 63 and 77" drill). Gradient & y-Intercept from an Equation (SEAL MC Q7 — Gradient of a Line Segment only ever worked from two points or a diagram; L1/L2 are MULTIPLE CHOICE because a gradient is often a fraction and a fraction will not go in a numeric box, and L3 is the sketch-by-gradient-intercept level on the same tap-to-plot surface as the distance-time graphs). Matching Equations & Graphs (SEAL MC Q10 and Section B Q5c — the graph is DRAWN and the four options are EQUATIONS, because four graphs in a 74px button are unreadable; L3 checks every distractor against the rule so a "wrong" point can never accidentally satisfy it). Sketching Linear Graphs (Laura's spec: L1 horizontal and vertical, L2 by the intercepts, L3 through the origin, L4 mixed — every level names EXACTLY which two points to plot, because the marking is all-or-nothing on a point set and "sketch the line" alone would have infinitely many right answers). TEN NEW LEVELS on existing skills: four-digit column addition and subtraction, Division L4 (how many are needed — ceiling division, where rounding the ordinary way is wrong every time), Describe the Number (Yr 7 MC Q3), Prime Factor Form (Q7), Combining Two Ratios (SEAL Q2), Two-Step Number Patterns (Yr 7 MC Q10 — ×2 + 1 is neither arithmetic nor geometric), Find the Term Number (SEAL Q10c), Working Backwards from a finish time (SEAL Q8e), and Polygon-or-Not plus Count the Sides/Vertices (Section B Q1). All ten route from ONE map and ONE dispatcher (V96_LEVELS / genV96Level), the same pattern as the v93 word problems, so not a single existing generator was reopened. Levels added to recall skills go into METHOD_LEVEL_OVERRIDE. test_v96.js re-derives every answer INDEPENDENTLY of the generator that produced it — quartiles recomputed from the sorted list, prime factor form refactorised, ratio chains recombined, plotted points substituted back into their own equation — so a generator and its own working can never be wrong together. All v96 bands are PLACEHOLDERS. FastFactsBands_v96.bas regenerated, parity-checked 547/547, no existing row changed. v95 notes follow. internal v95 (Laura). 🏆 THE REST OF THE SURD FAMILY. Add & Subtract Surds L1 and Divide Surds L1 were still asking for 23 correct answers in a round; both are now Cheetah 10, matching Multiply Surds. The family now reads Simplify 8·8·7 (unchanged — already sane), Add & Subtract 10·9·8, Multiply 10·10·9·8, Divide 10·9·8. Every answer in this family has to be WRITTEN as an exact surd, which is slower than any of the arithmetic skills banded above 20. Nothing outside the family moved: the same [6,12,18,26] placeholder is still on Scientific Notation L1–L3 and several fraction L1s, deliberately left for a separate call. ⚠ STRUCTURAL FIX WORTH KNOWING: these two L1s came from the 2026-08-28 REVIEWED SPREADSHEET at [5,10,15,22], not from a placeholder — so which of the three maps setting them won was decided by LINE ORDER (the literal, then the v74.9 spreadsheet block, then the reviewed block). Every surd band Laura has called now lives in ONE "LAURA'S SURD CALLS" Object.assign block appended AFTER the reviewed block, so a future spreadsheet pass cannot silently revert a classroom call, and the superseded lines above carry a pointer to it. METHOD_BAND_CEIL surdAddSub/surdDivide L1 fallbacks follow the overrides. Bands are DISPLAY-ONLY over the stored Fluency Score: no storage key, PB, streak or share line changes and no score is lost — a past round simply reads as a higher animal. test_bands_surd.js now locks the WHOLE family (96 assertions): every Cheetah value, cut-offs in order, Cheetah = Antelope+1, a harder level never easier to top out than an easier one, the five non-surd skills that keep the old placeholder, and no surd level ever earning Fluent. FastFactsBands_v95.bas regenerated and parity-checked 514/514. v94 notes follow. internal v94 (Laura). 🏆 BAND FIX: MULTIPLY SURDS L1 AND L2. Laura: "the bands are too high, move Cheetah down to 10". The v86 PLACEHOLDER overrides asked for 31 (L1) and 27 (L2) correct answers in a round on a skill where every answer has to be written as an exact surd. BAND_OVERRIDE surdMultiply_L1 [8,15,22,30] → [3,5,7,9] and surdMultiply_L2 [6,12,18,26] → [2,4,6,9]; Cheetah is Antelope max + 1, so both are now 10. The four cut-offs below Cheetah are rescaled in the SAME PROPORTIONS as the old ladder rather than squashed under an unchanged one — a Lion ceiling of 22 beneath a Cheetah of 10 would be nonsense — and L2 keeps slightly easier lower bands than L1 because the simplifying step makes it slower. L3 and L4 are untouched (Cheetah 9 and 8), and no other skill moved: the identical [6,12,18,26] placeholder is still shared by Add & Subtract Surds L1, Divide Surds L1, Scientific Notation → Number L3 and several fraction L1s, all of which are LEFT AS THEY WERE because Laura only called this one. METHOD_BAND_CEIL surdMultiply is updated to [7,6,6,5] so the fallback no longer contradicts the overrides that actually apply. Bands are DISPLAY-ONLY over the stored Fluency Score — no storage key, PB, streak or share line changes, and no student loses a recorded score; a past round simply reads as a higher animal than it did. test_bands_surd.js locks the new numbers in the style of test_bands.js. FastFactsBands_v94.bas is regenerated and parity-checked (514/514 rows match bandCutoffs) — the dashboard module had not been regenerated since v79, so it was leaving the Animal column BLANK for all 65 skill-levels added in v80–v93 (the whole Data Analysis category included). v93 notes follow. internal v93 (Laura). 📐 CURRICULUM FILL: NETS/VIEWS, RECURRING DECIMALS, PERCENTAGE ERROR AND TEN WORD-PROBLEM LEVELS. NEW SKILL Nets, Plans & Views of 3D Objects (Geometry, VC2M7SP01 — the one examinable Level 7 Space idea with nothing in the app): L1 name the solid from a drawn net, L2 what the net of a drawn solid is made from, L3 front/side/top of a labelled rectangular prism (w, h and d forced distinct so exactly one view fits the stated rectangle), L4 the shape of a named view. Every level is CHOICE with a drawing and TEXT options — four small net pictures in a 74px option grid are unreadable, and comparing four pictures is a different task from the one the curriculum names. The nets are drawn here rather than taken from SHAPE_LIB because a net is a DIFFERENT picture of the same solid, which is the skill. NEW SKILL Terminating & Recurring Decimals (Decimals, VC2M8N03): L1 pick the odd one out, L2 write a terminating fraction as a decimal, L3 a dotted recurring decimal back to a fraction in simplest form. The terminate/recur test is done on the fraction in LOWEST TERMS (strip every 2 and 5, terminating iff 1 remains) and questions are GENERATED then CLASSIFIED, so 6/8 can never be mislabelled. NEW LEVEL Percentage Increase & Decrease L4 — PERCENTAGE ERROR (VC2M8N05), with values chosen so the error is a whole number of units and the percentage is exact. TEN WORD-PROBLEM LEVELS (VC2M7N10 / VC2M7A03 / VC2M8A03) — a FORMAT gap, not a topic gap: until now only three decimal skills had worded questions, so students met worded number, ratio and algebra questions for the first time in an ALT. HCF/LCM L4, Add/Subtract Integers L4, Order of Operations L5, Fraction of an Amount L4, Percentage of an Amount L4, Percentage Increase & Decrease L5, Sharing in a Ratio L5, Converting Rates L3, Substitute into Expressions L5, Two-Step Equations L4 (levelModes 4:number — the answer is a whole number, one box). All eleven are routed from ONE line at the top of nextQCore via the WORD_LEVEL map, so not one existing generator was touched. Word-problem levels on recall skills are added to METHOD_LEVEL_OVERRIDE — a word problem is never fact recall — and all carry a Challenge hint. test_v93.js compares the number inside the <b> of every worked solution against the stored answer on every question (the realistic bug is the story and the working drifting apart) and re-derives the HCF/LCM, ratio and equation answers from the story text itself. Nets/views and recurring-decimal bands are PLACEHOLDERS pending class data. v92 notes follow. internal v92 (Laura). 🎯 NEW: EXAM / ALT TRAINING + THREE USABILITY CHANGES. (1) HOME HEADER is one row — name and greeting left, class chip and Edit / Dark / Backup as icon buttons plus Switch profile right; Backup turns amber with a dot when the last backup is over 14 days old, because it is the only control there that protects data. (2) MODE IS CHOSEN AFTER THE LEVEL, not before. The home-screen segmented control is gone; the level screen's Start now opens a mode screen naming the skill and level, with one of the three RECOMMENDED from what the app already stores — an explicit LEVEL_REC wins, then a never-attempted or sub-85% level goes to Practice, and only an accurate student is sent to the clock. This is the fix for "everyone just does Fluency because it is pre-set". beginGame() is unchanged and still starts the game, so every existing test path (harness start = selectSkill -> lc<lv>.onclick -> beginGame -> launchSession) still works. (3) TOP ROW is streak strip + Daily Mix + Exam/ALT Training, three across at >=900px and stacked below; the streak card lost its progress text and shrank to a strip. EXAM / ALT TRAINING: a COURSES object of PURE METADATA (Year 7 Mathematics, Year 7 SEAL Mathematics) naming skill ids and level numbers that already exist — nothing in CATS, LEVEL_DEFS or any band changed, and no storage key moved. Course -> ALT list -> the skills and levels in that ALT, each level carrying a grey/amber/green READINESS dot read from the accuracy the app already saved after every session. Every ALT and the exam get a MIXED PRACTICE button (practice mode only, by design): nextQ() is now a wrapper that re-picks the skill between questions, weighting anything not yet green 3:1, and the round records one session plus a per-level accuracy stamp for every level that got at least 3 questions. EXAM PRACTICE is generated as the union of the examinable ALTs, so it can never drift; ALT 8 (Measurement) is exam:false because it is taught after the exam. PREREQUISITES (Times Tables, Division) sit greyed and dashed at the foot of every ALT — assumed knowledge, not assessed, but somewhere to drop back to. test_courses.js proves all 718 course->skill-level references resolve, that Exam Practice equals the union, and that Mixed Practice rotates skills and stays in practice mode. v84 notes follow. internal v84 (Laura). 📊 NEW CATEGORY: DATA ANALYSIS (Release 1 of 3). Four reusable display engines — daDotPlot, daStemHtml, daHistogram, daBoxPlot — each driven by DATA and working out its own scale, so Release 2 (mean/mode/median/range) re-uses them unchanged. Three skills: Classifying Data, Frequency Tables (read · from a raw list · grouped class intervals · percentage frequency, with totals restricted to 20/25/50 so every percentage is exact) and Reading Data Displays (one level per display, so every engine is student-tested now rather than sitting unused until Release 2). All bands are PLACEHOLDERS and every level is METHOD (accuracy-first, no Fluent badge) until class data exists. Purely additive: no existing skill, level, id or band changed. v83 notes follow. internal v83: 🔍 DESKTOP SIZING, SPLIT THE DIFFERENCE: v82 over-reserved vertical space (420px) so diagrams came out smaller than they had to; the budget is now calc(100vh - 330px) and the cap 460px. Question CONTENT also scales on a big screen — A_LBL now reads its size from --qlbl (a CSS variable, because a media query cannot override an inline style) and the timetable from --qtbl, so prompts and tables grow with the column instead of staying at phone size. v82 notes follow. internal v82: 📏 TIGHTER GAME HEADER ON DESKTOP: the back link / stats / progress / nudge strip is trimmed from ~170px to ~105px and diagrams are capped at calc(100vh - 420px), so the tall coordinate-grid and plot questions fit without scrolling. CSS only, ≥900px only. v81 notes follow. internal v81: 🎯 START BUTTON IS ALWAYS REACHABLE: #levelStartBtn is position:sticky at every width, so on a 6-level skill it rides the bottom of the window instead of hiding below the cards, and settles into the flow once the list fits. On desktop the level grid is now auto-fill minmax(300px) — 3 across on a 1080px frame — so even the worst case (six levels) needs no scrolling. CSS only. v80 notes follow. internal v80: 🖥 DESKTOP LAYOUT: additive CSS in one @media (min-width:900px) block plus two harmless wrapper divs on the home screen (.home-top, .home-foot). The frame widens to 1080px, categories go 3-across, skills and levels 2-across, and the GAME screen becomes two columns (question left, answering right) via grid auto-placement — no JS, no ids, no question logic touched. Under 900px every rule is unchanged, so all phone layouts are byte-identical to v79. v79 notes follow. internal v79: 🧩 OTHER IS RENAMED 🔄 TIME & TRANSFORMATIONS — display only: the CATS key stays 'other', so every stored Personal Best, streak and share line is untouched, and the dashboard .bas keys on SKILL names so it is unaffected too. SIX NEW TRANSFORMATION SKILLS, all built on one engine: every transformation in the program is an affine map whose matrix has exactly one non-zero entry per row, so applying one is two lines, COMPOSING two stays in the same family (which is what lets the Combinations skill print a single mapping for a chain), and the mapping notation is rendered straight off the matrix so the words and the notation can never drift apart. Translations (L1 one-axis slide · L2 two-axis · L3 describe it from the drawn points · L4 read the mapping · L5 apply the mapping · L6 find the pre-image), Reflections (same six; L1 the axes, L2 adds y = x), Dilations from the Origin (ONE apply level per Laura — a dilation from the origin is always a single step — then the same four; factors 2, 3, 4, ½ and ⅓ on a ±10 window because a factor of 4 leaves the −5…5 box immediately), Rotations about the Origin (L1 half turns only, L2 the quarter turns clockwise and anticlockwise; the describe-it levels are restricted to the three CANONICAL names because 90° clockwise and 270° anticlockwise are the SAME map and would otherwise be two right answers), Combinations of Transformations (NO describe-in-words level, per Laura — two points can be joined by any number of chains — so L1/L2 apply a chain of two then three, and the mapping levels survive because a mapping IS the composite), and Transformations of 2D Shapes (Yr 7–8: translate, reflect, identify, dilate, rotate and un-transform a whole shape by TAPPING its image corners, on a coarser −4…4 grid so a corner is an easy tap on a phone). One subtle guard worth remembering: two DIFFERENT transformations can still agree on ONE point — (2, −2) goes to (−2, 2) under both a half turn and a reflection in y = x — so a describe-it distractor is only safe if it fails on THAT point, not merely if it is a different map. Purely additive apart from the category label: no existing skill, level, id or band changed. All new bands are PLACEHOLDERS pending class data. internal v78.4 FIXES: (1) TYPING WAS DEAD on any narrow screen — the "is this a phone" test was window width ALONE, so a laptop with a narrow window (or the app in a preview pane) got the readonly-input trick meant to suppress a phone keyboard, with no way to type. A phone must now ALSO have a coarse primary pointer, and the first real key press from a physical keyboard unlocks every box and hides the keypad for the rest of the session. (2) THE PLOT GRID WAS SQUASHED — #qBox is a flex container and plotRender was handing it two or three children, so the prompt, story and grid became columns; wrapped in a single .q-text child, and the plot/graph SVGs now scale to the available width (up to 460px) instead of sitting at a fixed 300px. (3) DISTANCE-TIME JOURNEYS CAN NOW RETURN HOME — a stage may head back towards home so the graph comes down, and some journeys finish at 0 km; the line can never go below 0, "fastest" and "speed" compare magnitudes, and the story says "back towards home" / "the last N km home". internal v78.3: NEW CATEGORY 🧩 OTHER (Laura) — the practical, everyday-maths corner, placed last: Converting Units of Time (Yr 7: sec/min/hour · hour/day/week · week/month/year · compound times both ways), Train & Bus Timetables (Yr 7: read the table · trip length in minutes · latest service that still arrives in time · minutes until the next service, with 24-hour and 12-hour clocks mixed) and Distance-Time Graphs (Yr 7–8: read the distance · which stage is stationary/fastest · BUILD or finish the graph by tapping the corner of each stage · speed of a labelled stage). Coordinate Geometry gains Applications of Linear Graphs (Yr 8–9: rate or starting amount from P = −35 + 4c · write y = a + bx from a story · build its table · write ax + by = d from a two-item total). The plotPts mode is now axis-agnostic and can mark an ORDERED path, which is what the distance-time construct level uses. Purely additive — no existing skill, level, id or band changed. internal v78.2: 📈 COORDINATE GEOMETRY grows (Laura). The Cartesian Plane gains L4 — three corners of a rectangle, square or labelled parallelogram ABCD are plotted and the student writes the coordinates of the fourth. NEW skill Table of Values (Yr 7–8: L1 build a linear table from a rule · L2 PLOT that table on the plane · L3 build a non-linear table (x², x³, 2ˣ) · L4 plot a non-linear table). x- and y-Intercepts gains a new L2 — read both intercepts off a table of values — pushing y-int/x-int/both down to L3/L4/L5 (safe: no student has played Coordinate Geometry yet). NEW INPUT MODE plotPts: the drawn Cartesian plane itself is the answer surface — every lattice point carries an invisible tap target, tap to place or remove a marker, all-or-nothing marking, and the marking is drawn back onto the grid. internal v78.0: Yr 7–9 SEQUENCES in 💰 Finance & Patterns (Laura). NEW Sequence Rules in Words (Yr 7: L1 first term · L2 the term-to-term rule in words as a 4-way tap (add / subtract / multiply / divide / square numbers) · L3 next two terms · L4 write the first five terms from a starting value and a worded rule · L5 read a term off the sequence from aₙ notation). NEW Arithmetic Sequences (Yr 7–8: L1 common difference d · L2 next three terms · L3 fill a₁ and d into aₙ = a₁ + (n − 1)d · L4 use the rule to find a required term). NEW Geometric Sequences (Yr 8–9: L1 common ratio r · L2 next three terms · L3 fill a₁ and r into aₙ = a₁ × rⁿ⁻¹ · L4 use the rule to find a required term). The existing Sequences skill is RENAMED "Arithmetic & Geometric Sequences" and otherwise untouched (id, lvKey, levels and bands all unchanged) — it stays as the higher-order one where the student decides which kind it is. gapFill grows from four boxes to FIVE (gap4), with narrower boxes on a five-box row. All new bands are PLACEHOLDERS pending class data. internal v77.0: THREE NEW CATEGORIES and one new Number skill. ◡ Quadratics — Verify Solutions to Quadratic Equations (L1 x²=k · L2 factorised · L3 trinomial, Yes/No) and Solve Quadratic Equations (L1 x²=k · L2 exact values/fractions as multiple choice · L3 Null Factor Law · L4 monic trinomials). 📈 Coordinate Geometry — The Cartesian Plane (quadrant · read a plotted coordinate), Linear or Non-Linear (from a graph · from an equation), x- and y-Intercepts (y-int · x-int · both from ax+by=c) and Gradient of a Line Segment (whole · from a diagram · fractions & negatives). 💰 Finance & Patterns — GST (10%: added · price incl · removed), Simple Interest (5 levels on Vn = V0 + nD, D = r/100 × V0), Sequences (classify · next term · arithmetic rule · geometric rule), Recurrence Relations (write · use) and Flat Rate Depreciation (5 levels on Vn = V0 − nD). Number gains Number Classification (rational/irrational · tick every set). TWO NEW INPUT MODES: gapFill (a rendered rule/coordinate/solution template with up to five numeric boxes, all-or-nothing, optional order-free marking) and multiSel (tick every box that applies, all-or-nothing). Purely additive — no existing skill, level, id or band changed; all new bands are PLACEHOLDERS pending class data. internal v76.0: Congruence & Similarity now distinguish "provably false" from "unknown". L3 adds a 6th button "Not similar" (sides given but not in a constant ratio — the case a student CAN disprove, e.g. 5,8,11 vs 10,18,22); L2 adds a 6th button "Not congruent" via a new DIFF scenario that labels side lengths that don't all match. "Not enough information" now means only the genuinely undetermined cases (SSA, AAA-for-congruence, one angle, two sides). csSimilarityVerdict/csCongruenceVerdict extended; fixed 6-button order; storage-safe (no skill/level renamed or reordered). v75.0: NEW Percentages skills — Convert Percentages & Decimals (pctDecConv, both directions, number box) and Convert Fractions & Percentages (fracPctConv: L1–2 fraction→% number box, L3–4 %→fraction box; direction fixed per level via levelModes). Both single-question (not the FDP fill-in table), placed before Convert FDP; recall/Fluent-eligible with PLACEHOLDER bands (recalibrate with class data). Recurring values (33⅓% etc.) accepted within a per-question tolerance via qData.ansTol. Storage-safe additive change. v74.9: band cut-offs revised across the whole program from Laura's reviewed spreadsheet — 95 skill-levels re-banded via explicit per-level BAND_OVERRIDE entries (app matches the sheet on all 330 rows). v74.8: Decimals band targets LOWERED (Laura) so quick+accurate students reach higher animals — Identify/Expanded Form/Convert D→F −2; Rounding & Add/Subtract Decimals −3; all ×/÷ decimal operations (Multiply, Divide, ×÷ by 10/100/1000, Squares & Cubes, Square/Cube Roots, signed ×÷, ×fractions) −4. Display-only/storage-safe; .bas regenerated. v74.7: more Decimals (Laura) — NEW skills Add & Subtract Decimals (Positive & Negative), Multiply Decimals & Fractions (decFrac), Multiply & Divide Decimals (Positive & Negative), Leading Digit Estimation (round-to-1sf → estimate → BODMAS), Square Roots & Cube Roots of Decimals; NEW word-problem L4 on Multiply Decimals and Divide Decimals; Squares & Cubes of Decimals moved after Multiply Decimals & Fractions. v74.6: Add & Subtract Decimals L4 word problems; Add & Subtract Fractions & Decimals; Rounding Decimals L3 round-then-estimate. v74.5: miss reviews work THIS question's numbers step-by-step; Angles-in-Polygons L4; deeper concave polygons) -->
+<!-- Sandy Fast Facts · v102.1 (Laura, 11 Oct 2026). TRANSFORMATION BANDS HALVED: every Lion ceiling on Translations, Reflections, Dilations, Rotations, Combinations and Transformations of 2D Shapes halved (floor 3), signed off by Laura because students and teachers were stuck at Greyhound. Display-only; storage-safe. -->
+<!-- Sandy Fast Facts · v102 (Laura). 📏 MEASUREMENT, RELEASE A: LENGTH, PERIMETER, CIRCLES & AREA. A new 18th category and the last missing strand begun: 10 skills and 53 levels mapped from the 7MAT Measurement booklet (Lessons 1 to 4) and the 7MAS SEAL booklet (Lessons 1 and 2). Units of Length, Perimeter, Circumference, Perimeter of Circle Parts, Units of Area, Area of Rectangles/Parallelograms/Triangles, Missing Length from Area and Composite Area for both courses; Rhombuses/Kites/Trapeziums and Area of Circles & Sectors for SEAL. Challenge questions are not assessed and are not built; ENRICHMENT items are built as the last level of their skill and kept out of every ALT (Laura, 4 Oct). ALT 8 in both courses now carries the 2D half and stays exam:false; its note says the 3D half is coming. ONE NEW INPUT MODE, piExact: the number box plus a pi key, reading k pi and a + k pi. A decimal on an exact level is wrong, and if it is the right SIZE the miss review says "now give it exactly". 2 d.p. MEANS THE PI KEY, NOT 3.14 (Laura): tolerance 0.005 round the correctly rounded value, every 2 d.p. question re-rolled until its 3.14 answer differs, and a 3.14 answer gets its own miss-review line. EVERY DIAGRAM IS DRAWN TO ITS LABELS with one uniform scale. PREREQUISITES ARE NOW PER-ALT (an open item closed): ALT 8 shows times tables, x and / by powers of ten and square numbers; ALT 7 shows Simplify Fractions and Convert FDP. STORAGE-SAFE: all new ids and levels; the .bas is regenerated and must be redeployed. Every Measurement band is a PLACEHOLDER. Previously: v101 (Laura). 🎲 PROBABILITY — THE SECOND MISSING STRAND, BUILT. 14 skills and 80 levels, mapped from the 7MAT and 7MAS (SEAL) Statistics & Probability booklets and Laura's Year 7 / Year 7 SEAL topic lists: Sample Space, Language of Chance, Theoretical Probability, Complement, Experimental Probability, Expected Number of Outcomes and Two-Step Experiments for both courses; Tree Diagrams, Two-Way Tables, Venn Diagrams, Probability Notation, Mutually Exclusive Events and the Addition Rule for SEAL; and Conditional Probability built ahead for Year 10 because the engines were already there. ALT 7 in BOTH courses now carries the probability half and its "still being built" note is gone — 682 skill-levels, 1001 course references. THIS RELEASE IS STORAGE-SAFE: all new ids, all new levels, nothing renamed and nothing reordered, so no Personal Best moves (the .bas still has to be redeployed, or the dashboard leaves the Animal column blank for every probability row). THREE THINGS WORTH KNOWING. (1) THE FRACTION RULE TIGHTENS AS THE LADDER CLIMBS, which was Laura's call: Theoretical L1–L2 and Experimental L1–L2 accept any equivalent fraction, so a student meeting probability for the first time is marked on the probability and not on the simplifying; from Theoretical L3 up, simplest form is required and the miss review says WHICH of the two things went wrong ("Right probability — now simplify it"). PROB_LENIENT is the one list that decides it, read by both the marking and the on-screen notice. (2) ONE NEW INPUT MODE, gridFill — the v74 FDP table generalised into a reusable table filler, 1 POINT PER CORRECT BOX, which is what completing a two-way table needed. (3) NO NEW MODE WAS NEEDED FOR THE PROBABILITY LINE: plotPts takes its geometry from qData.plotGeom, so the 0–1 line is the v99 number-line surface in twelfths. Three new drawing helpers (spinner, Venn incl. shaded regions, tree) and a dice-totals grid; everything else re-uses daFreqTable and the existing panels. ALL 80 BANDS ARE PLACEHOLDERS — written out per level in an explicit BAND_OVERRIDE stage so every one is a number somebody can see and argue with, and the next thing to recalibrate with a class. Previously: v100 (Laura). 🪜 LEVELS IN ORDER, EASIEST TO HARDEST — AND THE NINE CONTENT GAPS BUILT. Two things in one release, both of them Laura's call. 🪜 THE REORDER. Levels had been APPENDED for four releases running, because appending is the storage-safe move: the level number is part of the storage key, so inserting one re-points every Personal Best recorded on that skill. That kept the data safe and let the ladder drift — "how many decimal places" (the rule, with no arithmetic in it) sat at Level 5 of Multiply Decimals, "which fraction is in simplest form" sat AFTER algebraic fractions, and "polygon or not?" sat at Level 6 of Naming Shapes, three levels below naming a rhombus. Laura: the classes have not used the app enough for the stored data to outweigh a sensible order, and most students start a fresh profile anyway. So 21 skills are reordered and a student with an old best on a moved level will see it against a different question type — the known, accepted cost, and the ONLY change in the program's history that is not storage-safe. HOW IT IS DONE, because this is the part worth keeping: LEVEL_ORDER[lvKey] lists the OLD level numbers in their NEW order, and one block applies it at load time to everything keyed by level — the level cards (renumbering their own titles), the per-level input modes, the recall/method flags, the fluency targets, the band cut-offs across all five BAND_OVERRIDE stages, the mode recommendations and both ALT pools. The GENERATORS were not touched at all: nextQCore swaps in the old number for the length of one question and puts it back before enableInputs(). Reordering another skill later is now ONE LINE in LEVEL_ORDER. ⚠ THREE LEVELS WERE REMOVED, and finding them is what the reorder was worth on its own: v98 added "Mixed Numbers" to Add & Subtract Fractions, and "With Negatives" to Multiply and to Divide Fractions — all three ALREADY EXISTED (fas L4 is genFracAddSubMixed; fmu/fd L3 already turn a numerator negative). Sorting the levels put the duplicate titles next to each other and made it obvious. The v98 copies are gone, the originals stay, and the ALT pools now point at them. The lesson: an audit that reads a level LIST can miss what a level DOES — the duplicate check belongs in the add-a-level checklist, and it is now in the guide. 🧱 THE NINE CONTENT GAPS, all built — 575 → 605 → 602 skill-levels after the three removals, and 848 → 886 ALT references. SIX NEW SKILLS. Writing Expressions from Words (the highest-value gap in the audit: it appears four times across the two ALT 3 papers, and the app could read a coefficient, substitute, expand, factorise and solve but nothing turned ENGLISH into algebra — five levels, phrase to expression, expression to phrase, two operations, generalise a number pattern, and story to equation to answer; the phrase bank is DATA, so the words and the algebra cannot drift apart, and every distractor is the expression a student produces by MIS-READING those exact words). Algebraic Fractions (5r/6 − 12r/18 is on BOTH ALT 3 papers word for word — six levels built as one family because it is one method: same denominator, different denominators, multiply, divide, with indices including a negative one, and simplify by factorising, which is SEAL MC Q8). Perimeter & Area as an Expression (SEAL Q11 and Q12, 9 marks — this looks like the Measurement gap and is NOT: no unit conversion and no formula recall, just adding labelled sides and collecting like terms, so it is an Algebra item wearing a Measurement costume and did not have to wait). Number Lines (read a fraction off the line, which arrow is closest, mark every integer that fits, and show an inequality solution — NO new input mode: plotPts already takes its geometry from qData.plotGeom, so a one-dimensional line is the same tap surface with one row, which is exactly what "axis-agnostic" was for in v78). Written Multiplication, and Long Division as Division L4 (both ALT 1 papers set 132 × 29 and 5932 ÷ 4 explicitly — worth naming the tension: the ALT marks are for the SETTING OUT and a fluency app can only check the answer, but a student who cannot get the answer will not get the setting-out marks either). Absolute Value & Factorials (|−10 + 4!| − |3| is one mark on both ALT 1 papers and neither notation existed anywhere). Direct & Inverse Proportion (the plotting half was already built — v98 mapped Table of Values into SEAL ALT 2 — so only the naming needed a skill). THREE APPENDED LEVELS: HCF & LCM in Index Form (multiple choice, because a keypad cannot type 3² × 7, and every distractor is a named misconception — the higher power for the HCF, the lower for the LCM, or adding the indices), and Currency Conversion on Converting Rates (half the questions go BACKWARDS, because dividing when you expect to multiply is the whole error). test_v100.js checks the two things a reorder can silently get wrong: that every map keyed by level number moved with its level, and that the question a student now gets at Level n is the one the Level n card promises — probed by its own signature rather than by trusting the map. test_v99.js re-derives all 30 new answers independently, and its two most useful assertions are that EVERY integer drawn on a number line which satisfies the condition is in the answer set (or a student can be right and be marked wrong), and that the proportion table is classified from its own numbers rather than from the label the generator gave it. Suites: smoke 602 levels · v100 · v99 · v98 · v96 · v93 all green. Every band for the 30 new levels is a PLACEHOLDER. FastFactsBands_v100.bas regenerated and parity-checked 602/602 — and this time many existing rows DID change, because a reordered level takes its band with it; that is the release where the .bas must be redeployed alongside the app rather than after it. v98 notes follow. internal v98 (Laura). 🎯 THE 2026 ALT AUDIT, PART 1: THE MAPPING FIXES AND THE ENHANCEMENTS. The ten ALT papers for ALTs 1–5 were mapped question by question against each course's OWN ALT pool — a tighter question than the exam audit asked, because the exam is a sample and an ALT is the whole unit, and because a student who opens "ALT 3" three days before ALT 3 has an exact expectation about what is inside. 75% of the assessed tasks were already fully covered; the failures clustered in three recognisable ways and only one of them needed building. ⚠ THIRTEEN MAPPING FIXES FIRST, because they needed no new content at all — the level exists and was simply in the wrong ALT, which is invisible to every test, every band and every generator, and visible only to a student revising for that paper. Four of them were severe: Year 7 ALT 3 tests expanding brackets and had NO expanding level at all; SEAL ALT 5 asks a surd to be simplified and Simplify Surds was not in the pool (Add & Subtract, Multiply and Divide all were); SEAL ALT 5 sets (2x + 3)(x − 5) = 0 without the Null Factor Law level; and SEAL ALT 2 sets a 3-significant-figure question while Significant Figures sat in ALT 1. The other nine: the two index laws and integer comparison into Yr 7 ALT 1, Applications of Linear Graphs into BOTH ALT 3s (the party-room rule C = 12 + 5h is on both papers), substitution into Yr 7 ALT 5, rearranging into SEAL ALT 3, polygon naming and angle naming into SEAL ALT 4, and Table of Values and time conversion into SEAL ALT 2. 791 → 848 course→skill-level references. TWENTY-EIGHT NEW LEVELS, every one APPENDED so no stored Personal Best moves, and every one answering a question that is actually on one of the ten papers. The pattern the audit found is the part worth remembering: the app was very good at DO THE CALCULATION and thin on RECOGNISE / CHOOSE / CLASSIFY / GO BACKWARDS — which is exactly where the cheap one-mark ALT items live. So: which fraction is already in simplest form, which sign makes −2 ? −2 = 4 true, which is the correct working line for "27 out of 93 as a percentage", which drink has the higher percentage of sugar, are these two lines parallel, is this triangle right-angled (the CONVERSE of Pythagoras), which set is all prime, between which two whole numbers does √34 lie, how many decimal places will the answer have, which decimal is closest to 7.5, which expression has exactly three terms and two pronumerals, is 5² × 5³ = 5⁶ true or false, and find the missing term in 4x + ? = 7x. Plus the content gaps the papers exposed: mixed-number addition and subtraction (on BOTH ALT 2 papers, two marks each, and there was no level for it at all), signed fraction multiplication and division, ratio read off a diagram, ratios in different units, three- and four-part ratios, ratio as a fraction, four-part shares, decimal substitution, decimal one-step equations, mixed numbers to decimals, and an FDP table carrying values over 100% and recurring ones. All 28 route from ONE map and ONE dispatcher (V98_LEVELS / genV98Level), the same discipline as the v93 word problems and the v96 exam levels, so not a single existing generator was reopened to bolt a level onto the end of it. Levels added to recall skills go into METHOD_LEVEL_OVERRIDE — a recognition tap and a converse are not fact recall. ⚠ ONE STRUCTURAL THING WORTH KNOWING: Square Numbers and Square Roots SHARE the lvKey 'sq', so appending one level to it appends a level to BOTH skills. Renaming a lvKey would orphan stored data, so the estimate-a-square-root level is deliberately served to both — which is consistent rather than sloppy, because their L1–L3 are already the same content under two names. Check for a shared lvKey before appending a level; only 'sq', 'as', 'cu', 'sci' and 'mi' are shared. THREE GENERATOR WIDENINGS, no new level and therefore no .bas row and no storage key moved: Rounding Decimals L2 now mixes 1, 2 AND 3 d.p. (both papers round to three), Multiply & Divide by 10, 100, 1000 now includes 10 000 (Yr 7 MC Q2 — the SKILL NAME is deliberately left alone because the dashboard .bas keys on it), and Add / Subtract Integers L3 now chains a THIRD term, because both ALT 1 papers open with (−13) + (−12) + 5. test_v98.js re-derives every answer INDEPENDENTLY of the generator that produced it: the sign question is re-tested against all four operations to prove exactly one of them works, primality by trial division, the shapes in a ratio diagram are COUNTED from the drawn SVG, the parallel-lines verdict is recomputed from the two angles actually on screen, the closest-decimal minimum is checked to be unique, and the missing term is substituted back into its own printed statement. It also asserts all 13 mapping fixes directly, because that is the class of change nothing else notices. 547 → 575 skill-levels. All v98 bands are PLACEHOLDERS pending class data. FastFactsBands_v98.bas regenerated, parity-checked 575/575, and a row-by-row diff against v97 confirms NO existing row changed. v97 notes follow. internal v97 (Laura). 📉 A SKETCH IS MARKED AGAINST THE LINE, NOT A POINT LIST. Laura, on y = −x + 4: she plotted (0, 4) and stepped the gradient BACKWARDS to (−1, 5) — a correct point on a correctly drawn line — and was marked wrong, because plotPts compared her taps against ONE fixed pair. The old way of hiding that flaw was to name the two points in the prompt ("step 1 across and 1 down"), which handed over the answer and turned the level into a copying exercise. Both are fixed together. A plotting question can now describe the LINE instead of the points: qData.plotLine = {m, c} or {vx} for a vertical, qData.plotMust = the anchor points the named METHOD requires, qData.plotNeed = how many to plot. Marked right when the required number of DISTINCT points is plotted, every one lies on the line, and every compulsory point is among them. So on Gradient & y-Intercept L3 the y-intercept is still compulsory — plotting it IS half of "the gradient–intercept method" — but the second point is genuinely free, and stepping the gradient either way is correct. On Sketching Linear Graphs L1 (horizontal/vertical) ANY two points on the line count; L2 still requires both intercepts and L3 the origin, because those anchors ARE the method each level is named for. Every giveaway instruction is gone: "Plot the y-intercept, then use the gradient to plot one more point on the line" and "Plot any two points on this line". The marked-up re-draw now shows the whole correct LINE dashed in green with each tap green or red against it, instead of hollow rings on the two points the app happened to have in mind — better feedback, and it makes the "any point counts" rule visible. PURELY ADDITIVE: the exact-point-set path is untouched, so Table of Values, Distance-Time Graphs and Transformations of 2D Shapes mark exactly as before (regression-checked). test_v96.js now asserts the backwards step is accepted on every question, that an off-line point and a pair missing the compulsory anchor are still rejected, and that the instruction no longer names the second point. No band, storage key, level count or .bas row changed — FastFactsBands_v96.bas is still current. v96 notes follow. internal v96 (Laura). 📝 THE 2026 EXAM AUDIT, BUILT. Both Year 7 papers were mapped question by question against Exam Practice mode; everything below answers a question that is actually on one of them. 514 → 547 skill-levels. ⚠ THE TWO MAPPING FIXES FIRST, because they needed no new content at all: Year 7 Section B Q14 IS "solve 2x/5 − 8 = −4" and Two-Step Equations with Fractions was not in the Year 7 exam pool, so a student revising in the app would never have met the question type — it is now in ALT 3; and Q11c needs an 18% increase while Year 7 carried only Percentage Increase & Decrease L1 (friendly percentages) — L2 and L3 are now in ALT 5. SIX NEW SKILLS. Identify Fractions (the app could read a decimal and a percentage off a shaded grid but not a FRACTION, which the Year 7 paper asks for twice; L1/L2 generate only fractions already in lowest terms so "simplest form" is never ambiguous while the diagram is the thing being learned, L3 is where simplifying becomes the point). Index Notation & Expanded Form (VC2M7N02, Section B Q5). Quartiles & Interquartile Range (SEAL Section B Q9 — and the Outliers & Fences levels already in the app computed fences from Q1 and Q3 without ever teaching them; every data set is sized so BOTH halves are odd, so Q1 and Q3 are real data values and a quartiles drill is not also a "halfway between 63 and 77" drill). Gradient & y-Intercept from an Equation (SEAL MC Q7 — Gradient of a Line Segment only ever worked from two points or a diagram; L1/L2 are MULTIPLE CHOICE because a gradient is often a fraction and a fraction will not go in a numeric box, and L3 is the sketch-by-gradient-intercept level on the same tap-to-plot surface as the distance-time graphs). Matching Equations & Graphs (SEAL MC Q10 and Section B Q5c — the graph is DRAWN and the four options are EQUATIONS, because four graphs in a 74px button are unreadable; L3 checks every distractor against the rule so a "wrong" point can never accidentally satisfy it). Sketching Linear Graphs (Laura's spec: L1 horizontal and vertical, L2 by the intercepts, L3 through the origin, L4 mixed — every level names EXACTLY which two points to plot, because the marking is all-or-nothing on a point set and "sketch the line" alone would have infinitely many right answers). TEN NEW LEVELS on existing skills: four-digit column addition and subtraction, Division L4 (how many are needed — ceiling division, where rounding the ordinary way is wrong every time), Describe the Number (Yr 7 MC Q3), Prime Factor Form (Q7), Combining Two Ratios (SEAL Q2), Two-Step Number Patterns (Yr 7 MC Q10 — ×2 + 1 is neither arithmetic nor geometric), Find the Term Number (SEAL Q10c), Working Backwards from a finish time (SEAL Q8e), and Polygon-or-Not plus Count the Sides/Vertices (Section B Q1). All ten route from ONE map and ONE dispatcher (V96_LEVELS / genV96Level), the same pattern as the v93 word problems, so not a single existing generator was reopened. Levels added to recall skills go into METHOD_LEVEL_OVERRIDE. test_v96.js re-derives every answer INDEPENDENTLY of the generator that produced it — quartiles recomputed from the sorted list, prime factor form refactorised, ratio chains recombined, plotted points substituted back into their own equation — so a generator and its own working can never be wrong together. All v96 bands are PLACEHOLDERS. FastFactsBands_v96.bas regenerated, parity-checked 547/547, no existing row changed. v95 notes follow. internal v95 (Laura). 🏆 THE REST OF THE SURD FAMILY. Add & Subtract Surds L1 and Divide Surds L1 were still asking for 23 correct answers in a round; both are now Cheetah 10, matching Multiply Surds. The family now reads Simplify 8·8·7 (unchanged — already sane), Add & Subtract 10·9·8, Multiply 10·10·9·8, Divide 10·9·8. Every answer in this family has to be WRITTEN as an exact surd, which is slower than any of the arithmetic skills banded above 20. Nothing outside the family moved: the same [6,12,18,26] placeholder is still on Scientific Notation L1–L3 and several fraction L1s, deliberately left for a separate call. ⚠ STRUCTURAL FIX WORTH KNOWING: these two L1s came from the 2026-08-28 REVIEWED SPREADSHEET at [5,10,15,22], not from a placeholder — so which of the three maps setting them won was decided by LINE ORDER (the literal, then the v74.9 spreadsheet block, then the reviewed block). Every surd band Laura has called now lives in ONE "LAURA'S SURD CALLS" Object.assign block appended AFTER the reviewed block, so a future spreadsheet pass cannot silently revert a classroom call, and the superseded lines above carry a pointer to it. METHOD_BAND_CEIL surdAddSub/surdDivide L1 fallbacks follow the overrides. Bands are DISPLAY-ONLY over the stored Fluency Score: no storage key, PB, streak or share line changes and no score is lost — a past round simply reads as a higher animal. test_bands_surd.js now locks the WHOLE family (96 assertions): every Cheetah value, cut-offs in order, Cheetah = Antelope+1, a harder level never easier to top out than an easier one, the five non-surd skills that keep the old placeholder, and no surd level ever earning Fluent. FastFactsBands_v95.bas regenerated and parity-checked 514/514. v94 notes follow. internal v94 (Laura). 🏆 BAND FIX: MULTIPLY SURDS L1 AND L2. Laura: "the bands are too high, move Cheetah down to 10". The v86 PLACEHOLDER overrides asked for 31 (L1) and 27 (L2) correct answers in a round on a skill where every answer has to be written as an exact surd. BAND_OVERRIDE surdMultiply_L1 [8,15,22,30] → [3,5,7,9] and surdMultiply_L2 [6,12,18,26] → [2,4,6,9]; Cheetah is Antelope max + 1, so both are now 10. The four cut-offs below Cheetah are rescaled in the SAME PROPORTIONS as the old ladder rather than squashed under an unchanged one — a Lion ceiling of 22 beneath a Cheetah of 10 would be nonsense — and L2 keeps slightly easier lower bands than L1 because the simplifying step makes it slower. L3 and L4 are untouched (Cheetah 9 and 8), and no other skill moved: the identical [6,12,18,26] placeholder is still shared by Add & Subtract Surds L1, Divide Surds L1, Scientific Notation → Number L3 and several fraction L1s, all of which are LEFT AS THEY WERE because Laura only called this one. METHOD_BAND_CEIL surdMultiply is updated to [7,6,6,5] so the fallback no longer contradicts the overrides that actually apply. Bands are DISPLAY-ONLY over the stored Fluency Score — no storage key, PB, streak or share line changes, and no student loses a recorded score; a past round simply reads as a higher animal than it did. test_bands_surd.js locks the new numbers in the style of test_bands.js. FastFactsBands_v94.bas is regenerated and parity-checked (514/514 rows match bandCutoffs) — the dashboard module had not been regenerated since v79, so it was leaving the Animal column BLANK for all 65 skill-levels added in v80–v93 (the whole Data Analysis category included). v93 notes follow. internal v93 (Laura). 📐 CURRICULUM FILL: NETS/VIEWS, RECURRING DECIMALS, PERCENTAGE ERROR AND TEN WORD-PROBLEM LEVELS. NEW SKILL Nets, Plans & Views of 3D Objects (Geometry, VC2M7SP01 — the one examinable Level 7 Space idea with nothing in the app): L1 name the solid from a drawn net, L2 what the net of a drawn solid is made from, L3 front/side/top of a labelled rectangular prism (w, h and d forced distinct so exactly one view fits the stated rectangle), L4 the shape of a named view. Every level is CHOICE with a drawing and TEXT options — four small net pictures in a 74px option grid are unreadable, and comparing four pictures is a different task from the one the curriculum names. The nets are drawn here rather than taken from SHAPE_LIB because a net is a DIFFERENT picture of the same solid, which is the skill. NEW SKILL Terminating & Recurring Decimals (Decimals, VC2M8N03): L1 pick the odd one out, L2 write a terminating fraction as a decimal, L3 a dotted recurring decimal back to a fraction in simplest form. The terminate/recur test is done on the fraction in LOWEST TERMS (strip every 2 and 5, terminating iff 1 remains) and questions are GENERATED then CLASSIFIED, so 6/8 can never be mislabelled. NEW LEVEL Percentage Increase & Decrease L4 — PERCENTAGE ERROR (VC2M8N05), with values chosen so the error is a whole number of units and the percentage is exact. TEN WORD-PROBLEM LEVELS (VC2M7N10 / VC2M7A03 / VC2M8A03) — a FORMAT gap, not a topic gap: until now only three decimal skills had worded questions, so students met worded number, ratio and algebra questions for the first time in an ALT. HCF/LCM L4, Add/Subtract Integers L4, Order of Operations L5, Fraction of an Amount L4, Percentage of an Amount L4, Percentage Increase & Decrease L5, Sharing in a Ratio L5, Converting Rates L3, Substitute into Expressions L5, Two-Step Equations L4 (levelModes 4:number — the answer is a whole number, one box). All eleven are routed from ONE line at the top of nextQCore via the WORD_LEVEL map, so not one existing generator was touched. Word-problem levels on recall skills are added to METHOD_LEVEL_OVERRIDE — a word problem is never fact recall — and all carry a Challenge hint. test_v93.js compares the number inside the <b> of every worked solution against the stored answer on every question (the realistic bug is the story and the working drifting apart) and re-derives the HCF/LCM, ratio and equation answers from the story text itself. Nets/views and recurring-decimal bands are PLACEHOLDERS pending class data. v92 notes follow. internal v92 (Laura). 🎯 NEW: EXAM / ALT TRAINING + THREE USABILITY CHANGES. (1) HOME HEADER is one row — name and greeting left, class chip and Edit / Dark / Backup as icon buttons plus Switch profile right; Backup turns amber with a dot when the last backup is over 14 days old, because it is the only control there that protects data. (2) MODE IS CHOSEN AFTER THE LEVEL, not before. The home-screen segmented control is gone; the level screen's Start now opens a mode screen naming the skill and level, with one of the three RECOMMENDED from what the app already stores — an explicit LEVEL_REC wins, then a never-attempted or sub-85% level goes to Practice, and only an accurate student is sent to the clock. This is the fix for "everyone just does Fluency because it is pre-set". beginGame() is unchanged and still starts the game, so every existing test path (harness start = selectSkill -> lc<lv>.onclick -> beginGame -> launchSession) still works. (3) TOP ROW is streak strip + Daily Mix + Exam/ALT Training, three across at >=900px and stacked below; the streak card lost its progress text and shrank to a strip. EXAM / ALT TRAINING: a COURSES object of PURE METADATA (Year 7 Mathematics, Year 7 SEAL Mathematics) naming skill ids and level numbers that already exist — nothing in CATS, LEVEL_DEFS or any band changed, and no storage key moved. Course -> ALT list -> the skills and levels in that ALT, each level carrying a grey/amber/green READINESS dot read from the accuracy the app already saved after every session. Every ALT and the exam get a MIXED PRACTICE button (practice mode only, by design): nextQ() is now a wrapper that re-picks the skill between questions, weighting anything not yet green 3:1, and the round records one session plus a per-level accuracy stamp for every level that got at least 3 questions. EXAM PRACTICE is generated as the union of the examinable ALTs, so it can never drift; ALT 8 (Measurement) is exam:false because it is taught after the exam. PREREQUISITES (Times Tables, Division) sit greyed and dashed at the foot of every ALT — assumed knowledge, not assessed, but somewhere to drop back to. test_courses.js proves all 718 course->skill-level references resolve, that Exam Practice equals the union, and that Mixed Practice rotates skills and stays in practice mode. v84 notes follow. internal v84 (Laura). 📊 NEW CATEGORY: DATA ANALYSIS (Release 1 of 3). Four reusable display engines — daDotPlot, daStemHtml, daHistogram, daBoxPlot — each driven by DATA and working out its own scale, so Release 2 (mean/mode/median/range) re-uses them unchanged. Three skills: Classifying Data, Frequency Tables (read · from a raw list · grouped class intervals · percentage frequency, with totals restricted to 20/25/50 so every percentage is exact) and Reading Data Displays (one level per display, so every engine is student-tested now rather than sitting unused until Release 2). All bands are PLACEHOLDERS and every level is METHOD (accuracy-first, no Fluent badge) until class data exists. Purely additive: no existing skill, level, id or band changed. v83 notes follow. internal v83: 🔍 DESKTOP SIZING, SPLIT THE DIFFERENCE: v82 over-reserved vertical space (420px) so diagrams came out smaller than they had to; the budget is now calc(100vh - 330px) and the cap 460px. Question CONTENT also scales on a big screen — A_LBL now reads its size from --qlbl (a CSS variable, because a media query cannot override an inline style) and the timetable from --qtbl, so prompts and tables grow with the column instead of staying at phone size. v82 notes follow. internal v82: 📏 TIGHTER GAME HEADER ON DESKTOP: the back link / stats / progress / nudge strip is trimmed from ~170px to ~105px and diagrams are capped at calc(100vh - 420px), so the tall coordinate-grid and plot questions fit without scrolling. CSS only, ≥900px only. v81 notes follow. internal v81: 🎯 START BUTTON IS ALWAYS REACHABLE: #levelStartBtn is position:sticky at every width, so on a 6-level skill it rides the bottom of the window instead of hiding below the cards, and settles into the flow once the list fits. On desktop the level grid is now auto-fill minmax(300px) — 3 across on a 1080px frame — so even the worst case (six levels) needs no scrolling. CSS only. v80 notes follow. internal v80: 🖥 DESKTOP LAYOUT: additive CSS in one @media (min-width:900px) block plus two harmless wrapper divs on the home screen (.home-top, .home-foot). The frame widens to 1080px, categories go 3-across, skills and levels 2-across, and the GAME screen becomes two columns (question left, answering right) via grid auto-placement — no JS, no ids, no question logic touched. Under 900px every rule is unchanged, so all phone layouts are byte-identical to v79. v79 notes follow. internal v79: 🧩 OTHER IS RENAMED 🔄 TIME & TRANSFORMATIONS — display only: the CATS key stays 'other', so every stored Personal Best, streak and share line is untouched, and the dashboard .bas keys on SKILL names so it is unaffected too. SIX NEW TRANSFORMATION SKILLS, all built on one engine: every transformation in the program is an affine map whose matrix has exactly one non-zero entry per row, so applying one is two lines, COMPOSING two stays in the same family (which is what lets the Combinations skill print a single mapping for a chain), and the mapping notation is rendered straight off the matrix so the words and the notation can never drift apart. Translations (L1 one-axis slide · L2 two-axis · L3 describe it from the drawn points · L4 read the mapping · L5 apply the mapping · L6 find the pre-image), Reflections (same six; L1 the axes, L2 adds y = x), Dilations from the Origin (ONE apply level per Laura — a dilation from the origin is always a single step — then the same four; factors 2, 3, 4, ½ and ⅓ on a ±10 window because a factor of 4 leaves the −5…5 box immediately), Rotations about the Origin (L1 half turns only, L2 the quarter turns clockwise and anticlockwise; the describe-it levels are restricted to the three CANONICAL names because 90° clockwise and 270° anticlockwise are the SAME map and would otherwise be two right answers), Combinations of Transformations (NO describe-in-words level, per Laura — two points can be joined by any number of chains — so L1/L2 apply a chain of two then three, and the mapping levels survive because a mapping IS the composite), and Transformations of 2D Shapes (Yr 7–8: translate, reflect, identify, dilate, rotate and un-transform a whole shape by TAPPING its image corners, on a coarser −4…4 grid so a corner is an easy tap on a phone). One subtle guard worth remembering: two DIFFERENT transformations can still agree on ONE point — (2, −2) goes to (−2, 2) under both a half turn and a reflection in y = x — so a describe-it distractor is only safe if it fails on THAT point, not merely if it is a different map. Purely additive apart from the category label: no existing skill, level, id or band changed. All new bands are PLACEHOLDERS pending class data. internal v78.4 FIXES: (1) TYPING WAS DEAD on any narrow screen — the "is this a phone" test was window width ALONE, so a laptop with a narrow window (or the app in a preview pane) got the readonly-input trick meant to suppress a phone keyboard, with no way to type. A phone must now ALSO have a coarse primary pointer, and the first real key press from a physical keyboard unlocks every box and hides the keypad for the rest of the session. (2) THE PLOT GRID WAS SQUASHED — #qBox is a flex container and plotRender was handing it two or three children, so the prompt, story and grid became columns; wrapped in a single .q-text child, and the plot/graph SVGs now scale to the available width (up to 460px) instead of sitting at a fixed 300px. (3) DISTANCE-TIME JOURNEYS CAN NOW RETURN HOME — a stage may head back towards home so the graph comes down, and some journeys finish at 0 km; the line can never go below 0, "fastest" and "speed" compare magnitudes, and the story says "back towards home" / "the last N km home". internal v78.3: NEW CATEGORY 🧩 OTHER (Laura) — the practical, everyday-maths corner, placed last: Converting Units of Time (Yr 7: sec/min/hour · hour/day/week · week/month/year · compound times both ways), Train & Bus Timetables (Yr 7: read the table · trip length in minutes · latest service that still arrives in time · minutes until the next service, with 24-hour and 12-hour clocks mixed) and Distance-Time Graphs (Yr 7–8: read the distance · which stage is stationary/fastest · BUILD or finish the graph by tapping the corner of each stage · speed of a labelled stage). Coordinate Geometry gains Applications of Linear Graphs (Yr 8–9: rate or starting amount from P = −35 + 4c · write y = a + bx from a story · build its table · write ax + by = d from a two-item total). The plotPts mode is now axis-agnostic and can mark an ORDERED path, which is what the distance-time construct level uses. Purely additive — no existing skill, level, id or band changed. internal v78.2: 📈 COORDINATE GEOMETRY grows (Laura). The Cartesian Plane gains L4 — three corners of a rectangle, square or labelled parallelogram ABCD are plotted and the student writes the coordinates of the fourth. NEW skill Table of Values (Yr 7–8: L1 build a linear table from a rule · L2 PLOT that table on the plane · L3 build a non-linear table (x², x³, 2ˣ) · L4 plot a non-linear table). x- and y-Intercepts gains a new L2 — read both intercepts off a table of values — pushing y-int/x-int/both down to L3/L4/L5 (safe: no student has played Coordinate Geometry yet). NEW INPUT MODE plotPts: the drawn Cartesian plane itself is the answer surface — every lattice point carries an invisible tap target, tap to place or remove a marker, all-or-nothing marking, and the marking is drawn back onto the grid. internal v78.0: Yr 7–9 SEQUENCES in 💰 Finance & Patterns (Laura). NEW Sequence Rules in Words (Yr 7: L1 first term · L2 the term-to-term rule in words as a 4-way tap (add / subtract / multiply / divide / square numbers) · L3 next two terms · L4 write the first five terms from a starting value and a worded rule · L5 read a term off the sequence from aₙ notation). NEW Arithmetic Sequences (Yr 7–8: L1 common difference d · L2 next three terms · L3 fill a₁ and d into aₙ = a₁ + (n − 1)d · L4 use the rule to find a required term). NEW Geometric Sequences (Yr 8–9: L1 common ratio r · L2 next three terms · L3 fill a₁ and r into aₙ = a₁ × rⁿ⁻¹ · L4 use the rule to find a required term). The existing Sequences skill is RENAMED "Arithmetic & Geometric Sequences" and otherwise untouched (id, lvKey, levels and bands all unchanged) — it stays as the higher-order one where the student decides which kind it is. gapFill grows from four boxes to FIVE (gap4), with narrower boxes on a five-box row. All new bands are PLACEHOLDERS pending class data. internal v77.0: THREE NEW CATEGORIES and one new Number skill. ◡ Quadratics — Verify Solutions to Quadratic Equations (L1 x²=k · L2 factorised · L3 trinomial, Yes/No) and Solve Quadratic Equations (L1 x²=k · L2 exact values/fractions as multiple choice · L3 Null Factor Law · L4 monic trinomials). 📈 Coordinate Geometry — The Cartesian Plane (quadrant · read a plotted coordinate), Linear or Non-Linear (from a graph · from an equation), x- and y-Intercepts (y-int · x-int · both from ax+by=c) and Gradient of a Line Segment (whole · from a diagram · fractions & negatives). 💰 Finance & Patterns — GST (10%: added · price incl · removed), Simple Interest (5 levels on Vn = V0 + nD, D = r/100 × V0), Sequences (classify · next term · arithmetic rule · geometric rule), Recurrence Relations (write · use) and Flat Rate Depreciation (5 levels on Vn = V0 − nD). Number gains Number Classification (rational/irrational · tick every set). TWO NEW INPUT MODES: gapFill (a rendered rule/coordinate/solution template with up to five numeric boxes, all-or-nothing, optional order-free marking) and multiSel (tick every box that applies, all-or-nothing). Purely additive — no existing skill, level, id or band changed; all new bands are PLACEHOLDERS pending class data. internal v76.0: Congruence & Similarity now distinguish "provably false" from "unknown". L3 adds a 6th button "Not similar" (sides given but not in a constant ratio — the case a student CAN disprove, e.g. 5,8,11 vs 10,18,22); L2 adds a 6th button "Not congruent" via a new DIFF scenario that labels side lengths that don't all match. "Not enough information" now means only the genuinely undetermined cases (SSA, AAA-for-congruence, one angle, two sides). csSimilarityVerdict/csCongruenceVerdict extended; fixed 6-button order; storage-safe (no skill/level renamed or reordered). v75.0: NEW Percentages skills — Convert Percentages & Decimals (pctDecConv, both directions, number box) and Convert Fractions & Percentages (fracPctConv: L1–2 fraction→% number box, L3–4 %→fraction box; direction fixed per level via levelModes). Both single-question (not the FDP fill-in table), placed before Convert FDP; recall/Fluent-eligible with PLACEHOLDER bands (recalibrate with class data). Recurring values (33⅓% etc.) accepted within a per-question tolerance via qData.ansTol. Storage-safe additive change. v74.9: band cut-offs revised across the whole program from Laura's reviewed spreadsheet — 95 skill-levels re-banded via explicit per-level BAND_OVERRIDE entries (app matches the sheet on all 330 rows). v74.8: Decimals band targets LOWERED (Laura) so quick+accurate students reach higher animals — Identify/Expanded Form/Convert D→F −2; Rounding & Add/Subtract Decimals −3; all ×/÷ decimal operations (Multiply, Divide, ×÷ by 10/100/1000, Squares & Cubes, Square/Cube Roots, signed ×÷, ×fractions) −4. Display-only/storage-safe; .bas regenerated. v74.7: more Decimals (Laura) — NEW skills Add & Subtract Decimals (Positive & Negative), Multiply Decimals & Fractions (decFrac), Multiply & Divide Decimals (Positive & Negative), Leading Digit Estimation (round-to-1sf → estimate → BODMAS), Square Roots & Cube Roots of Decimals; NEW word-problem L4 on Multiply Decimals and Divide Decimals; Squares & Cubes of Decimals moved after Multiply Decimals & Fractions. v74.6: Add & Subtract Decimals L4 word problems; Add & Subtract Fractions & Decimals; Rounding Decimals L3 round-then-estimate. v74.5: miss reviews work THIS question's numbers step-by-step; Angles-in-Polygons L4; deeper concave polygons) -->
 <!-- Viewport (v48): dropped `maximum-scale=1.0, user-scalable=no`. iOS ignored it (so pinch worked there anyway) but Android obeyed it, blocking accessibility pinch-zoom. Accidental double-tap-to-zoom is killed per-control via `touch-action: manipulation` instead, which leaves deliberate pinch-zoom intact on every platform. -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -2159,6 +2160,11 @@ body {
       <div class="cat-name">Probability</div>
       <div class="cat-desc">Sample space, chance, theoretical &amp; experimental probability, tables, trees &amp; Venn diagrams</div>
     </div>
+    <div class="cat-card" onclick="openCat('meas')">
+      <span class="cat-icon">📏</span>
+      <div class="cat-name">Measurement</div>
+      <div class="cat-desc">Units, perimeter, circumference, area of rectangles, triangles, circles &amp; composite shapes</div>
+    </div>
 
   </div>
 
@@ -2302,6 +2308,12 @@ body {
        physical keyboard can't type. On mobile the keypad already has √. -->
   <div id="surdDeskRow" style="display:none; justify-content:center; gap:8px; margin:-4px 0 12px;">
     <button type="button" class="pow-btn" onclick="insertSurd()" aria-label="insert square root">√</button>
+  </div>
+  <!-- Desktop π button (v102): exact circle answers (piExact) need a π a keyboard cannot type.
+       Typing "pi" works too. On mobile the keypad has a π row instead. -->
+  <div id="piDeskRow" style="display:none; justify-content:center; gap:8px; margin:-4px 0 12px;">
+    <button type="button" class="pow-btn" onclick="insertPi('π')" aria-label="insert pi">π</button>
+    <button type="button" class="pow-btn" onclick="insertPi(' + ')" aria-label="insert plus">+</button>
   </div>
 
   <!-- Index notation answer panel -->
@@ -2638,6 +2650,12 @@ body {
     <!-- Surd symbol row (v50) — shown only for exact-value (Pythagoras) answers. -->
     <div class="kb-row" id="kbSurdRow" style="display:none">
       <button class="kb-key kb-sym" id="kbSqrtBtn" onclick="kbPress('√')">√</button>
+    </div>
+
+    <!-- π row (v102): shown only for exact circle answers (piExact), e.g. 12π, 10 + 5π. -->
+    <div class="kb-row" id="kbPiRow" style="display:none">
+      <button class="kb-key kb-sym" id="kbPiBtn" onclick="kbPress('π')">π</button>
+      <button class="kb-key kb-sym" id="kbPiPlusBtn" onclick="kbPress('+')">+</button>
     </div>
 
     <!-- Fraction-slash row — shown only for the decFrac mode (Add & Subtract Fractions
@@ -3069,6 +3087,23 @@ const CATS = {
       { id:'probMutEx',   name:'Mutually Exclusive Events', inputMode:'choice', lvKey:'pbme', levelModes:{3:'fraction'} },
       { id:'probAddRule', name:'The Addition Rule',       inputMode:'fraction', lvKey:'pbar', levelModes:{4:'choice'} },
       { id:'probCond',    name:'Conditional Probability', inputMode:'fraction', lvKey:'pbcd', levelModes:{4:'choice'} },
+    ]
+  },
+  /* v102 (Laura) · 📏 MEASUREMENT, Release A: length, perimeter, circles and
+     area. Release B (surface area, volume, capacity) appends to this list. */
+  meas: {
+    label: '📏 Measurement',
+    skills: [
+      { id:'measLength',    name:'Units of Length',              inputMode:'number',  lvKey:'msln',   levelModes:{1:'choice', 5:'arrange'} },
+      { id:'measPerim',     name:'Perimeter',                    inputMode:'number',  lvKey:'msper',  levelModes:{6:'gapFill', 7:'gapFill'} },
+      { id:'measCirc',      name:'Circumference',                inputMode:'number',  lvKey:'mscc',   levelModes:{1:'choice', 3:'piExact', 4:'piExact'} },
+      { id:'measArc',       name:'Perimeter of Circle Parts',    inputMode:'piExact', lvKey:'msarc',  levelModes:{2:'number', 6:'number', 7:'number'} },
+      { id:'measAreaUnits', name:'Units of Area',                inputMode:'number',  lvKey:'msua',   levelModes:{1:'choice'} },
+      { id:'measArea',      name:'Area of Rectangles, Parallelograms &amp; Triangles', inputMode:'number', lvKey:'msar' },
+      { id:'measMissing',   name:'Missing Length from Area',     inputMode:'number',  lvKey:'msmis' },
+      { id:'measQuad',      name:'Area of Rhombuses, Kites &amp; Trapeziums', inputMode:'number', lvKey:'msqd' },
+      { id:'measCircArea',  name:'Area of Circles &amp; Sectors', inputMode:'number', lvKey:'msac',   levelModes:{1:'piExact', 3:'piExact', 4:'piExact'} },
+      { id:'measComposite', name:'Composite Area',               inputMode:'number',  lvKey:'mscomp' },
     ]
   }
 };
@@ -5649,8 +5684,8 @@ const COURSES = {
       { n: 4, title: "Geometry", exam: true, skills: [["pythagoras",[1]], ["nameShapes",[1,2,3,4,5,6,7]], ["nameAnglesLines",[1,2,3,4]], ["eulerRule",[1,2]], ["interiorAngles",[1,2,3]], ["angleRel",[1,2,3,4]], ["angleParallel",[1,2,3,4,5]], ["angleQuad",[1,2,3,4]], ["anglePoly",[1,2]], ["netsViews",[1,2,3,4]]] },
       { n: 5, title: "Decimals & Percentages", exam: true, skills: [["decPlaceValue",[1,2,3]], ["decIdentify",[1,2,3]], ["decExpand",[1,2,3]], ["decToFrac",[1,2,3]], ["fracToDec",[1,2,3]], ["compareDec",[1,2,3,4,5,6]], ["decRound",[1,2,3]], ["decAdd",[1,2,3]], ["decSub",[1,2,3]], ["decAddSub",[1,2,3,4]], ["decAddSubNeg",[1,2,3]], ["fdAddSub",[1]], ["decPow10",[1,2,3,4]], ["decMultiply",[1,2,3,4,5]], ["fdMultiply",[1,2]], ["decSquareCube",[1]], ["decDivide",[1,2,3,4]], ["decLeadEst",[1,2,3]], ["decSqCubeRoot",[1]], ["decOrderOps",[1,2,3,4]], ["pctIdentify",[1,2,3]], ["pctDecConv",[1,2,3]], ["fracPctConv",[1,2,3,4]], ["pctFDP",[1,2,3]], ["pctOfAmount",[1,2,3,4]], ["pctExpress",[1,2,3,4,5]], ["pctChange",[1,2,3,5]], ["pctProfitLoss",[1]], ["algSub",[4,6]]] },
       { n: 6, title: "Linear — Coordinates, Transformations & Patterns", exam: true, skills: [["cartesian",[1,2,3,4]], ["linearNonlinear",[1,2]], ["tableValues",[1,2]], ["intercepts",[1,2]], ["linearApps",[1,2,3]], ["seqWords",[1,2,3,4,5,6]], ["arithSeq",[1,2,3,4]], ["timeConvert",[1,2,3,4]], ["timetables",[1,2,3,4,5]], ["distTime",[1,2,3,4]], ["translate",[1,2,3,4,5,6]], ["reflect",[1,2,3,4,5]], ["dilate",[1,2,3,4]], ["rotate",[1,2,3,4,5]], ["shapeTrans",[1,2,3,4,5]]] },
-      { n: 7, title: "Statistics & Probability", exam: true, skills: [["dataClassify",[1,2,3,4]], ["freqTables",[1,2,3,4]], ["dataRead",[1,2,3]], ["dataMean",[1,2,3,4,5]], ["dataMode",[1,2,3,4,5,6]], ["dataMedian",[1,2,3,4]], ["dataRange",[1,2,3,4]], ["dataShape",[1,2,3]], ["dataOutliers",[1]], ["probSample",[1,2,3,4,5,6]], ["probLang",[1,2,3,4,5,6,7]], ["probTheory",[1,2,3,4,5,6,7,8,9]], ["probComp",[1,2,3,4]], ["probExp",[1,2,3,4,5,6]], ["probExpect",[1,2,3,4,5,6]], ["probTwoStep",[1,2,3,4,5]]] },
-      { n: 8, title: "Measurement", exam: false, note: "Measurement skills are still being built. This topic is taught after the exam, so it is never on the exam.", skills: [] },
+      { n: 7, title: "Statistics & Probability", exam: true, prereq: [["fracSimplify",[1,3]], ["pctFDP",[1,2]]], skills: [["dataClassify",[1,2,3,4]], ["freqTables",[1,2,3,4]], ["dataRead",[1,2,3]], ["dataMean",[1,2,3,4,5]], ["dataMode",[1,2,3,4,5,6]], ["dataMedian",[1,2,3,4]], ["dataRange",[1,2,3,4]], ["dataShape",[1,2,3]], ["dataOutliers",[1]], ["probSample",[1,2,3,4,5,6]], ["probLang",[1,2,3,4,5,6,7]], ["probTheory",[1,2,3,4,5,6,7,8,9]], ["probComp",[1,2,3,4]], ["probExp",[1,2,3,4,5,6]], ["probExpect",[1,2,3,4,5,6]], ["probTwoStep",[1,2,3,4,5]]] },
+      { n: 8, title: "Measurement", exam: false, note: "This topic is taught after the exam, so it is never on the exam. Surface area, volume and capacity are coming in the next update.", prereq: [["timesTables",[1,2,3]], ["decPow10",[1,2,3]], ["squares",[1,2]]], skills: [["measLength",[1,2,3,4,5]], ["measPerim",[1,2,3,4,5,6]], ["measCirc",[1,2,3,4,5]], ["measArc",[1,2]], ["measAreaUnits",[1]], ["measArea",[1,2,3,4,5]], ["measMissing",[1,2,3,4]], ["measComposite",[1,2,3]]] },
     ],
   },
   y7seal: {
@@ -5663,8 +5698,8 @@ const COURSES = {
       { n: 4, title: "Geometry", exam: true, skills: [["pythagoras",[1,2,3,5]], ["nameShapes",[1,4,5]], ["nameAnglesLines",[1,3,4]], ["eulerRule",[1,2]], ["interiorAngles",[1,2,3]], ["angleRel",[1,2,3,4]], ["angleParallel",[1,2,3,4,5]], ["angleQuad",[1,2,3,4]], ["anglePoly",[1,2,3,4]], ["congruSimilar",[1,2,3,4]]] },
       { n: 5, title: "Finance & Irrational", exam: true, skills: [["numClass",[1,2]], ["surdSimplify",[1,2,3]], ["surdAddSub",[1]], ["surdMultiply",[1]], ["surdDivide",[1]], ["pctDecConv",[2,3]], ["fracPctConv",[1,2,3,4]], ["pctFDP",[1,2,3,4]], ["pctOfAmount",[1,2,3,4]], ["pctExpress",[1,2,3,4,5]], ["pctChange",[1,2,3,4,5]], ["pctReverse",[1,2,3]], ["pctProfitLoss",[1,2]], ["rearrange",[3]], ["quadVerify",[1,2,3]], ["quadSolve",[1,2,3,4]], ["gst",[1,2,3]], ["simpleInterest",[1,2,3,4,5,6]], ["recurrence",[1,2]], ["flatDep",[1,2,3,4,5,6]]] },
       { n: 6, title: "Linear — Graphs & Transformations", exam: true, skills: [["cartesian",[1,2,3,4]], ["linearNonlinear",[1,2]], ["tableValues",[1,2,3,4]], ["intercepts",[1,2,3,4,5]], ["gradientSeg",[1,2,3,4]], ["linearApps",[1,2,3,4]], ["translate",[1,2,3,4,5,6]], ["reflect",[1,2,3,4,5,6]], ["dilate",[1,2,3,4,5]], ["rotate",[1,2,3,4,5,6]], ["combine",[1,2,3,4,5]], ["shapeTrans",[1,2,3,4,5,6]], ["gradEqn",[1,2,3]], ["eqnGraph",[1,2,3]], ["sketchLinear",[1,2,3,4]]] },
-      { n: 7, title: "Statistics & Probability", exam: true, skills: [["dataClassify",[1,2,3,4]], ["freqTables",[1,2,3,4]], ["dataRead",[1,2,3]], ["dataMean",[1,2,3,4,5,6]], ["dataMode",[1,2,3,4,5,6]], ["dataMedian",[1,2,3,4,5,6]], ["dataRange",[1,2,3,4,5]], ["dataShape",[1,2,3]], ["dataOutliers",[1]], ["dataQuartiles",[1,2,3,4,5,6]], ["probSample",[1,2,3,4,5,6]], ["probLang",[1,2,3,4,5,6,7]], ["probTheory",[1,2,3,4,5,6,7,8,9]], ["probComp",[1,2,3,4]], ["probExp",[1,2,3,4,5,6]], ["probExpect",[1,2,3,4,5,6]], ["probTwoStep",[1,2,3,4,5]], ["probComp",[5]], ["probTwoStep",[6,7]], ["probTree",[1,2,3,4,5,6]], ["probTwoWay",[1,2,3,4]], ["probVenn",[1,2,3,4,5]], ["probNotate",[1,2,3,4]], ["probMutEx",[1,2,3,4]], ["probAddRule",[1,2,3]]] },
-      { n: 8, title: "Measurement", exam: false, note: "Measurement skills are still being built. This topic is taught after the exam, so it is never on the exam.", skills: [] },
+      { n: 7, title: "Statistics & Probability", exam: true, prereq: [["fracSimplify",[1,3]], ["pctFDP",[1,2]]], skills: [["dataClassify",[1,2,3,4]], ["freqTables",[1,2,3,4]], ["dataRead",[1,2,3]], ["dataMean",[1,2,3,4,5,6]], ["dataMode",[1,2,3,4,5,6]], ["dataMedian",[1,2,3,4,5,6]], ["dataRange",[1,2,3,4,5]], ["dataShape",[1,2,3]], ["dataOutliers",[1]], ["dataQuartiles",[1,2,3,4,5,6]], ["probSample",[1,2,3,4,5,6]], ["probLang",[1,2,3,4,5,6,7]], ["probTheory",[1,2,3,4,5,6,7,8,9]], ["probComp",[1,2,3,4]], ["probExp",[1,2,3,4,5,6]], ["probExpect",[1,2,3,4,5,6]], ["probTwoStep",[1,2,3,4,5]], ["probComp",[5]], ["probTwoStep",[6,7]], ["probTree",[1,2,3,4,5,6]], ["probTwoWay",[1,2,3,4]], ["probVenn",[1,2,3,4,5]], ["probNotate",[1,2,3,4]], ["probMutEx",[1,2,3,4]], ["probAddRule",[1,2,3]]] },
+      { n: 8, title: "Measurement", exam: false, note: "This topic is taught after the exam, so it is never on the exam. Surface area, volume and capacity are coming in the next update.", prereq: [["timesTables",[1,2,3]], ["decPow10",[1,2,3]], ["squares",[1,2]]], skills: [["measLength",[1,2,3,4,5]], ["measPerim",[2,3,4,5,6,7]], ["measCirc",[2,3,4,5,6]], ["measArc",[1,2,3,4,5,6]], ["measAreaUnits",[1,2,3]], ["measArea",[1,2,3,4,5]], ["measMissing",[1,2,3,4]], ["measQuad",[1,2,3]], ["measCircArea",[1,2,3,4,5,6]], ["measComposite",[1,2,3,4]]] },
     ],
   },
 };
@@ -5787,6 +5822,170 @@ Object.assign(BAND_OVERRIDE, {
   probCond_L3: [2, 5, 7, 10],
   probCond_L4: [3, 7, 10, 14],
   probCond_L5: [2, 3, 5, 7],
+});
+
+/* ═══════════════════════════════════════════════════════════════════
+   v102 (Laura) · 📏 MEASUREMENT, RELEASE A: LENGTH, PERIMETER, CIRCLES & AREA
+   -------------------------------------------------------------------
+   Everything the ten Release A skills need OUTSIDE their generators, in one
+   place: level cards, year chips, recall/method flags, mode
+   recommendations and the placeholder bands. Release B (surface area,
+   volume, capacity) adds a second block below this one.
+   Every lvKey is ms…, checked against LEVEL_DEFS before use (rule 2d);
+   test_v102.js asserts none of them collides with an existing key.
+   Student-facing text avoids em dashes (Laura's house preference); the
+   "Level n — Title" card format is the app-wide convention and is kept.
+═══════════════════════════════════════════════════════════════════ */
+const MS_PRE_KEYS = Object.keys(LEVEL_DEFS);
+Object.assign(LEVEL_DEFS, {
+  msln: [
+    { title:'Level 1 — Choose the Unit', desc:'Pick the most sensible unit (millimetres, centimetres, metres or kilometres) to measure an everyday length.', examples:['an ant → mm', 'a pencil → cm', 'a swimming pool → m', 'Melbourne to Sydney → km'] },
+    { title:'Level 2 — Convert to a Smaller Unit', desc:'Big unit to small unit means MORE of them, so multiply. 1 m = 100 cm, 1 cm = 10 mm, 1 km = 1000 m.', examples:['3.4 m → 340 cm', '6.2 cm → 62 mm', '0.85 km → 850 m'] },
+    { title:'Level 3 — Convert to a Larger Unit', desc:'Small unit to big unit means FEWER of them, so divide. 100 cm = 1 m, 10 mm = 1 cm, 1000 m = 1 km.', examples:['850 mm → 0.85 m', '45 mm → 4.5 cm', '6500 m → 6.5 km'] },
+    { title:'Level 4 — Two-Step Conversions', desc:'Kilometres to centimetres or millimetres and back. Go through metres: km → m (× 1000), then m → cm (× 100).', examples:['2.5 km → 250 000 cm', '185 000 cm → 1.85 km', '3 km → 3 000 000 mm'] },
+    { title:'Level 5 — Order Mixed Units', desc:'Put four lengths in order from shortest to longest. Change them all to the same unit first.', examples:['280 mm, 35 cm, 4 m', '750 m, 0.6 km, 90 000 cm'] },
+  ],
+  msper: [
+    { title:'Level 1 — Rectangles & Squares', desc:'Perimeter is the distance all the way around. A rectangle has two lengths and two widths; a square has four equal sides.', examples:['8 cm by 5 cm → 26 cm', 'square of side 7 m → 28 m'] },
+    { title:'Level 2 — All Sides Labelled', desc:'Add every side length on the diagram. Count the sides as you go so none is missed.', examples:['triangle 5, 7, 9 → 21', 'trapezium 6, 5, 12, 5 → 28'] },
+    { title:'Level 3 — Regular Polygons', desc:'The tick marks show every side is the same length. Perimeter = number of sides × side length.', examples:['pentagon of side 4 cm → 20 cm', 'hexagon of side 2.5 m → 15 m'] },
+    { title:'Level 4 — Mixed Units', desc:'The sides are in different units. Convert them all to the unit asked for BEFORE you add.', examples:['1.2 m by 45 cm, in cm → 330 cm', '8 cm by 35 mm, in mm → 230 mm'] },
+    { title:'Level 5 — Missing Side from the Perimeter', desc:'Work backwards: take the known sides away from the perimeter. For a regular shape, divide by the number of sides.', examples:['rectangle, P = 34, length 12 → width 5', 'regular pentagon, P = 45 → 9'] },
+    { title:'Level 6 — Missing Sides on a Rectilinear Shape', desc:'On a shape made of right angles, the short sides on one side add up to the long side opposite. Find both missing lengths.', examples:['long side 10, short side 4 → 6', 'long side 8, short side 3 → 5'] },
+    { title:'Level 7 — Sides in a Ratio', desc:'The sides are in a ratio and the perimeter is given. Add the ratio parts (count each side), find one part, then each side.', examples:['rectangle 3 : 2, P = 120 → 36 by 24', 'triangle 2 : 4 : 5, P = 33 → 6, 12, 15'] },
+    { title:'Level 8 — Three Sides Known', desc:'Two people each measure three sides of the same rectangle. Together their totals hold every length three times. (Enrichment)', examples:['27 cm and 33 cm → P = 40 cm'] },
+  ],
+  mscc: [
+    { title:'Level 1 — Parts of a Circle', desc:'Name the highlighted part: the centre, a radius, a diameter or the circumference.', examples:['centre to edge → radius', 'edge to edge through the centre → diameter', 'the distance around → circumference'] },
+    { title:'Level 2 — Radius and Diameter', desc:'The diameter is twice the radius: d = 2r. The radius is half the diameter: r = d ÷ 2.', examples:['r = 6.5 cm → d = 13 cm', 'd = 18 m → r = 9 m'] },
+    { title:'Level 3 — Exact Circumference from the Diameter', desc:'C = πd. Leave π in the answer; that makes it EXACT. Use the π key on the keypad.', examples:['d = 8 cm → 8π cm', 'd = 15 m → 15π m'] },
+    { title:'Level 4 — Exact Circumference from the Radius', desc:'C = 2πr, or double the radius and use πd. Check whether you were given the radius or the diameter.', examples:['r = 6 cm → 12π cm', 'd = 10 m → 10π m'] },
+    { title:'Level 5 — Circumference to 2 Decimal Places', desc:'Use the π key on your calculator, not 3.14, then round to two decimal places.', examples:['r = 3 cm → 18.85 cm', 'd = 7 m → 21.99 m'] },
+    { title:'Level 6 — Radius or Diameter from the Circumference', desc:'Work backwards from C = πd: the number in front of π is the diameter. Halve it for the radius.', examples:['C = 18π cm → d = 18 cm, r = 9 cm'] },
+    { title:'Level 7 — Laps & Paths', desc:'Circumference in context: how far is several laps, or the way around the outside of a path? Use the π key and round as asked. (Enrichment)', examples:['12 laps of an 80 m track → 3016 m', 'pond 8 m across with a 1 m path → 31.42 m'] },
+  ],
+  msarc: [
+    { title:'Level 1 — The Curved Part Only', desc:'A semicircle’s curve is half a circumference; a quadrant’s is a quarter. Give the curved length exactly, in terms of π.', examples:['semicircle, d = 10 → 5π', 'quadrant, r = 8 → 4π'] },
+    { title:'Level 2 — Semicircles & Quadrants to 2 d.p.', desc:'Perimeter = the curved part PLUS the straight edges. A semicircle has one straight edge (the diameter); a quadrant has two radii.', examples:['semicircle, d = 10 → 25.71', 'quadrant, r = 4 → 14.28'] },
+    { title:'Level 3 — Semicircles & Quadrants, Exactly', desc:'Write the straight edges as a number and the curve in terms of π.', examples:['semicircle, d = 10 → 10 + 5π', 'quadrant, r = 8 → 16 + 4π'] },
+    { title:'Level 4 — Arc Length of a Sector', desc:'An arc is a fraction of the circumference: θ/360 × 2πr. Give it exactly, in terms of π.', examples:['60°, r = 6 → 2π', '135°, r = 8 → 6π'] },
+    { title:'Level 5 — Perimeter of a Sector', desc:'The arc plus the two radii: 2r + θ/360 × 2πr. Give it exactly.', examples:['90°, r = 6 → 12 + 3π', '120°, r = 9 → 18 + 6π'] },
+    { title:'Level 6 — Straight and Curved Edges', desc:'Add the straight edges you can see to the curved parts. Only count the OUTSIDE edges. Give the answer to two decimal places.', examples:['10 by 6 rectangle with a semicircle on one end → 35.42'] },
+    { title:'Level 7 — Angle from the Arc Length', desc:'Work backwards: θ = arc ÷ (2πr) × 360. Round to the nearest degree. (Enrichment)', examples:['r = 10 cm, arc = 15 cm → 86°'] },
+  ],
+  msua: [
+    { title:'Level 1 — Choose the Unit of Area', desc:'Pick the most sensible unit: mm², cm², m², hectares or km².', examples:['a pinhead → mm²', 'a phone screen → cm²', 'a bedroom → m²', 'a farm → ha', 'Victoria → km²'] },
+    { title:'Level 2 — mm², cm² and m²', desc:'Square the length conversion: 1 cm² = 10 × 10 = 100 mm², and 1 m² = 100 × 100 = 10 000 cm².', examples:['5 cm² → 500 mm²', '2.4 m² → 24 000 cm²', '630 mm² → 6.3 cm²'] },
+    { title:'Level 3 — Hectares and km²', desc:'1 hectare = 10 000 m² (a 100 m by 100 m square). 1 km² = 100 ha = 1 000 000 m².', examples:['45 000 m² → 4.5 ha', '3 km² → 300 ha', '0.8 km² → 800 000 m²'] },
+  ],
+  msar: [
+    { title:'Level 1 — Rectangles & Squares', desc:'A = l × w for a rectangle and A = s² for a square. Area is in SQUARE units.', examples:['8 cm by 5 cm → 40 cm²', 'square of side 7 m → 49 m²'] },
+    { title:'Level 2 — Parallelograms', desc:'A = b × h, where h is the PERPENDICULAR height (the dashed line), not the slanted side.', examples:['base 10, height 4, slant 5 → 40'] },
+    { title:'Level 3 — Triangles', desc:'A = ½ × b × h. The height is perpendicular to the base; on an obtuse triangle it falls outside the shape.', examples:['base 10, height 6 → 30', 'right-angled 6, 8, 10 → 24'] },
+    { title:'Level 4 — Rectangles, Parallelograms & Triangles', desc:'A mix of all three. Choose the formula from the shape, and ignore any length you do not need.', examples:['parallelogram → b × h', 'triangle → ½ × b × h'] },
+    { title:'Level 5 — Convert First', desc:'The lengths are in different units. Convert them to the unit the answer needs, THEN find the area.', examples:['90 cm by 1.2 m, in m² → 1.08 m²', 'square of side 0.6 m, in cm² → 3600 cm²'] },
+  ],
+  msmis: [
+    { title:'Level 1 — Missing Side of a Rectangle', desc:'Area = length × width, so the missing side = area ÷ the side you know.', examples:['A = 54 cm², width 6 cm → 9 cm'] },
+    { title:'Level 2 — Side of a Square', desc:'The side of a square is the square root of its area.', examples:['A = 81 m² → 9 m', 'A = 144 cm² → 12 cm'] },
+    { title:'Level 3 — Height of a Parallelogram', desc:'A = b × h, so h = A ÷ b.', examples:['A = 72 cm², base 9 cm → 8 cm'] },
+    { title:'Level 4 — Base or Height of a Triangle', desc:'A = ½ × b × h, so double the area first, then divide by the length you know.', examples:['A = 42 m², base 12 m → 7 m'] },
+  ],
+  msqd: [
+    { title:'Level 1 — Rhombuses & Kites', desc:'A = ½ × x × y, where x and y are the two diagonals.', examples:['diagonals 10 and 6 → 30'] },
+    { title:'Level 2 — Trapeziums', desc:'A = ½ × (a + b) × h: add the two PARALLEL sides, multiply by the height, halve.', examples:['parallel sides 4 and 10, height 6 → 42'] },
+    { title:'Level 3 — Missing Measurement', desc:'Work backwards from the area formula to find a missing diagonal or the height.', examples:['kite, A = 30, one diagonal 10 → 6', 'trapezium, A = 42, sides 4 and 10 → height 6'] },
+  ],
+  msac: [
+    { title:'Level 1 — Exact Area of a Circle', desc:'A = πr². Square the RADIUS (halve a diameter first) and leave π in the answer.', examples:['r = 5 → 25π', 'd = 12 → 36π'] },
+    { title:'Level 2 — Area to 2 Decimal Places', desc:'Use the π key on your calculator, not 3.14, then round to two decimal places.', examples:['r = 3 → 28.27', 'd = 10 → 78.54'] },
+    { title:'Level 3 — Semicircles & Quadrants', desc:'Half of πr² for a semicircle, a quarter for a quadrant. Give it exactly.', examples:['semicircle, r = 6 → 18π', 'quadrant, r = 8 → 16π'] },
+    { title:'Level 4 — Area of a Sector', desc:'A sector is a fraction of the circle: θ/360 × πr². Give it exactly.', examples:['60°, r = 6 → 6π', '45°, r = 4 → 2π'] },
+    { title:'Level 5 — Radius from the Area', desc:'Work backwards from A = πr²: the number in front of π is r², so take its square root.', examples:['A = 49π → r = 7', 'A = 64π → d = 16'] },
+    { title:'Level 6 — Angle from the Sector Area', desc:'θ = A ÷ (πr²) × 360. Round to the nearest degree.', examples:['r = 15 cm, A = 100 cm² → 51°'] },
+    { title:'Level 7 — Square of Equal Area', desc:'Find the circle’s area; the side of the square with that area is its square root. Two decimal places. (Enrichment)', examples:['r = 6 cm → 10.63 cm'] },
+  ],
+  mscomp: [
+    { title:'Level 1 — L-Shapes by Splitting', desc:'Cut the shape into two rectangles, find each area and add them.', examples:['10 by 8 with a 4 by 3 step → 68'] },
+    { title:'Level 2 — Subtract the Part Cut Out', desc:'Find the area of the whole rectangle, then take away the part that is missing: a hole, a corner or the pool inside a path.', examples:['12 by 8 card with a 5 by 3 hole → 81'] },
+    { title:'Level 3 — Rectangles and Triangles', desc:'Add the rectangle (l × w) and the triangle (½ × b × h).', examples:['8 by 5 wall with a gable of height 3 → 52'] },
+    { title:'Level 4 — With Circle Parts', desc:'Add or take away a semicircle, a quadrant or a circular hole. Use the π key and give two decimal places.', examples:['10 by 6 rectangle with a semicircle on the end → 74.14'] },
+  ],
+});
+
+/* Year chips: best mapping to VC 2.0 (display only; for Laura to confirm). */
+Object.assign(SKILL_YEAR, {
+  measLength:'Yr 7', measPerim:'Yr 7', measCirc:'Yr 7–8', measArc:'Yr 8',
+  measAreaUnits:'Yr 7–8', measArea:'Yr 7', measMissing:'Yr 7', measQuad:'Yr 8',
+  measCircArea:'Yr 8', measComposite:'Yr 7–8'
+});
+
+/* Recall levels (🎯 Fluent-eligible): the two length conversions and r ↔ d.
+   Everything else in the strand is method. THE ZEROS ARE LOAD-BEARING. */
+RECALL_SKILLS.push('measLength', 'measCirc');
+Object.assign(FLUENCY_TARGET, {
+  measLength:[0, 16, 16, 0, 0],
+  measCirc:[0, 20, 0, 0, 0, 0, 0]
+});
+Object.assign(METHOD_LEVEL_OVERRIDE, {
+  measLength:[1, 4, 5],
+  measCirc:[1, 3, 4, 5, 6, 7]
+});
+
+/* The slow levels: a calculator and two decimal places, or several steps.
+   Recommendation only, never blocking. */
+Object.assign(LEVEL_REC, {
+  msper:  { 7:'practice', 8:'practice' },
+  mscc:   { 5:'practice', 7:'practice' },
+  msarc:  { 2:'practice', 6:'practice', 7:'practice' },
+  msac:   { 2:'practice', 6:'practice', 7:'practice' },
+  mscomp: { 4:'practice' }
+});
+
+/* ── PLACEHOLDER BANDS ─────────────────────────────────────────────────
+   A first estimate of a Lion ceiling per level, written out so every one
+   can be seen and argued with. Rows follow the house formula from that
+   ceiling L: [round(L/3), round(2L/3), L, round(1.5L) − 1], Cheetah = the
+   last + 1. The two recall rows equal their fluency target. None of these
+   has seen a class.                                                        */
+const MEAS_LION = {
+  measLength:    [12, 16, 16, 9, 6],
+  measPerim:     [10, 9, 10, 7, 8, 6, 4, 4],
+  measCirc:      [14, 20, 10, 9, 5, 9, 4],
+  measArc:       [9, 5, 6, 6, 5, 4, 4],
+  measAreaUnits: [12, 9, 8],
+  measArea:      [10, 8, 8, 8, 5],
+  measMissing:   [9, 10, 8, 7],
+  measQuad:      [8, 7, 6],
+  measCircArea:  [9, 5, 7, 6, 8, 4, 4],
+  measComposite: [6, 5, 5, 4]
+};
+Object.keys(MEAS_LION).forEach(function(s){
+  METHOD_BAND_CEIL[s] = MEAS_LION[s].slice();
+  MEAS_LION[s].forEach(function(L, i){
+    BAND_OVERRIDE[s + '_L' + (i + 1)] = [Math.round(L / 3), Math.round(2 * L / 3), L, Math.round(1.5 * L) - 1];
+  });
+});
+
+/* ── v102.1 TRANSFORMATION BANDS (Laura, 11 Oct 2026) ─────────────────
+   Students and teachers were not getting past Greyhound on any transformation
+   skill. Laura signed off on halving every Lion ceiling (floor 3), then the
+   house thirds formula. Was: translate/reflect [14,11,12,12,12,8], dilate
+   [12,12,12,11,8], rotate [12,8,10,10,9,6], combine [7,5,8,8,5], shapeTrans
+   [5,5,8,4,4,3]. Bands are display-only, so no stored data changes.        */
+const TRANSFORM_LION = {
+  translate:  [7, 6, 6, 6, 6, 4],
+  reflect:    [7, 6, 6, 6, 6, 4],
+  dilate:     [6, 6, 6, 6, 4],
+  rotate:     [6, 4, 5, 5, 5, 3],
+  combine:    [4, 3, 4, 4, 3],
+  shapeTrans: [3, 3, 4, 3, 3, 3]
+};
+Object.keys(TRANSFORM_LION).forEach(function(s){
+  METHOD_BAND_CEIL[s] = TRANSFORM_LION[s].slice();
+  TRANSFORM_LION[s].forEach(function(L, i){
+    BAND_OVERRIDE[s + '_L' + (i + 1)] = [Math.round(L / 3), Math.round(2 * L / 3), L, Math.round(1.5 * L) - 1];
+  });
 });
 
 const LEVEL_ORDER = {
@@ -6168,7 +6367,10 @@ function openAlt(n) {
   const holder = document.createElement('div');
   holder.className = 'alt-skill-list';
   pre.appendChild(holder);
-  renderAltSkillRows(holder, c.prereq, true);
+  /* v102: an ALT may name its own prerequisites (probability leans on fractions,
+     measurement on powers of ten), falling back to the course-wide list. */
+  const altObj = n === 0 ? null : c.alts.find(a => a.n === n);
+  renderAltSkillRows(holder, (altObj && altObj.prereq) || c.prereq, true);
 }
 
 /* The exam list keeps ALT order and merges a skill that appears in more than
@@ -6701,6 +6903,8 @@ function resetAnswerInputs() {
   { const idr = id('ineqDeskRow'); if (idr) idr.style.display = (mode === 'ineq' && !IS_MOBILE()) ? 'flex' : 'none'; }
   // Desktop √ button: only for surd mode on a computer.
   { const sdr = id('surdDeskRow'); if (sdr) sdr.style.display = (mode === 'surd' && !IS_MOBILE()) ? 'flex' : 'none'; }
+  // Desktop π button (v102): only for exact circle answers on a computer.
+  { const pdr = id('piDeskRow'); if (pdr) pdr.style.display = (mode === 'piExact' && !IS_MOBILE()) ? 'flex' : 'none'; }
 }
 
 function enableInputs() {
@@ -9383,6 +9587,8 @@ function nextQCore() {
   else if (isV99Level()) { genV99Level(el); }
   /* v101 — the whole probability strand routes through one dispatcher. */
   else if (isProbSkill()) { genProb(el); }
+  /* v102: the measurement strand, the same way. */
+  else if (isMeasSkill()) { genMeas(el); }
   else if (skill === 'timesTables') {
     const tbl = ttList();
     const n1 = tbl[ri(tbl.length)], n2 = tbl[ri(tbl.length)];
@@ -10303,6 +10509,14 @@ function ffInitInputs() {
       // Inequalities: also allow x, the comparison symbols, / for fractions, = (for <=),
       // and spaces. ≤ / ≥ can't be typed on a physical keyboard — students type <= / >=.
       const extra = ['x','X','<','>','=','/',' ','≤','≥'];
+      if (allowed.includes(e.key) || extra.includes(e.key) || (e.key >= '0' && e.key <= '9')) return;
+      if (e.ctrlKey || e.metaKey) return;
+      e.preventDefault();
+      return;
+    }
+    if (getInputMode() === 'piExact') {
+      // v102: exact circle answers. Digits, a point, + and π (or type "pi").
+      const extra = ['+', ' ', 'p', 'P', 'i', 'I', 'π'];
       if (allowed.includes(e.key) || extra.includes(e.key) || (e.key >= '0' && e.key <= '9')) return;
       if (e.ctrlKey || e.metaKey) return;
       e.preventDefault();
@@ -11472,7 +11686,7 @@ function readUserAnswer(mode) {
       return parts.length ? parts.join(' + ') : '—';
     }
     if (mode === 'algType' || mode === 'algProd' || mode === 'algPoly' || mode === 'algFactored') return g('algTypeInput') || '—';
-    if (mode === 'surd' || mode === 'ineq' || mode === 'decFrac') return g('ansInput') || '—';
+    if (mode === 'surd' || mode === 'ineq' || mode === 'decFrac' || mode === 'piExact') return g('ansInput') || '—';
     if (mode === 'choice') {
       if (qData.chosen == null) return '—';
       if (qData.choiceText) return qData.choiceText[qData.chosen] || '—';
@@ -11545,6 +11759,28 @@ function checkAnsCore() {
     const tol = (qData.ansTol != null) ? qData.ansTol : 0.0001;
     correct = Math.abs(val - qData.ans) <= tol;
     if (!correct) feedbackStr = `Answer: ${qData.ansDisplay != null ? qData.ansDisplay : qData.ans}`;
+    /* v102: a 2 d.p. circle answer worked with 3.14 instead of the π key gets its
+       own line (Laura: correct with π only). Only set by the measurement levels. */
+    if (!correct && qData.pi314 != null && Math.abs(val - qData.pi314) < 0.0051)
+      feedbackStr = `That is the answer using 3.14. Use the π key instead. Answer: ${qData.ansDisplay != null ? qData.ansDisplay : qData.ans}`;
+    id('ansInput').classList.remove('ok','bad');
+    id('ansInput').classList.add(correct ? 'ok' : 'bad');
+  }
+  else if (mode === 'piExact') {
+    // v102: exact circle answers, kπ or a + kπ in either order. A decimal is
+    // wrong; if it is the right SIZE, say so, the way probability says "now
+    // simplify". Empty / unparseable entries don't count as an attempt.
+    const raw = id('ansInput').value.trim();
+    const p = piParse(raw);
+    if (p === null || p.invalid) { attempts--; id('ansInput').focus(); return; }
+    if (p.plain) {
+      correct = false;
+      const near = Math.abs(p.v - qData.piDec) <= Math.max(0.011, 0.003 * Math.abs(qData.piDec));
+      feedbackStr = near ? `Right size, now give it exactly: ${qData.ansDisplay}` : `Answer: ${qData.ansDisplay}`;
+    } else {
+      correct = Math.abs(p.a - qData.piAns.a) < 1e-9 && Math.abs(p.k - qData.piAns.k) < 1e-9;
+      if (!correct) feedbackStr = `Answer: ${qData.ansDisplay}`;
+    }
     id('ansInput').classList.remove('ok','bad');
     id('ansInput').classList.add(correct ? 'ok' : 'bad');
   }
@@ -17593,6 +17829,15 @@ function insertSurd() {
   inp.focus();
 }
 
+/* Desktop π / + buttons (v102) for exact circle answers. */
+function insertPi(ch) {
+  const inp = document.getElementById('ansInput');
+  if (!inp || inp.disabled) return;
+  inp.value += ch;
+  inp.classList.remove('ok', 'bad');
+  inp.focus();
+}
+
 function kbPress(char) {
   if (!kbTarget || kbTarget.disabled) return;
 
@@ -17737,7 +17982,8 @@ function kbShow() {
                             'pctIdentify','pctExpress','pctOfAmount','pctChange','pctProfitLoss',
                             // v77 — money answers and half-solutions
                             'gst','simpleInterest','flatDep','intercepts','quadSolve'];
-  const showDot  = (mode === 'sci' || mode === 'pctTable' || mode === 'plToggle' || mode === 'decFrac' || mode === 'gapFill' || decSkillsWithDot.includes(skillId));
+  const showDot  = (mode === 'sci' || mode === 'pctTable' || mode === 'plToggle' || mode === 'decFrac' || mode === 'gapFill' || decSkillsWithDot.includes(skillId)
+                   || isMeasSkill(skillId));   // v102: lengths and areas are decimals
   const showNext = (mode === 'fraction' || mode === 'mixed' || mode === 'index' || mode === 'sci' || mode === 'ratio' || mode === 'algebra' || mode === 'factor' || mode === 'pctTable' || mode === 'gapFill' || mode === 'gridFill');
 
   const negBtn  = document.getElementById('kbNegBtn');
@@ -17752,6 +17998,10 @@ function kbShow() {
   // v50: surd (exact-value) row — a single √ key, shown only for surd mode.
   const surdRow = document.getElementById('kbSurdRow');
   if (surdRow) surdRow.style.display = (mode === 'surd') ? 'flex' : 'none';
+
+  // v102: π row (π and +), shown only for exact circle answers.
+  const piRow = document.getElementById('kbPiRow');
+  if (piRow) piRow.style.display = (mode === 'piExact') ? 'flex' : 'none';
 
   // Fraction-slash row — a single / key, shown only for the decFrac mode.
   const fracSlashRow = document.getElementById('kbFracSlashRow');
@@ -23991,6 +24241,1279 @@ function genProbCond(el){
     + item.where.charAt(0).toUpperCase() + item.where.slice(1) + ' holds ' + total + ' ' + item.many + ', '
     + f + ' of them ' + c1 + '. Two are taken without replacement.<br>Find <b>P(both ' + c1
     + ')</b> in simplest form.</div>';
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   v102 · 📏 MEASUREMENT · RELEASE A · 10 skills · 53 levels
+   -------------------------------------------------------------------
+   Built from the 7MAT Measurement booklet (Lessons 1–4) and the 7MAS
+   SEAL booklet (Lessons 1–2). Challenge questions are not assessed and
+   are not built; Enrichment items are built as the LAST level of their
+   skill and kept out of every ALT (Laura, 4 Oct).
+
+   Four rules specific to this strand:
+
+   • EVERY DIAGRAM IS DRAWN TO ITS OWN LABELS. One uniform scale per
+     picture, so a 12 × 3 rectangle is long and thin, a slant side is
+     visibly longer than the height it leans over, an obtuse triangle's
+     height really does fall outside its base and a 135° sector really
+     is 135°. Every distractor length printed on a diagram is the true
+     length of the line it sits on (Pythagorean triples), never a guess.
+
+   • EXACT MEANS IN TERMS OF π. The piExact mode reads kπ and a + kπ.
+     A decimal typed on an exact level is marked wrong, and if it is the
+     right SIZE the miss review says so ("now give it exactly"), the same
+     idea as probability's "now simplify it".
+
+   • 2 d.p. MEANS THE π KEY, NOT 3.14 (Laura, 4 Oct). Tolerance is 0.005
+     round the correctly rounded value, and every 2 d.p. question is
+     RE-ROLLED until its 3.14 answer differs from its π answer, so the
+     distinction is tested on every question. A 3.14 answer gets its own
+     miss-review line.
+
+   • CONSTRUCT THE NUMBERS. Missing lengths come out whole, exact π
+     coefficients are integers, and sector angles are only paired with
+     radii that make the arc or area a whole multiple of π.
+═══════════════════════════════════════════════════════════════════ */
+
+const MEAS_SKILLS = ['measLength','measPerim','measCirc','measArc','measAreaUnits','measArea',
+                     'measMissing','measQuad','measCircArea','measComposite'];
+function isMeasSkill(s){ return MEAS_SKILLS.indexOf(s === undefined ? skill : s) >= 0; }
+
+/* ── numbers ─────────────────────────────────────────────────────── */
+/* Australian style: no separator up to 9999, a space from 10 000 up. */
+function msNum(v){
+  let s = String(dp(v, 6));
+  if (s.indexOf('e') >= 0) s = Number(v).toFixed(6).replace(/0+$/, '').replace(/\.$/, '');
+  let neg = false;
+  if (s[0] === '-') { neg = true; s = s.slice(1); }
+  const parts = s.split('.');
+  let i = parts[0];
+  if (i.length >= 5) i = i.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  return (neg ? '−' : '') + i + (parts[1] ? '.' + parts[1] : '');
+}
+function msU(v, u){ return msNum(v) + ' ' + u; }
+function msU2(v, u){ return msNum(v) + ' ' + u + '²'; }
+function msUnit(){ return ffPick(['cm', 'cm', 'm', 'mm']); }
+function msLen(lo, hi, decChance){
+  if (Math.random() < (decChance || 0)) return dp(rr(lo * 10 + 1, hi * 10 - 1) / 10, 1);
+  return rr(lo, hi);
+}
+
+/* ── π answers ───────────────────────────────────────────────────── */
+function msPiTxt(a, k){
+  const kt = (k === 1 ? '' : msNum(k)) + 'π';
+  return a ? msNum(a) + ' + ' + kt : kt;
+}
+function msSetPiExact(a, k, unitTxt){
+  qData.piAns = { a: a, k: k };
+  qData.piDec = a + k * Math.PI;
+  qData.ansDisplay = msPiTxt(a, k) + (unitTxt ? ' ' + unitTxt : '');
+}
+/* 2 d.p. with the π key. Returns null when the 3.14 answer would round to the
+   same 2 d.p. value, and the caller re-rolls, so every question discriminates. */
+function msPi2(fn){
+  const a = dp(fn(Math.PI), 2), b = dp(fn(3.14), 2);
+  return (Math.abs(a - b) < 0.0051) ? null : { ans: a, alt: b };
+}
+function msSetPi2(v, unitTxt){
+  qData.ans = v.ans; qData.ansTol = 0.005; qData.pi314 = v.alt;
+  qData.ansDisplay = msNum(v.ans) + (unitTxt ? ' ' + unitTxt : '');
+}
+function msRoll(make){
+  let r = null, g = 0;
+  while (!r && g++ < 200) r = make();
+  return r;
+}
+
+/* Parse a typed exact answer: kπ, π, a + kπ, kπ + a (pi, ×, * tolerated).
+   Returns null (empty), {invalid}, {plain, v} for a number with no π, or {a, k}. */
+function piParse(raw){
+  let s = String(raw).toLowerCase().replace(/\s+/g, '').replace(/pi/g, 'π')
+    .replace(/[×*]/g, '').replace(/−/g, '-');
+  if (s === '') return null;
+  if (/^-?\d*\.?\d+$/.test(s)) return { plain: true, v: parseFloat(s) };
+  if (s[0] !== '-' && s[0] !== '+') s = '+' + s;
+  const terms = s.match(/[+-][^+-]*/g);
+  if (!terms || terms.join('') !== s) return { invalid: 'form' };
+  let a = 0, k = 0, seenA = false, seenK = false;
+  for (let i = 0; i < terms.length; i++){
+    const t = terms[i], sign = (t[0] === '-') ? -1 : 1, body = t.slice(1);
+    let m;
+    if ((m = body.match(/^(\d*\.?\d*)π$/)) && m[1] !== '.'){
+      if (seenK) return { invalid: 'form' };
+      seenK = true; k = sign * (m[1] === '' ? 1 : parseFloat(m[1]));
+    } else if ((m = body.match(/^π(\d*\.?\d+)$/))){
+      if (seenK) return { invalid: 'form' };
+      seenK = true; k = sign * parseFloat(m[1]);
+    } else if (/^\d*\.?\d+$/.test(body)){
+      if (seenA) return { invalid: 'form' };
+      seenA = true; a = sign * parseFloat(body);
+    } else return { invalid: 'form' };
+  }
+  if (isNaN(a) || isNaN(k)) return { invalid: 'form' };
+  if (!seenK) return { plain: true, v: a };
+  return { a: a, k: k };
+}
+
+/* ═══ drawing toolkit ═══════════════════════════════════════════════
+   Shapes are described in MATH coordinates (y up) and fitted into the
+   viewBox with ONE uniform scale, which is what makes them true to their
+   labels. Curves are sampled into the polygon, so a rectangle with a
+   semicircle on the end is just a polygon with forty extra points and the
+   same labelling code serves every shape.                                */
+const MS_FONT = 15;
+function msTxtW(t){ return String(t).replace(/<[^>]+>/g, '').replace(/&[a-z]+;/g, 'x').length * 8.2; }
+function msText(x, y, t, o){
+  o = o || {};
+  return '<text x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" text-anchor="' + (o.anchor || 'middle')
+    + '" font-size="' + (o.size || MS_FONT) + '" font-weight="800" fill="' + (o.col || 'var(--text)') + '">' + t + '</text>';
+}
+function msFit(pts, W, H, padX, padY){
+  let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
+  pts.forEach(function(p){ x0 = Math.min(x0, p[0]); x1 = Math.max(x1, p[0]); y0 = Math.min(y0, p[1]); y1 = Math.max(y1, p[1]); });
+  const dx = Math.max(x1 - x0, 1e-6), dy = Math.max(y1 - y0, 1e-6);
+  const sc = Math.min((W - 2 * padX) / dx, (H - 2 * padY) / dy);
+  const ox = (W - dx * sc) / 2 - x0 * sc, oy = (H + dy * sc) / 2 + y0 * sc;
+  return { sc: sc, P: function(p){ return [ox + p[0] * sc, oy - p[1] * sc]; } };
+}
+function msArea2(pts){
+  let s = 0;
+  for (let i = 0; i < pts.length; i++){ const a = pts[i], b = pts[(i + 1) % pts.length]; s += a[0] * b[1] - b[0] * a[1]; }
+  return s / 2;
+}
+function msPath(F, pts, close){
+  return 'M' + pts.map(function(p){ const s = F.P(p); return s[0].toFixed(1) + ' ' + s[1].toFixed(1); }).join(' L') + (close === false ? '' : ' Z');
+}
+function msArcPts(cx, cy, r, a0, a1, n){
+  const out = [], N = n || Math.max(8, Math.round(Math.abs(a1 - a0) / 6));
+  for (let i = 0; i <= N; i++){
+    const a = (a0 + (a1 - a0) * i / N) * Math.PI / 180;
+    out.push([cx + r * Math.cos(a), cy + r * Math.sin(a)]);
+  }
+  return out;
+}
+/* A label beside the segment p→q, pushed outward (or inward) from the shape. */
+function msEdgeLbl(F, p, q, t, ccw, inward, col){
+  const dx = q[0] - p[0], dy = q[1] - p[1], L = Math.hypot(dx, dy) || 1;
+  let nx = dy / L, ny = -dx / L;
+  if (!ccw) { nx = -nx; ny = -ny; }
+  if (inward) { nx = -nx; ny = -ny; }
+  const m = F.P([(p[0] + q[0]) / 2, (p[1] + q[1]) / 2]);
+  const sx = nx, sy = -ny;
+  const off = 9 + Math.abs(sx) * msTxtW(t) / 2 + Math.abs(sy) * 7;
+  return msText(m[0] + sx * off, m[1] + sy * off + 5, t, { col: col });
+}
+/* A label beside a segment on a chosen side (+1 left of p→q on screen, −1 right). */
+function msSideLbl(F, p, q, t, side, col){
+  const a = F.P(p), b = F.P(q);
+  const dx = b[0] - a[0], dy = b[1] - a[1], L = Math.hypot(dx, dy) || 1;
+  const nx = -dy / L * side, ny = dx / L * side;
+  const m = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
+  const off = 8 + Math.abs(nx) * msTxtW(t) / 2 + Math.abs(ny) * 7;
+  return msText(m[0] + nx * off, m[1] + ny * off + 5, t, { col: col });
+}
+function msLine(F, p, q, o){
+  o = o || {};
+  const a = F.P(p), b = F.P(q);
+  return '<line x1="' + a[0].toFixed(1) + '" y1="' + a[1].toFixed(1) + '" x2="' + b[0].toFixed(1) + '" y2="' + b[1].toFixed(1)
+    + '" stroke="' + (o.col || 'var(--text)') + '" stroke-width="' + (o.w || 2) + '"' + (o.dash ? ' stroke-dasharray="6 4"' : '') + '/>';
+}
+function msRight(F, v, a, b, size){
+  const V = F.P(v), A = F.P(a), B = F.P(b), s = size || 10;
+  const u = function(P){ const dx = P[0] - V[0], dy = P[1] - V[1], L = Math.hypot(dx, dy) || 1; return [dx / L * s, dy / L * s]; };
+  const ua = u(A), ub = u(B);
+  return '<path d="M' + (V[0] + ua[0]).toFixed(1) + ' ' + (V[1] + ua[1]).toFixed(1) + ' L' + (V[0] + ua[0] + ub[0]).toFixed(1) + ' '
+    + (V[1] + ua[1] + ub[1]).toFixed(1) + ' L' + (V[0] + ub[0]).toFixed(1) + ' ' + (V[1] + ub[1]).toFixed(1)
+    + '" fill="none" stroke="var(--text)" stroke-width="1.6"/>';
+}
+function msTick(F, p, q, n){
+  const a = F.P(p), b = F.P(q);
+  const dx = b[0] - a[0], dy = b[1] - a[1], L = Math.hypot(dx, dy) || 1;
+  const ux = dx / L, uy = dy / L, nx = -uy * 6, ny = ux * 6;
+  const m = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
+  let s = '';
+  for (let i = 0; i < (n || 1); i++){
+    const o = (i - ((n || 1) - 1) / 2) * 5;
+    const c = [m[0] + ux * o, m[1] + uy * o];
+    s += '<line x1="' + (c[0] - nx).toFixed(1) + '" y1="' + (c[1] - ny).toFixed(1) + '" x2="' + (c[0] + nx).toFixed(1)
+      + '" y2="' + (c[1] + ny).toFixed(1) + '" stroke="var(--text)" stroke-width="2"/>';
+  }
+  return s;
+}
+/* The one shape renderer. See the option list in the guide (§19). */
+function msShape(o){
+  const W = o.W || 300, H = o.H || 190;
+  const all = o.pts.slice();
+  (o.holes || []).forEach(function(h){ h.forEach(function(p){ all.push(p); }); });
+  (o.frame || []).forEach(function(p){ all.push(p); });
+  const F = msFit(all, W, H, o.padX || 58, o.padY || 26);
+  const ccw = msArea2(o.pts) > 0;
+  let s = '<path d="' + msPath(F, o.pts) + '" fill="' + (o.fill ? 'var(--accent)' : 'none') + '" fill-opacity="'
+    + (o.fill ? '0.22' : '0') + '" stroke="var(--text)" stroke-width="2.5" stroke-linejoin="round"/>';
+  (o.holes || []).forEach(function(h){
+    s += '<path d="' + msPath(F, h) + '" fill="var(--surface, #fff)" stroke="var(--text)" stroke-width="2.5"/>';
+  });
+  (o.lines || []).forEach(function(l){ s += msLine(F, l[0], l[1]); });
+  (o.dashed || []).forEach(function(l){ s += msLine(F, l[0], l[1], { dash: true, w: 1.8 }); });
+  (o.rights || []).forEach(function(r){ s += msRight(F, r.v, r.a, r.b); });
+  (o.ticks || []).forEach(function(t){ s += msTick(F, t.p, t.q, t.n); });
+  (o.lbl || []).forEach(function(l){ s += msEdgeLbl(F, l.p, l.q, l.t, (l.ccw === undefined ? ccw : l.ccw), l.inward, l.col); });
+  (o.side || []).forEach(function(l){ s += msSideLbl(F, l.p, l.q, l.t, l.side, l.col); });
+  (o.dots || []).forEach(function(d){ const P = F.P(d); s += '<circle cx="' + P[0].toFixed(1) + '" cy="' + P[1].toFixed(1) + '" r="3" fill="var(--text)"/>'; });
+  (o.texts || []).forEach(function(c){ const P = F.P(c.at); s += msText(P[0], P[1] + 5, c.t, { col: c.col, size: c.size }); });
+  if (o.extra) s += o.extra(F);
+  return '<svg viewBox="0 0 ' + W + ' ' + H + '" style="width:100%;max-width:' + (o.maxW || 330)
+    + 'px;display:block;margin:6px auto;">' + s + '</svg>';
+}
+function msQ(el, prompt, svg, sub){
+  el.innerHTML = '<div style="' + A_LBL + '">' + prompt + '</div>' + (svg || '')
+    + (sub ? '<div style="text-align:center;font-weight:800;margin-top:4px;">' + sub + '</div>' : '');
+}
+
+/* ── shape builders (each returns an SVG string) ─────────────────── */
+function msRectSVG(l, w, labels, o){
+  o = o || {};
+  const P = [[0, 0], [l, 0], [l, w], [0, w]];
+  const lb = [];
+  if (labels.b) lb.push({ p: P[0], q: P[1], t: labels.b });
+  if (labels.r) lb.push({ p: P[1], q: P[2], t: labels.r });
+  if (labels.t) lb.push({ p: P[2], q: P[3], t: labels.t });
+  if (labels.l) lb.push({ p: P[3], q: P[0], t: labels.l });
+  const ticks = o.square ? [0, 1, 2, 3].map(function(i){ return { p: P[i], q: P[(i + 1) % 4], n: 1 }; }) : [];
+  return msShape({ pts: P, lbl: lb, ticks: ticks, rights: [{ v: P[0], a: P[1], b: P[3] }], fill: o.fill,
+    texts: o.inside ? [{ at: [l / 2, w / 2], t: o.inside, size: 13 }] : [] });
+}
+/* Triangle on base (0,0)–(b,0) with apex (ax, h). */
+function msTriSVG(b, ax, h, o){
+  o = o || {};
+  const A = [0, 0], B = [b, 0], C = [ax, h];
+  const lb = [], dashed = [], rights = [], side = [];
+  if (o.base) lb.push({ p: A, q: B, t: o.base });
+  if (o.left) lb.push({ p: C, q: A, t: o.left });
+  if (o.right) lb.push({ p: B, q: C, t: o.right });
+  const foot = [ax, 0];
+  if (o.height){
+    const inside = ax > 1e-9 && ax < b - 1e-9, onA = Math.abs(ax) < 1e-9, onB = Math.abs(ax - b) < 1e-9;
+    if (inside){ dashed.push([C, foot]); rights.push({ v: foot, a: B, b: C }); }
+    else if (onA || onB){ rights.push({ v: foot, a: (onA ? B : A), b: C }); }
+    else { dashed.push([C, foot]); dashed.push([foot, ax < 0 ? A : B]); rights.push({ v: foot, a: (ax < 0 ? A : B), b: C }); }
+    if (onA) lb.push({ p: C, q: A, t: o.height });
+    else if (onB) lb.push({ p: B, q: C, t: o.height });
+    else side.push({ p: foot, q: C, t: o.height, side: (ax < 0 ? -1 : ax > b ? 1 : (ax > b / 2 ? -1 : 1)) });
+  }
+  return msShape({ pts: [A, B, C], lbl: lb, dashed: dashed, rights: rights, side: side,
+    ticks: o.ticks || [], frame: [foot], fill: o.fill });
+}
+function msParaSVG(b, off, h, o){
+  o = o || {};
+  const P = [[0, 0], [b, 0], [b + off, h], [off, h]];
+  const foot = [off, 0];
+  const lb = [{ p: P[0], q: P[1], t: o.base }];
+  if (o.slant) lb.push({ p: P[3], q: P[0], t: o.slant });
+  return msShape({ pts: P, lbl: lb, dashed: [[P[3], foot]], rights: [{ v: foot, a: P[1], b: P[3] }],
+    side: [{ p: foot, q: P[3], t: o.height, side: 1 }], fill: o.fill });
+}
+function msRegPts(n, s){
+  const pts = [[0, 0]];
+  let ang = 0, x = 0, y = 0;
+  for (let i = 0; i < n - 1; i++){
+    x += s * Math.cos(ang); y += s * Math.sin(ang);
+    pts.push([x, y]);
+    ang += 2 * Math.PI / n;
+  }
+  return pts;
+}
+const MS_POLY_NAME = { 3:'equilateral triangle', 4:'square', 5:'regular pentagon', 6:'regular hexagon', 8:'regular octagon' };
+
+/* L-shape: W × H with the top-right corner (W − w1) × (H − h1) removed, then
+   optionally mirrored. Returns the six corners and named edges. */
+function msLShape(W, H, w1, h1, flip){
+  let P = [[0, 0], [W, 0], [W, h1], [w1, h1], [w1, H], [0, H]];
+  if (flip) P = P.map(function(p){ return [W - p[0], p[1]]; });
+  return { P: P,
+    bottom: [P[0], P[1]], right: [P[1], P[2]], stepH: [P[2], P[3]], stepV: [P[3], P[4]], top: [P[4], P[5]], left: [P[5], P[0]] };
+}
+
+/* Circle pictures. kind: 'radius' | 'diameter' | 'plain'. */
+function msCircleSVG(r, o){
+  o = o || {};
+  const W = 300, H = 200, R = 74, cx = 150, cy = 100;
+  let s = '<circle cx="' + cx + '" cy="' + cy + '" r="' + R + '" fill="' + (o.fill ? 'var(--accent)' : 'none') + '" fill-opacity="'
+    + (o.fill ? '0.22' : '0') + '" stroke="' + (o.hl === 'circ' ? 'var(--accent)' : 'var(--text)') + '" stroke-width="' + (o.hl === 'circ' ? 5 : 2.5) + '"/>';
+  const ang = (o.angle != null ? o.angle : -32) * Math.PI / 180;
+  const ex = cx + R * Math.cos(ang), ey = cy + R * Math.sin(ang);
+  const col = function(part){ return (o.hl === part) ? 'var(--accent)' : 'var(--text)'; };
+  const wid = function(part){ return (o.hl === part) ? 5 : 2.2; };
+  let nx = -Math.sin(ang), ny = Math.cos(ang);
+  if (ny > 0) { nx = -nx; ny = -ny; }          // always label on the upper side of the line
+  const lblAt = function(px, py){
+    const off = 9 + Math.abs(nx) * msTxtW(o.lbl) / 2 + Math.abs(ny) * 8;
+    return msText(px + nx * off, py + ny * off + 5, o.lbl);
+  };
+  if (o.kind === 'radius' || o.hl === 'radius'){
+    s += '<line x1="' + cx + '" y1="' + cy + '" x2="' + ex.toFixed(1) + '" y2="' + ey.toFixed(1) + '" stroke="' + col('radius') + '" stroke-width="' + wid('radius') + '"/>';
+    if (o.lbl) s += lblAt((cx + ex) / 2, (cy + ey) / 2);
+  }
+  if (o.kind === 'diameter' || o.hl === 'diameter'){
+    const ax = cx - R * Math.cos(ang), ay = cy - R * Math.sin(ang);
+    s += '<line x1="' + ax.toFixed(1) + '" y1="' + ay.toFixed(1) + '" x2="' + ex.toFixed(1) + '" y2="' + ey.toFixed(1) + '" stroke="' + col('diameter') + '" stroke-width="' + wid('diameter') + '"/>';
+    if (o.lbl) s += lblAt(cx + R * 0.45 * Math.cos(ang), cy + R * 0.45 * Math.sin(ang));
+  }
+  s += '<circle cx="' + cx + '" cy="' + cy + '" r="' + (o.hl === 'centre' ? 6 : 3) + '" fill="' + col('centre') + '"/>';
+  if (o.inside) s += msText(cx, cy + 30, o.inside);
+  return '<svg viewBox="0 0 ' + W + ' ' + H + '" style="width:100%;max-width:260px;display:block;margin:6px auto;">' + s + '</svg>';
+}
+/* Sector of angle th (degrees) and radius r, symmetric about the upward vertical. */
+function msSectorPts(r, th){
+  const a0 = 90 - th / 2, a1 = 90 + th / 2;
+  const arc = msArcPts(0, 0, r, a0, a1);
+  return { pts: [[0, 0]].concat(arc), A: arc[0], B: arc[arc.length - 1], a0: a0, a1: a1 };
+}
+function msSectorSVG(r, th, o){
+  o = o || {};
+  const S = msSectorPts(r, th);
+  const extra = function(F){
+    let s = '';
+    if (o.rLbl && th > 180){
+      /* a reflex sector: the only open space is the notch, so the radius is
+         named as r = … just below the notch opening */
+      const a = S.a0 * Math.PI / 180, P = F.P([0, r * Math.sin(a)]);
+      s += msText(P[0], P[1] + 22, 'r = ' + o.rLbl);
+    } else if (o.rLbl){
+      /* the radius at angle a0 bounds the sector on its clockwise side, so the
+         outside of that edge is a further 90° clockwise. Works for reflex sectors
+         too, where it puts the label in the open notch. */
+      const a = S.a0 * Math.PI / 180, m = F.P([0.55 * r * Math.cos(a), 0.55 * r * Math.sin(a)]);
+      const nx = Math.sin(a), ny = Math.cos(a);           // screen coords (y down)
+      const off = 9 + Math.abs(nx) * msTxtW(o.rLbl) / 2 + Math.abs(ny) * 8;
+      s += msText(m[0] + nx * off, m[1] + ny * off + 5, o.rLbl);
+    }
+    if (th === 90) s += msRight(F, [0, 0], S.A, S.B, 12);
+    else {
+      const arc = msArcPts(0, 0, r * 0.2, S.a0, S.a1, 24);
+      s += '<path d="' + msPath(F, arc, false) + '" fill="none" stroke="var(--text)" stroke-width="1.6"/>';
+    }
+    if (o.thLbl){
+      /* inside the angle along its bisector (straight up), just past the arc mark */
+      /* a narrow sector has no room inside, so the angle sits just below the vertex */
+      if (th < 45) { const V = F.P([0, 0]); s += msText(V[0], V[1] + 20, o.thLbl, { size: 14 }); }
+      else { const P = F.P([0, r * 0.38]); s += msText(P[0], P[1] + 5, o.thLbl, { size: 14 }); }
+    }
+    if (o.arcLbl){
+      const P = F.P([0, r]);
+      s += msText(P[0], P[1] - 10, o.arcLbl, { col: 'var(--accent)' });
+    }
+    return s;
+  };
+  return msShape({ pts: S.pts, fill: o.fill, extra: extra, frame: [[0, 0]], padY: th > 180 ? 34 : 30, H: th > 180 ? 205 : 190 });
+}
+function msSemiSVG(r, o){
+  o = o || {};
+  const arc = msArcPts(0, 0, r, 0, 180);
+  const pts = arc.concat([[-r, 0]]);
+  const lb = [], lines = [], side = [];
+  if (o.dLbl) lb.push({ p: [-r, 0], q: [r, 0], t: o.dLbl, ccw: true });
+  if (o.rLbl) {
+    const e = [r * Math.cos(Math.PI / 4), r * Math.sin(Math.PI / 4)];
+    lines.push([[0, 0], e]);
+    side.push({ p: [0, 0], q: e, t: o.rLbl, side: -1 });
+  }
+  return msShape({ pts: pts, lbl: lb, dots: [[0, 0]], lines: lines, side: side, fill: o.fill, padY: 30 });
+}
+function msQuadSVG(r, o){
+  o = o || {};
+  const arc = msArcPts(0, 0, r, 0, 90);
+  const pts = [[0, 0]].concat(arc);
+  return msShape({ pts: pts, lbl: o.rLbl ? [{ p: [0, 0], q: [r, 0], t: o.rLbl }] : [],
+    rights: [{ v: [0, 0], a: [r, 0], b: [0, r] }], fill: o.fill, padX: 70 });
+}
+
+/* ═══ the dispatcher ══════════════════════════════════════════════ */
+function genMeas(el){
+  el.style.fontSize = '1.05rem';
+  if (skill === 'measLength')    return genMeasLength(el);
+  if (skill === 'measPerim')     return genMeasPerim(el);
+  if (skill === 'measCirc')      return genMeasCirc(el);
+  if (skill === 'measArc')       return genMeasArc(el);
+  if (skill === 'measAreaUnits') return genMeasAreaUnits(el);
+  if (skill === 'measArea')      return genMeasArea(el);
+  if (skill === 'measMissing')   return genMeasMissing(el);
+  if (skill === 'measQuad')      return genMeasQuad(el);
+  if (skill === 'measCircArea')  return genMeasCircArea(el);
+  if (skill === 'measComposite') return genMeasComposite(el);
+}
+
+/* ═══ 1. UNITS OF LENGTH ══════════════════════════════════════════ */
+const MS_LEN_OBJ = [
+  ['the length of an ant', 'mm'], ['the thickness of a coin', 'mm'], ['the width of a grain of rice', 'mm'],
+  ['the thickness of a credit card', 'mm'], ['the length of a ladybird', 'mm'],
+  ['the length of a pencil', 'cm'], ['the width of a book', 'cm'], ['the length of a shoe', 'cm'],
+  ['the length of a pencil case', 'cm'], ['the height of a coffee mug', 'cm'],
+  ['the length of a swimming pool', 'm'], ['the height of a gum tree', 'm'], ['the length of a netball court', 'm'],
+  ['the height of a skyscraper in the Melbourne CBD', 'm'], ['the length of a football oval', 'm'],
+  ['the distance from Melbourne to Sydney', 'km'], ['the length of the Murray River', 'km'],
+  ['the distance run in a marathon', 'km'], ['the distance flown from Perth to Darwin', 'km'],
+  ['the distance across Port Phillip Bay', 'km']
+];
+const MS_LEN_OPTS = ['millimetres (mm)', 'centimetres (cm)', 'metres (m)', 'kilometres (km)'];
+const MS_LEN_STEPS = [['m', 'cm', 100], ['cm', 'mm', 10], ['km', 'm', 1000], ['m', 'mm', 1000]];
+function genMeasLength(el){
+  if (level === 1){
+    const o = ffPick(MS_LEN_OBJ);
+    const right = MS_LEN_OPTS[['mm', 'cm', 'm', 'km'].indexOf(o[1])];
+    decSetChoice(el, '<div style="' + A_LBL + '">Which unit is the most sensible to measure</div>'
+      + '<div style="text-align:center;font-weight:900;font-size:1.3rem;margin:14px 0;">' + o[0] + '?</div>', MS_LEN_OPTS, right, true);
+    qData.workSteps = 'Think about the size: millimetres for tiny things, centimetres for things you hold, metres for rooms, buildings and sports grounds, kilometres for journeys. So <b>' + right + '</b>.';
+    return;
+  }
+  if (level === 2 || level === 3){
+    const st = ffPick(MS_LEN_STEPS), big = st[0], small = st[1], f = st[2];
+    let bigVal;
+    const k = ri(3);
+    if (k === 0) bigVal = rr(1, 20);
+    else if (k === 1 || f === 10) bigVal = dp(rr(11, 99) / 10, 1);
+    else bigVal = dp(rr(101, 999) / 100, 2);
+    const smallVal = dp(bigVal * f, 6);
+    if (level === 2){
+      qData.ans = smallVal; qData.ansDisplay = msU(smallVal, small);
+      qData.workSteps = '1 ' + big + ' = ' + msNum(f) + ' ' + small + '. Big unit → small unit, so multiply: ' + msNum(bigVal) + ' × ' + msNum(f) + ' = <b>' + msU(smallVal, small) + '</b>.';
+      msQ(el, 'Convert to ' + small + '.', '', '<span style="font-size:1.9rem;">' + msU(bigVal, big) + ' = ? ' + small + '</span>');
+    } else {
+      qData.ans = bigVal; qData.ansDisplay = msU(bigVal, big);
+      qData.workSteps = msNum(f) + ' ' + small + ' = 1 ' + big + '. Small unit → big unit, so divide: ' + msNum(smallVal) + ' ÷ ' + msNum(f) + ' = <b>' + msU(bigVal, big) + '</b>.';
+      msQ(el, 'Convert to ' + big + '.', '', '<span style="font-size:1.9rem;">' + msU(smallVal, small) + ' = ? ' + big + '</span>');
+    }
+    return;
+  }
+  if (level === 4){
+    const toMM = Math.random() < 0.4, f = toMM ? 1000000 : 100000, small = toMM ? 'mm' : 'cm';
+    const km = toMM ? ffPick([rr(1, 9), dp(rr(11, 99) / 10, 1)]) : ffPick([rr(1, 9), dp(rr(11, 99) / 10, 1), dp(rr(101, 999) / 100, 2)]);
+    const sv = dp(km * f, 6), down = Math.random() < 0.5;
+    const via = toMM ? 'km → m (× 1000), then m → mm (× 1000)' : 'km → m (× 1000), then m → cm (× 100)';
+    if (down){
+      qData.ans = sv; qData.ansDisplay = msU(sv, small);
+      qData.workSteps = 'Go through metres: ' + via + '. That is × ' + msNum(f) + ': ' + msNum(km) + ' × ' + msNum(f) + ' = <b>' + msU(sv, small) + '</b>.';
+      msQ(el, 'Convert to ' + small + '.', '', '<span style="font-size:1.8rem;">' + msU(km, 'km') + ' = ? ' + small + '</span>');
+    } else {
+      qData.ans = km; qData.ansDisplay = msU(km, 'km');
+      qData.workSteps = 'Go back through metres: ' + small + ' → m, then m → km. That is ÷ ' + msNum(f) + ': ' + msNum(sv) + ' ÷ ' + msNum(f) + ' = <b>' + msU(km, 'km') + '</b>.';
+      msQ(el, 'Convert to km.', '', '<span style="font-size:1.8rem;">' + msU(sv, small) + ' = ? km</span>');
+    }
+    return;
+  }
+  /* Level 5: order four lengths in mixed units (compared in mm). */
+  const smallSet = Math.random() < 0.5;
+  let tiles = [], g = 0;
+  while (g++ < 80){
+    tiles = []; const seen = {}, units = {};
+    const anchor = rr(30, 250) * 10;
+    let ok = true;
+    for (let i = 0; i < 4; i++){
+      const u = smallSet ? ffPick(['mm', 'cm', 'm']) : ffPick(['cm', 'm', 'km']);
+      const base = Math.round(anchor * (0.55 + Math.random() * 1.1) / 10) * 10;
+      let shown, mm;
+      if (smallSet){ mm = base; shown = u === 'mm' ? base : (u === 'cm' ? base / 10 : base / 1000); }
+      else { mm = base * 1000; shown = u === 'cm' ? base * 100 : (u === 'm' ? base : base / 1000); }
+      if (seen[mm]) { ok = false; break; }
+      seen[mm] = 1; units[u] = 1;
+      tiles.push({ val: mm, html: '<b>' + msU(shown, u) + '</b>', text: msU(shown, u) });
+    }
+    if (ok && Object.keys(units).length >= 2) break;
+  }
+  cmpSetOrder(el, tiles, 'asc');
+  qData.arrangeInstr = 'Tap the lengths from shortest to longest.';
+  el.innerHTML = '<div style="' + A_LBL + '">Put these lengths in order from <b>shortest</b> to <b>longest</b>.</div>';
+  qData.workSteps = 'Change them all to ' + (smallSet ? 'millimetres' : 'metres') + ' first, then compare. In order: '
+    + qData.arrangeAns.map(function(c){ return qData.arrangeText[c]; }).join(' , ') + '.';
+}
+
+/* ═══ 2. PERIMETER ════════════════════════════════════════════════ */
+const MS_TRIPLES = [[3, 4, 5], [6, 8, 10], [5, 12, 13], [9, 12, 15], [8, 15, 17], [12, 16, 20], [7, 24, 25]];
+function msTriple(maxLeg){
+  const pool = MS_TRIPLES.filter(function(t){ return t[1] <= (maxLeg || 99); });
+  const t = ffPick(pool);
+  return Math.random() < 0.5 ? [t[0], t[1], t[2]] : [t[1], t[0], t[2]];
+}
+/* A not-too-flat triangle with whole sides; L = left (apex to A), R = right, B = base. */
+function msSSS(lo, hi){
+  for (let g = 0; g < 300; g++){
+    const L = rr(lo, hi), R = rr(lo, hi), B = rr(lo, hi);
+    if (L + R <= B + 2 || L + B <= R + 2 || R + B <= L + 2) continue;
+    const ax = (L * L + B * B - R * R) / (2 * B), h = Math.sqrt(Math.max(0, L * L - ax * ax));
+    if (h < B * 0.35) continue;
+    return { L: L, R: R, B: B, ax: ax, h: h };
+  }
+  return { L: 5, R: 6, B: 7, ax: 19 / 7, h: Math.sqrt(25 - (19 / 7) * (19 / 7)) };
+}
+function genMeasPerim(el){
+  const u = msUnit();
+  if (level === 1){
+    if (Math.random() < 0.3){
+      const s = msLen(2, 25, 0.25);
+      qData.ans = dp(4 * s, 6); qData.ansDisplay = msU(qData.ans, u);
+      qData.workSteps = 'A square has four equal sides: 4 × ' + msNum(s) + ' = <b>' + qData.ansDisplay + '</b>.';
+      msQ(el, 'Find the perimeter of this square.', msRectSVG(s, s, { b: msU(s, u) }, { square: true }));
+      return;
+    }
+    let l = msLen(4, 24, 0.25), w = msLen(2, 15, 0.2);
+    if (w > l) { const t = l; l = w; w = t; }
+    if (l < w * 1.3) l = dp(w * 1.3 + rr(1, 4), 1);
+    qData.ans = dp(2 * (l + w), 6); qData.ansDisplay = msU(qData.ans, u);
+    qData.workSteps = 'Two lengths and two widths: 2 × ' + msNum(l) + ' + 2 × ' + msNum(w) + ' = ' + msNum(2 * l) + ' + ' + msNum(2 * w) + ' = <b>' + qData.ansDisplay + '</b>.';
+    msQ(el, 'Find the perimeter of this rectangle.', msRectSVG(l, w, { b: msU(l, u), r: msU(w, u) }));
+    return;
+  }
+  if (level === 2){
+    const k = ri(3);
+    if (k === 0){
+      const T = msSSS(3, 20);
+      qData.ans = T.L + T.R + T.B; qData.ansDisplay = msU(qData.ans, u);
+      qData.workSteps = 'Add all three sides: ' + T.L + ' + ' + T.R + ' + ' + T.B + ' = <b>' + qData.ansDisplay + '</b>.';
+      msQ(el, 'Find the perimeter of this triangle.', msTriSVG(T.B, T.ax, T.h, { base: msU(T.B, u), left: msU(T.L, u), right: msU(T.R, u) }));
+      return;
+    }
+    const t = ffPick([[3, 4, 5], [4, 3, 5], [6, 8, 10], [8, 6, 10], [5, 12, 13], [9, 12, 15], [12, 9, 15]]);
+    const off = t[0], h = t[1], leg = t[2];
+    if (k === 1){
+      const top = rr(3, 14), bot = top + 2 * off;
+      qData.ans = top + bot + 2 * leg; qData.ansDisplay = msU(qData.ans, u);
+      const P = [[0, 0], [bot, 0], [bot - off, h], [off, h]];
+      qData.workSteps = 'Add all four sides: ' + bot + ' + ' + leg + ' + ' + top + ' + ' + leg + ' = <b>' + qData.ansDisplay + '</b>.';
+      msQ(el, 'Find the perimeter of this trapezium.', msShape({ pts: P,
+        lbl: [{ p: P[0], q: P[1], t: msU(bot, u) }, { p: P[1], q: P[2], t: msU(leg, u) }, { p: P[2], q: P[3], t: msU(top, u) }, { p: P[3], q: P[0], t: msU(leg, u) }] }));
+      return;
+    }
+    const top = rr(3, 14), bot = top + off;
+    qData.ans = top + bot + h + leg; qData.ansDisplay = msU(qData.ans, u);
+    const P = [[0, 0], [bot, 0], [top, h], [0, h]];
+    qData.workSteps = 'Add all four sides: ' + bot + ' + ' + leg + ' + ' + top + ' + ' + h + ' = <b>' + qData.ansDisplay + '</b>.';
+    msQ(el, 'Find the perimeter of this shape.', msShape({ pts: P, rights: [{ v: P[0], a: P[1], b: P[3] }, { v: P[3], a: P[0], b: P[2] }],
+      lbl: [{ p: P[0], q: P[1], t: msU(bot, u) }, { p: P[1], q: P[2], t: msU(leg, u) }, { p: P[2], q: P[3], t: msU(top, u) }, { p: P[3], q: P[0], t: msU(h, u) }] }));
+    return;
+  }
+  if (level === 3){
+    const n = ffPick([3, 5, 6, 8, 5, 6]), s = msLen(2, 25, 0.3);
+    const P = msRegPts(n, s);
+    qData.ans = dp(n * s, 6); qData.ansDisplay = msU(qData.ans, u);
+    qData.workSteps = 'A ' + MS_POLY_NAME[n] + ' has ' + n + ' equal sides: ' + n + ' × ' + msNum(s) + ' = <b>' + qData.ansDisplay + '</b>.';
+    msQ(el, 'This shape is regular: the tick marks show the sides are equal. Find its perimeter.',
+      msShape({ pts: P, lbl: [{ p: P[0], q: P[1], t: msU(s, u) }], ticks: P.map(function(p, i){ return { p: p, q: P[(i + 1) % n], n: 1 }; }) }));
+    return;
+  }
+  if (level === 4){
+    const rect = Math.random() < 0.6, pair = ffPick([['m', 'cm', 100], ['cm', 'mm', 10]]);
+    const B = pair[0], S = pair[1], f = pair[2], askSmall = Math.random() < 0.6;
+    if (rect){
+      /* the length is in the big unit; the width (in the small unit) is always
+         the shorter side, so the drawing matches the numbers */
+      let lB, wS;
+      if (f === 100){ lB = dp(rr(11, 30) / 10, 1); wS = rr(15, Math.min(95, Math.floor(lB * 100) - 10)); }
+      else { lB = rr(5, 30); wS = rr(15, Math.min(95, lB * 10 - 5)); }
+      const lS = dp(lB * f, 6), wB = dp(wS / f, 6);
+      const ans = askSmall ? dp(2 * (lS + wS), 6) : dp(2 * (lB + wB), 6);
+      qData.ans = ans; qData.ansDisplay = msU(ans, askSmall ? S : B);
+      qData.workSteps = askSmall
+        ? 'Convert first: ' + msU(lB, B) + ' = ' + msU(lS, S) + '. Then 2 × ' + msNum(lS) + ' + 2 × ' + wS + ' = <b>' + qData.ansDisplay + '</b>.'
+        : 'Convert first: ' + msU(wS, S) + ' = ' + msU(wB, B) + '. Then 2 × ' + msNum(lB) + ' + 2 × ' + msNum(wB) + ' = <b>' + qData.ansDisplay + '</b>.';
+      msQ(el, 'Find the perimeter of this rectangle in <b>' + (askSmall ? S : B) + '</b>.', msRectSVG(lB, wB, { b: msU(lB, B), r: msU(wS, S) }));
+      return;
+    }
+    let T, bS, bB, tax, th, g4 = 0;
+    do {
+      T = msSSS(4, 15);
+      bS = T.B * f + (f === 100 ? rr(1, 19) * 5 : rr(1, 9));      // e.g. 1145 cm, 124 mm
+      bB = dp(bS / f, 6);
+      tax = (T.L * T.L + bB * bB - T.R * T.R) / (2 * bB);
+      th = Math.sqrt(Math.max(0, T.L * T.L - tax * tax));
+    } while (th < 0.35 * bB && g4++ < 100);
+    const ans = askSmall ? dp((T.L + T.R) * f + bS, 6) : dp(T.L + T.R + bB, 6);
+    qData.ans = ans; qData.ansDisplay = msU(ans, askSmall ? S : B);
+    qData.workSteps = askSmall
+      ? 'Convert the ' + B + ' sides: ' + T.L + ' ' + B + ' = ' + msU(T.L * f, S) + ', ' + T.R + ' ' + B + ' = ' + msU(T.R * f, S) + '. Add: ' + msNum(T.L * f) + ' + ' + msNum(T.R * f) + ' + ' + msNum(bS) + ' = <b>' + qData.ansDisplay + '</b>.'
+      : 'Convert the base: ' + msU(bS, S) + ' = ' + msU(bB, B) + '. Add: ' + T.L + ' + ' + T.R + ' + ' + msNum(bB) + ' = <b>' + qData.ansDisplay + '</b>.';
+    msQ(el, 'Find the perimeter of this triangle in <b>' + (askSmall ? S : B) + '</b>.', msTriSVG(bB, tax, th, { base: msU(bS, S), left: msU(T.L, B), right: msU(T.R, B) }));
+    return;
+  }
+  if (level === 5){
+    const k = ri(4);
+    if (k === 0){
+      const l = rr(6, 25), w = rr(2, l - 2), P = 2 * (l + w);
+      qData.ans = w; qData.ansDisplay = msU(w, u);
+      qData.workSteps = 'P = 2 × length + 2 × width, so 2 × width = ' + P + ' − 2 × ' + l + ' = ' + (P - 2 * l) + ', and the width is ' + (P - 2 * l) + ' ÷ 2 = <b>' + qData.ansDisplay + '</b>.';
+      msQ(el, 'The perimeter of this rectangle is <b>' + msU(P, u) + '</b>. Find the missing side.', msRectSVG(l, w, { b: msU(l, u), r: '?' }));
+      return;
+    }
+    if (k === 1){
+      const n = ffPick([3, 5, 6, 8]), s = rr(2, 20), P = msRegPts(n, s);
+      qData.ans = s; qData.ansDisplay = msU(s, u);
+      qData.workSteps = 'All ' + n + ' sides are equal: ' + (n * s) + ' ÷ ' + n + ' = <b>' + qData.ansDisplay + '</b>.';
+      msQ(el, 'This ' + MS_POLY_NAME[n] + ' has a perimeter of <b>' + msU(n * s, u) + '</b>. Find the length of one side.',
+        msShape({ pts: P, lbl: [{ p: P[0], q: P[1], t: '?' }], ticks: P.map(function(p, i){ return { p: p, q: P[(i + 1) % n], n: 1 }; }) }));
+      return;
+    }
+    if (k === 2){
+      let a, b, g = 0;
+      do { a = rr(5, 20); b = rr(3, 2 * a - 2); } while ((b < a * 0.5 || b === a) && g++ < 50);
+      const P = 2 * a + b, h = Math.sqrt(a * a - b * b / 4);
+      qData.ans = b; qData.ansDisplay = msU(b, u);
+      qData.workSteps = 'Isosceles: the two marked sides are both ' + a + '. Base = ' + P + ' − ' + a + ' − ' + a + ' = <b>' + qData.ansDisplay + '</b>.';
+      msQ(el, 'This isosceles triangle has a perimeter of <b>' + msU(P, u) + '</b>. Find the base.',
+        msTriSVG(b, b / 2, h, { base: '?', left: msU(a, u), right: msU(a, u), ticks: [{ p: [0, 0], q: [b / 2, h], n: 1 }, { p: [b, 0], q: [b / 2, h], n: 1 }] }));
+      return;
+    }
+    const T = msSSS(4, 20), P = T.L + T.R + T.B, which = ri(3);
+    const val = [T.B, T.L, T.R][which];
+    qData.ans = val; qData.ansDisplay = msU(val, u);
+    const known = [T.B, T.L, T.R].filter(function(v, i){ return i !== which; });
+    qData.workSteps = 'Take the two known sides from the perimeter: ' + P + ' − ' + known[0] + ' − ' + known[1] + ' = <b>' + qData.ansDisplay + '</b>.';
+    msQ(el, 'This triangle has a perimeter of <b>' + msU(P, u) + '</b>. Find the side marked ?.',
+      msTriSVG(T.B, T.ax, T.h, { base: which === 0 ? '?' : msU(T.B, u), left: which === 1 ? '?' : msU(T.L, u), right: which === 2 ? '?' : msU(T.R, u) }));
+    return;
+  }
+  if (level === 6){
+    const W = rr(8, 20), H = rr(6, 16), w1 = rr(2, W - 3), h1 = rr(2, H - 3);
+    const S = msLShape(W, H, w1, h1, Math.random() < 0.5);
+    const a = W - w1, b = H - h1;
+    qData.gapTemplate = ['a = ', 0, '&nbsp;' + u + '&nbsp;&nbsp;&nbsp;&nbsp;b = ', 1, '&nbsp;' + u];
+    qData.gapAns = [a, b];
+    qData.gapHint = 'Find a and b.';
+    qData.gapAnsText = 'a = ' + a + ' ' + u + ', b = ' + b + ' ' + u;
+    qData.workSteps = 'The short sides across add up to the long side: a = ' + W + ' − ' + w1 + ' = <b>' + a + '</b>.<br>'
+      + 'The short sides up add up to the long side: b = ' + H + ' − ' + h1 + ' = <b>' + b + '</b>.';
+    msQ(el, 'Every corner is a right angle. Find the lengths a and b.', msShape({ pts: S.P,
+      lbl: [{ p: S.bottom[0], q: S.bottom[1], t: msU(W, u) }, { p: S.left[0], q: S.left[1], t: msU(H, u) },
+            { p: S.top[0], q: S.top[1], t: msU(w1, u) }, { p: S.right[0], q: S.right[1], t: msU(h1, u) },
+            { p: S.stepH[0], q: S.stepH[1], t: 'a', col: 'var(--accent)' }, { p: S.stepV[0], q: S.stepV[1], t: 'b', col: 'var(--accent)' }] }));
+    return;
+  }
+  if (level === 7){
+    if (Math.random() < 0.5){
+      const r = ffPick([[3, 2], [2, 1], [3, 1], [4, 3], [5, 2], [5, 3], [4, 1]]), k = rr(2, 12);
+      const L = r[0] * k, Wd = r[1] * k, P = 2 * (L + Wd);
+      qData.gapTemplate = ['length = ', 0, '&nbsp;' + u + '&nbsp;&nbsp;&nbsp;width = ', 1, '&nbsp;' + u];
+      qData.gapAns = [L, Wd];
+      qData.gapHint = 'Fill in the length and the width.';
+      qData.gapAnsText = 'length ' + L + ' ' + u + ', width ' + Wd + ' ' + u;
+      qData.workSteps = 'Going round the rectangle counts ' + r[0] + ' + ' + r[1] + ' + ' + r[0] + ' + ' + r[1] + ' = ' + (2 * (r[0] + r[1])) + ' parts.<br>'
+        + 'One part = ' + P + ' ÷ ' + (2 * (r[0] + r[1])) + ' = ' + k + '. Length = ' + r[0] + ' × ' + k + ' = <b>' + L + '</b>, width = ' + r[1] + ' × ' + k + ' = <b>' + Wd + '</b>.';
+      msQ(el, 'The length and width of a rectangle are in the ratio <b>' + r[0] + ' : ' + r[1] + '</b>. Its perimeter is <b>' + msU(P, u) + '</b>.<br>Find its length and width.', '');
+      return;
+    }
+    const r = ffPick([[2, 3, 4], [3, 4, 5], [2, 4, 5], [4, 5, 6], [3, 5, 7], [5, 6, 7], [2, 3, 3]]), k = rr(2, 9);
+    const s = r.map(function(x){ return x * k; }), P = s[0] + s[1] + s[2], parts = r[0] + r[1] + r[2];
+    qData.gapTemplate = [0, '&nbsp;' + u + ',&nbsp;&nbsp;', 1, '&nbsp;' + u + ',&nbsp;&nbsp;', 2, '&nbsp;' + u];
+    qData.gapAns = s;
+    qData.gapHint = 'Shortest side first.';
+    qData.gapAnsText = s.join(' ' + u + ', ') + ' ' + u;
+    qData.workSteps = 'Total parts = ' + r.join(' + ') + ' = ' + parts + '. One part = ' + P + ' ÷ ' + parts + ' = ' + k + '.<br>Sides: <b>' + s.join(', ') + '</b>.';
+    msQ(el, 'The sides of a triangle are in the ratio <b>' + r.join(' : ') + '</b>. Its perimeter is <b>' + msU(P, u) + '</b>.<br>Find the three side lengths.', '');
+    return;
+  }
+  /* Level 8 (Enrichment): two people each measure three sides of one rectangle. */
+  let l, w;
+  do { l = rr(4, 30); w = rr(3, 25); } while (l === w);
+  const X = 2 * l + w, Y = l + 2 * w;
+  qData.ans = 2 * (l + w); qData.ansDisplay = msU(qData.ans, u);
+  qData.workSteps = 'One person measured two of one side and one of the other; the other person did the opposite. Together that is three lengths and three widths:<br>'
+    + X + ' + ' + Y + ' = ' + (X + Y) + ' = 3 × (length + width), so length + width = ' + ((X + Y) / 3) + '.<br>Perimeter = 2 × ' + ((X + Y) / 3) + ' = <b>' + qData.ansDisplay + '</b>.';
+  msQ(el, 'Luna measures three sides of a rectangle and they total <b>' + msU(X, u) + '</b>. Mateo measures three sides of the same rectangle and they total <b>' + msU(Y, u) + '</b>.<br>Find the perimeter of the rectangle.', '');
+}
+
+/* ═══ 3. CIRCUMFERENCE ════════════════════════════════════════════ */
+const MS_CIRC_PARTS = ['centre', 'radius', 'diameter', 'circumference'];
+function genMeasCirc(el){
+  const u = msUnit();
+  if (level === 1){
+    const p = ffPick(MS_CIRC_PARTS);
+    const hl = { centre: 'centre', radius: 'radius', diameter: 'diameter', circumference: 'circ' }[p];
+    decSetChoice(el, '<div style="' + A_LBL + '">What is the highlighted part of the circle called?</div>'
+      + msCircleSVG(1, { hl: hl, angle: ffPick([-32, -150, 25, 160, -70]) }), MS_CIRC_PARTS.slice(), p, true);
+    qData.workSteps = { centre: 'The point in the middle is the <b>centre</b>.',
+      radius: 'A line from the centre to the edge is a <b>radius</b>.',
+      diameter: 'A line from edge to edge THROUGH the centre is a <b>diameter</b>. It is two radii long.',
+      circumference: 'The distance all the way around is the <b>circumference</b>.' }[p];
+    return;
+  }
+  if (level === 2){
+    const r = msLen(2, 40, 0.35), toD = Math.random() < 0.5;
+    if (toD){
+      qData.ans = dp(2 * r, 6); qData.ansDisplay = msU(qData.ans, u);
+      qData.workSteps = 'd = 2r = 2 × ' + msNum(r) + ' = <b>' + qData.ansDisplay + '</b>.';
+      msQ(el, 'Find the <b>diameter</b> of this circle.', msCircleSVG(r, { kind: 'radius', lbl: msU(r, u) }));
+    } else {
+      const d = dp(2 * r, 6);
+      qData.ans = r; qData.ansDisplay = msU(r, u);
+      qData.workSteps = 'r = d ÷ 2 = ' + msNum(d) + ' ÷ 2 = <b>' + qData.ansDisplay + '</b>.';
+      msQ(el, 'Find the <b>radius</b> of this circle.', msCircleSVG(r, { kind: 'diameter', lbl: msU(d, u) }));
+    }
+    return;
+  }
+  if (level === 3){
+    const d = rr(2, 30);
+    msSetPiExact(0, d, u);
+    qData.workSteps = 'C = πd = π × ' + d + ' = <b>' + qData.ansDisplay + '</b>.';
+    msQ(el, 'Find the circumference. Give your answer <b>exactly</b>, in terms of π.', msCircleSVG(d / 2, { kind: 'diameter', lbl: msU(d, u) }));
+    return;
+  }
+  if (level === 4){
+    if (Math.random() < 0.7){
+      const r = rr(2, 20);
+      msSetPiExact(0, 2 * r, u);
+      qData.workSteps = 'C = 2πr = 2 × π × ' + r + ' = <b>' + qData.ansDisplay + '</b>.';
+      msQ(el, 'Find the circumference. Give your answer <b>exactly</b>, in terms of π.', msCircleSVG(r, { kind: 'radius', lbl: msU(r, u) }));
+    } else {
+      const d = rr(3, 30);
+      msSetPiExact(0, d, u);
+      qData.workSteps = 'This time you are given the diameter, so C = πd = <b>' + qData.ansDisplay + '</b>.';
+      msQ(el, 'Find the circumference. Give your answer <b>exactly</b>, in terms of π.', msCircleSVG(d / 2, { kind: 'diameter', lbl: msU(d, u) }));
+    }
+    return;
+  }
+  if (level === 5){
+    const r = msRoll(function(){
+      const isR = Math.random() < 0.5, v = msLen(isR ? 2 : 3, isR ? 25 : 40, 0.35);
+      const p = msPi2(function(P){ return isR ? 2 * P * v : P * v; });
+      return p ? { isR: isR, v: v, p: p } : null;
+    });
+    msSetPi2(r.p, u);
+    qData.workSteps = (r.isR ? 'C = 2πr = 2 × π × ' + msNum(r.v) : 'C = πd = π × ' + msNum(r.v)) + ' = ' + (r.isR ? 2 * Math.PI * r.v : Math.PI * r.v).toFixed(4)
+      + '… = <b>' + qData.ansDisplay + '</b> (2 d.p.). Use the π key: 3.14 gives ' + msNum(r.p.alt) + ', which is not the same to two decimal places.';
+    msQ(el, 'Find the circumference, correct to <b>two decimal places</b>.', msCircleSVG(r.v, { kind: r.isR ? 'radius' : 'diameter', lbl: msU(r.v, u) }));
+    return;
+  }
+  if (level === 6){
+    const d = rr(2, 20) * 2, askR = Math.random() < 0.6;
+    qData.ans = askR ? d / 2 : d; qData.ansDisplay = msU(qData.ans, u);
+    qData.workSteps = 'C = πd, so the number in front of π is the diameter: d = ' + d + (askR ? ', and r = ' + d + ' ÷ 2 = <b>' + qData.ansDisplay + '</b>.' : '. So d = <b>' + qData.ansDisplay + '</b>.');
+    msQ(el, 'A circle has a circumference of <b>' + d + 'π ' + u + '</b>. Find its <b>' + (askR ? 'radius' : 'diameter') + '</b>.', msCircleSVG(1, { kind: 'plain', inside: 'C = ' + d + 'π ' + u }));
+    return;
+  }
+  /* Level 7 (Enrichment): laps and paths. */
+  if (Math.random() < 0.5){
+    const r = msRoll(function(){
+      const D = ffPick([60, 70, 75, 80, 90, 100, 120]), n = rr(3, 15);
+      const a = Math.round(n * Math.PI * D), b = Math.round(n * 3.14 * D);
+      return a !== b ? { D: D, n: n, a: a, b: b } : null;
+    });
+    qData.ans = r.a; qData.pi314 = r.b; qData.ansDisplay = msU(r.a, 'm');
+    qData.workSteps = 'One lap = πd = π × ' + r.D + ' = ' + (Math.PI * r.D).toFixed(3) + '… m.<br>' + r.n + ' laps = ' + r.n + ' × ' + (Math.PI * r.D).toFixed(3) + '… = ' + (r.n * Math.PI * r.D).toFixed(2) + ' m ≈ <b>' + qData.ansDisplay + '</b>.';
+    msQ(el, 'A circular running track has a diameter of <b>' + r.D + ' m</b>. A runner completes <b>' + r.n + ' laps</b>. How far does the runner travel, correct to the <b>nearest metre</b>?', '');
+    return;
+  }
+  const r = msRoll(function(){
+    const d = rr(4, 20), w = ffPick([1, 1.5, 2, 0.5]);
+    const p = msPi2(function(P){ return P * (d + 2 * w); });
+    return p ? { d: d, w: w, p: p } : null;
+  });
+  msSetPi2(r.p, 'm');
+  qData.workSteps = 'The path adds ' + msNum(r.w) + ' m on EACH side, so the outer diameter is ' + r.d + ' + 2 × ' + msNum(r.w) + ' = ' + msNum(r.d + 2 * r.w) + ' m.<br>C = π × ' + msNum(r.d + 2 * r.w) + ' = <b>' + qData.ansDisplay + '</b>.';
+  msQ(el, 'A circular pond has a diameter of <b>' + r.d + ' m</b>. A path <b>' + msNum(r.w) + ' m</b> wide goes all the way around it. Find the distance around the <b>outside edge</b> of the path, correct to two decimal places.', '');
+}
+
+/* ═══ 4. PERIMETER OF CIRCLE PARTS ════════════════════════════════ */
+const MS_SECTOR_TH = [20, 30, 36, 40, 45, 60, 72, 80, 100, 108, 120, 135, 140, 144, 150, 160, 200, 210, 216, 225, 240, 252, 270, 288, 300, 315];
+function msSectorPair(test){
+  const pairs = [];
+  MS_SECTOR_TH.forEach(function(th){ for (let r = 2; r <= 20; r++) if (test(th, r)) pairs.push([th, r]); });
+  return ffPick(pairs);
+}
+function genMeasArc(el){
+  const u = msUnit();
+  if (level === 1){
+    if (Math.random() < 0.55){
+      const useD = Math.random() < 0.6, r = rr(2, 15);
+      msSetPiExact(0, r, u);
+      qData.workSteps = 'The curve is half the circumference: ½ × π × ' + (2 * r) + ' = <b>' + qData.ansDisplay + '</b>.';
+      msQ(el, 'Find the length of the <b>curved part only</b> of this semicircle. Give it exactly, in terms of π.',
+        msSemiSVG(r, useD ? { dLbl: msU(2 * r, u) } : { rLbl: msU(r, u) }));
+    } else {
+      const r = rr(1, 10) * 2;
+      msSetPiExact(0, r / 2, u);
+      qData.workSteps = 'The curve is a quarter of the circumference: ¼ × 2 × π × ' + r + ' = <b>' + qData.ansDisplay + '</b>.';
+      msQ(el, 'Find the length of the <b>curved part only</b> of this quadrant. Give it exactly, in terms of π.', msQuadSVG(r, { rLbl: msU(r, u) }));
+    }
+    return;
+  }
+  if (level === 2){
+    const r = msRoll(function(){
+      const semi = Math.random() < 0.5, v = semi ? msLen(3, 30, 0.2) : msLen(2, 20, 0.2);
+      const p = semi ? msPi2(function(P){ return P * v / 2 + v; }) : msPi2(function(P){ return P * v / 2 + 2 * v; });
+      return p ? { semi: semi, v: v, p: p } : null;
+    });
+    msSetPi2(r.p, u);
+    if (r.semi){
+      qData.workSteps = 'Curve = ½ × π × ' + msNum(r.v) + ' = ' + (Math.PI * r.v / 2).toFixed(4) + '…<br>Add the straight edge (the diameter): + ' + msNum(r.v) + ' = <b>' + qData.ansDisplay + '</b>.';
+      msQ(el, 'Find the perimeter of this semicircle, correct to two decimal places.', msSemiSVG(r.v / 2, { dLbl: msU(r.v, u) }));
+    } else {
+      qData.workSteps = 'Curve = ¼ × 2 × π × ' + msNum(r.v) + ' = ' + (Math.PI * r.v / 2).toFixed(4) + '…<br>Add the two radii: + 2 × ' + msNum(r.v) + ' = <b>' + qData.ansDisplay + '</b>.';
+      msQ(el, 'Find the perimeter of this quadrant, correct to two decimal places.', msQuadSVG(r.v, { rLbl: msU(r.v, u) }));
+    }
+    return;
+  }
+  if (level === 3){
+    if (Math.random() < 0.5){
+      const r = rr(2, 15);
+      msSetPiExact(2 * r, r, u);
+      qData.workSteps = 'Straight edge = ' + (2 * r) + '. Curve = ½ × π × ' + (2 * r) + ' = ' + msPiTxt(0, r) + '.<br>Perimeter = <b>' + qData.ansDisplay + '</b>.';
+      msQ(el, 'Find the perimeter of this semicircle. Give it exactly, in terms of π.', msSemiSVG(r, { dLbl: msU(2 * r, u) }));
+    } else {
+      const r = rr(1, 10) * 2;
+      msSetPiExact(2 * r, r / 2, u);
+      qData.workSteps = 'Two radii = 2 × ' + r + ' = ' + (2 * r) + '. Curve = ¼ × 2 × π × ' + r + ' = ' + msPiTxt(0, r / 2) + '.<br>Perimeter = <b>' + qData.ansDisplay + '</b>.';
+      msQ(el, 'Find the perimeter of this quadrant. Give it exactly, in terms of π.', msQuadSVG(r, { rLbl: msU(r, u) }));
+    }
+    return;
+  }
+  if (level === 4 || level === 5){
+    const pr = msSectorPair(function(th, r){ return (th * r) % 180 === 0; });
+    const th = pr[0], r = pr[1], k = th * r / 180;
+    if (level === 4){
+      msSetPiExact(0, k, u);
+      qData.workSteps = 'Arc = ' + th + '/360 × 2 × π × ' + r + ' = <b>' + qData.ansDisplay + '</b>.';
+      msQ(el, 'Find the <b>arc length</b> of this sector. Give it exactly, in terms of π.', msSectorSVG(r, th, { rLbl: msU(r, u), thLbl: th + '°' }));
+    } else {
+      msSetPiExact(2 * r, k, u);
+      qData.workSteps = 'Arc = ' + th + '/360 × 2 × π × ' + r + ' = ' + msPiTxt(0, k) + '. Add the two radii: 2 × ' + r + ' = ' + (2 * r) + '.<br>Perimeter = <b>' + qData.ansDisplay + '</b>.';
+      msQ(el, 'Find the <b>perimeter</b> of this sector. Give it exactly, in terms of π.', msSectorSVG(r, th, { rLbl: msU(r, u), thLbl: th + '°' }));
+    }
+    return;
+  }
+  if (level === 6){
+    const r = msRoll(function(){
+      const k = ri(3);
+      if (k === 0){ const L = rr(6, 20), W = rr(3, Math.max(4, L - 2));
+        const p = msPi2(function(P){ return 2 * L + W + P * W / 2; }); return p ? { k: 0, L: L, W: W, p: p } : null; }
+      if (k === 1){ const L = rr(6, 20), W = rr(3, Math.max(4, L - 2));
+        const p = msPi2(function(P){ return 2 * L + P * W; }); return p ? { k: 1, L: L, W: W, p: p } : null; }
+      const s = rr(4, 16);
+      const p = msPi2(function(P){ return 3 * s + P * s / 2; }); return p ? { k: 2, L: s, W: s, p: p } : null;
+    });
+    msSetPi2(r.p, u);
+    const L = r.L, W = r.W;
+    if (r.k === 0){
+      const pts = [[0, 0]].concat(msArcPts(L, W / 2, W / 2, -90, 90)).concat([[0, W]]);
+      qData.workSteps = 'Straight edges: ' + L + ' + ' + W + ' + ' + L + ' = ' + (2 * L + W) + '. Curve = ½ × π × ' + W + ' = ' + (Math.PI * W / 2).toFixed(4) + '…<br>Total = <b>' + qData.ansDisplay + '</b>.';
+      msQ(el, 'This shape is a rectangle with a semicircle on one end. Find its perimeter, correct to two decimal places.',
+        msShape({ pts: pts, lbl: [{ p: [0, 0], q: [L, 0], t: msU(L, u) }, { p: [0, W], q: [0, 0], t: msU(W, u) }], dashed: [[[L, 0], [L, W]]], rights: [{ v: [0, 0], a: [L, 0], b: [0, W] }] }));
+    } else if (r.k === 1){
+      const pts = [[0, 0], [L, 0]].concat(msArcPts(L, W / 2, W / 2, -90, 90).slice(1)).concat([[0, W]]).concat(msArcPts(0, W / 2, W / 2, 90, 270).slice(1, -1));
+      qData.workSteps = 'Two straight sides: 2 × ' + L + ' = ' + (2 * L) + '. Two semicircles make one whole circle: π × ' + W + ' = ' + (Math.PI * W).toFixed(4) + '…<br>Total = <b>' + qData.ansDisplay + '</b>.';
+      msQ(el, 'This running track is two straight sides joined by two semicircles. Find its perimeter, correct to two decimal places.',
+        msShape({ pts: pts, lbl: [{ p: [0, 0], q: [L, 0], t: msU(L, u) }], dashed: [[[0, 0], [0, W]], [[L, 0], [L, W]]],
+          texts: [{ at: [L / 2, W / 2], t: 'width ' + msU(W, u), size: 13 }], padX: 40 }));
+    } else {
+      const s = L, arc = msArcPts(s / 2, s, s / 2, 0, 180);
+      const pts = [[0, 0], [s, 0]].concat(arc);
+      qData.workSteps = 'Three straight sides: 3 × ' + s + ' = ' + (3 * s) + '. Curve = ½ × π × ' + s + ' = ' + (Math.PI * s / 2).toFixed(4) + '…<br>Total = <b>' + qData.ansDisplay + '</b>.';
+      msQ(el, 'This shape is a square with a semicircle on top. Find its perimeter, correct to two decimal places.',
+        msShape({ pts: pts, lbl: [{ p: [0, 0], q: [s, 0], t: msU(s, u) }], dashed: [[[0, s], [s, s]]],
+          ticks: [{ p: [0, 0], q: [s, 0], n: 1 }, { p: [s, 0], q: [s, s], n: 1 }, { p: [0, s], q: [0, 0], n: 1 }], rights: [{ v: [0, 0], a: [s, 0], b: [0, s] }] }));
+    }
+    return;
+  }
+  /* Level 7 (Enrichment): the angle from a given arc length. */
+  const r = rr(5, 20), th0 = rr(25, 300), arc = dp(th0 / 360 * 2 * Math.PI * r, 1);
+  const ans = Math.round(arc * 360 / (2 * Math.PI * r));
+  qData.ans = ans; qData.ansDisplay = ans + '°';
+  qData.workSteps = 'The arc is θ/360 of the circumference. Circumference = 2 × π × ' + r + ' = ' + (2 * Math.PI * r).toFixed(3) + '…<br>θ = ' + msNum(arc) + ' ÷ ' + (2 * Math.PI * r).toFixed(3) + '… × 360 = ' + (arc * 360 / (2 * Math.PI * r)).toFixed(2) + ' ≈ <b>' + ans + '°</b>.';
+  msQ(el, 'A sector has a radius of <b>' + msU(r, u) + '</b> and an arc length of <b>' + msU(arc, u) + '</b>. Find the angle at the centre, to the nearest degree.',
+    msSectorSVG(r, ans, { rLbl: msU(r, u), thLbl: 'θ', arcLbl: msU(arc, u) }));
+}
+
+/* ═══ 5. UNITS OF AREA ════════════════════════════════════════════ */
+const MS_AREA_OBJ = [
+  ['the area of a pinhead', 'mm²'], ['the area of a grain of sand', 'mm²'], ['the area of a ladybird’s spot', 'mm²'],
+  ['the area of a phone screen', 'cm²'], ['the area of a page in a book', 'cm²'], ['the area of a playing card', 'cm²'],
+  ['the area of a bedroom floor', 'm²'], ['the area of a basketball court', 'm²'], ['the area of a classroom', 'm²'],
+  ['the area of a farm', 'ha'], ['the area of a vineyard', 'ha'], ['the area of a golf course', 'ha'],
+  ['the area of Victoria', 'km²'], ['the area of Port Phillip Bay', 'km²'], ['the area of Australia', 'km²']
+];
+const MS_AREA_OPTS = ['mm²', 'cm²', 'm²', 'hectares (ha)', 'km²'];
+function msConvQ(el, pairs){
+  const st = ffPick(pairs), big = st[0], small = st[1], f = st[2], down = Math.random() < 0.5;
+  let bigVal;
+  const k = ri(3);
+  if (k === 0) bigVal = rr(2, 50);
+  else if (k === 1) bigVal = dp(rr(11, 99) / 10, 1);
+  else bigVal = (f >= 10000) ? dp(rr(1, 99) / 100, 2) : dp(rr(11, 99) / 10, 1);
+  const smallVal = dp(bigVal * f, 6);
+  if (down){
+    qData.ans = smallVal; qData.ansDisplay = msNum(smallVal) + ' ' + small;
+    qData.workSteps = '1 ' + big + ' = ' + msNum(f) + ' ' + small + '. Big unit → small unit, so multiply: ' + msNum(bigVal) + ' × ' + msNum(f) + ' = <b>' + qData.ansDisplay + '</b>.';
+    msQ(el, 'Convert to ' + small + '.', '', '<span style="font-size:1.8rem;">' + msNum(bigVal) + ' ' + big + ' = ? ' + small + '</span>');
+  } else {
+    qData.ans = bigVal; qData.ansDisplay = msNum(bigVal) + ' ' + big;
+    qData.workSteps = msNum(f) + ' ' + small + ' = 1 ' + big + '. Small unit → big unit, so divide: ' + msNum(smallVal) + ' ÷ ' + msNum(f) + ' = <b>' + qData.ansDisplay + '</b>.';
+    msQ(el, 'Convert to ' + big + '.', '', '<span style="font-size:1.8rem;">' + msNum(smallVal) + ' ' + small + ' = ? ' + big + '</span>');
+  }
+}
+function genMeasAreaUnits(el){
+  if (level === 1){
+    const o = ffPick(MS_AREA_OBJ);
+    const right = MS_AREA_OPTS[['mm²', 'cm²', 'm²', 'ha', 'km²'].indexOf(o[1])];
+    decSetChoice(el, '<div style="' + A_LBL + '">Which unit is the most sensible to measure</div>'
+      + '<div style="text-align:center;font-weight:900;font-size:1.3rem;margin:14px 0;">' + o[0] + '?</div>', MS_AREA_OPTS, right, true);
+    qData.workSteps = 'mm² for tiny things, cm² for things you hold, m² for rooms and courts, hectares for farms and parks, km² for whole regions. So <b>' + right + '</b>.';
+    return;
+  }
+  if (level === 2) return msConvQ(el, [['cm²', 'mm²', 100], ['m²', 'cm²', 10000]]);
+  return msConvQ(el, [['ha', 'm²', 10000], ['km²', 'ha', 100], ['km²', 'm²', 1000000]]);
+}
+
+/* ═══ 6. AREA OF RECTANGLES, PARALLELOGRAMS & TRIANGLES ═══════════ */
+function msAreaRect(el, u){
+  if (Math.random() < 0.3){
+    const s = msLen(2, 20, 0.2);
+    qData.ans = dp(s * s, 6); qData.ansDisplay = msU2(qData.ans, u);
+    qData.workSteps = 'A = s² = ' + msNum(s) + ' × ' + msNum(s) + ' = <b>' + qData.ansDisplay + '</b>.';
+    msQ(el, 'Find the area of this square.', msRectSVG(s, s, { b: msU(s, u) }, { square: true }));
+    return;
+  }
+  let l = msLen(4, 20, 0.2), w = msLen(2, 14, 0.15);
+  if (w > l) { const t = l; l = w; w = t; }
+  if (l < w * 1.3) l = dp(w * 1.3 + rr(1, 4), 1);
+  qData.ans = dp(l * w, 6); qData.ansDisplay = msU2(qData.ans, u);
+  qData.workSteps = 'A = l × w = ' + msNum(l) + ' × ' + msNum(w) + ' = <b>' + qData.ansDisplay + '</b>.';
+  msQ(el, 'Find the area of this rectangle.', msRectSVG(l, w, { b: msU(l, u), r: msU(w, u) }));
+}
+function msAreaPara(el, u){
+  const t = ffPick([[3, 4, 5], [4, 3, 5], [6, 8, 10], [8, 6, 10], [5, 12, 13], [12, 5, 13], [9, 12, 15], [12, 9, 15]]);
+  const h = t[0], off = t[1], s = t[2], b = rr(Math.max(off + 2, h), Math.max(off + 3, Math.round(2.5 * h)));
+  qData.ans = b * h; qData.ansDisplay = msU2(qData.ans, u);
+  qData.workSteps = 'A = b × h, using the PERPENDICULAR height (the dashed line), not the slanted side of ' + s + ': ' + b + ' × ' + h + ' = <b>' + qData.ansDisplay + '</b>.';
+  msQ(el, 'Find the area of this parallelogram.', msParaSVG(b, off, h, { base: msU(b, u), height: msU(h, u), slant: msU(s, u) }));
+}
+function msAreaTri(el, u){
+  const k = ri(3);
+  if (k === 0){
+    const t = msTriple(16), b = t[0], h = t[1], hyp = t[2];
+    qData.ans = dp(b * h / 2, 6); qData.ansDisplay = msU2(qData.ans, u);
+    qData.workSteps = 'In a right-angled triangle the two shorter sides are the base and the height. A = ½ × ' + b + ' × ' + h + ' = <b>' + qData.ansDisplay + '</b>. (The ' + hyp + ' is not needed.)';
+    msQ(el, 'Find the area of this triangle.', msTriSVG(b, 0, h, { base: msU(b, u), height: msU(h, u), right: msU(hyp, u) }));
+    return;
+  }
+  let b = rr(4, 20), h = rr(3, 16);
+  if (k === 1){
+    let ax, slant = null;
+    const tr = MS_TRIPLES.concat(MS_TRIPLES.map(function(t){ return [t[1], t[0], t[2]]; }))
+      .filter(function(t){ return t[0] >= 2 && t[0] <= 12 && t[1] >= 3 && t[1] <= 16; });
+    if (Math.random() < 0.6){ const t = ffPick(tr); ax = t[0]; h = t[1]; slant = t[2]; b = rr(ax + 2, ax + 12); }
+    else ax = dp(b * (0.25 + Math.random() * 0.5), 2);
+    if ((b * h) % 2) b++;
+    qData.ans = dp(b * h / 2, 6); qData.ansDisplay = msU2(qData.ans, u);
+    qData.workSteps = 'A = ½ × b × h = ½ × ' + b + ' × ' + h + ' = <b>' + qData.ansDisplay + '</b>.' + (slant ? ' (The slanted side of ' + slant + ' is not needed.)' : '');
+    msQ(el, 'Find the area of this triangle.', msTriSVG(b, ax, h, { base: msU(b, u), height: msU(h, u), left: slant ? msU(slant, u) : null }));
+    return;
+  }
+  if ((b * h) % 2) b++;
+  const ax = Math.random() < 0.5 ? b + dp(b * (0.2 + Math.random() * 0.4), 2) : -dp(b * (0.2 + Math.random() * 0.4), 2);
+  qData.ans = dp(b * h / 2, 6); qData.ansDisplay = msU2(qData.ans, u);
+  qData.workSteps = 'On an obtuse triangle the height falls OUTSIDE the shape, but it is still the height: A = ½ × ' + b + ' × ' + h + ' = <b>' + qData.ansDisplay + '</b>.';
+  msQ(el, 'Find the area of this triangle.', msTriSVG(b, ax, h, { base: msU(b, u), height: msU(h, u) }));
+}
+function genMeasArea(el){
+  const u = msUnit();
+  if (level === 1) return msAreaRect(el, u);
+  if (level === 2) return msAreaPara(el, u);
+  if (level === 3) return msAreaTri(el, u);
+  if (level === 4) return [msAreaRect, msAreaPara, msAreaTri][ri(3)](el, u);
+  /* Level 5: convert first */
+  const k = ri(4);
+  if (k === 0){
+    const a = rr(6, 19) * 5, b = dp(rr(11, 30) / 10, 1), A = dp(a / 100 * b, 6);
+    qData.ans = A; qData.ansDisplay = msU2(A, 'm');
+    qData.workSteps = 'Convert to metres first: ' + a + ' cm = ' + msNum(a / 100) + ' m. A = ' + msNum(a / 100) + ' × ' + msNum(b) + ' = <b>' + qData.ansDisplay + '</b>.';
+    msQ(el, 'Find the area of this rectangle in <b>m²</b>.', msRectSVG(b, a / 100, { b: msU(b, 'm'), r: msU(a, 'cm') }));
+    return;
+  }
+  if (k === 1){
+    const b = dp(rr(10, 20) / 10, 1), h = rr(5, 9) * 10, A = dp(b * h / 100 / 2, 6);   // kept readable: height at least a quarter of the base
+    qData.ans = A; qData.ansDisplay = msU2(A, 'm');
+    qData.workSteps = 'Convert to metres first: ' + h + ' cm = ' + msNum(h / 100) + ' m. A = ½ × ' + msNum(b) + ' × ' + msNum(h / 100) + ' = <b>' + qData.ansDisplay + '</b>.';
+    msQ(el, 'Find the area of this triangle in <b>m²</b>.', msTriSVG(b, b * 0.4, h / 100, { base: msU(b, 'm'), height: msU(h, 'cm') }));
+    return;
+  }
+  if (k === 2){
+    const s = dp(rr(2, 9) / 10, 1), cm = dp(s * 100, 6), A = dp(cm * cm, 6);
+    qData.ans = A; qData.ansDisplay = msU2(A, 'cm');
+    qData.workSteps = 'Convert to centimetres first: ' + msNum(s) + ' m = ' + msNum(cm) + ' cm. A = ' + msNum(cm) + ' × ' + msNum(cm) + ' = <b>' + qData.ansDisplay + '</b>.';
+    msQ(el, 'Find the area of this square in <b>cm²</b>.', msRectSVG(s, s, { b: msU(s, 'm') }, { square: true }));
+    return;
+  }
+  const mm = rr(3, 12) * 10, cmv = dp(rr(15, 90) / 10, 1), A = dp(mm / 10 * cmv, 6);
+  qData.ans = A; qData.ansDisplay = msU2(A, 'cm');
+  qData.workSteps = 'Convert to centimetres first: ' + mm + ' mm = ' + msNum(mm / 10) + ' cm. A = ' + msNum(mm / 10) + ' × ' + msNum(cmv) + ' = <b>' + qData.ansDisplay + '</b>.';
+  const l = Math.max(mm / 10, cmv), w = Math.min(mm / 10, cmv);
+  msQ(el, 'Find the area of this rectangle in <b>cm²</b>.', msRectSVG(l, w, (l === mm / 10) ? { b: msU(mm, 'mm'), r: msU(cmv, 'cm') } : { b: msU(cmv, 'cm'), r: msU(mm, 'mm') }));
+}
+
+/* ═══ 7. MISSING LENGTH FROM AREA ═════════════════════════════════ */
+function genMeasMissing(el){
+  const u = msUnit();
+  if (level === 1){
+    let l, w;
+    do { l = rr(4, 16); w = rr(2, 12); if (w > l) { const t = l; l = w; w = t; } } while (l < w * 1.3);
+    const A = l * w, askL = Math.random() < 0.5;
+    qData.ans = askL ? l : w; qData.ansDisplay = msU(qData.ans, u);
+    qData.workSteps = 'A = l × w, so the missing side = ' + A + ' ÷ ' + (askL ? w : l) + ' = <b>' + qData.ansDisplay + '</b>.';
+    msQ(el, 'The area of this rectangle is <b>' + msU2(A, u) + '</b>. Find the side marked ?.',
+      msRectSVG(l, w, askL ? { b: '?', r: msU(w, u) } : { b: msU(l, u), r: '?' }));
+    return;
+  }
+  if (level === 2){
+    const s = rr(2, 20);
+    qData.ans = s; qData.ansDisplay = msU(s, u);
+    qData.workSteps = 'A square’s side is the square root of its area: √' + (s * s) + ' = <b>' + qData.ansDisplay + '</b>.';
+    msQ(el, 'The area of this square is <b>' + msU2(s * s, u) + '</b>. Find its side length.', msRectSVG(s, s, { b: '?' }, { square: true }));
+    return;
+  }
+  if (level === 3){
+    const t = ffPick([[3, 4, 5], [4, 3, 5], [6, 8, 10], [8, 6, 10], [5, 12, 13], [12, 5, 13], [9, 12, 15]]);
+    const h = t[0], off = t[1], b = rr(Math.max(off + 2, h), Math.max(off + 3, Math.round(2.5 * h))), A = b * h;
+    qData.ans = h; qData.ansDisplay = msU(h, u);
+    qData.workSteps = 'A = b × h, so h = ' + A + ' ÷ ' + b + ' = <b>' + qData.ansDisplay + '</b>.';
+    msQ(el, 'The area of this parallelogram is <b>' + msU2(A, u) + '</b>. Find the perpendicular height.', msParaSVG(b, off, h, { base: msU(b, u), height: '?' }));
+    return;
+  }
+  let b = rr(4, 20), h = rr(3, 16);
+  if ((b * h) % 2) h++;
+  const A = b * h / 2, askH = Math.random() < 0.6, ax = dp(b * (0.3 + Math.random() * 0.4), 2);
+  qData.ans = askH ? h : b; qData.ansDisplay = msU(qData.ans, u);
+  qData.workSteps = 'A = ½ × b × h, so b × h = 2 × ' + A + ' = ' + (2 * A) + '. Then ' + (askH ? 'h = ' + (2 * A) + ' ÷ ' + b : 'b = ' + (2 * A) + ' ÷ ' + h) + ' = <b>' + qData.ansDisplay + '</b>.';
+  msQ(el, 'The area of this triangle is <b>' + msU2(A, u) + '</b>. Find the ' + (askH ? 'height' : 'base') + '.',
+    msTriSVG(b, ax, h, { base: askH ? msU(b, u) : '?', height: askH ? '?' : msU(h, u) }));
+}
+
+/* ═══ 8. RHOMBUSES, KITES & TRAPEZIUMS (SEAL) ═════════════════════ */
+function msKiteSVG(x, p, q, o){
+  /* horizontal diagonal x (bisected), vertical diagonal p above + q below the crossing */
+  o = o || {};
+  const P = [[0, -q], [x / 2, 0], [0, p], [-x / 2, 0]];
+  const extra = function(F){
+    const X = F.P([-x / 4, 0]), Y = F.P([0, -q / 2]);
+    return msText(X[0], X[1] - 7, 'x', { col: 'var(--accent)' }) + msText(Y[0] + 11, Y[1] + 5, 'y', { col: 'var(--accent)' });
+  };
+  return msShape({ pts: P, dashed: [[[-x / 2, 0], [x / 2, 0]], [[0, -q], [0, p]]], rights: [{ v: [0, 0], a: [x / 2, 0], b: [0, p] }], extra: extra });
+}
+function msTrapSVG(a, b, h, off, o){
+  o = o || {};
+  const P = [[0, 0], [b, 0], [off + a, h], [off, h]];
+  return msShape({ pts: P, lbl: [{ p: P[0], q: P[1], t: o.b }, { p: P[2], q: P[3], t: o.a }], dashed: [[[off, h], [off, 0]]],
+    rights: [{ v: [off, 0], a: P[1], b: [off, h] }], side: [{ p: [off, 0], q: [off, h], t: o.h, side: 1 }], frame: [[off, 0]] });
+}
+function genMeasQuad(el){
+  const u = msUnit();
+  if (level === 1){
+    const rh = Math.random() < 0.5;
+    let x = rr(4, 20), y = rr(4, 20);
+    if (x === y) y += 2;
+    if ((x * y) % 2) x++;
+    const p = rh ? y / 2 : dp(y * (0.25 + Math.random() * 0.15), 2), q = y - p;
+    qData.ans = x * y / 2; qData.ansDisplay = msU2(qData.ans, u);
+    qData.workSteps = 'A = ½ × x × y, using the two diagonals: ½ × ' + x + ' × ' + y + ' = <b>' + qData.ansDisplay + '</b>.';
+    msQ(el, 'Find the area of this ' + (rh ? 'rhombus' : 'kite') + '. The dashed lines are its diagonals.', msKiteSVG(x, p, q), 'x = ' + msU(x, u) + '&nbsp;&nbsp;&nbsp;y = ' + msU(y, u));
+    return;
+  }
+  if (level === 2){
+    let a = rr(3, 14), b = a + rr(3, 12), h = rr(Math.max(3, Math.ceil(b / 3)), Math.max(6, Math.ceil(b / 3) + 6));
+    if (((a + b) * h) % 2) h++;
+    const off = dp((b - a) * (0.3 + Math.random() * 0.4), 2);
+    qData.ans = (a + b) * h / 2; qData.ansDisplay = msU2(qData.ans, u);
+    qData.workSteps = 'A = ½ × (a + b) × h = ½ × (' + a + ' + ' + b + ') × ' + h + ' = ½ × ' + (a + b) + ' × ' + h + ' = <b>' + qData.ansDisplay + '</b>.';
+    msQ(el, 'Find the area of this trapezium.', msTrapSVG(a, b, h, off, { a: msU(a, u), b: msU(b, u), h: msU(h, u) }));
+    return;
+  }
+  if (Math.random() < 0.5){
+    let a = rr(3, 14), b = a + rr(3, 12), h = rr(Math.max(3, Math.ceil(b / 3)), Math.max(6, Math.ceil(b / 3) + 6));
+    if (((a + b) * h) % 2) h++;
+    const A = (a + b) * h / 2, off = dp((b - a) * (0.3 + Math.random() * 0.4), 2);
+    qData.ans = h; qData.ansDisplay = msU(h, u);
+    qData.workSteps = 'A = ½ × (a + b) × h, so ' + A + ' = ½ × ' + (a + b) + ' × h = ' + msNum((a + b) / 2) + ' × h.<br>h = ' + A + ' ÷ ' + msNum((a + b) / 2) + ' = <b>' + qData.ansDisplay + '</b>.';
+    msQ(el, 'The area of this trapezium is <b>' + msU2(A, u) + '</b>. Find its height.', msTrapSVG(a, b, h, off, { a: msU(a, u), b: msU(b, u), h: '?' }));
+    return;
+  }
+  const rh = Math.random() < 0.5;
+  let x = rr(4, 20), y = rr(4, 20);
+  if (x === y) y += 2;
+  if ((x * y) % 2) x++;
+  const A = x * y / 2, p = rh ? y / 2 : dp(y * 0.32, 2), q = y - p, askY = Math.random() < 0.5;
+  qData.ans = askY ? y : x; qData.ansDisplay = msU(qData.ans, u);
+  qData.workSteps = 'A = ½ × x × y, so x × y = 2 × ' + A + ' = ' + (2 * A) + '. The missing diagonal = ' + (2 * A) + ' ÷ ' + (askY ? x : y) + ' = <b>' + qData.ansDisplay + '</b>.';
+  msQ(el, 'The area of this ' + (rh ? 'rhombus' : 'kite') + ' is <b>' + msU2(A, u) + '</b>. Find the diagonal marked ?.',
+    msKiteSVG(x, p, q), askY ? 'x = ' + msU(x, u) + '&nbsp;&nbsp;&nbsp;y = ?' : 'x = ?&nbsp;&nbsp;&nbsp;y = ' + msU(y, u));
+}
+
+/* ═══ 9. AREA OF CIRCLES & SECTORS (SEAL) ═════════════════════════ */
+function genMeasCircArea(el){
+  const u = msUnit();
+  if (level === 1){
+    const r = rr(2, 15), useD = Math.random() < 0.4;
+    msSetPiExact(0, r * r, u + '²');
+    qData.workSteps = (useD ? 'Halve the diameter first: r = ' + (2 * r) + ' ÷ 2 = ' + r + '. ' : '') + 'A = πr² = π × ' + r + '² = <b>' + qData.ansDisplay + '</b>.';
+    msQ(el, 'Find the area of this circle. Give your answer <b>exactly</b>, in terms of π.',
+      msCircleSVG(r, { kind: useD ? 'diameter' : 'radius', lbl: msU(useD ? 2 * r : r, u), fill: true }));
+    return;
+  }
+  if (level === 2){
+    const r = msRoll(function(){
+      const useD = Math.random() < 0.4, v = msLen(2, useD ? 30 : 15, 0.3), rad = useD ? v / 2 : v;
+      const p = msPi2(function(P){ return P * rad * rad; });
+      return p ? { useD: useD, v: v, rad: rad, p: p } : null;
+    });
+    msSetPi2(r.p, u + '²');
+    qData.workSteps = (r.useD ? 'r = ' + msNum(r.v) + ' ÷ 2 = ' + msNum(r.rad) + '. ' : '') + 'A = π × ' + msNum(r.rad) + '² = ' + (Math.PI * r.rad * r.rad).toFixed(4) + '… = <b>' + qData.ansDisplay + '</b>.';
+    msQ(el, 'Find the area of this circle, correct to <b>two decimal places</b>.', msCircleSVG(r.v, { kind: r.useD ? 'diameter' : 'radius', lbl: msU(r.v, u), fill: true }));
+    return;
+  }
+  if (level === 3){
+    const r = rr(1, 8) * 2;
+    if (Math.random() < 0.5){
+      msSetPiExact(0, r * r / 2, u + '²');
+      const useD = Math.random() < 0.5;
+      qData.workSteps = (useD ? 'r = ' + (2 * r) + ' ÷ 2 = ' + r + '. ' : '') + 'Half a circle: ½ × π × ' + r + '² = ½ × ' + (r * r) + 'π = <b>' + qData.ansDisplay + '</b>.';
+      msQ(el, 'Find the area of this semicircle. Give it exactly, in terms of π.', msSemiSVG(r, useD ? { dLbl: msU(2 * r, u), fill: true } : { rLbl: msU(r, u), fill: true }));
+    } else {
+      msSetPiExact(0, r * r / 4, u + '²');
+      qData.workSteps = 'A quarter of a circle: ¼ × π × ' + r + '² = ¼ × ' + (r * r) + 'π = <b>' + qData.ansDisplay + '</b>.';
+      msQ(el, 'Find the area of this quadrant. Give it exactly, in terms of π.', msQuadSVG(r, { rLbl: msU(r, u), fill: true }));
+    }
+    return;
+  }
+  if (level === 4){
+    const pr = msSectorPair(function(th, r){ return (th * r * r) % 360 === 0 && r <= 15; });
+    const th = pr[0], r = pr[1];
+    msSetPiExact(0, th * r * r / 360, u + '²');
+    qData.workSteps = 'A = ' + th + '/360 × π × ' + r + '² = ' + th + '/360 × ' + (r * r) + 'π = <b>' + qData.ansDisplay + '</b>.';
+    msQ(el, 'Find the area of this sector. Give it exactly, in terms of π.', msSectorSVG(r, th, { rLbl: msU(r, u), thLbl: th + '°', fill: true }));
+    return;
+  }
+  if (level === 5){
+    const r = rr(2, 15), askD = Math.random() < 0.4;
+    qData.ans = askD ? 2 * r : r; qData.ansDisplay = msU(qData.ans, u);
+    qData.workSteps = 'A = πr², so r² = ' + (r * r) + ' and r = √' + (r * r) + ' = ' + r + (askD ? '. The diameter is 2 × ' + r + ' = <b>' + qData.ansDisplay + '</b>.' : '. So r = <b>' + qData.ansDisplay + '</b>.');
+    msQ(el, 'A circle has an area of <b>' + (r * r) + 'π ' + u + '²</b>. Find its <b>' + (askD ? 'diameter' : 'radius') + '</b>.', msCircleSVG(1, { kind: 'plain', inside: 'A = ' + (r * r) + 'π ' + u + '²', fill: true }));
+    return;
+  }
+  if (level === 6){
+    const r = rr(5, 20), th0 = rr(25, 320), A = dp(th0 / 360 * Math.PI * r * r, 1);
+    const ans = Math.round(A * 360 / (Math.PI * r * r));
+    qData.ans = ans; qData.ansDisplay = ans + '°';
+    qData.workSteps = 'The whole circle is π × ' + r + '² = ' + (Math.PI * r * r).toFixed(3) + '…<br>θ = ' + msNum(A) + ' ÷ ' + (Math.PI * r * r).toFixed(3) + '… × 360 = ' + (A * 360 / (Math.PI * r * r)).toFixed(2) + ' ≈ <b>' + ans + '°</b>.';
+    msQ(el, 'A sector of radius <b>' + msU(r, u) + '</b> has an area of <b>' + msU2(A, u) + '</b>. Find the angle at the centre, to the nearest degree.',
+      msSectorSVG(r, ans, { rLbl: msU(r, u), thLbl: 'θ', fill: true }));
+    return;
+  }
+  /* Level 7 (Enrichment): the square with the same area as a circle. */
+  const r = msRoll(function(){
+    const rad = rr(2, 15), p = msPi2(function(P){ return Math.sqrt(P * rad * rad); });
+    return p ? { rad: rad, p: p } : null;
+  });
+  msSetPi2(r.p, u);
+  qData.workSteps = 'Circle: A = π × ' + r.rad + '² = ' + (Math.PI * r.rad * r.rad).toFixed(4) + '…<br>Square side = √' + (Math.PI * r.rad * r.rad).toFixed(4) + '… = <b>' + qData.ansDisplay + '</b>.';
+  msQ(el, 'A circle of radius <b>' + msU(r.rad, u) + '</b> and a square have the same area. Find the side length of the square, correct to two decimal places.', '');
+}
+
+/* ═══ 10. COMPOSITE AREA ══════════════════════════════════════════ */
+function genMeasComposite(el){
+  const u = msUnit();
+  if (level === 1){
+    const W = rr(8, 18), H = rr(6, 14), w1 = rr(2, W - 3), h1 = rr(2, H - 3);
+    const S = msLShape(W, H, w1, h1, Math.random() < 0.5);
+    const A = W * h1 + w1 * (H - h1);
+    qData.ans = A; qData.ansDisplay = msU2(A, u);
+    qData.workSteps = 'The missing height of the top part is ' + H + ' − ' + h1 + ' = ' + (H - h1) + '.<br>Split it with a line across: a ' + W + ' × ' + h1 + ' rectangle (' + (W * h1) + ') and a ' + w1 + ' × ' + (H - h1) + ' rectangle (' + (w1 * (H - h1)) + ').<br>' + (W * h1) + ' + ' + (w1 * (H - h1)) + ' = <b>' + qData.ansDisplay + '</b>.';
+    msQ(el, 'Find the area of this shape. Every corner is a right angle.', msShape({ pts: S.P, fill: true,
+      lbl: [{ p: S.bottom[0], q: S.bottom[1], t: msU(W, u) }, { p: S.left[0], q: S.left[1], t: msU(H, u) }, { p: S.top[0], q: S.top[1], t: msU(w1, u) },
+            { p: S.right[0], q: S.right[1], t: msU(h1, u) }] }));
+    return;
+  }
+  if (level === 2){
+    const k = ri(3);
+    if (k === 0){
+      const W = rr(10, 18), H = rr(8, 14), w = rr(2, W - 6), h = rr(2, H - 5);
+      const x0 = dp((W - w) * (0.35 + Math.random() * 0.3), 2), y0 = dp((H - h) * (0.35 + Math.random() * 0.3), 2);
+      const hole = [[x0, y0], [x0 + w, y0], [x0 + w, y0 + h], [x0, y0 + h]];
+      qData.ans = W * H - w * h; qData.ansDisplay = msU2(qData.ans, u);
+      qData.workSteps = 'Whole rectangle: ' + W + ' × ' + H + ' = ' + (W * H) + '. Hole: ' + w + ' × ' + h + ' = ' + (w * h) + '.<br>' + (W * H) + ' − ' + (w * h) + ' = <b>' + qData.ansDisplay + '</b>.';
+      msQ(el, 'A ' + msU(w, u) + ' by ' + msU(h, u) + ' rectangle is cut out of the middle. Find the shaded area that is left.', msShape({ pts: [[0, 0], [W, 0], [W, H], [0, H]], holes: [hole], fill: true,
+        lbl: [{ p: [0, 0], q: [W, 0], t: msU(W, u) }, { p: [W, 0], q: [W, H], t: msU(H, u) }] }));
+      return;
+    }
+    if (k === 1){
+      const L = rr(6, 16), W = rr(4, 10), p = ffPick([1, 1, 2, 1.5, 0.5]);
+      const A = dp((L + 2 * p) * (W + 2 * p) - L * W, 6);
+      qData.ans = A; qData.ansDisplay = msU2(A, 'm');
+      const pool = [[p, p], [p + L, p], [p + L, p + W], [p, p + W]];
+      qData.workSteps = 'Outside rectangle: (' + L + ' + 2 × ' + msNum(p) + ') × (' + W + ' + 2 × ' + msNum(p) + ') = ' + msNum(L + 2 * p) + ' × ' + msNum(W + 2 * p) + ' = ' + msNum((L + 2 * p) * (W + 2 * p)) + '.<br>Pool: ' + L + ' × ' + W + ' = ' + (L * W) + '. Path = <b>' + qData.ansDisplay + '</b>.';
+      msQ(el, 'A ' + L + ' m by ' + W + ' m pool is surrounded by a path <b>' + msNum(p) + ' m</b> wide. Find the area of the path (shaded).', msShape({
+        pts: [[0, 0], [L + 2 * p, 0], [L + 2 * p, W + 2 * p], [0, W + 2 * p]], holes: [pool], fill: true,
+        texts: [{ at: [p + L / 2, p + W / 2], t: 'pool', size: 13, col: 'var(--muted)' }] }));
+      return;
+    }
+    const W = rr(8, 18), H = rr(6, 14), cw = rr(2, W - 3), ch = rr(2, H - 3);
+    const S = msLShape(W, H, W - cw, H - ch, Math.random() < 0.5);
+    qData.ans = W * H - cw * ch; qData.ansDisplay = msU2(qData.ans, u);
+    qData.workSteps = 'Fill in the missing corner to make a ' + W + ' × ' + H + ' rectangle (' + (W * H) + '), then take the corner away: ' + cw + ' × ' + ch + ' = ' + (cw * ch) + '.<br>' + (W * H) + ' − ' + (cw * ch) + ' = <b>' + qData.ansDisplay + '</b>.';
+    msQ(el, 'Find the area of this shape by subtracting the missing corner.', msShape({ pts: S.P, fill: true,
+      lbl: [{ p: S.bottom[0], q: S.bottom[1], t: msU(W, u) }, { p: S.left[0], q: S.left[1], t: msU(H, u) },
+            { p: S.stepH[0], q: S.stepH[1], t: msU(cw, u) }, { p: S.stepV[0], q: S.stepV[1], t: msU(ch, u) }] }));
+    return;
+  }
+  if (level === 3){
+    if (Math.random() < 0.55){
+      let W = rr(4, 16), H = rr(3, 12), t = rr(2, 8);
+      if ((W * t) % 2) t++;
+      const P = [[0, 0], [W, 0], [W, H], [W / 2, H + t], [0, H]];
+      qData.ans = W * H + W * t / 2; qData.ansDisplay = msU2(qData.ans, u);
+      qData.workSteps = 'Rectangle: ' + W + ' × ' + H + ' = ' + (W * H) + '. Triangle: ½ × ' + W + ' × ' + t + ' = ' + (W * t / 2) + '.<br>' + (W * H) + ' + ' + (W * t / 2) + ' = <b>' + qData.ansDisplay + '</b>.';
+      msQ(el, 'This shape is a rectangle with a triangle on top. Find its area.', msShape({ pts: P, fill: true, dashed: [[[0, H], [W, H]], [[W / 2, H + t], [W / 2, H]]],
+        lbl: [{ p: P[0], q: P[1], t: msU(W, u) }, { p: P[1], q: P[2], t: msU(H, u) }],
+        side: [{ p: [W / 2, H], q: [W / 2, H + t * 0.55], t: msU(t, u), side: 1 }], rights: [{ v: [0, 0], a: P[1], b: P[4] }] }));
+      return;
+    }
+    let W = rr(4, 14), H = rr(3, 10), b = rr(2, 8);
+    if ((b * H) % 2) b++;
+    const P = [[0, 0], [W + b, 0], [W, H], [0, H]];
+    qData.ans = W * H + b * H / 2; qData.ansDisplay = msU2(qData.ans, u);
+    qData.workSteps = 'Rectangle: ' + W + ' × ' + H + ' = ' + (W * H) + '. Triangle: ½ × ' + b + ' × ' + H + ' = ' + (b * H / 2) + '.<br>' + (W * H) + ' + ' + (b * H / 2) + ' = <b>' + qData.ansDisplay + '</b>.';
+    msQ(el, 'This shape is a rectangle with a right-angled triangle joined on. Find its area.', msShape({ pts: P, fill: true, dashed: [[[W, 0], [W, H]]],
+      lbl: [{ p: P[3], q: P[0], t: msU(H, u) }, { p: P[2], q: P[3], t: msU(W, u) }],
+      side: [{ p: [W + b, 0], q: [W, 0], t: msU(b, u), side: -1 }], rights: [{ v: [0, 0], a: P[1], b: P[3] }, { v: [W, 0], a: [W + b, 0], b: [W, H] }] }));
+    return;
+  }
+  /* Level 4: with circle parts, 2 d.p. */
+  const r = msRoll(function(){
+    const k = ri(3);
+    if (k === 0){ const L = rr(6, 16), W = rr(2, 6) * 2;
+      const p = msPi2(function(P){ return L * W + P * (W / 2) * (W / 2) / 2; }); return p ? { k: 0, L: L, W: W, p: p } : null; }
+    if (k === 1){ const L = rr(8, 18), W = rr(6, 12), rad = rr(1, Math.floor(Math.min(L, W) / 2) - 1);
+      const p = msPi2(function(P){ return L * W - P * rad * rad; }); return p ? { k: 1, L: L, W: W, rad: rad, p: p } : null; }
+    const s = rr(4, 16);
+    const p = msPi2(function(P){ return s * s - P * s * s / 4; }); return p ? { k: 2, L: s, W: s, p: p } : null;
+  });
+  msSetPi2(r.p, u + '²');
+  const L = r.L, W = r.W;
+  if (r.k === 0){
+    const pts = [[0, 0]].concat(msArcPts(L, W / 2, W / 2, -90, 90)).concat([[0, W]]);
+    qData.workSteps = 'Rectangle: ' + L + ' × ' + W + ' = ' + (L * W) + '. Semicircle: radius ' + (W / 2) + ', ½ × π × ' + (W / 2) + '² = ' + (Math.PI * W * W / 8).toFixed(4) + '…<br>Total = <b>' + qData.ansDisplay + '</b>.';
+    msQ(el, 'This shape is a rectangle with a semicircle on one end. Find its area, correct to two decimal places.',
+      msShape({ pts: pts, fill: true, lbl: [{ p: [0, 0], q: [L, 0], t: msU(L, u) }, { p: [0, W], q: [0, 0], t: msU(W, u) }], dashed: [[[L, 0], [L, W]]], rights: [{ v: [0, 0], a: [L, 0], b: [0, W] }] }));
+  } else if (r.k === 1){
+    const cx = L / 2, cy = W / 2, hole = msArcPts(cx, cy, r.rad, 0, 360, 48);
+    qData.workSteps = 'Rectangle: ' + L + ' × ' + W + ' = ' + (L * W) + '. Hole: π × ' + r.rad + '² = ' + (Math.PI * r.rad * r.rad).toFixed(4) + '…<br>' + (L * W) + ' − ' + (Math.PI * r.rad * r.rad).toFixed(4) + '… = <b>' + qData.ansDisplay + '</b>.';
+    msQ(el, 'A circular hole of radius <b>' + msU(r.rad, u) + '</b> is cut out of this rectangle. Find the shaded area left, correct to two decimal places.',
+      msShape({ pts: [[0, 0], [L, 0], [L, W], [0, W]], holes: [hole], fill: true, lbl: [{ p: [0, 0], q: [L, 0], t: msU(L, u) }, { p: [L, 0], q: [L, W], t: msU(W, u) }] }));
+  } else {
+    const s = L;
+    /* the shaded region: the square minus a quadrant centred on its top-left corner */
+    const q = msArcPts(0, s, s, -90, 0);       // (0, 0) round to (s, s)
+    const region = [[s, 0]].concat(q.slice().reverse());
+    qData.workSteps = 'Square: ' + s + ' × ' + s + ' = ' + (s * s) + '. Quadrant: ¼ × π × ' + s + '² = ' + (Math.PI * s * s / 4).toFixed(4) + '…<br>' + (s * s) + ' − ' + (Math.PI * s * s / 4).toFixed(4) + '… = <b>' + qData.ansDisplay + '</b>.';
+    msQ(el, 'A quadrant of radius <b>' + msU(s, u) + '</b> is cut from a corner of this square. Find the shaded area left, correct to two decimal places.',
+      msShape({ pts: region, fill: true, lines: [[[0, 0], [s, 0]], [[0, 0], [0, s]], [[0, s], [s, s]]],
+        frame: [[0, 0], [0, s]], dots: [[0, s]], lbl: [{ p: [s, 0], q: [s, s], t: msU(s, u) }] }));
+  }
 }
 
 </script>
