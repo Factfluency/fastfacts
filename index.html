@@ -1,3 +1,4 @@
+<!-- Sandy Fast Facts · v103 (Laura, Oct 2026). 📏 MEASUREMENT, RELEASE B: SURFACE AREA, VOLUME & CAPACITY. The 3D half of the strand: 8 skills and 47 levels from the 7MAT Measurement booklet (Lesson 5) and the 7MAS SEAL booklet (Lessons 3 to 5). Surface Area of Prisms, Surface Area of Cylinders, Units of Volume & Capacity, Volume of Rectangular Prisms, Volume of Prisms, Volume of Cylinders, Capacity of Containers, Volume of Composite Solids. One oblique 3D drawing engine (msPrismSVG, msCylSVG, msBlockSVG). ALT 8 complete in both courses; Enrichment and SEAL filling and pouring are built and kept out of ALT 8. Storage-safe and additive. -->
 <!-- Sandy Fast Facts · v102.1 (Laura, 11 Oct 2026). TRANSFORMATION BANDS HALVED: every Lion ceiling on Translations, Reflections, Dilations, Rotations, Combinations and Transformations of 2D Shapes halved (floor 3), signed off by Laura because students and teachers were stuck at Greyhound. Display-only; storage-safe. -->
 <!-- Sandy Fast Facts · v102 (Laura). 📏 MEASUREMENT, RELEASE A: LENGTH, PERIMETER, CIRCLES & AREA. A new 18th category and the last missing strand begun: 10 skills and 53 levels mapped from the 7MAT Measurement booklet (Lessons 1 to 4) and the 7MAS SEAL booklet (Lessons 1 and 2). Units of Length, Perimeter, Circumference, Perimeter of Circle Parts, Units of Area, Area of Rectangles/Parallelograms/Triangles, Missing Length from Area and Composite Area for both courses; Rhombuses/Kites/Trapeziums and Area of Circles & Sectors for SEAL. Challenge questions are not assessed and are not built; ENRICHMENT items are built as the last level of their skill and kept out of every ALT (Laura, 4 Oct). ALT 8 in both courses now carries the 2D half and stays exam:false; its note says the 3D half is coming. ONE NEW INPUT MODE, piExact: the number box plus a pi key, reading k pi and a + k pi. A decimal on an exact level is wrong, and if it is the right SIZE the miss review says "now give it exactly". 2 d.p. MEANS THE PI KEY, NOT 3.14 (Laura): tolerance 0.005 round the correctly rounded value, every 2 d.p. question re-rolled until its 3.14 answer differs, and a 3.14 answer gets its own miss-review line. EVERY DIAGRAM IS DRAWN TO ITS LABELS with one uniform scale. PREREQUISITES ARE NOW PER-ALT (an open item closed): ALT 8 shows times tables, x and / by powers of ten and square numbers; ALT 7 shows Simplify Fractions and Convert FDP. STORAGE-SAFE: all new ids and levels; the .bas is regenerated and must be redeployed. Every Measurement band is a PLACEHOLDER. Previously: v101 (Laura). 🎲 PROBABILITY — THE SECOND MISSING STRAND, BUILT. 14 skills and 80 levels, mapped from the 7MAT and 7MAS (SEAL) Statistics & Probability booklets and Laura's Year 7 / Year 7 SEAL topic lists: Sample Space, Language of Chance, Theoretical Probability, Complement, Experimental Probability, Expected Number of Outcomes and Two-Step Experiments for both courses; Tree Diagrams, Two-Way Tables, Venn Diagrams, Probability Notation, Mutually Exclusive Events and the Addition Rule for SEAL; and Conditional Probability built ahead for Year 10 because the engines were already there. ALT 7 in BOTH courses now carries the probability half and its "still being built" note is gone — 682 skill-levels, 1001 course references. THIS RELEASE IS STORAGE-SAFE: all new ids, all new levels, nothing renamed and nothing reordered, so no Personal Best moves (the .bas still has to be redeployed, or the dashboard leaves the Animal column blank for every probability row). THREE THINGS WORTH KNOWING. (1) THE FRACTION RULE TIGHTENS AS THE LADDER CLIMBS, which was Laura's call: Theoretical L1–L2 and Experimental L1–L2 accept any equivalent fraction, so a student meeting probability for the first time is marked on the probability and not on the simplifying; from Theoretical L3 up, simplest form is required and the miss review says WHICH of the two things went wrong ("Right probability — now simplify it"). PROB_LENIENT is the one list that decides it, read by both the marking and the on-screen notice. (2) ONE NEW INPUT MODE, gridFill — the v74 FDP table generalised into a reusable table filler, 1 POINT PER CORRECT BOX, which is what completing a two-way table needed. (3) NO NEW MODE WAS NEEDED FOR THE PROBABILITY LINE: plotPts takes its geometry from qData.plotGeom, so the 0–1 line is the v99 number-line surface in twelfths. Three new drawing helpers (spinner, Venn incl. shaded regions, tree) and a dice-totals grid; everything else re-uses daFreqTable and the existing panels. ALL 80 BANDS ARE PLACEHOLDERS — written out per level in an explicit BAND_OVERRIDE stage so every one is a number somebody can see and argue with, and the next thing to recalibrate with a class. Previously: v100 (Laura). 🪜 LEVELS IN ORDER, EASIEST TO HARDEST — AND THE NINE CONTENT GAPS BUILT. Two things in one release, both of them Laura's call. 🪜 THE REORDER. Levels had been APPENDED for four releases running, because appending is the storage-safe move: the level number is part of the storage key, so inserting one re-points every Personal Best recorded on that skill. That kept the data safe and let the ladder drift — "how many decimal places" (the rule, with no arithmetic in it) sat at Level 5 of Multiply Decimals, "which fraction is in simplest form" sat AFTER algebraic fractions, and "polygon or not?" sat at Level 6 of Naming Shapes, three levels below naming a rhombus. Laura: the classes have not used the app enough for the stored data to outweigh a sensible order, and most students start a fresh profile anyway. So 21 skills are reordered and a student with an old best on a moved level will see it against a different question type — the known, accepted cost, and the ONLY change in the program's history that is not storage-safe. HOW IT IS DONE, because this is the part worth keeping: LEVEL_ORDER[lvKey] lists the OLD level numbers in their NEW order, and one block applies it at load time to everything keyed by level — the level cards (renumbering their own titles), the per-level input modes, the recall/method flags, the fluency targets, the band cut-offs across all five BAND_OVERRIDE stages, the mode recommendations and both ALT pools. The GENERATORS were not touched at all: nextQCore swaps in the old number for the length of one question and puts it back before enableInputs(). Reordering another skill later is now ONE LINE in LEVEL_ORDER. ⚠ THREE LEVELS WERE REMOVED, and finding them is what the reorder was worth on its own: v98 added "Mixed Numbers" to Add & Subtract Fractions, and "With Negatives" to Multiply and to Divide Fractions — all three ALREADY EXISTED (fas L4 is genFracAddSubMixed; fmu/fd L3 already turn a numerator negative). Sorting the levels put the duplicate titles next to each other and made it obvious. The v98 copies are gone, the originals stay, and the ALT pools now point at them. The lesson: an audit that reads a level LIST can miss what a level DOES — the duplicate check belongs in the add-a-level checklist, and it is now in the guide. 🧱 THE NINE CONTENT GAPS, all built — 575 → 605 → 602 skill-levels after the three removals, and 848 → 886 ALT references. SIX NEW SKILLS. Writing Expressions from Words (the highest-value gap in the audit: it appears four times across the two ALT 3 papers, and the app could read a coefficient, substitute, expand, factorise and solve but nothing turned ENGLISH into algebra — five levels, phrase to expression, expression to phrase, two operations, generalise a number pattern, and story to equation to answer; the phrase bank is DATA, so the words and the algebra cannot drift apart, and every distractor is the expression a student produces by MIS-READING those exact words). Algebraic Fractions (5r/6 − 12r/18 is on BOTH ALT 3 papers word for word — six levels built as one family because it is one method: same denominator, different denominators, multiply, divide, with indices including a negative one, and simplify by factorising, which is SEAL MC Q8). Perimeter & Area as an Expression (SEAL Q11 and Q12, 9 marks — this looks like the Measurement gap and is NOT: no unit conversion and no formula recall, just adding labelled sides and collecting like terms, so it is an Algebra item wearing a Measurement costume and did not have to wait). Number Lines (read a fraction off the line, which arrow is closest, mark every integer that fits, and show an inequality solution — NO new input mode: plotPts already takes its geometry from qData.plotGeom, so a one-dimensional line is the same tap surface with one row, which is exactly what "axis-agnostic" was for in v78). Written Multiplication, and Long Division as Division L4 (both ALT 1 papers set 132 × 29 and 5932 ÷ 4 explicitly — worth naming the tension: the ALT marks are for the SETTING OUT and a fluency app can only check the answer, but a student who cannot get the answer will not get the setting-out marks either). Absolute Value & Factorials (|−10 + 4!| − |3| is one mark on both ALT 1 papers and neither notation existed anywhere). Direct & Inverse Proportion (the plotting half was already built — v98 mapped Table of Values into SEAL ALT 2 — so only the naming needed a skill). THREE APPENDED LEVELS: HCF & LCM in Index Form (multiple choice, because a keypad cannot type 3² × 7, and every distractor is a named misconception — the higher power for the HCF, the lower for the LCM, or adding the indices), and Currency Conversion on Converting Rates (half the questions go BACKWARDS, because dividing when you expect to multiply is the whole error). test_v100.js checks the two things a reorder can silently get wrong: that every map keyed by level number moved with its level, and that the question a student now gets at Level n is the one the Level n card promises — probed by its own signature rather than by trusting the map. test_v99.js re-derives all 30 new answers independently, and its two most useful assertions are that EVERY integer drawn on a number line which satisfies the condition is in the answer set (or a student can be right and be marked wrong), and that the proportion table is classified from its own numbers rather than from the label the generator gave it. Suites: smoke 602 levels · v100 · v99 · v98 · v96 · v93 all green. Every band for the 30 new levels is a PLACEHOLDER. FastFactsBands_v100.bas regenerated and parity-checked 602/602 — and this time many existing rows DID change, because a reordered level takes its band with it; that is the release where the .bas must be redeployed alongside the app rather than after it. v98 notes follow. internal v98 (Laura). 🎯 THE 2026 ALT AUDIT, PART 1: THE MAPPING FIXES AND THE ENHANCEMENTS. The ten ALT papers for ALTs 1–5 were mapped question by question against each course's OWN ALT pool — a tighter question than the exam audit asked, because the exam is a sample and an ALT is the whole unit, and because a student who opens "ALT 3" three days before ALT 3 has an exact expectation about what is inside. 75% of the assessed tasks were already fully covered; the failures clustered in three recognisable ways and only one of them needed building. ⚠ THIRTEEN MAPPING FIXES FIRST, because they needed no new content at all — the level exists and was simply in the wrong ALT, which is invisible to every test, every band and every generator, and visible only to a student revising for that paper. Four of them were severe: Year 7 ALT 3 tests expanding brackets and had NO expanding level at all; SEAL ALT 5 asks a surd to be simplified and Simplify Surds was not in the pool (Add & Subtract, Multiply and Divide all were); SEAL ALT 5 sets (2x + 3)(x − 5) = 0 without the Null Factor Law level; and SEAL ALT 2 sets a 3-significant-figure question while Significant Figures sat in ALT 1. The other nine: the two index laws and integer comparison into Yr 7 ALT 1, Applications of Linear Graphs into BOTH ALT 3s (the party-room rule C = 12 + 5h is on both papers), substitution into Yr 7 ALT 5, rearranging into SEAL ALT 3, polygon naming and angle naming into SEAL ALT 4, and Table of Values and time conversion into SEAL ALT 2. 791 → 848 course→skill-level references. TWENTY-EIGHT NEW LEVELS, every one APPENDED so no stored Personal Best moves, and every one answering a question that is actually on one of the ten papers. The pattern the audit found is the part worth remembering: the app was very good at DO THE CALCULATION and thin on RECOGNISE / CHOOSE / CLASSIFY / GO BACKWARDS — which is exactly where the cheap one-mark ALT items live. So: which fraction is already in simplest form, which sign makes −2 ? −2 = 4 true, which is the correct working line for "27 out of 93 as a percentage", which drink has the higher percentage of sugar, are these two lines parallel, is this triangle right-angled (the CONVERSE of Pythagoras), which set is all prime, between which two whole numbers does √34 lie, how many decimal places will the answer have, which decimal is closest to 7.5, which expression has exactly three terms and two pronumerals, is 5² × 5³ = 5⁶ true or false, and find the missing term in 4x + ? = 7x. Plus the content gaps the papers exposed: mixed-number addition and subtraction (on BOTH ALT 2 papers, two marks each, and there was no level for it at all), signed fraction multiplication and division, ratio read off a diagram, ratios in different units, three- and four-part ratios, ratio as a fraction, four-part shares, decimal substitution, decimal one-step equations, mixed numbers to decimals, and an FDP table carrying values over 100% and recurring ones. All 28 route from ONE map and ONE dispatcher (V98_LEVELS / genV98Level), the same discipline as the v93 word problems and the v96 exam levels, so not a single existing generator was reopened to bolt a level onto the end of it. Levels added to recall skills go into METHOD_LEVEL_OVERRIDE — a recognition tap and a converse are not fact recall. ⚠ ONE STRUCTURAL THING WORTH KNOWING: Square Numbers and Square Roots SHARE the lvKey 'sq', so appending one level to it appends a level to BOTH skills. Renaming a lvKey would orphan stored data, so the estimate-a-square-root level is deliberately served to both — which is consistent rather than sloppy, because their L1–L3 are already the same content under two names. Check for a shared lvKey before appending a level; only 'sq', 'as', 'cu', 'sci' and 'mi' are shared. THREE GENERATOR WIDENINGS, no new level and therefore no .bas row and no storage key moved: Rounding Decimals L2 now mixes 1, 2 AND 3 d.p. (both papers round to three), Multiply & Divide by 10, 100, 1000 now includes 10 000 (Yr 7 MC Q2 — the SKILL NAME is deliberately left alone because the dashboard .bas keys on it), and Add / Subtract Integers L3 now chains a THIRD term, because both ALT 1 papers open with (−13) + (−12) + 5. test_v98.js re-derives every answer INDEPENDENTLY of the generator that produced it: the sign question is re-tested against all four operations to prove exactly one of them works, primality by trial division, the shapes in a ratio diagram are COUNTED from the drawn SVG, the parallel-lines verdict is recomputed from the two angles actually on screen, the closest-decimal minimum is checked to be unique, and the missing term is substituted back into its own printed statement. It also asserts all 13 mapping fixes directly, because that is the class of change nothing else notices. 547 → 575 skill-levels. All v98 bands are PLACEHOLDERS pending class data. FastFactsBands_v98.bas regenerated, parity-checked 575/575, and a row-by-row diff against v97 confirms NO existing row changed. v97 notes follow. internal v97 (Laura). 📉 A SKETCH IS MARKED AGAINST THE LINE, NOT A POINT LIST. Laura, on y = −x + 4: she plotted (0, 4) and stepped the gradient BACKWARDS to (−1, 5) — a correct point on a correctly drawn line — and was marked wrong, because plotPts compared her taps against ONE fixed pair. The old way of hiding that flaw was to name the two points in the prompt ("step 1 across and 1 down"), which handed over the answer and turned the level into a copying exercise. Both are fixed together. A plotting question can now describe the LINE instead of the points: qData.plotLine = {m, c} or {vx} for a vertical, qData.plotMust = the anchor points the named METHOD requires, qData.plotNeed = how many to plot. Marked right when the required number of DISTINCT points is plotted, every one lies on the line, and every compulsory point is among them. So on Gradient & y-Intercept L3 the y-intercept is still compulsory — plotting it IS half of "the gradient–intercept method" — but the second point is genuinely free, and stepping the gradient either way is correct. On Sketching Linear Graphs L1 (horizontal/vertical) ANY two points on the line count; L2 still requires both intercepts and L3 the origin, because those anchors ARE the method each level is named for. Every giveaway instruction is gone: "Plot the y-intercept, then use the gradient to plot one more point on the line" and "Plot any two points on this line". The marked-up re-draw now shows the whole correct LINE dashed in green with each tap green or red against it, instead of hollow rings on the two points the app happened to have in mind — better feedback, and it makes the "any point counts" rule visible. PURELY ADDITIVE: the exact-point-set path is untouched, so Table of Values, Distance-Time Graphs and Transformations of 2D Shapes mark exactly as before (regression-checked). test_v96.js now asserts the backwards step is accepted on every question, that an off-line point and a pair missing the compulsory anchor are still rejected, and that the instruction no longer names the second point. No band, storage key, level count or .bas row changed — FastFactsBands_v96.bas is still current. v96 notes follow. internal v96 (Laura). 📝 THE 2026 EXAM AUDIT, BUILT. Both Year 7 papers were mapped question by question against Exam Practice mode; everything below answers a question that is actually on one of them. 514 → 547 skill-levels. ⚠ THE TWO MAPPING FIXES FIRST, because they needed no new content at all: Year 7 Section B Q14 IS "solve 2x/5 − 8 = −4" and Two-Step Equations with Fractions was not in the Year 7 exam pool, so a student revising in the app would never have met the question type — it is now in ALT 3; and Q11c needs an 18% increase while Year 7 carried only Percentage Increase & Decrease L1 (friendly percentages) — L2 and L3 are now in ALT 5. SIX NEW SKILLS. Identify Fractions (the app could read a decimal and a percentage off a shaded grid but not a FRACTION, which the Year 7 paper asks for twice; L1/L2 generate only fractions already in lowest terms so "simplest form" is never ambiguous while the diagram is the thing being learned, L3 is where simplifying becomes the point). Index Notation & Expanded Form (VC2M7N02, Section B Q5). Quartiles & Interquartile Range (SEAL Section B Q9 — and the Outliers & Fences levels already in the app computed fences from Q1 and Q3 without ever teaching them; every data set is sized so BOTH halves are odd, so Q1 and Q3 are real data values and a quartiles drill is not also a "halfway between 63 and 77" drill). Gradient & y-Intercept from an Equation (SEAL MC Q7 — Gradient of a Line Segment only ever worked from two points or a diagram; L1/L2 are MULTIPLE CHOICE because a gradient is often a fraction and a fraction will not go in a numeric box, and L3 is the sketch-by-gradient-intercept level on the same tap-to-plot surface as the distance-time graphs). Matching Equations & Graphs (SEAL MC Q10 and Section B Q5c — the graph is DRAWN and the four options are EQUATIONS, because four graphs in a 74px button are unreadable; L3 checks every distractor against the rule so a "wrong" point can never accidentally satisfy it). Sketching Linear Graphs (Laura's spec: L1 horizontal and vertical, L2 by the intercepts, L3 through the origin, L4 mixed — every level names EXACTLY which two points to plot, because the marking is all-or-nothing on a point set and "sketch the line" alone would have infinitely many right answers). TEN NEW LEVELS on existing skills: four-digit column addition and subtraction, Division L4 (how many are needed — ceiling division, where rounding the ordinary way is wrong every time), Describe the Number (Yr 7 MC Q3), Prime Factor Form (Q7), Combining Two Ratios (SEAL Q2), Two-Step Number Patterns (Yr 7 MC Q10 — ×2 + 1 is neither arithmetic nor geometric), Find the Term Number (SEAL Q10c), Working Backwards from a finish time (SEAL Q8e), and Polygon-or-Not plus Count the Sides/Vertices (Section B Q1). All ten route from ONE map and ONE dispatcher (V96_LEVELS / genV96Level), the same pattern as the v93 word problems, so not a single existing generator was reopened. Levels added to recall skills go into METHOD_LEVEL_OVERRIDE. test_v96.js re-derives every answer INDEPENDENTLY of the generator that produced it — quartiles recomputed from the sorted list, prime factor form refactorised, ratio chains recombined, plotted points substituted back into their own equation — so a generator and its own working can never be wrong together. All v96 bands are PLACEHOLDERS. FastFactsBands_v96.bas regenerated, parity-checked 547/547, no existing row changed. v95 notes follow. internal v95 (Laura). 🏆 THE REST OF THE SURD FAMILY. Add & Subtract Surds L1 and Divide Surds L1 were still asking for 23 correct answers in a round; both are now Cheetah 10, matching Multiply Surds. The family now reads Simplify 8·8·7 (unchanged — already sane), Add & Subtract 10·9·8, Multiply 10·10·9·8, Divide 10·9·8. Every answer in this family has to be WRITTEN as an exact surd, which is slower than any of the arithmetic skills banded above 20. Nothing outside the family moved: the same [6,12,18,26] placeholder is still on Scientific Notation L1–L3 and several fraction L1s, deliberately left for a separate call. ⚠ STRUCTURAL FIX WORTH KNOWING: these two L1s came from the 2026-08-28 REVIEWED SPREADSHEET at [5,10,15,22], not from a placeholder — so which of the three maps setting them won was decided by LINE ORDER (the literal, then the v74.9 spreadsheet block, then the reviewed block). Every surd band Laura has called now lives in ONE "LAURA'S SURD CALLS" Object.assign block appended AFTER the reviewed block, so a future spreadsheet pass cannot silently revert a classroom call, and the superseded lines above carry a pointer to it. METHOD_BAND_CEIL surdAddSub/surdDivide L1 fallbacks follow the overrides. Bands are DISPLAY-ONLY over the stored Fluency Score: no storage key, PB, streak or share line changes and no score is lost — a past round simply reads as a higher animal. test_bands_surd.js now locks the WHOLE family (96 assertions): every Cheetah value, cut-offs in order, Cheetah = Antelope+1, a harder level never easier to top out than an easier one, the five non-surd skills that keep the old placeholder, and no surd level ever earning Fluent. FastFactsBands_v95.bas regenerated and parity-checked 514/514. v94 notes follow. internal v94 (Laura). 🏆 BAND FIX: MULTIPLY SURDS L1 AND L2. Laura: "the bands are too high, move Cheetah down to 10". The v86 PLACEHOLDER overrides asked for 31 (L1) and 27 (L2) correct answers in a round on a skill where every answer has to be written as an exact surd. BAND_OVERRIDE surdMultiply_L1 [8,15,22,30] → [3,5,7,9] and surdMultiply_L2 [6,12,18,26] → [2,4,6,9]; Cheetah is Antelope max + 1, so both are now 10. The four cut-offs below Cheetah are rescaled in the SAME PROPORTIONS as the old ladder rather than squashed under an unchanged one — a Lion ceiling of 22 beneath a Cheetah of 10 would be nonsense — and L2 keeps slightly easier lower bands than L1 because the simplifying step makes it slower. L3 and L4 are untouched (Cheetah 9 and 8), and no other skill moved: the identical [6,12,18,26] placeholder is still shared by Add & Subtract Surds L1, Divide Surds L1, Scientific Notation → Number L3 and several fraction L1s, all of which are LEFT AS THEY WERE because Laura only called this one. METHOD_BAND_CEIL surdMultiply is updated to [7,6,6,5] so the fallback no longer contradicts the overrides that actually apply. Bands are DISPLAY-ONLY over the stored Fluency Score — no storage key, PB, streak or share line changes, and no student loses a recorded score; a past round simply reads as a higher animal than it did. test_bands_surd.js locks the new numbers in the style of test_bands.js. FastFactsBands_v94.bas is regenerated and parity-checked (514/514 rows match bandCutoffs) — the dashboard module had not been regenerated since v79, so it was leaving the Animal column BLANK for all 65 skill-levels added in v80–v93 (the whole Data Analysis category included). v93 notes follow. internal v93 (Laura). 📐 CURRICULUM FILL: NETS/VIEWS, RECURRING DECIMALS, PERCENTAGE ERROR AND TEN WORD-PROBLEM LEVELS. NEW SKILL Nets, Plans & Views of 3D Objects (Geometry, VC2M7SP01 — the one examinable Level 7 Space idea with nothing in the app): L1 name the solid from a drawn net, L2 what the net of a drawn solid is made from, L3 front/side/top of a labelled rectangular prism (w, h and d forced distinct so exactly one view fits the stated rectangle), L4 the shape of a named view. Every level is CHOICE with a drawing and TEXT options — four small net pictures in a 74px option grid are unreadable, and comparing four pictures is a different task from the one the curriculum names. The nets are drawn here rather than taken from SHAPE_LIB because a net is a DIFFERENT picture of the same solid, which is the skill. NEW SKILL Terminating & Recurring Decimals (Decimals, VC2M8N03): L1 pick the odd one out, L2 write a terminating fraction as a decimal, L3 a dotted recurring decimal back to a fraction in simplest form. The terminate/recur test is done on the fraction in LOWEST TERMS (strip every 2 and 5, terminating iff 1 remains) and questions are GENERATED then CLASSIFIED, so 6/8 can never be mislabelled. NEW LEVEL Percentage Increase & Decrease L4 — PERCENTAGE ERROR (VC2M8N05), with values chosen so the error is a whole number of units and the percentage is exact. TEN WORD-PROBLEM LEVELS (VC2M7N10 / VC2M7A03 / VC2M8A03) — a FORMAT gap, not a topic gap: until now only three decimal skills had worded questions, so students met worded number, ratio and algebra questions for the first time in an ALT. HCF/LCM L4, Add/Subtract Integers L4, Order of Operations L5, Fraction of an Amount L4, Percentage of an Amount L4, Percentage Increase & Decrease L5, Sharing in a Ratio L5, Converting Rates L3, Substitute into Expressions L5, Two-Step Equations L4 (levelModes 4:number — the answer is a whole number, one box). All eleven are routed from ONE line at the top of nextQCore via the WORD_LEVEL map, so not one existing generator was touched. Word-problem levels on recall skills are added to METHOD_LEVEL_OVERRIDE — a word problem is never fact recall — and all carry a Challenge hint. test_v93.js compares the number inside the <b> of every worked solution against the stored answer on every question (the realistic bug is the story and the working drifting apart) and re-derives the HCF/LCM, ratio and equation answers from the story text itself. Nets/views and recurring-decimal bands are PLACEHOLDERS pending class data. v92 notes follow. internal v92 (Laura). 🎯 NEW: EXAM / ALT TRAINING + THREE USABILITY CHANGES. (1) HOME HEADER is one row — name and greeting left, class chip and Edit / Dark / Backup as icon buttons plus Switch profile right; Backup turns amber with a dot when the last backup is over 14 days old, because it is the only control there that protects data. (2) MODE IS CHOSEN AFTER THE LEVEL, not before. The home-screen segmented control is gone; the level screen's Start now opens a mode screen naming the skill and level, with one of the three RECOMMENDED from what the app already stores — an explicit LEVEL_REC wins, then a never-attempted or sub-85% level goes to Practice, and only an accurate student is sent to the clock. This is the fix for "everyone just does Fluency because it is pre-set". beginGame() is unchanged and still starts the game, so every existing test path (harness start = selectSkill -> lc<lv>.onclick -> beginGame -> launchSession) still works. (3) TOP ROW is streak strip + Daily Mix + Exam/ALT Training, three across at >=900px and stacked below; the streak card lost its progress text and shrank to a strip. EXAM / ALT TRAINING: a COURSES object of PURE METADATA (Year 7 Mathematics, Year 7 SEAL Mathematics) naming skill ids and level numbers that already exist — nothing in CATS, LEVEL_DEFS or any band changed, and no storage key moved. Course -> ALT list -> the skills and levels in that ALT, each level carrying a grey/amber/green READINESS dot read from the accuracy the app already saved after every session. Every ALT and the exam get a MIXED PRACTICE button (practice mode only, by design): nextQ() is now a wrapper that re-picks the skill between questions, weighting anything not yet green 3:1, and the round records one session plus a per-level accuracy stamp for every level that got at least 3 questions. EXAM PRACTICE is generated as the union of the examinable ALTs, so it can never drift; ALT 8 (Measurement) is exam:false because it is taught after the exam. PREREQUISITES (Times Tables, Division) sit greyed and dashed at the foot of every ALT — assumed knowledge, not assessed, but somewhere to drop back to. test_courses.js proves all 718 course->skill-level references resolve, that Exam Practice equals the union, and that Mixed Practice rotates skills and stays in practice mode. v84 notes follow. internal v84 (Laura). 📊 NEW CATEGORY: DATA ANALYSIS (Release 1 of 3). Four reusable display engines — daDotPlot, daStemHtml, daHistogram, daBoxPlot — each driven by DATA and working out its own scale, so Release 2 (mean/mode/median/range) re-uses them unchanged. Three skills: Classifying Data, Frequency Tables (read · from a raw list · grouped class intervals · percentage frequency, with totals restricted to 20/25/50 so every percentage is exact) and Reading Data Displays (one level per display, so every engine is student-tested now rather than sitting unused until Release 2). All bands are PLACEHOLDERS and every level is METHOD (accuracy-first, no Fluent badge) until class data exists. Purely additive: no existing skill, level, id or band changed. v83 notes follow. internal v83: 🔍 DESKTOP SIZING, SPLIT THE DIFFERENCE: v82 over-reserved vertical space (420px) so diagrams came out smaller than they had to; the budget is now calc(100vh - 330px) and the cap 460px. Question CONTENT also scales on a big screen — A_LBL now reads its size from --qlbl (a CSS variable, because a media query cannot override an inline style) and the timetable from --qtbl, so prompts and tables grow with the column instead of staying at phone size. v82 notes follow. internal v82: 📏 TIGHTER GAME HEADER ON DESKTOP: the back link / stats / progress / nudge strip is trimmed from ~170px to ~105px and diagrams are capped at calc(100vh - 420px), so the tall coordinate-grid and plot questions fit without scrolling. CSS only, ≥900px only. v81 notes follow. internal v81: 🎯 START BUTTON IS ALWAYS REACHABLE: #levelStartBtn is position:sticky at every width, so on a 6-level skill it rides the bottom of the window instead of hiding below the cards, and settles into the flow once the list fits. On desktop the level grid is now auto-fill minmax(300px) — 3 across on a 1080px frame — so even the worst case (six levels) needs no scrolling. CSS only. v80 notes follow. internal v80: 🖥 DESKTOP LAYOUT: additive CSS in one @media (min-width:900px) block plus two harmless wrapper divs on the home screen (.home-top, .home-foot). The frame widens to 1080px, categories go 3-across, skills and levels 2-across, and the GAME screen becomes two columns (question left, answering right) via grid auto-placement — no JS, no ids, no question logic touched. Under 900px every rule is unchanged, so all phone layouts are byte-identical to v79. v79 notes follow. internal v79: 🧩 OTHER IS RENAMED 🔄 TIME & TRANSFORMATIONS — display only: the CATS key stays 'other', so every stored Personal Best, streak and share line is untouched, and the dashboard .bas keys on SKILL names so it is unaffected too. SIX NEW TRANSFORMATION SKILLS, all built on one engine: every transformation in the program is an affine map whose matrix has exactly one non-zero entry per row, so applying one is two lines, COMPOSING two stays in the same family (which is what lets the Combinations skill print a single mapping for a chain), and the mapping notation is rendered straight off the matrix so the words and the notation can never drift apart. Translations (L1 one-axis slide · L2 two-axis · L3 describe it from the drawn points · L4 read the mapping · L5 apply the mapping · L6 find the pre-image), Reflections (same six; L1 the axes, L2 adds y = x), Dilations from the Origin (ONE apply level per Laura — a dilation from the origin is always a single step — then the same four; factors 2, 3, 4, ½ and ⅓ on a ±10 window because a factor of 4 leaves the −5…5 box immediately), Rotations about the Origin (L1 half turns only, L2 the quarter turns clockwise and anticlockwise; the describe-it levels are restricted to the three CANONICAL names because 90° clockwise and 270° anticlockwise are the SAME map and would otherwise be two right answers), Combinations of Transformations (NO describe-in-words level, per Laura — two points can be joined by any number of chains — so L1/L2 apply a chain of two then three, and the mapping levels survive because a mapping IS the composite), and Transformations of 2D Shapes (Yr 7–8: translate, reflect, identify, dilate, rotate and un-transform a whole shape by TAPPING its image corners, on a coarser −4…4 grid so a corner is an easy tap on a phone). One subtle guard worth remembering: two DIFFERENT transformations can still agree on ONE point — (2, −2) goes to (−2, 2) under both a half turn and a reflection in y = x — so a describe-it distractor is only safe if it fails on THAT point, not merely if it is a different map. Purely additive apart from the category label: no existing skill, level, id or band changed. All new bands are PLACEHOLDERS pending class data. internal v78.4 FIXES: (1) TYPING WAS DEAD on any narrow screen — the "is this a phone" test was window width ALONE, so a laptop with a narrow window (or the app in a preview pane) got the readonly-input trick meant to suppress a phone keyboard, with no way to type. A phone must now ALSO have a coarse primary pointer, and the first real key press from a physical keyboard unlocks every box and hides the keypad for the rest of the session. (2) THE PLOT GRID WAS SQUASHED — #qBox is a flex container and plotRender was handing it two or three children, so the prompt, story and grid became columns; wrapped in a single .q-text child, and the plot/graph SVGs now scale to the available width (up to 460px) instead of sitting at a fixed 300px. (3) DISTANCE-TIME JOURNEYS CAN NOW RETURN HOME — a stage may head back towards home so the graph comes down, and some journeys finish at 0 km; the line can never go below 0, "fastest" and "speed" compare magnitudes, and the story says "back towards home" / "the last N km home". internal v78.3: NEW CATEGORY 🧩 OTHER (Laura) — the practical, everyday-maths corner, placed last: Converting Units of Time (Yr 7: sec/min/hour · hour/day/week · week/month/year · compound times both ways), Train & Bus Timetables (Yr 7: read the table · trip length in minutes · latest service that still arrives in time · minutes until the next service, with 24-hour and 12-hour clocks mixed) and Distance-Time Graphs (Yr 7–8: read the distance · which stage is stationary/fastest · BUILD or finish the graph by tapping the corner of each stage · speed of a labelled stage). Coordinate Geometry gains Applications of Linear Graphs (Yr 8–9: rate or starting amount from P = −35 + 4c · write y = a + bx from a story · build its table · write ax + by = d from a two-item total). The plotPts mode is now axis-agnostic and can mark an ORDERED path, which is what the distance-time construct level uses. Purely additive — no existing skill, level, id or band changed. internal v78.2: 📈 COORDINATE GEOMETRY grows (Laura). The Cartesian Plane gains L4 — three corners of a rectangle, square or labelled parallelogram ABCD are plotted and the student writes the coordinates of the fourth. NEW skill Table of Values (Yr 7–8: L1 build a linear table from a rule · L2 PLOT that table on the plane · L3 build a non-linear table (x², x³, 2ˣ) · L4 plot a non-linear table). x- and y-Intercepts gains a new L2 — read both intercepts off a table of values — pushing y-int/x-int/both down to L3/L4/L5 (safe: no student has played Coordinate Geometry yet). NEW INPUT MODE plotPts: the drawn Cartesian plane itself is the answer surface — every lattice point carries an invisible tap target, tap to place or remove a marker, all-or-nothing marking, and the marking is drawn back onto the grid. internal v78.0: Yr 7–9 SEQUENCES in 💰 Finance & Patterns (Laura). NEW Sequence Rules in Words (Yr 7: L1 first term · L2 the term-to-term rule in words as a 4-way tap (add / subtract / multiply / divide / square numbers) · L3 next two terms · L4 write the first five terms from a starting value and a worded rule · L5 read a term off the sequence from aₙ notation). NEW Arithmetic Sequences (Yr 7–8: L1 common difference d · L2 next three terms · L3 fill a₁ and d into aₙ = a₁ + (n − 1)d · L4 use the rule to find a required term). NEW Geometric Sequences (Yr 8–9: L1 common ratio r · L2 next three terms · L3 fill a₁ and r into aₙ = a₁ × rⁿ⁻¹ · L4 use the rule to find a required term). The existing Sequences skill is RENAMED "Arithmetic & Geometric Sequences" and otherwise untouched (id, lvKey, levels and bands all unchanged) — it stays as the higher-order one where the student decides which kind it is. gapFill grows from four boxes to FIVE (gap4), with narrower boxes on a five-box row. All new bands are PLACEHOLDERS pending class data. internal v77.0: THREE NEW CATEGORIES and one new Number skill. ◡ Quadratics — Verify Solutions to Quadratic Equations (L1 x²=k · L2 factorised · L3 trinomial, Yes/No) and Solve Quadratic Equations (L1 x²=k · L2 exact values/fractions as multiple choice · L3 Null Factor Law · L4 monic trinomials). 📈 Coordinate Geometry — The Cartesian Plane (quadrant · read a plotted coordinate), Linear or Non-Linear (from a graph · from an equation), x- and y-Intercepts (y-int · x-int · both from ax+by=c) and Gradient of a Line Segment (whole · from a diagram · fractions & negatives). 💰 Finance & Patterns — GST (10%: added · price incl · removed), Simple Interest (5 levels on Vn = V0 + nD, D = r/100 × V0), Sequences (classify · next term · arithmetic rule · geometric rule), Recurrence Relations (write · use) and Flat Rate Depreciation (5 levels on Vn = V0 − nD). Number gains Number Classification (rational/irrational · tick every set). TWO NEW INPUT MODES: gapFill (a rendered rule/coordinate/solution template with up to five numeric boxes, all-or-nothing, optional order-free marking) and multiSel (tick every box that applies, all-or-nothing). Purely additive — no existing skill, level, id or band changed; all new bands are PLACEHOLDERS pending class data. internal v76.0: Congruence & Similarity now distinguish "provably false" from "unknown". L3 adds a 6th button "Not similar" (sides given but not in a constant ratio — the case a student CAN disprove, e.g. 5,8,11 vs 10,18,22); L2 adds a 6th button "Not congruent" via a new DIFF scenario that labels side lengths that don't all match. "Not enough information" now means only the genuinely undetermined cases (SSA, AAA-for-congruence, one angle, two sides). csSimilarityVerdict/csCongruenceVerdict extended; fixed 6-button order; storage-safe (no skill/level renamed or reordered). v75.0: NEW Percentages skills — Convert Percentages & Decimals (pctDecConv, both directions, number box) and Convert Fractions & Percentages (fracPctConv: L1–2 fraction→% number box, L3–4 %→fraction box; direction fixed per level via levelModes). Both single-question (not the FDP fill-in table), placed before Convert FDP; recall/Fluent-eligible with PLACEHOLDER bands (recalibrate with class data). Recurring values (33⅓% etc.) accepted within a per-question tolerance via qData.ansTol. Storage-safe additive change. v74.9: band cut-offs revised across the whole program from Laura's reviewed spreadsheet — 95 skill-levels re-banded via explicit per-level BAND_OVERRIDE entries (app matches the sheet on all 330 rows). v74.8: Decimals band targets LOWERED (Laura) so quick+accurate students reach higher animals — Identify/Expanded Form/Convert D→F −2; Rounding & Add/Subtract Decimals −3; all ×/÷ decimal operations (Multiply, Divide, ×÷ by 10/100/1000, Squares & Cubes, Square/Cube Roots, signed ×÷, ×fractions) −4. Display-only/storage-safe; .bas regenerated. v74.7: more Decimals (Laura) — NEW skills Add & Subtract Decimals (Positive & Negative), Multiply Decimals & Fractions (decFrac), Multiply & Divide Decimals (Positive & Negative), Leading Digit Estimation (round-to-1sf → estimate → BODMAS), Square Roots & Cube Roots of Decimals; NEW word-problem L4 on Multiply Decimals and Divide Decimals; Squares & Cubes of Decimals moved after Multiply Decimals & Fractions. v74.6: Add & Subtract Decimals L4 word problems; Add & Subtract Fractions & Decimals; Rounding Decimals L3 round-then-estimate. v74.5: miss reviews work THIS question's numbers step-by-step; Angles-in-Polygons L4; deeper concave polygons) -->
 <!-- Viewport (v48): dropped `maximum-scale=1.0, user-scalable=no`. iOS ignored it (so pinch worked there anyway) but Android obeyed it, blocking accessibility pinch-zoom. Accidental double-tap-to-zoom is killed per-control via `touch-action: manipulation` instead, which leaves deliberate pinch-zoom intact on every platform. -->
@@ -2163,7 +2164,7 @@ body {
     <div class="cat-card" onclick="openCat('meas')">
       <span class="cat-icon">📏</span>
       <div class="cat-name">Measurement</div>
-      <div class="cat-desc">Units, perimeter, circumference, area of rectangles, triangles, circles &amp; composite shapes</div>
+      <div class="cat-desc">Units, perimeter, circles, area, surface area, volume &amp; capacity</div>
     </div>
 
   </div>
@@ -3104,6 +3105,15 @@ const CATS = {
       { id:'measQuad',      name:'Area of Rhombuses, Kites &amp; Trapeziums', inputMode:'number', lvKey:'msqd' },
       { id:'measCircArea',  name:'Area of Circles &amp; Sectors', inputMode:'number', lvKey:'msac',   levelModes:{1:'piExact', 3:'piExact', 4:'piExact'} },
       { id:'measComposite', name:'Composite Area',               inputMode:'number',  lvKey:'mscomp' },
+      /* v103 · Release B: surface area, volume and capacity */
+      { id:'measSA',        name:'Surface Area of Prisms',       inputMode:'number',  lvKey:'mssa' },
+      { id:'measSACyl',     name:'Surface Area of Cylinders',    inputMode:'piExact', lvKey:'mssac',  levelModes:{3:'number', 5:'number'} },
+      { id:'measVolUnits',  name:'Units of Volume &amp; Capacity', inputMode:'number', lvKey:'msvu',  levelModes:{1:'choice', 2:'choice', 7:'arrange'} },
+      { id:'measVolRect',   name:'Volume of Rectangular Prisms', inputMode:'number',  lvKey:'msvr' },
+      { id:'measVolPrism',  name:'Volume of Prisms',             inputMode:'number',  lvKey:'msvp' },
+      { id:'measVolCyl',    name:'Volume of Cylinders',          inputMode:'number',  lvKey:'msvcy',  levelModes:{1:'piExact', 3:'piExact'} },
+      { id:'measCap',       name:'Capacity of Containers',       inputMode:'number',  lvKey:'mscap' },
+      { id:'measCompSolid', name:'Volume of Composite Solids',   inputMode:'number',  lvKey:'mscs' },
     ]
   }
 };
@@ -5685,7 +5695,7 @@ const COURSES = {
       { n: 5, title: "Decimals & Percentages", exam: true, skills: [["decPlaceValue",[1,2,3]], ["decIdentify",[1,2,3]], ["decExpand",[1,2,3]], ["decToFrac",[1,2,3]], ["fracToDec",[1,2,3]], ["compareDec",[1,2,3,4,5,6]], ["decRound",[1,2,3]], ["decAdd",[1,2,3]], ["decSub",[1,2,3]], ["decAddSub",[1,2,3,4]], ["decAddSubNeg",[1,2,3]], ["fdAddSub",[1]], ["decPow10",[1,2,3,4]], ["decMultiply",[1,2,3,4,5]], ["fdMultiply",[1,2]], ["decSquareCube",[1]], ["decDivide",[1,2,3,4]], ["decLeadEst",[1,2,3]], ["decSqCubeRoot",[1]], ["decOrderOps",[1,2,3,4]], ["pctIdentify",[1,2,3]], ["pctDecConv",[1,2,3]], ["fracPctConv",[1,2,3,4]], ["pctFDP",[1,2,3]], ["pctOfAmount",[1,2,3,4]], ["pctExpress",[1,2,3,4,5]], ["pctChange",[1,2,3,5]], ["pctProfitLoss",[1]], ["algSub",[4,6]]] },
       { n: 6, title: "Linear — Coordinates, Transformations & Patterns", exam: true, skills: [["cartesian",[1,2,3,4]], ["linearNonlinear",[1,2]], ["tableValues",[1,2]], ["intercepts",[1,2]], ["linearApps",[1,2,3]], ["seqWords",[1,2,3,4,5,6]], ["arithSeq",[1,2,3,4]], ["timeConvert",[1,2,3,4]], ["timetables",[1,2,3,4,5]], ["distTime",[1,2,3,4]], ["translate",[1,2,3,4,5,6]], ["reflect",[1,2,3,4,5]], ["dilate",[1,2,3,4]], ["rotate",[1,2,3,4,5]], ["shapeTrans",[1,2,3,4,5]]] },
       { n: 7, title: "Statistics & Probability", exam: true, prereq: [["fracSimplify",[1,3]], ["pctFDP",[1,2]]], skills: [["dataClassify",[1,2,3,4]], ["freqTables",[1,2,3,4]], ["dataRead",[1,2,3]], ["dataMean",[1,2,3,4,5]], ["dataMode",[1,2,3,4,5,6]], ["dataMedian",[1,2,3,4]], ["dataRange",[1,2,3,4]], ["dataShape",[1,2,3]], ["dataOutliers",[1]], ["probSample",[1,2,3,4,5,6]], ["probLang",[1,2,3,4,5,6,7]], ["probTheory",[1,2,3,4,5,6,7,8,9]], ["probComp",[1,2,3,4]], ["probExp",[1,2,3,4,5,6]], ["probExpect",[1,2,3,4,5,6]], ["probTwoStep",[1,2,3,4,5]]] },
-      { n: 8, title: "Measurement", exam: false, note: "This topic is taught after the exam, so it is never on the exam. Surface area, volume and capacity are coming in the next update.", prereq: [["timesTables",[1,2,3]], ["decPow10",[1,2,3]], ["squares",[1,2]]], skills: [["measLength",[1,2,3,4,5]], ["measPerim",[1,2,3,4,5,6]], ["measCirc",[1,2,3,4,5]], ["measArc",[1,2]], ["measAreaUnits",[1]], ["measArea",[1,2,3,4,5]], ["measMissing",[1,2,3,4]], ["measComposite",[1,2,3]]] },
+      { n: 8, title: "Measurement", exam: false, note: "This topic is taught after the exam, so it is never on the exam.", prereq: [["timesTables",[1,2,3]], ["decPow10",[1,2,3]], ["squares",[1,2]]], skills: [["measLength",[1,2,3,4,5]], ["measPerim",[1,2,3,4,5,6]], ["measCirc",[1,2,3,4,5]], ["measArc",[1,2]], ["measAreaUnits",[1]], ["measArea",[1,2,3,4,5]], ["measMissing",[1,2,3,4]], ["measComposite",[1,2,3]], ["measVolUnits",[1,2,4,5]], ["measVolRect",[1,2,3,4,5]], ["measVolPrism",[1,2,4]], ["measCap",[1,2,4,5]]] },
     ],
   },
   y7seal: {
@@ -5699,7 +5709,7 @@ const COURSES = {
       { n: 5, title: "Finance & Irrational", exam: true, skills: [["numClass",[1,2]], ["surdSimplify",[1,2,3]], ["surdAddSub",[1]], ["surdMultiply",[1]], ["surdDivide",[1]], ["pctDecConv",[2,3]], ["fracPctConv",[1,2,3,4]], ["pctFDP",[1,2,3,4]], ["pctOfAmount",[1,2,3,4]], ["pctExpress",[1,2,3,4,5]], ["pctChange",[1,2,3,4,5]], ["pctReverse",[1,2,3]], ["pctProfitLoss",[1,2]], ["rearrange",[3]], ["quadVerify",[1,2,3]], ["quadSolve",[1,2,3,4]], ["gst",[1,2,3]], ["simpleInterest",[1,2,3,4,5,6]], ["recurrence",[1,2]], ["flatDep",[1,2,3,4,5,6]]] },
       { n: 6, title: "Linear — Graphs & Transformations", exam: true, skills: [["cartesian",[1,2,3,4]], ["linearNonlinear",[1,2]], ["tableValues",[1,2,3,4]], ["intercepts",[1,2,3,4,5]], ["gradientSeg",[1,2,3,4]], ["linearApps",[1,2,3,4]], ["translate",[1,2,3,4,5,6]], ["reflect",[1,2,3,4,5,6]], ["dilate",[1,2,3,4,5]], ["rotate",[1,2,3,4,5,6]], ["combine",[1,2,3,4,5]], ["shapeTrans",[1,2,3,4,5,6]], ["gradEqn",[1,2,3]], ["eqnGraph",[1,2,3]], ["sketchLinear",[1,2,3,4]]] },
       { n: 7, title: "Statistics & Probability", exam: true, prereq: [["fracSimplify",[1,3]], ["pctFDP",[1,2]]], skills: [["dataClassify",[1,2,3,4]], ["freqTables",[1,2,3,4]], ["dataRead",[1,2,3]], ["dataMean",[1,2,3,4,5,6]], ["dataMode",[1,2,3,4,5,6]], ["dataMedian",[1,2,3,4,5,6]], ["dataRange",[1,2,3,4,5]], ["dataShape",[1,2,3]], ["dataOutliers",[1]], ["dataQuartiles",[1,2,3,4,5,6]], ["probSample",[1,2,3,4,5,6]], ["probLang",[1,2,3,4,5,6,7]], ["probTheory",[1,2,3,4,5,6,7,8,9]], ["probComp",[1,2,3,4]], ["probExp",[1,2,3,4,5,6]], ["probExpect",[1,2,3,4,5,6]], ["probTwoStep",[1,2,3,4,5]], ["probComp",[5]], ["probTwoStep",[6,7]], ["probTree",[1,2,3,4,5,6]], ["probTwoWay",[1,2,3,4]], ["probVenn",[1,2,3,4,5]], ["probNotate",[1,2,3,4]], ["probMutEx",[1,2,3,4]], ["probAddRule",[1,2,3]]] },
-      { n: 8, title: "Measurement", exam: false, note: "This topic is taught after the exam, so it is never on the exam. Surface area, volume and capacity are coming in the next update.", prereq: [["timesTables",[1,2,3]], ["decPow10",[1,2,3]], ["squares",[1,2]]], skills: [["measLength",[1,2,3,4,5]], ["measPerim",[2,3,4,5,6,7]], ["measCirc",[2,3,4,5,6]], ["measArc",[1,2,3,4,5,6]], ["measAreaUnits",[1,2,3]], ["measArea",[1,2,3,4,5]], ["measMissing",[1,2,3,4]], ["measQuad",[1,2,3]], ["measCircArea",[1,2,3,4,5,6]], ["measComposite",[1,2,3,4]]] },
+      { n: 8, title: "Measurement", exam: false, note: "This topic is taught after the exam, so it is never on the exam.", prereq: [["timesTables",[1,2,3]], ["decPow10",[1,2,3]], ["squares",[1,2]]], skills: [["measLength",[1,2,3,4,5]], ["measPerim",[2,3,4,5,6,7]], ["measCirc",[2,3,4,5,6]], ["measArc",[1,2,3,4,5,6]], ["measAreaUnits",[1,2,3]], ["measArea",[1,2,3,4,5]], ["measMissing",[1,2,3,4]], ["measQuad",[1,2,3]], ["measCircArea",[1,2,3,4,5,6]], ["measComposite",[1,2,3,4]], ["measSA",[1,2,3,4,5,6,7]], ["measSACyl",[1,2,3,4]], ["measVolUnits",[1,3,4,5,6,7]], ["measVolRect",[2,3,4,5,6]], ["measVolPrism",[1,2,3,4,5]], ["measVolCyl",[1,2,3,4,5]], ["measCap",[1,2,3,4,5]], ["measCompSolid",[1,2,3]]] },
     ],
   },
 };
@@ -5984,6 +5994,123 @@ const TRANSFORM_LION = {
 Object.keys(TRANSFORM_LION).forEach(function(s){
   METHOD_BAND_CEIL[s] = TRANSFORM_LION[s].slice();
   TRANSFORM_LION[s].forEach(function(L, i){
+    BAND_OVERRIDE[s + '_L' + (i + 1)] = [Math.round(L / 3), Math.round(2 * L / 3), L, Math.round(1.5 * L) - 1];
+  });
+});
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   v103 (Laura) · 📏 MEASUREMENT, RELEASE B: SURFACE AREA, VOLUME & CAPACITY
+   -------------------------------------------------------------------
+   Everything the eight Release B skills need outside their generators.
+   Every lvKey is ms…, checked against LEVEL_DEFS before use (rule 2d);
+   test_v103.js asserts none collides with a key that existed before this
+   block (MSB_PRE_KEYS). Student-facing text avoids em dashes; the
+   "Level n — Title" card format is the app-wide convention and is kept.
+═══════════════════════════════════════════════════════════════════ */
+const MSB_PRE_KEYS = Object.keys(LEVEL_DEFS);
+Object.assign(LEVEL_DEFS, {
+  mssa: [
+    { title:'Level 1 — Cubes', desc:'A cube has 6 identical square faces. Find one face (s × s), then multiply by 6.', examples:['side 5 cm → 150 cm²', 'side 2.5 m → 37.5 m²'] },
+    { title:'Level 2 — Rectangular Prisms', desc:'Three pairs of matching faces: SA = 2(lw + lh + wh). Draw the net if it helps.', examples:['8 by 5 by 3 → 158', '10 by 4 by 6 → 248'] },
+    { title:'Level 3 — Missing Edge from the Surface Area', desc:'Work backwards. For a cube, divide by 6 then take the square root. For a prism, take away the faces you know first.', examples:['cube, SA = 150 → 5', 'SA = 158, 8 by 3 base → height 5'] },
+    { title:'Level 4 — Triangular Prisms', desc:'Two triangles plus three rectangles. The three rectangles are all as long as the prism, so add the triangle’s sides and multiply by the length.', examples:['3-4-5 triangle, length 10 → 132'] },
+    { title:'Level 5 — Pythagoras First', desc:'One side of the triangle is not given. Find it with Pythagoras’ theorem, then find the total surface area.', examples:['legs 6 and 8, length 10 → 288'] },
+    { title:'Level 6 — Open Boxes & Rooms', desc:'Read which faces are really there: a box with no lid, the four walls of a room, the inside of a pool with no top.', examples:['box with no lid', 'four walls only', 'base and four walls'] },
+    { title:'Level 7 — Cost and Coverage', desc:'Find the area first, then the cost (area × price per m²) or the paint (area ÷ coverage, rounded UP to a whole litre).', examples:['48 m² at $46 per m² → $2208', '41.4 m² at 12 m² per L → 4 L'] },
+  ],
+  mssac: [
+    { title:'Level 1 — Curved Surface, Exactly', desc:'The curved surface unrolls into a rectangle 2πr long and h high: curved SA = 2πrh. Give it in terms of π.', examples:['r = 3, h = 10 → 60π'] },
+    { title:'Level 2 — Total Surface Area, Exactly', desc:'Two circles plus the curved surface: SA = 2πr² + 2πrh. Add the π terms.', examples:['r = 3, h = 10 → 18π + 60π = 78π'] },
+    { title:'Level 3 — Surface Area to 2 Decimal Places', desc:'The total or the curved surface area, rounded to two decimal places. Use the π key, not 3.14.', examples:['r = 4, h = 9, total → 326.73'] },
+    { title:'Level 4 — The Ends from the Curved Area', desc:'Use the curved area and the height to find the radius, then the area of one circular end, exactly.', examples:['curved area 80π, h = 10 → r = 4 → 16π'] },
+    { title:'Level 5 — Equal Surface Areas', desc:'Two cylinders have the same total surface area. Find the missing height to two decimal places. (Enrichment)', examples:['r = 4, h = 6 and r = 2 → h = 18'] },
+  ],
+  msvu: [
+    { title:'Level 1 — Length, Area or Volume?', desc:'The unit tells you. No power: a length. Squared (²) or hectares: an area. Cubed (³): a volume.', examples:['35 cm² → area', '8 m³ → volume', '1.4 km → length'] },
+    { title:'Level 2 — Choose the Unit of Volume', desc:'Pick the most sensible unit: mm³, cm³ or m³.', examples:['a sugar cube → cm³', 'a swimming pool → m³', 'a grain of sand → mm³'] },
+    { title:'Level 3 — mm³, cm³ and m³', desc:'Cube the length conversion: 1 cm³ = 10 × 10 × 10 = 1000 mm³, and 1 m³ = 100 × 100 × 100 = 1 000 000 cm³.', examples:['3 cm³ → 3000 mm³', '0.6 m³ → 600 000 cm³'] },
+    { title:'Level 4 — Volume to Capacity', desc:'1 cm³ holds 1 mL, 1000 cm³ = 1 L, and 1 m³ = 1000 L = 1 kL.', examples:['250 cm³ → 250 mL', '5000 cm³ → 5 L', '2.5 m³ → 2500 L'] },
+    { title:'Level 5 — mL, L and kL', desc:'Each step is × 1000 or ÷ 1000: 1 L = 1000 mL and 1 kL = 1000 L.', examples:['2.4 L → 2400 mL', '6500 L → 6.5 kL'] },
+    { title:'Level 6 — Megalitres', desc:'A megalitre (ML) is 1000 kL, which is a million litres. Used for dams and reservoirs.', examples:['3.2 ML → 3200 kL', '4 000 000 L → 4 ML'] },
+    { title:'Level 7 — Order Volumes and Capacities', desc:'Put four amounts in order from smallest to largest. Change them all to the same unit first.', examples:['2.5 L, 2400 cm³, 2600 mL', '0.9 kL, 950 L, 0.85 m³'] },
+  ],
+  msvr: [
+    { title:'Level 1 — Count the Cubes', desc:'Each small cube is 1 cm³. Count the cubes in one layer, then multiply by the number of layers.', examples:['4 by 3 layer, 2 layers → 24 cm³'] },
+    { title:'Level 2 — Rectangular Prisms', desc:'V = l × w × h. Volume is in CUBIC units.', examples:['8 by 5 by 3 → 120 cm³'] },
+    { title:'Level 3 — Cubes', desc:'V = s³. To go backwards from the volume, find the cube root.', examples:['side 6 → 216', 'V = 343 → side 7'] },
+    { title:'Level 4 — Decimal Dimensions', desc:'The same formula with decimals. Estimate first so the decimal point lands in the right place.', examples:['2.4 × 1.5 × 2 → 7.2 m³'] },
+    { title:'Level 5 — Missing Measurement', desc:'Work backwards: missing length = volume ÷ (the other two lengths multiplied).', examples:['V = 120, 8 by 5 → 3'] },
+    { title:'Level 6 — Convert First', desc:'The lengths are in different units. Convert them to the unit the answer needs, THEN multiply.', examples:['80 cm by 1.2 m by 0.5 m → 0.48 m³'] },
+    { title:'Level 7 — How Many Different Blocks?', desc:'Count every whole-number block that uses exactly this many unit cubes. List them in order so none is missed. (Enrichment)', examples:['24 cubes → 6 blocks'] },
+  ],
+  msvp: [
+    { title:'Level 1 — Volume = Area × Length', desc:'For ANY prism, V = the area of the end (the cross-section) × the length.', examples:['end area 24 cm², length 10 cm → 240 cm³'] },
+    { title:'Level 2 — Triangular Prisms', desc:'Find the triangle first (½ × base × height), then multiply by the length. Ignore a side you do not need.', examples:['base 8, height 6, length 10 → 240'] },
+    { title:'Level 3 — Trapezoidal Prisms', desc:'Find the trapezium first: ½ × (a + b) × h. Then multiply by the length.', examples:['sides 4 and 10, height 6, length 5 → 210'] },
+    { title:'Level 4 — Missing Length or Area', desc:'V = A × length, so length = V ÷ A and A = V ÷ length.', examples:['V = 600, A = 40 → length 15', 'V = 96, length 8 → A = 12'] },
+    { title:'Level 5 — Height of the Triangle', desc:'V = ½ × b × h × length. Put in what you know and solve for the height of the triangle.', examples:['V = 420, length 14, base 10 → height 6'] },
+  ],
+  msvcy: [
+    { title:'Level 1 — Exact Volume', desc:'V = πr²h. Square the radius, multiply by the height, and leave π in the answer.', examples:['r = 3, h = 10 → 90π'] },
+    { title:'Level 2 — Volume to 2 Decimal Places', desc:'Use the π key, not 3.14, then round to two decimal places. Halve a diameter first.', examples:['r = 5, h = 8 → 628.32'] },
+    { title:'Level 3 — Exact Volume from the Diameter', desc:'Halve the diameter to get the radius, THEN use V = πr²h.', examples:['d = 8, h = 5 → 80π'] },
+    { title:'Level 4 — Missing Height', desc:'V = πr²h, so the height = the number in front of π ÷ r².', examples:['V = 100π, r = 5 → h = 4'] },
+    { title:'Level 5 — Missing Radius', desc:'Divide the number in front of π by the height to get r², then take the square root.', examples:['V = 100π, h = 4 → r = 5'] },
+    { title:'Level 6 — Melted into a Cube', desc:'The volume stays the same. Find the cylinder’s volume, then the cube root for the cube’s side. (Enrichment)', examples:['r = 4, h = 4 → 5.86 cm'] },
+  ],
+  mscap: [
+    { title:'Level 1 — Containers in Litres', desc:'Find the volume in cm³, then divide by 1000: 1000 cm³ = 1 L.', examples:['40 by 25 by 30 cm → 30 L'] },
+    { title:'Level 2 — Tanks in Litres or Kilolitres', desc:'Find the volume in m³. 1 m³ = 1000 L = 1 kL.', examples:['2 by 1.5 by 1.2 m → 3.6 m³ → 3600 L'] },
+    { title:'Level 3 — Cylindrical Containers', desc:'V = πr²h in cm³, then ÷ 1000 for litres. One decimal place, using the π key.', examples:['r = 25, h = 80 cm → 157.1 L'] },
+    { title:'Level 4 — Cost of Filling', desc:'Find the volume in m³, then multiply by the price per cubic metre.', examples:['3 × 1.2 × 0.4 m at $65 per m³ → $93.60'] },
+    { title:'Level 5 — How Many Fit?', desc:'Divide the big volume by the small one and round DOWN: only whole boxes or whole people count.', examples:['truck 17.6 m³, boxes 0.25 m³ → 70'] },
+    { title:'Level 6 — Fill Time from a Rate', desc:'Find the capacity in litres, then divide by the litres per minute. (Filling and pouring: built for later, kept out of the ALT.)', examples:['3600 L at 30 L per min → 120 minutes'] },
+    { title:'Level 7 — Pouring into Another Container', desc:'The volume of water stays the same. Depth in the new container = volume ÷ its base area. (Filling and pouring: built for later, kept out of the ALT.)', examples:['9000 cm³ into a 30 by 25 base → 12 cm'] },
+  ],
+  mscs: [
+    { title:'Level 1 — Two Prisms Joined', desc:'Split the end into two rectangles, add their areas, then multiply by the length. Or find each prism and add.', examples:['L-shaped end of area 68, length 5 → 340'] },
+    { title:'Level 2 — A Piece Cut Out', desc:'Find the volume of the whole block, then take away the part that has been cut out.', examples:['12 by 8 by 5 block with a 4 by 3 slot → 420'] },
+    { title:'Level 3 — With a Cylinder Part', desc:'Add half a cylinder on top, or take away a round hole. Use the π key and give two decimal places.', examples:['8 by 5 end with a half circle on top, length 10 → 651.33'] },
+  ],
+});
+
+/* Year chips: best mapping to VC 2.0 (display only; for Laura to confirm). */
+Object.assign(SKILL_YEAR, {
+  measSA:'Yr 8–9', measSACyl:'Yr 9', measVolUnits:'Yr 7–8', measVolRect:'Yr 7',
+  measVolPrism:'Yr 7–8', measVolCyl:'Yr 8–9', measCap:'Yr 7–8', measCompSolid:'Yr 8–9'
+});
+
+/* Recall: mL, L and kL (Level 5 of Units of Volume & Capacity), the same
+   × 1000 / ÷ 1000 fact as the length conversions. THE ZEROS ARE LOAD-BEARING. */
+RECALL_SKILLS.push('measVolUnits');
+Object.assign(FLUENCY_TARGET, { measVolUnits:[0, 0, 0, 0, 16, 0, 0] });
+Object.assign(METHOD_LEVEL_OVERRIDE, { measVolUnits:[1, 2, 3, 4, 6, 7] });
+
+/* The slow levels. Recommendation only, never blocking. */
+Object.assign(LEVEL_REC, {
+  mssa:  { 6:'practice', 7:'practice' },
+  mssac: { 3:'practice', 5:'practice' },
+  msvr:  { 7:'practice' },
+  msvcy: { 2:'practice', 6:'practice' },
+  mscap: { 3:'practice', 6:'practice', 7:'practice' },
+  mscs:  { 3:'practice' }
+});
+
+/* ── PLACEHOLDER BANDS (the same formula as Release A) ─────────────── */
+const MEASB_LION = {
+  measSA:        [10, 7, 6, 5, 4, 5, 4],
+  measSACyl:     [8, 6, 5, 5, 3],
+  measVolUnits:  [14, 12, 12, 12, 16, 12, 6],
+  measVolRect:   [10, 10, 10, 8, 9, 5, 4],
+  measVolPrism:  [9, 7, 6, 8, 6],
+  measVolCyl:    [8, 5, 7, 7, 6, 3],
+  measCap:       [7, 6, 4, 5, 5, 4, 3],
+  measCompSolid: [5, 4, 3]
+};
+Object.keys(MEASB_LION).forEach(function(s){
+  METHOD_BAND_CEIL[s] = MEASB_LION[s].slice();
+  MEASB_LION[s].forEach(function(L, i){
     BAND_OVERRIDE[s + '_L' + (i + 1)] = [Math.round(L / 3), Math.round(2 * L / 3), L, Math.round(1.5 * L) - 1];
   });
 });
@@ -24642,6 +24769,7 @@ function genMeas(el){
   if (skill === 'measQuad')      return genMeasQuad(el);
   if (skill === 'measCircArea')  return genMeasCircArea(el);
   if (skill === 'measComposite') return genMeasComposite(el);
+  return genMeas3D(el);   /* v103: Release B */
 }
 
 /* ═══ 1. UNITS OF LENGTH ══════════════════════════════════════════ */
@@ -25514,6 +25642,816 @@ function genMeasComposite(el){
       msShape({ pts: region, fill: true, lines: [[[0, 0], [s, 0]], [[0, 0], [0, s]], [[0, s], [s, s]]],
         frame: [[0, 0], [0, s]], dots: [[0, s]], lbl: [{ p: [s, 0], q: [s, s], t: msU(s, u) }] }));
   }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   v103 · 📏 MEASUREMENT · RELEASE B · 8 skills · 47 levels
+   -------------------------------------------------------------------
+   Surface area, volume and capacity. Built from the 7MAT Measurement
+   booklet (Lesson 5) and the 7MAS SEAL booklet (Lessons 3 to 5).
+   Challenge questions are not assessed and are not built. Enrichment
+   items, and SEAL's filling and pouring problems, are built as the LAST
+   levels of their skill and kept out of every ALT (Laura, 4 Oct).
+
+   The Release A rules carry over unchanged: every solid is drawn to its
+   own labels (one uniform scale; the depth axis is drawn at half scale,
+   the usual oblique convention, so a cube still looks like a cube), exact
+   means in terms of π, a rounded circle answer means the π key and never
+   3.14 (every such question is re-rolled until 3.14 gives a different
+   answer), and the numbers are constructed so the answers are clean.
+═══════════════════════════════════════════════════════════════════ */
+
+MEAS_SKILLS.push('measSA', 'measSACyl', 'measVolUnits', 'measVolRect', 'measVolPrism',
+                 'measVolCyl', 'measCap', 'measCompSolid');
+
+function msU3(v, u){ return msNum(v) + ' ' + u + '³'; }
+function msMoney(v){ return '$' + (Math.abs(v - Math.round(v)) < 1e-9 ? msNum(Math.round(v)) : Number(v).toFixed(2)); }
+/* one decimal place with the π key, re-rolled when 3.14 gives the same answer */
+function msPi1(fn){
+  const a = dp(fn(Math.PI), 1), b = dp(fn(3.14), 1);
+  return (Math.abs(a - b) < 0.051) ? null : { ans: a, alt: b };
+}
+function msSetPi1(v, unitTxt){
+  qData.ans = v.ans; qData.ansTol = 0.05; qData.pi314 = v.alt;
+  qData.ansDisplay = msNum(v.ans) + (unitTxt ? ' ' + unitTxt : '');
+}
+
+/* ═══ 3D drawing toolkit ═════════════════════════════════════════════
+   A prism is its FRONT FACE (a polygon in math coordinates, y up) pushed
+   back by its depth. The depth runs up and to the right at 35°, drawn at
+   half scale. A side face is visible when its outward normal points the
+   same way as the depth, which decides which back edges are solid and
+   which are dashed. Curved parts of a front face (a half cylinder on top
+   of a block, a cylinder lying down) are just many points flagged
+   "smooth": they get a side line only where the outline turns away.   */
+const MS3_K = 0.5, MS3_A = 35 * Math.PI / 180;
+/* labels on a solid often sit over a dashed hidden edge, so they get a halo */
+function ms3Halo(svg){ return svg.replace(/<text /g, '<text stroke="var(--surface, #fff)" stroke-width="4" stroke-linejoin="round" paint-order="stroke" '); }
+function ms3Off(depth){ return [depth * MS3_K * Math.cos(MS3_A), depth * MS3_K * Math.sin(MS3_A)]; }
+function ms3P(x, y, z){ const d = ms3Off(z); return [x + d[0], y + d[1]]; }
+
+function msPrismSVG(poly, depth, o){
+  o = o || {};
+  const W = o.W || 300, H = o.H || 200;
+  let P = poly.slice(), smooth = (o.smooth || []).slice();
+  if (msArea2(P) < 0) { P.reverse(); smooth.reverse(); }
+  const n = P.length, d = ms3Off(depth);
+  const B = P.map(function(p){ return [p[0] + d[0], p[1] + d[1]]; });
+  const vis = P.map(function(p, i){
+    const q = P[(i + 1) % n], nx = q[1] - p[1], ny = -(q[0] - p[0]);
+    return nx * d[0] + ny * d[1] > 1e-9;
+  });
+  const all = P.concat(B).concat(o.frame || []);
+  const F = msFit(all, W, H, o.padX || 60, o.padY || 26);
+  const conn = function(i){
+    const a = vis[(i - 1 + n) % n], b = vis[i];
+    if (smooth[i]) return (a !== b) ? 'vis' : null;
+    return (a || b) ? 'vis' : 'hid';
+  };
+  let s = '';
+  /* fills first: the visible side faces (lightly shaded) and the front face */
+  for (let i = 0; i < n; i++){
+    if (!vis[i]) continue;
+    const j = (i + 1) % n;
+    s += '<path d="' + msPath(F, [P[i], P[j], B[j], B[i]]) + '" fill="' + (o.fill ? 'var(--accent)' : 'var(--surface, #fff)')
+      + '" fill-opacity="' + (o.fill ? '0.10' : '1') + '" stroke="none"/>';
+  }
+  s += '<path d="' + msPath(F, P) + '" fill="' + (o.fill || o.frontFill ? 'var(--accent)' : 'var(--surface, #fff)') + '" fill-opacity="'
+    + (o.frontFill ? '0.32' : o.fill ? '0.20' : '1') + '" stroke="none"/>';
+  /* then the hidden edges, dashed, showing through */
+  if (!o.noHidden) for (let i = 0; i < n; i++){
+    if (!vis[i]) s += msLine(F, B[i], B[(i + 1) % n], { dash: true, w: 1.5 });
+    if (conn(i) === 'hid') s += msLine(F, P[i], B[i], { dash: true, w: 1.5 });
+  }
+  /* then every visible edge, and the front outline on top */
+  for (let i = 0; i < n; i++){
+    if (vis[i]) s += msLine(F, B[i], B[(i + 1) % n], { w: 2.2 });
+    if (conn(i) === 'vis') s += msLine(F, P[i], B[i], { w: 2.2 });
+  }
+  s += '<path d="' + msPath(F, P) + '" fill="none" stroke="var(--text)" stroke-width="2.5" stroke-linejoin="round"/>';
+  (o.holes || []).forEach(function(h){ s += '<path d="' + msPath(F, h) + '" fill="var(--surface, #fff)" stroke="var(--text)" stroke-width="2.2"/>'; });
+  (o.lines || []).forEach(function(l){ s += msLine(F, l[0], l[1], { w: l[2] || 1.2 }); });
+  (o.dashed || []).forEach(function(l){ s += msLine(F, l[0], l[1], { dash: true, w: 1.8 }); });
+  (o.rights || []).forEach(function(r){ s += msRight(F, r.v, r.a, r.b); });
+  (o.ticks || []).forEach(function(t){ s += msTick(F, t.p, t.q, t.n); });
+  const ccw = true;
+  (o.lbl || []).forEach(function(l){ s += msEdgeLbl(F, l.p, l.q, l.t, ccw, l.inward, l.col); });
+  (o.side || []).forEach(function(l){ s += msSideLbl(F, l.p, l.q, l.t, l.side, l.col); });
+  (o.texts || []).forEach(function(c){ const Q = F.P(c.at); s += msText(Q[0], Q[1] + 5, c.t, { col: c.col, size: c.size }); });
+  if (o.depthLbl){
+    /* on the visible side line that sits lowest and furthest right */
+    let best = -1, score = -Infinity;
+    for (let i = 0; i < n; i++){
+      if (conn(i) !== 'vis' || smooth[i]) continue;
+      const sc = P[i][0] - P[i][1] * 1.01;
+      if (sc > score) { score = sc; best = i; }
+    }
+    if (best < 0) best = 0;
+    const a = F.P(P[best]), b = F.P(B[best]);
+    const dx = b[0] - a[0], dy = b[1] - a[1];
+    const side = ((-dy) + dx) > 0 ? 1 : -1;   /* the normal that points right and down */
+    s += msSideLbl(F, P[best], B[best], o.depthLbl, side, o.depthCol);
+  }
+  if (o.extra) s += o.extra(F);
+  return '<svg viewBox="0 0 ' + W + ' ' + H + '" style="width:100%;max-width:' + (o.maxW || 330)
+    + 'px;display:block;margin:6px auto;">' + ms3Halo(s) + '</svg>';
+}
+
+/* A rectangular prism l (across) × h (up) × w (deep). lab: {l, h, w} label text. */
+function msBoxSVG(l, h, w, lab, o){
+  o = o || {};
+  lab = lab || {};
+  const P = [[0, 0], [l, 0], [l, h], [0, h]];
+  const lb = [];
+  if (lab.l) lb.push({ p: P[0], q: P[1], t: lab.l });
+  if (lab.h) lb.push({ p: P[3], q: P[0], t: lab.h });
+  return msPrismSVG(P, w, Object.assign({ lbl: lb, depthLbl: lab.w }, o));
+}
+/* A solid block of unit cubes, every cube edge drawn on the three faces you can see. */
+function msBlockSVG(l, h, w){
+  const lines = [];
+  for (let i = 1; i < l; i++){ lines.push([[i, 0], [i, h]]); lines.push([[i, h], ms3P(i, h, w)]); }
+  for (let j = 1; j < h; j++){ lines.push([[0, j], [l, j]]); lines.push([[l, j], ms3P(l, j, w)]); }
+  for (let k = 1; k < w; k++){ lines.push([ms3P(0, h, k), ms3P(l, h, k)]); lines.push([ms3P(l, 0, k), ms3P(l, h, k)]); }
+  return msPrismSVG([[0, 0], [l, 0], [l, h], [0, h]], w, { lines: lines, fill: true, padX: 40, noHidden: true });
+}
+/* An upright cylinder of radius r and height h. o: rLbl | dLbl, hLbl, fill. */
+function msCylSVG(r, h, o){
+  o = o || {};
+  const ry = r * 0.3, W = 300, H = o.H || 210;
+  const ell = function(cy, a0, a1){ const out = []; for (let i = 0; i <= 48; i++){ const t = (a0 + (a1 - a0) * i / 48) * Math.PI / 180; out.push([r * Math.cos(t), cy + ry * Math.sin(t)]); } return out; };
+  const F = msFit([[-r, -ry], [r, h + ry]], W, H, o.padX || 70, 22);
+  const outline = ell(0, 180, 360).concat(ell(h, 0, 180));
+  let s = '<path d="' + msPath(F, outline) + '" fill="' + (o.fill ? 'var(--accent)' : 'none') + '" fill-opacity="0.18" stroke="none"/>';
+  s += '<path d="' + msPath(F, ell(0, 0, 180), false) + '" fill="none" stroke="var(--text)" stroke-width="1.5" stroke-dasharray="6 4"/>';
+  s += '<path d="' + msPath(F, ell(0, 180, 360), false) + '" fill="none" stroke="var(--text)" stroke-width="2.5"/>';
+  s += msLine(F, [-r, 0], [-r, h], { w: 2.5 }) + msLine(F, [r, 0], [r, h], { w: 2.5 });
+  s += '<path d="' + msPath(F, ell(h, 0, 360)) + '" fill="' + (o.fill ? 'var(--accent)' : 'var(--surface, #fff)') + '" fill-opacity="'
+    + (o.fill ? '0.30' : '1') + '" stroke="var(--text)" stroke-width="2.5"/>';
+  const C = F.P([0, h]);
+  s += '<circle cx="' + C[0].toFixed(1) + '" cy="' + C[1].toFixed(1) + '" r="3" fill="var(--text)"/>';
+  if (o.rLbl){
+    s += msLine(F, [0, h], [r, h], { w: 2 });
+    const M = F.P([r / 2, h + ry]);
+    s += msText(M[0], M[1] - 7, o.rLbl);
+  }
+  if (o.dLbl){
+    s += msLine(F, [-r, h], [r, h], { w: 2 });
+    const M = F.P([0, h + ry]);
+    s += msText(M[0], M[1] - 7, o.dLbl);
+  }
+  if (o.hLbl) s += msSideLbl(F, [r, 0], [r, h], o.hLbl, 1);
+  if (o.inside) { const M = F.P([0, h / 2]); s += msText(M[0], M[1], o.inside, { size: 13 }); }
+  return '<svg viewBox="0 0 ' + W + ' ' + H + '" style="width:100%;max-width:' + (o.maxW || 300)
+    + 'px;display:block;margin:6px auto;">' + ms3Halo(s) + '</svg>';
+}
+/* front-face helpers */
+function msSemiTop(l, h, n){
+  /* a rectangle l × h with a semicircle of diameter l on top; returns {pts, smooth} */
+  const r = l / 2, pts = [[0, 0], [l, 0], [l, h]], sm = [false, false, false];
+  for (let i = 1; i < (n || 24); i++){ const t = Math.PI * i / (n || 24); pts.push([r + r * Math.cos(t), h + r * Math.sin(t)]); sm.push(true); }
+  pts.push([0, h]); sm.push(false);
+  return { pts: pts, smooth: sm };
+}
+
+/* ═══ the Release B dispatcher (genMeas hands over to it) ═══════════ */
+function genMeas3D(el){
+  el.style.fontSize = '1.05rem';
+  if (skill === 'measSA')        return genMeasSA(el);
+  if (skill === 'measSACyl')     return genMeasSACyl(el);
+  if (skill === 'measVolUnits')  return genMeasVolUnits(el);
+  if (skill === 'measVolRect')   return genMeasVolRect(el);
+  if (skill === 'measVolPrism')  return genMeasVolPrism(el);
+  if (skill === 'measVolCyl')    return genMeasVolCyl(el);
+  if (skill === 'measCap')       return genMeasCap(el);
+  if (skill === 'measCompSolid') return genMeasCompSolid(el);
+}
+/* three different whole numbers in the given ranges */
+function msDims3(a, b, c){
+  let x, y, z, g = 0;
+  do { x = rr(a[0], a[1]); y = rr(b[0], b[1]); z = rr(c[0], c[1]); } while ((x === y || y === z || x === z) && g++ < 100);
+  return [x, y, z];
+}
+/* a right-angled triangle from a Pythagorean triple, longer leg as the base */
+const MS3_TRIPLES = [[3, 4, 5], [6, 8, 10], [5, 12, 13], [9, 12, 15], [8, 15, 17], [12, 16, 20]];
+function msRightTri(maxLeg){
+  const t = ffPick(MS3_TRIPLES.filter(function(x){ return x[1] <= (maxLeg || 99); }));
+  return { b: Math.max(t[0], t[1]), h: Math.min(t[0], t[1]), c: t[2] };
+}
+function msRightPrismSVG(T, L, lab){
+  const P = [[0, 0], [T.b, 0], [0, T.h]], lb = [];
+  if (lab.b) lb.push({ p: P[0], q: P[1], t: lab.b });
+  if (lab.h) lb.push({ p: P[2], q: P[0], t: lab.h });
+  if (lab.c) lb.push({ p: P[1], q: P[2], t: lab.c });
+  return msPrismSVG(P, L, { lbl: lb, depthLbl: lab.L, rights: [{ v: P[0], a: P[1], b: P[2] }] });
+}
+/* isosceles triangle (a tent): base 2·off, height h, slant c */
+function msTentSVG(off, h, L, lab){
+  const P = [[0, 0], [2 * off, 0], [off, h]], lb = [], side = [];
+  if (lab.b) lb.push({ p: P[0], q: P[1], t: lab.b });
+  if (lab.c) lb.push({ p: P[2], q: P[0], t: lab.c });
+  if (lab.h) side.push({ p: [off, 0], q: [off, h], t: lab.h, side: 1 });
+  return msPrismSVG(P, L, { lbl: lb, side: side, depthLbl: lab.L, dashed: lab.h ? [[[off, h], [off, 0]]] : [],
+    rights: lab.h ? [{ v: [off, 0], a: P[1], b: P[2] }] : [], ticks: [{ p: P[0], q: P[2], n: 1 }, { p: P[1], q: P[2], n: 1 }] });
+}
+
+/* ═══ 11. SURFACE AREA OF PRISMS (SEAL Lesson 3) ════════════════════ */
+function genMeasSA(el){
+  const u = msUnit();
+  if (level === 1){
+    const s = msLen(2, 15, 0.2), f = dp(s * s, 6), A = dp(6 * f, 6);
+    qData.ans = A; qData.ansDisplay = msU2(A, u);
+    qData.workSteps = 'A cube has 6 identical square faces. One face: ' + msNum(s) + ' × ' + msNum(s) + ' = ' + msNum(f) + '. All six: 6 × ' + msNum(f) + ' = <b>' + qData.ansDisplay + '</b>.';
+    msQ(el, 'Find the total surface area of this cube.', msBoxSVG(s, s, s, { l: msU(s, u) }));
+    return;
+  }
+  if (level === 2){
+    const d = msDims3([5, 15], [2, 10], [2, 9]), l = d[0], h = d[1], w = d[2];
+    const a = l * w, b = l * h, c = w * h, A = 2 * (a + b + c);
+    qData.ans = A; qData.ansDisplay = msU2(A, u);
+    qData.workSteps = 'Three pairs of matching faces: 2 × (' + l + ' × ' + w + ' + ' + l + ' × ' + h + ' + ' + w + ' × ' + h + ') = 2 × (' + a + ' + ' + b + ' + ' + c + ') = 2 × ' + (a + b + c) + ' = <b>' + qData.ansDisplay + '</b>.';
+    msQ(el, 'Find the total surface area of this rectangular prism.', msBoxSVG(l, h, w, { l: msU(l, u), h: msU(h, u), w: msU(w, u) }));
+    return;
+  }
+  if (level === 3){
+    if (Math.random() < 0.45){
+      const s = rr(2, 12), A = 6 * s * s;
+      qData.ans = s; qData.ansDisplay = msU(s, u);
+      qData.workSteps = 'Six equal faces, so one face is ' + A + ' ÷ 6 = ' + (s * s) + '. Each face is a square, so the edge is √' + (s * s) + ' = <b>' + qData.ansDisplay + '</b>.';
+      msQ(el, 'The total surface area of this cube is <b>' + msU2(A, u) + '</b>. Find the length of each edge.', msBoxSVG(s, s, s, { l: '?' }));
+      return;
+    }
+    const d = msDims3([5, 14], [2, 10], [2, 9]), l = d[0], h = d[1], w = d[2];
+    const A = 2 * (l * w + l * h + w * h), top = 2 * l * w, rest = A - top, per = 2 * (l + w);
+    qData.ans = h; qData.ansDisplay = msU(h, u);
+    qData.workSteps = 'The top and bottom: 2 × ' + l + ' × ' + w + ' = ' + top + '. That leaves ' + A + ' − ' + top + ' = ' + rest + ' for the four sides, which is the height × 2 × (' + l + ' + ' + w + ') = height × ' + per + '. Height = ' + rest + ' ÷ ' + per + ' = <b>' + qData.ansDisplay + '</b>.';
+    msQ(el, 'The total surface area of this rectangular prism is <b>' + msU2(A, u) + '</b>. Find the length marked ?.', msBoxSVG(l, h, w, { l: msU(l, u), h: '?', w: msU(w, u) }));
+    return;
+  }
+  if (level === 4 || level === 5){
+    const pyth = level === 5;
+    if (Math.random() < 0.55){
+      const T = msRightTri(16), L = rr(Math.max(4, Math.ceil(T.b * 0.7)), Math.min(25, T.b * 2 + 2));
+      const tri = T.b * T.h / 2, rects = (T.b + T.h + T.c) * L, A = 2 * tri + rects;
+      qData.ans = A; qData.ansDisplay = msU2(A, u);
+      const hide = pyth ? 'c' : null;
+      let ws = '';
+      if (pyth) ws = 'Pythagoras first: c² = ' + T.b + '² + ' + T.h + '² = ' + (T.b * T.b + T.h * T.h) + ', so c = ' + T.c + '. ';
+      ws += 'Two triangles: 2 × ½ × ' + T.b + ' × ' + T.h + ' = ' + (2 * tri) + '. Three rectangles, all ' + L + ' long: (' + T.b + ' + ' + T.h + ' + ' + T.c + ') × ' + L + ' = ' + rects + '. Total: ' + (2 * tri) + ' + ' + rects + ' = <b>' + qData.ansDisplay + '</b>.';
+      qData.workSteps = ws;
+      msQ(el, pyth ? 'Use Pythagoras’ theorem to find the missing side first, then find the total surface area of this triangular prism.'
+                   : 'Find the total surface area of this triangular prism.',
+        msRightPrismSVG(T, L, { b: msU(T.b, u), h: msU(T.h, u), c: hide === 'c' ? null : msU(T.c, u), L: msU(L, u) }));
+      return;
+    }
+    const t = ffPick([[3, 4, 5], [4, 3, 5], [6, 8, 10], [8, 6, 10], [5, 12, 13], [12, 5, 13], [9, 12, 15]]);
+    const off = t[0], h = t[1], c = t[2], b = 2 * off, L = rr(Math.max(4, Math.ceil(b * 0.6)), Math.max(5, Math.min(25, Math.round(b * 1.2))));
+    const tri = b * h, rects = (b + 2 * c) * L, A = tri + rects;
+    qData.ans = A; qData.ansDisplay = msU2(A, u);
+    let ws = '';
+    if (pyth) ws = 'Pythagoras first, in half the triangle: slant² = ' + off + '² + ' + h + '² = ' + (off * off + h * h) + ', so the slant is ' + c + '. ';
+    ws += 'Two triangles: 2 × ½ × ' + b + ' × ' + h + ' = ' + tri + '. Three rectangles: (' + b + ' + ' + c + ' + ' + c + ') × ' + L + ' = ' + rects + '. Total: ' + tri + ' + ' + rects + ' = <b>' + qData.ansDisplay + '</b>.';
+    qData.workSteps = ws;
+    msQ(el, pyth ? 'The two sloping sides are equal. Use Pythagoras’ theorem to find their length first, then find the total surface area.'
+                 : 'The two sloping sides are equal. Find the total surface area of this triangular prism.',
+      msTentSVG(off, h, L, { b: msU(b, u), h: msU(h, u), c: pyth ? null : msU(c, u), L: msU(L, u) }));
+    return;
+  }
+  if (level === 6){
+    const k = ri(3);
+    if (k === 0){
+      const d = msDims3([12, 40], [8, 30], [5, 25]), l = d[0], h = d[2], w = d[1];
+      const A = l * w + 2 * l * h + 2 * w * h;
+      qData.ans = A; qData.ansDisplay = msU2(A, 'cm');
+      qData.workSteps = 'No lid, so only ONE ' + l + ' × ' + w + ' face: ' + (l * w) + '. The four sides: 2 × ' + l + ' × ' + h + ' + 2 × ' + w + ' × ' + h + ' = ' + (2 * l * h + 2 * w * h) + '. Total: <b>' + qData.ansDisplay + '</b>.';
+      msQ(el, 'This box has <b>no lid</b>. Find the area of card needed to make it.', msBoxSVG(l, h, w, { l: msU(l, 'cm'), h: msU(h, 'cm'), w: msU(w, 'cm') }));
+      return;
+    }
+    if (k === 1){
+      const l = rr(3, 8), w = rr(3, 7), h = ffPick([2.4, 2.5, 2.7, 3]);
+      const A = dp(2 * (l + w) * h, 6);
+      qData.ans = A; qData.ansDisplay = msU2(A, 'm');
+      qData.workSteps = 'Only the four walls: two are ' + l + ' × ' + msNum(h) + ' and two are ' + w + ' × ' + msNum(h) + '. 2 × (' + l + ' + ' + w + ') × ' + msNum(h) + ' = <b>' + qData.ansDisplay + '</b>.';
+      msQ(el, 'A room is ' + l + ' m long, ' + w + ' m wide and ' + msNum(h) + ' m high. Find the total area of the <b>four walls</b>.', msBoxSVG(l, h, w, { l: msU(l, 'm'), h: msU(h, 'm'), w: msU(w, 'm') }));
+      return;
+    }
+    const l = rr(8, 25), w = rr(4, 12), h = ffPick([1.2, 1.5, 1.8, 2]);
+    const base = l * w, walls = dp(2 * (l + w) * h, 6), A = dp(base + walls, 6);
+    qData.ans = A; qData.ansDisplay = msU2(A, 'm');
+    qData.workSteps = 'The base: ' + l + ' × ' + w + ' = ' + base + '. The four walls: 2 × (' + l + ' + ' + w + ') × ' + msNum(h) + ' = ' + msNum(walls) + '. No top. Total: <b>' + qData.ansDisplay + '</b>.';
+    msQ(el, 'A swimming pool is ' + l + ' m long, ' + w + ' m wide and ' + msNum(h) + ' m deep. The inside (the base and the four walls) is to be tiled. Find the area to be tiled.', msBoxSVG(l, h, w, { l: msU(l, 'm'), h: msU(h, 'm'), w: msU(w, 'm') }));
+    return;
+  }
+  /* Level 7: cost and coverage */
+  if (Math.random() < 0.5){
+    const l = rr(2, 6), w = rr(2, 5), h = ffPick([2, 2.2, 2.4]), rate = ffPick([25, 30, 35, 40, 45, 46, 50, 55]);
+    const area = dp(l * w + 2 * (l + w) * h, 6), cost = dp(area * rate, 2);
+    qData.ans = cost; qData.ansTol = 0.005; qData.ansDisplay = msMoney(cost);
+    qData.workSteps = 'Walls: 2 × (' + l + ' + ' + w + ') × ' + msNum(h) + ' = ' + msNum(dp(2 * (l + w) * h, 6)) + ' m². Roof: ' + l + ' × ' + w + ' = ' + (l * w) + ' m². No floor. Area: ' + msNum(area) + ' m². Cost: ' + msNum(area) + ' × $' + rate + ' = <b>' + qData.ansDisplay + '</b>.';
+    msQ(el, 'A garden shed is ' + l + ' m long, ' + w + ' m wide and ' + msNum(h) + ' m high, with a flat roof and no floor. Sheeting costs <b>$' + rate + ' per m²</b>. Find the cost of covering the walls and the roof.', msBoxSVG(l, h, w, { l: msU(l, 'm'), h: msU(h, 'm'), w: msU(w, 'm') }));
+    return;
+  }
+  let l, w, h, cov, area, need, g = 0;
+  do {
+    l = rr(3, 7); w = rr(3, 6); h = ffPick([2.4, 2.5, 2.7]); cov = ffPick([8, 10, 12, 15, 16]);
+    area = dp(2 * (l + w) * h - 1.8, 6); need = Math.ceil(area / cov - 1e-9);
+  } while (Math.abs(area / cov - Math.round(area / cov)) < 0.05 && g++ < 50);
+  qData.ans = need; qData.ansDisplay = need + ' L';
+  qData.workSteps = 'Four walls: 2 × (' + l + ' + ' + w + ') × ' + msNum(h) + ' = ' + msNum(dp(2 * (l + w) * h, 6)) + ' m². Take away the door: − 1.8 = ' + msNum(area) + ' m². Litres: ' + msNum(area) + ' ÷ ' + cov + ' = ' + (area / cov).toFixed(2) + '…, so buy <b>' + qData.ansDisplay + '</b> (round UP, or the last bit is not painted).';
+  msQ(el, 'The four walls of a room ' + l + ' m by ' + w + ' m by ' + msNum(h) + ' m high are painted. A door 2 m by 0.9 m is not painted. One litre of paint covers <b>' + cov + ' m²</b>. How many whole litres must be bought for one coat?',
+    msBoxSVG(l, h, w, { l: msU(l, 'm'), h: msU(h, 'm'), w: msU(w, 'm') }));
+}
+
+/* ═══ 12. SURFACE AREA OF CYLINDERS (SEAL Lesson 3) ═════════════════ */
+function msCylLbl(r, u){ return Math.random() < 0.7 ? { rLbl: msU(r, u), isR: true } : { dLbl: msU(2 * r, u), isR: false }; }
+function genMeasSACyl(el){
+  const u = msUnit();
+  if (level === 1 || level === 2){
+    let r, h, g = 0;
+    do { r = rr(1, 10); h = rr(2, 20); } while ((h > 5 * r || r > 4 * h) && g++ < 100);
+    const lb = msCylLbl(r, u);
+    const pre = lb.isR ? '' : 'r = ' + (2 * r) + ' ÷ 2 = ' + r + '. ';
+    if (level === 1){
+      msSetPiExact(0, 2 * r * h, u + '²');
+      qData.workSteps = pre + 'The curved surface unrolls into a rectangle: 2πr × h = 2 × π × ' + r + ' × ' + h + ' = <b>' + qData.ansDisplay + '</b>.';
+      msQ(el, 'Find the <b>curved surface area</b> of this cylinder. Give it exactly, in terms of π.', msCylSVG(r, h, Object.assign({ hLbl: msU(h, u) }, lb)));
+    } else {
+      msSetPiExact(0, 2 * r * r + 2 * r * h, u + '²');
+      qData.workSteps = pre + 'Two circles: 2πr² = 2 × π × ' + r + '² = ' + (2 * r * r) + 'π. The curved surface: 2πrh = ' + (2 * r * h) + 'π. Total: <b>' + qData.ansDisplay + '</b>.';
+      msQ(el, 'Find the <b>total surface area</b> of this closed cylinder. Give it exactly, in terms of π.', msCylSVG(r, h, Object.assign({ hLbl: msU(h, u) }, lb)));
+    }
+    return;
+  }
+  if (level === 3){
+    const R = msRoll(function(){
+      const r = msLen(1, 12, 0.3), h = msLen(2, 25, 0.25), tot = Math.random() < 0.6;
+      if (h > 5 * r || r > 4 * h) return null;
+      const p = msPi2(function(P){ return tot ? 2 * P * r * r + 2 * P * r * h : 2 * P * r * h; });
+      return p ? { r: r, h: h, tot: tot, p: p } : null;
+    });
+    msSetPi2(R.p, u + '²');
+    qData.workSteps = (R.tot ? 'Total = 2πr² + 2πrh = 2 × π × ' + msNum(R.r) + '² + 2 × π × ' + msNum(R.r) + ' × ' + msNum(R.h)
+                             : 'Curved surface = 2πrh = 2 × π × ' + msNum(R.r) + ' × ' + msNum(R.h))
+      + ' = <b>' + qData.ansDisplay + '</b> (2 d.p.). Use the π key: 3.14 gives ' + msNum(R.p.alt) + '.';
+    msQ(el, 'Find the <b>' + (R.tot ? 'total surface area' : 'curved surface area') + '</b> of this cylinder, correct to two decimal places.', msCylSVG(R.r, R.h, { rLbl: msU(R.r, u), hLbl: msU(R.h, u) }));
+    return;
+  }
+  if (level === 4){
+    const r = rr(2, 9), h = rr(3, 15), k = 2 * r * h;
+    msSetPiExact(0, r * r, u + '²');
+    qData.workSteps = 'Curved area = 2πrh, so ' + k + 'π = 2 × π × r × ' + h + ' = ' + (2 * h) + 'πr. So r = ' + k + ' ÷ ' + (2 * h) + ' = ' + r + '. One end: πr² = π × ' + r + '² = <b>' + qData.ansDisplay + '</b>.';
+    msQ(el, 'The curved surface of this cylinder has an area of <b>' + k + 'π ' + u + '²</b>. Find the area of one circular end, exactly.', msCylSVG(r, h, { rLbl: 'r = ?', hLbl: msU(h, u) }));
+    return;
+  }
+  /* Level 5 (Enrichment): equal total surface areas */
+  let r1, h1, r2, h2, g = 0;
+  do { r1 = rr(2, 6); h1 = rr(3, 12); r2 = rr(2, 6); h2 = (r1 * r1 + r1 * h1 - r2 * r2) / r2; } while ((r2 === r1 || h2 < 1) && g++ < 100);
+  qData.ans = dp(h2, 2); qData.ansTol = 0.005; qData.ansDisplay = msU(dp(h2, 2), u);
+  qData.workSteps = 'First cylinder: 2π × ' + r1 + '² + 2π × ' + r1 + ' × ' + h1 + ' = ' + (2 * (r1 * r1 + r1 * h1)) + 'π. Second: 2π × ' + r2 + '² + 2π × ' + r2 + ' × h = ' + (2 * r2 * r2) + 'π + ' + (2 * r2) + 'πh. Set them equal and divide by π: '
+    + (2 * r2) + 'h = ' + (2 * (r1 * r1 + r1 * h1)) + ' − ' + (2 * r2 * r2) + ' = ' + (2 * (r1 * r1 + r1 * h1 - r2 * r2)) + ', so h = <b>' + qData.ansDisplay + '</b> (2 d.p.).';
+  msQ(el, 'Two closed cylinders have the same total surface area. The first has radius ' + msU(r1, u) + ' and height ' + msU(h1, u) + '. The second has radius ' + msU(r2, u) + '. Find the height of the second cylinder, correct to two decimal places.', '');
+}
+
+/* ═══ 13. UNITS OF VOLUME & CAPACITY (7MAT L5, SEAL L4–5) ═══════════ */
+const MS_VOL_OBJ = [
+  ['a sugar cube', 'cm³'], ['a matchbox', 'cm³'], ['a dice', 'cm³'], ['a mobile phone', 'cm³'], ['a lunch box', 'cm³'],
+  ['a swimming pool', 'm³'], ['a shipping container', 'm³'], ['a classroom', 'm³'], ['a water tank on a farm', 'm³'], ['a removalist’s truck', 'm³'],
+  ['a grain of sand', 'mm³'], ['a raindrop', 'mm³'], ['a grain of rice', 'mm³'], ['a pinhead', 'mm³']
+];
+const MS_VOL_OPTS = ['cubic millimetres (mm³)', 'cubic centimetres (cm³)', 'cubic metres (m³)'];
+function msVolConvQ(el, v, from, to, f, mult, note){
+  const out = mult ? dp(v * f, 6) : dp(v / f, 9);
+  qData.ans = out; qData.ansDisplay = msNum(out) + ' ' + to;
+  qData.workSteps = note + ' ' + (mult ? 'Multiply' : 'Divide') + ': ' + msNum(v) + (mult ? ' × ' : ' ÷ ') + msNum(f) + ' = <b>' + qData.ansDisplay + '</b>.';
+  msQ(el, 'Convert to ' + to + '.', '', '<span style="font-size:1.8rem;">' + msNum(v) + ' ' + from + ' = ? ' + to + '</span>');
+}
+function genMeasVolUnits(el){
+  if (level === 1){
+    const k = ri(3);
+    const unit = k === 0 ? ffPick(['mm', 'cm', 'm', 'km']) : k === 1 ? ffPick(['mm²', 'cm²', 'm²', 'km²', 'ha']) : ffPick(['mm³', 'cm³', 'm³']);
+    const v = Math.random() < 0.4 ? dp(rr(11, 999) / 10, 1) : rr(2, 900);
+    const right = ['Length', 'Area', 'Volume'][k];
+    decSetChoice(el, '<div style="' + A_LBL + '">Is this measurement a length, an area or a volume?</div>'
+      + '<div style="text-align:center;font-weight:900;font-size:1.9rem;margin:14px 0;">' + msNum(v) + ' ' + unit + '</div>', ['Length', 'Area', 'Volume'], right, true);
+    qData.workSteps = 'Look at the unit. No power: a length. Squared (²) or hectares: an area. Cubed (³): a volume. So <b>' + right + '</b>.';
+    return;
+  }
+  if (level === 2){
+    const o = ffPick(MS_VOL_OBJ), right = MS_VOL_OPTS[['mm³', 'cm³', 'm³'].indexOf(o[1])];
+    decSetChoice(el, '<div style="' + A_LBL + '">Which unit is the most sensible for the volume of</div>'
+      + '<div style="text-align:center;font-weight:900;font-size:1.3rem;margin:14px 0;">' + o[0] + '?</div>', MS_VOL_OPTS, right, true);
+    qData.workSteps = 'A 1 cm cube is about the size of a sugar cube; a 1 m cube would fill a big box. Tiny things use mm³. So <b>' + right + '</b>.';
+    return;
+  }
+  if (level === 3){
+    const k = ri(4);
+    if (k === 0) return msVolConvQ(el, ffPick([rr(2, 20), dp(rr(11, 99) / 10, 1)]), 'cm³', 'mm³', 1000, true, '1 cm³ = 10 × 10 × 10 = 1000 mm³.');
+    if (k === 1) return msVolConvQ(el, ffPick([rr(2, 90) * 1000, rr(11, 99) * 100, rr(2, 9) * 500]), 'mm³', 'cm³', 1000, false, '1000 mm³ = 1 cm³.');
+    if (k === 2) return msVolConvQ(el, ffPick([rr(2, 9), dp(rr(1, 9) / 10, 1), dp(rr(11, 49) / 10, 1)]), 'm³', 'cm³', 1000000, true, '1 m³ = 100 × 100 × 100 = 1 000 000 cm³.');
+    return msVolConvQ(el, ffPick([rr(1, 9) * 100000, rr(11, 99) * 10000, rr(2, 9) * 1000000]), 'cm³', 'm³', 1000000, false, '1 000 000 cm³ = 1 m³.');
+  }
+  if (level === 4){
+    const k = ri(6);
+    if (k === 0) return msVolConvQ(el, ffPick([rr(20, 900), rr(2, 9) * 250]), 'cm³', 'mL', 1, true, '1 cm³ holds exactly 1 mL.');
+    if (k === 1) return msVolConvQ(el, ffPick([rr(2, 90) * 100, rr(11, 99) * 50, rr(2, 30) * 1000]), 'cm³', 'L', 1000, false, '1000 cm³ = 1 L.');
+    if (k === 2) return msVolConvQ(el, ffPick([rr(2, 9), dp(rr(11, 99) / 10, 1), dp(rr(1, 9) / 10, 1)]), 'L', 'cm³', 1000, true, '1 L = 1000 cm³.');
+    if (k === 3) return msVolConvQ(el, ffPick([rr(2, 9), dp(rr(11, 99) / 10, 1), dp(rr(1, 9) / 10, 1)]), 'm³', 'L', 1000, true, '1 m³ = 1000 L.');
+    if (k === 4) return msVolConvQ(el, ffPick([rr(2, 90) * 100, rr(2, 9) * 1000, rr(11, 99) * 50]), 'L', 'm³', 1000, false, '1000 L = 1 m³.');
+    return msVolConvQ(el, ffPick([rr(2, 30), dp(rr(11, 99) / 10, 1)]), 'm³', 'kL', 1, true, '1 m³ holds exactly 1 kL (1000 L).');
+  }
+  if (level === 5){
+    const k = ri(4);
+    if (k === 0) return msVolConvQ(el, ffPick([rr(2, 9), dp(rr(11, 99) / 10, 1), dp(rr(1, 9) / 10, 1), dp(rr(101, 999) / 100, 2)]), 'L', 'mL', 1000, true, '1 L = 1000 mL.');
+    if (k === 1) return msVolConvQ(el, ffPick([rr(2, 9) * 1000, rr(11, 99) * 100, rr(101, 999) * 10, rr(2, 9) * 250]), 'mL', 'L', 1000, false, '1000 mL = 1 L.');
+    if (k === 2) return msVolConvQ(el, ffPick([rr(2, 9), dp(rr(11, 99) / 10, 1), dp(rr(1, 9) / 10, 1)]), 'kL', 'L', 1000, true, '1 kL = 1000 L.');
+    return msVolConvQ(el, ffPick([rr(2, 9) * 1000, rr(11, 99) * 100, rr(101, 999) * 10]), 'L', 'kL', 1000, false, '1000 L = 1 kL.');
+  }
+  if (level === 6){
+    const k = ri(4);
+    if (k === 0) return msVolConvQ(el, ffPick([rr(2, 9), dp(rr(11, 99) / 10, 1), dp(rr(1, 9) / 10, 1)]), 'ML', 'kL', 1000, true, '1 ML (megalitre) = 1000 kL.');
+    if (k === 1) return msVolConvQ(el, ffPick([rr(2, 9) * 1000, rr(11, 99) * 100, rr(101, 999) * 10]), 'kL', 'ML', 1000, false, '1000 kL = 1 ML.');
+    if (k === 2) return msVolConvQ(el, ffPick([rr(2, 9), dp(rr(11, 99) / 10, 1)]), 'ML', 'L', 1000000, true, '1 ML = 1000 kL = 1 000 000 L.');
+    return msVolConvQ(el, ffPick([rr(2, 9) * 1000000, rr(11, 99) * 100000]), 'L', 'ML', 1000000, false, '1 000 000 L = 1 ML.');
+  }
+  /* Level 7: order four volumes and capacities, compared in mL */
+  const big = Math.random() < 0.5;
+  let tiles = [], g = 0;
+  while (g++ < 120){
+    tiles = []; const seen = {}, units = {};
+    const anchor = big ? rr(3, 40) * 100 : rr(5, 60) * 50;   /* litres (big) or mL (small) */
+    let ok = true;
+    for (let i = 0; i < 4; i++){
+      const base = Math.round(anchor * (0.55 + Math.random() * 1.1) / 10) * 10;
+      const ml = big ? base * 1000 : base;
+      let shown, un;
+      if (big){ un = ffPick(['L', 'kL', 'm³']); shown = un === 'L' ? base : base / 1000; }
+      else { un = ffPick(['mL', 'L', 'cm³']); shown = un === 'L' ? base / 1000 : base; }
+      if (seen[ml] || shown <= 0) { ok = false; break; }
+      seen[ml] = 1; units[un] = 1;
+      tiles.push({ val: ml, html: '<b>' + msNum(shown) + ' ' + un + '</b>', text: msNum(shown) + ' ' + un });
+    }
+    if (ok && Object.keys(units).length >= 2) break;
+  }
+  cmpSetOrder(el, tiles, 'asc');
+  qData.arrangeInstr = 'Tap from smallest to largest.';
+  el.innerHTML = '<div style="' + A_LBL + '">Put these in order from <b>smallest</b> to <b>largest</b>.</div>';
+  qData.workSteps = 'Change them all to ' + (big ? 'litres (1 kL = 1 m³ = 1000 L)' : 'millilitres (1 cm³ = 1 mL, 1 L = 1000 mL)') + ' first. In order: '
+    + qData.arrangeAns.map(function(c){ return qData.arrangeText[c]; }).join(' , ') + '.';
+}
+
+/* ═══ 14. VOLUME OF RECTANGULAR PRISMS (7MAT L5, SEAL L4) ════════════ */
+function msBlockCount(N){
+  const out = [];
+  for (let a = 1; a * a * a <= N; a++) if (N % a === 0)
+    for (let b = a; a * b * b <= N; b++) if ((N / a) % b === 0) out.push([a, b, N / a / b]);
+  return out;
+}
+function genMeasVolRect(el){
+  const u = msUnit();
+  if (level === 1){
+    let l, h, w, g = 0;
+    do { l = rr(2, 5); h = rr(1, 4); w = rr(1, 4); } while ((l * h * w < 6 || l * h * w > 60) && g++ < 100);
+    qData.ans = l * h * w; qData.ansDisplay = msU3(qData.ans, 'cm');
+    qData.workSteps = 'Count one layer: ' + l + ' × ' + w + ' = ' + (l * w) + ' cubes. There are ' + h + ' layer' + (h > 1 ? 's' : '') + ': ' + (l * w) + ' × ' + h + ' = <b>' + qData.ansDisplay + '</b>.';
+    msQ(el, 'Each small cube is <b>1 cm³</b>. This solid block has no gaps inside. Find its volume.', msBlockSVG(l, h, w));
+    return;
+  }
+  if (level === 2){
+    const d = msDims3([4, 15], [2, 10], [2, 9]), l = d[0], h = d[1], w = d[2];
+    qData.ans = l * w * h; qData.ansDisplay = msU3(qData.ans, u);
+    qData.workSteps = 'V = l × w × h = ' + l + ' × ' + w + ' × ' + h + ' = <b>' + qData.ansDisplay + '</b>.';
+    msQ(el, 'Find the volume of this rectangular prism.', msBoxSVG(l, h, w, { l: msU(l, u), h: msU(h, u), w: msU(w, u) }));
+    return;
+  }
+  if (level === 3){
+    const k = ri(3);
+    if (k === 0){
+      const s = ffPick([rr(2, 12), rr(2, 12), dp(rr(3, 19) / 2, 1)]);
+      qData.ans = dp(s * s * s, 6); qData.ansDisplay = msU3(qData.ans, u);
+      qData.workSteps = 'V = s³ = ' + msNum(s) + ' × ' + msNum(s) + ' × ' + msNum(s) + ' = <b>' + qData.ansDisplay + '</b>.';
+      msQ(el, 'Find the volume of this cube.', msBoxSVG(s, s, s, { l: msU(s, u) }));
+      return;
+    }
+    const s = rr(2, 10), V = s * s * s;
+    if (k === 1){
+      qData.ans = s; qData.ansDisplay = msU(s, u);
+      qData.workSteps = 'V = s³, so s is the cube root: ' + s + ' × ' + s + ' × ' + s + ' = ' + V + ', so s = <b>' + qData.ansDisplay + '</b>.';
+      msQ(el, 'A cube has a volume of <b>' + msU3(V, u) + '</b>. Find the length of each edge.', msBoxSVG(s, s, s, { l: '?' }));
+      return;
+    }
+    qData.ans = s; qData.ansDisplay = String(s);
+    qData.workSteps = 'The cube is ' + s + ' × ' + s + ' × ' + s + ' = ' + V + ' small cubes, so there are <b>' + s + '</b> along each edge.';
+    msQ(el, 'A solid cube is built from <b>' + V + '</b> unit cubes. How many unit cubes are along each edge?', '');
+    return;
+  }
+  if (level === 4){
+    let a, b, c, g = 0;
+    do {
+      a = dp(rr(12, 60) / 10, 1); b = dp(rr(5, 30) / 10, 1); c = ffPick([rr(1, 4), dp(rr(5, 25) / 10, 1)]);
+    } while ((Number.isInteger(a) && Number.isInteger(b)) && g++ < 50);
+    const V = dp(a * b * c, 6);
+    qData.ans = V; qData.ansDisplay = msU3(V, 'm');
+    qData.workSteps = 'V = l × w × h = ' + msNum(a) + ' × ' + msNum(b) + ' × ' + msNum(c) + ' = <b>' + qData.ansDisplay + '</b>.';
+    msQ(el, 'Find the volume of this crate.', msBoxSVG(a, c, b, { l: msU(a, 'm'), h: msU(c, 'm'), w: msU(b, 'm') }));
+    return;
+  }
+  if (level === 5){
+    const d = msDims3([4, 15], [2, 10], [2, 9]), l = d[0], h = d[1], w = d[2], V = l * w * h;
+    const ask = ffPick(['l', 'h', 'w']), val = { l: l, h: h, w: w }[ask];
+    const others = ['l', 'w', 'h'].filter(function(x){ return x !== ask; }).map(function(x){ return { l: l, h: h, w: w }[x]; });
+    qData.ans = val; qData.ansDisplay = msU(val, u);
+    qData.workSteps = 'V = l × w × h, so the missing length = V ÷ (the other two) = ' + V + ' ÷ (' + others[0] + ' × ' + others[1] + ') = ' + V + ' ÷ ' + (others[0] * others[1]) + ' = <b>' + qData.ansDisplay + '</b>.';
+    const lab = { l: msU(l, u), h: msU(h, u), w: msU(w, u) }; lab[ask] = '?';
+    msQ(el, 'The volume of this prism is <b>' + msU3(V, u) + '</b>. Find the length marked ?.', msBoxSVG(l, h, w, lab));
+    return;
+  }
+  if (level === 6){
+    if (Math.random() < 0.5){
+      /* answer in m³: one length in cm */
+      const lcm = ffPick([40, 50, 60, 80, 120, 150]), b = dp(rr(5, 20) / 10, 1), c = dp(rr(5, 20) / 10, 1), lm = lcm / 100;
+      const V = dp(lm * b * c, 6);
+      qData.ans = V; qData.ansDisplay = msU3(V, 'm');
+      qData.workSteps = 'Convert first: ' + lcm + ' cm = ' + msNum(lm) + ' m. Then ' + msNum(lm) + ' × ' + msNum(b) + ' × ' + msNum(c) + ' = <b>' + qData.ansDisplay + '</b>.';
+      msQ(el, 'Find the volume of this prism in <b>m³</b>.', msBoxSVG(b, c, lm, { l: msU(b, 'm'), h: msU(c, 'm'), w: msU(lcm, 'cm') }));
+      return;
+    }
+    const a = rr(2, 8), bmm = ffPick([15, 25, 35, 40, 45, 60]), cmm = ffPick([20, 30, 50, 80]);
+    const V = dp(a * bmm / 10 * cmm / 10, 6);
+    qData.ans = V; qData.ansDisplay = msU3(V, 'cm');
+    qData.workSteps = 'Convert first: ' + bmm + ' mm = ' + msNum(bmm / 10) + ' cm and ' + cmm + ' mm = ' + msNum(cmm / 10) + ' cm. Then ' + a + ' × ' + msNum(bmm / 10) + ' × ' + msNum(cmm / 10) + ' = <b>' + qData.ansDisplay + '</b>.';
+    msQ(el, 'Find the volume of this prism in <b>cm³</b>.', msBoxSVG(cmm / 10, a, bmm / 10, { l: msU(cmm, 'mm'), h: msU(a, 'cm'), w: msU(bmm, 'mm') }));
+    return;
+  }
+  /* Level 7 (Enrichment): how many different blocks */
+  const N = ffPick([12, 16, 18, 20, 24, 30, 36, 48]), list = msBlockCount(N);
+  qData.ans = list.length; qData.ansDisplay = String(list.length);
+  qData.workSteps = 'List them in order so none is missed: ' + list.map(function(t){ return t.join(' × '); }).join(', ') + '. That is <b>' + list.length + '</b> different blocks.';
+  msQ(el, 'A solid rectangular block is built from <b>' + N + '</b> unit cubes. How many different blocks could it be? (Count 2 × 3 × 4 and 4 × 3 × 2 as the same block.)', '');
+}
+
+/* ═══ 15. VOLUME OF PRISMS: V = A × h (7MAT L5, SEAL L4) ══════════════ */
+const MS_FACES = [
+  [[0, 0], [10, 0], [10, 3], [4, 3], [4, 7], [0, 7]],          /* L */
+  [[0, 0], [8, 0], [8, 5], [4, 8], [0, 5]],                     /* house */
+  [[0, 0], [10, 0], [7, 5], [3, 5]],                            /* trapezium */
+  [[0, 0], [9, 0], [3, 6]],                                     /* triangle */
+  [[0, 0], [3, 0], [3, 4], [7, 4], [7, 0], [10, 0], [10, 7], [0, 7]],   /* U, upside down */
+  [[0, 0], [6, 0], [8, 3], [6, 6], [0, 6]]                      /* arrow */
+];
+function msFaceScaled(A){
+  const P = ffPick(MS_FACES), a = Math.abs(msArea2(P)), k = Math.sqrt(A / a);
+  return P.map(function(p){ return [p[0] * k, p[1] * k]; });
+}
+function msCentroidish(P){
+  /* a point safely inside: the average of the vertices, nudged toward the base */
+  let x = 0, y = 0; P.forEach(function(p){ x += p[0]; y += p[1]; });
+  return [x / P.length, y / P.length * 0.8];
+}
+function genMeasVolPrism(el){
+  const u = msUnit();
+  if (level === 1){
+    const A = rr(6, 60), L = ffPick([rr(3, 20), dp(rr(15, 95) / 10, 1)]), F = msFaceScaled(A), V = dp(A * L, 6);
+    qData.ans = V; qData.ansDisplay = msU3(V, u);
+    qData.workSteps = 'Any prism: V = area of the cross-section × length = ' + A + ' × ' + msNum(L) + ' = <b>' + qData.ansDisplay + '</b>.';
+    msQ(el, 'The shaded end of this prism has an area of <b>' + msU2(A, u) + '</b>. Find its volume.',
+      msPrismSVG(F, L, { frontFill: true, depthLbl: msU(L, u) }));
+    return;
+  }
+  if (level === 2){
+    if (Math.random() < 0.5){
+      const T = msRightTri(16), L = rr(Math.max(3, Math.ceil(T.b * 0.6)), Math.min(25, 2 * T.b)), A = T.b * T.h / 2, V = A * L;
+      qData.ans = V; qData.ansDisplay = msU3(V, u);
+      qData.workSteps = 'The triangle: ½ × ' + T.b + ' × ' + T.h + ' = ' + msNum(A) + '. V = ' + msNum(A) + ' × ' + L + ' = <b>' + qData.ansDisplay + '</b>. (The ' + T.c + ' is not needed.)';
+      msQ(el, 'Find the volume of this triangular prism.', msRightTriPrism(T, L, u));
+      return;
+    }
+    let b, h, ax, L, g = 0;
+    do { b = rr(4, 14); h = rr(3, 10); ax = rr(1, b - 1); L = rr(4, 20); } while ((b * h * L) % 2 !== 0 && g++ < 50);
+    const A = b * h / 2, V = A * L;
+    qData.ans = V; qData.ansDisplay = msU3(V, u);
+    qData.workSteps = 'The triangle: ½ × base × height = ½ × ' + b + ' × ' + h + ' = ' + msNum(A) + '. V = ' + msNum(A) + ' × ' + L + ' = <b>' + qData.ansDisplay + '</b>.';
+    const P = [[0, 0], [b, 0], [ax, h]];
+    msQ(el, 'Find the volume of this triangular prism.', msPrismSVG(P, L, { lbl: [{ p: P[0], q: P[1], t: msU(b, u) }], dashed: [[[ax, h], [ax, 0]]],
+      rights: [{ v: [ax, 0], a: P[1], b: P[2] }], side: [{ p: [ax, 0], q: [ax, h], t: msU(h, u), side: ax > b / 2 ? -1 : 1 }], depthLbl: msU(L, u) }));
+    return;
+  }
+  if (level === 3){
+    let a, b, h, L, g = 0;
+    do { a = rr(3, 9); b = a + rr(2, 6); h = rr(Math.ceil(b * 0.4), Math.max(Math.ceil(b * 0.4), Math.min(12, b))); L = rr(Math.max(3, Math.ceil(b * 0.5)), Math.min(15, b + 3)); } while (((a + b) * h * L) % 2 !== 0 && g++ < 80);
+    const A = (a + b) * h / 2, V = A * L;
+    qData.ans = V; qData.ansDisplay = msU3(V, u);
+    qData.workSteps = 'The trapezium: ½ × (' + a + ' + ' + b + ') × ' + h + ' = ' + msNum(A) + '. V = ' + msNum(A) + ' × ' + L + ' = <b>' + qData.ansDisplay + '</b>.';
+    const P = [[0, 0], [b, 0], [a, h], [0, h]];
+    msQ(el, 'Find the volume of this trapezoidal prism.', msPrismSVG(P, L, {
+      lbl: [{ p: P[0], q: P[1], t: msU(b, u) }, { p: P[2], q: P[3], t: msU(a, u) }, { p: P[3], q: P[0], t: msU(h, u) }],
+      rights: [{ v: P[0], a: P[1], b: P[3] }, { v: P[3], a: P[0], b: P[2] }], depthLbl: msU(L, u) }));
+    return;
+  }
+  if (level === 4){
+    const A = rr(6, 60), L = rr(3, 20), V = A * L, F = msFaceScaled(A);
+    if (Math.random() < 0.5){
+      qData.ans = L; qData.ansDisplay = msU(L, u);
+      qData.workSteps = 'V = A × length, so length = V ÷ A = ' + V + ' ÷ ' + A + ' = <b>' + qData.ansDisplay + '</b>.';
+      msQ(el, 'This prism has a volume of <b>' + msU3(V, u) + '</b> and the shaded end has an area of <b>' + msU2(A, u) + '</b>. Find its length.',
+        msPrismSVG(F, L, { frontFill: true, depthLbl: '?' }));
+    } else {
+      qData.ans = A; qData.ansDisplay = msU2(A, u);
+      qData.workSteps = 'V = A × length, so A = V ÷ length = ' + V + ' ÷ ' + L + ' = <b>' + qData.ansDisplay + '</b>.';
+      msQ(el, 'This prism has a volume of <b>' + msU3(V, u) + '</b>. Find the area of the shaded end.',
+        msPrismSVG(F, L, { frontFill: true, depthLbl: msU(L, u) }));
+    }
+    return;
+  }
+  /* Level 5: the triangle's height from the volume */
+  let b, h, L, ax, g = 0;
+  do { b = rr(4, 14); h = rr(3, 12); L = rr(4, 20); ax = rr(1, b - 1); } while ((b * h * L) % 2 !== 0 && g++ < 50);
+  const V = b * h * L / 2;
+  qData.ans = h; qData.ansDisplay = msU(h, u);
+  qData.workSteps = 'V = ½ × b × h × length, so ' + V + ' = ½ × ' + b + ' × h × ' + L + ' = ' + (b * L / 2) + 'h. h = ' + V + ' ÷ ' + (b * L / 2) + ' = <b>' + qData.ansDisplay + '</b>.';
+  const P = [[0, 0], [b, 0], [ax, h]];
+  msQ(el, 'This triangular prism has a volume of <b>' + msU3(V, u) + '</b>. Find the height of the triangle.', msPrismSVG(P, L, { lbl: [{ p: P[0], q: P[1], t: msU(b, u) }],
+    dashed: [[[ax, h], [ax, 0]]], rights: [{ v: [ax, 0], a: P[1], b: P[2] }], side: [{ p: [ax, 0], q: [ax, h], t: '?', side: ax > b / 2 ? -1 : 1 }], depthLbl: msU(L, u) }));
+}
+function msRightTriPrism(T, L, u){ return msRightPrismSVG(T, L, { b: msU(T.b, u), h: msU(T.h, u), c: msU(T.c, u), L: msU(L, u) }); }
+
+/* ═══ 16. VOLUME OF CYLINDERS (SEAL L4) ═════════════════════════════ */
+function genMeasVolCyl(el){
+  const u = msUnit();
+  if (level === 1 || level === 3){
+    let r, h, g = 0;
+    do { r = rr(1, 10); h = rr(1, 20); } while ((h > 5 * r || r > 4 * h) && g++ < 100);
+    const diam = level === 3;
+    msSetPiExact(0, r * r * h, u + '³');
+    qData.workSteps = (diam ? 'Halve the diameter first: r = ' + (2 * r) + ' ÷ 2 = ' + r + '. ' : '') + 'V = πr²h = π × ' + r + '² × ' + h + ' = π × ' + (r * r) + ' × ' + h + ' = <b>' + qData.ansDisplay + '</b>.';
+    msQ(el, 'Find the volume of this cylinder. Give it exactly, in terms of π.', msCylSVG(r, h, diam ? { dLbl: msU(2 * r, u), hLbl: msU(h, u) } : { rLbl: msU(r, u), hLbl: msU(h, u) }));
+    return;
+  }
+  if (level === 2){
+    const R = msRoll(function(){
+      const r = msLen(1, 12, 0.3), h = msLen(2, 25, 0.25), isR = Math.random() < 0.65;
+      if (h > 5 * r || r > 4 * h) return null;
+      const p = msPi2(function(P){ return P * r * r * h; });
+      return p ? { r: r, h: h, isR: isR, p: p } : null;
+    });
+    msSetPi2(R.p, u + '³');
+    qData.workSteps = (R.isR ? '' : 'r = ' + msNum(2 * R.r) + ' ÷ 2 = ' + msNum(R.r) + '. ') + 'V = πr²h = π × ' + msNum(R.r) + '² × ' + msNum(R.h) + ' = <b>' + qData.ansDisplay + '</b> (2 d.p.). Use the π key: 3.14 gives ' + msNum(R.p.alt) + '.';
+    msQ(el, 'Find the volume of this cylinder, correct to <b>two decimal places</b>.', msCylSVG(R.r, R.h, R.isR ? { rLbl: msU(R.r, u), hLbl: msU(R.h, u) } : { dLbl: msU(dp(2 * R.r, 6), u), hLbl: msU(R.h, u) }));
+    return;
+  }
+  if (level === 4){
+    const r = rr(2, 10), h = rr(2, 15), k = r * r * h;
+    qData.ans = h; qData.ansDisplay = msU(h, u);
+    qData.workSteps = 'V = πr²h, so ' + k + 'π = π × ' + r + '² × h = ' + (r * r) + 'πh. h = ' + k + ' ÷ ' + (r * r) + ' = <b>' + qData.ansDisplay + '</b>.';
+    msQ(el, 'This cylinder has a volume of <b>' + k + 'π ' + u + '³</b>. Find its height.', msCylSVG(r, h, { rLbl: msU(r, u), hLbl: '?' }));
+    return;
+  }
+  if (level === 5){
+    const r = rr(2, 10), h = rr(2, 15), k = r * r * h;
+    qData.ans = r; qData.ansDisplay = msU(r, u);
+    qData.workSteps = 'V = πr²h, so ' + k + 'π = π × r² × ' + h + '. r² = ' + k + ' ÷ ' + h + ' = ' + (r * r) + ', so r = √' + (r * r) + ' = <b>' + qData.ansDisplay + '</b>.';
+    msQ(el, 'This cylinder has a volume of <b>' + k + 'π ' + u + '³</b>. Find its radius.', msCylSVG(r, h, { rLbl: 'r = ?', hLbl: msU(h, u) }));
+    return;
+  }
+  /* Level 6 (Enrichment): melt it, freeze it as a cube */
+  const R = msRoll(function(){
+    const r = rr(2, 8), h = rr(2, 12);
+    const p = msPi2(function(P){ return Math.cbrt(P * r * r * h); });
+    return p ? { r: r, h: h, p: p } : null;
+  });
+  msSetPi2(R.p, 'cm');
+  qData.workSteps = 'The volume does not change. V = π × ' + R.r + '² × ' + R.h + ' = ' + (Math.PI * R.r * R.r * R.h).toFixed(3) + '… cm³. The cube’s side is the cube root: ∛' + (Math.PI * R.r * R.r * R.h).toFixed(3) + '… = <b>' + qData.ansDisplay + '</b> (2 d.p.).';
+  msQ(el, 'A cylinder of ice has radius ' + R.r + ' cm and height ' + R.h + ' cm. It is melted and refrozen as a cube. Find the side length of the cube, correct to two decimal places.', msCylSVG(R.r, R.h, { rLbl: R.r + ' cm', hLbl: R.h + ' cm' }));
+}
+
+/* ═══ 17. CAPACITY (7MAT L5, SEAL L5) ═══════════════════════════════ */
+function genMeasCap(el){
+  if (level === 1){
+    const l = rr(4, 12) * 5, w = rr(3, 8) * 5, h = rr(2, 8) * 5, V = l * w * h, L = dp(V / 1000, 6);
+    qData.ans = L; qData.ansDisplay = msNum(L) + ' L';
+    qData.workSteps = 'V = ' + l + ' × ' + w + ' × ' + h + ' = ' + msNum(V) + ' cm³. 1000 cm³ = 1 L, so ' + msNum(V) + ' ÷ 1000 = <b>' + qData.ansDisplay + '</b>.';
+    msQ(el, 'Find the capacity of this container in <b>litres</b>. The measurements are inside measurements.', msBoxSVG(l, h, w, { l: msU(l, 'cm'), h: msU(h, 'cm'), w: msU(w, 'cm') }));
+    return;
+  }
+  if (level === 2){
+    const a = dp(rr(10, 40) / 10, 1), b = dp(rr(8, 25) / 10, 1), c = dp(rr(5, 20) / 10, 1), V = dp(a * b * c, 6), kl = Math.random() < 0.4;
+    qData.ans = kl ? V : dp(V * 1000, 6); qData.ansDisplay = msNum(qData.ans) + (kl ? ' kL' : ' L');
+    qData.workSteps = 'V = ' + msNum(a) + ' × ' + msNum(b) + ' × ' + msNum(c) + ' = ' + msNum(V) + ' m³. ' + (kl ? '1 m³ = 1 kL, so <b>' + qData.ansDisplay + '</b>.' : '1 m³ = 1000 L, so ' + msNum(V) + ' × 1000 = <b>' + qData.ansDisplay + '</b>.');
+    msQ(el, 'Find the capacity of this tank in <b>' + (kl ? 'kilolitres' : 'litres') + '</b>.', msBoxSVG(a, c, b, { l: msU(a, 'm'), h: msU(c, 'm'), w: msU(b, 'm') }));
+    return;
+  }
+  if (level === 3){
+    const R = msRoll(function(){
+      const r = rr(4, 30), h = rr(8, 80), isR = Math.random() < 0.6;
+      const p = msPi1(function(P){ return P * r * r * h / 1000; });
+      return p ? { r: r, h: h, isR: isR, p: p } : null;
+    });
+    msSetPi1(R.p, 'L');
+    qData.workSteps = (R.isR ? '' : 'r = ' + (2 * R.r) + ' ÷ 2 = ' + R.r + '. ') + 'V = πr²h = π × ' + R.r + '² × ' + R.h + ' = ' + (Math.PI * R.r * R.r * R.h).toFixed(2) + '… cm³. ÷ 1000 for litres: <b>' + qData.ansDisplay + '</b> (1 d.p.). Use the π key: 3.14 gives ' + msNum(R.p.alt) + ' L.';
+    msQ(el, 'Find the capacity of this cylindrical container in <b>litres</b>, correct to one decimal place. The measurements are inside measurements.',
+      msCylSVG(R.r, R.h, R.isR ? { rLbl: msU(R.r, 'cm'), hLbl: msU(R.h, 'cm') } : { dLbl: msU(2 * R.r, 'cm'), hLbl: msU(R.h, 'cm') }));
+    return;
+  }
+  if (level === 4){
+    if (Math.random() < 0.5){
+      const l = rr(2, 6), w = dp(rr(8, 20) / 10, 1), d = ffPick([0.3, 0.4, 0.5, 0.6]), rate = ffPick([45, 55, 60, 65, 70, 80]);
+      const V = dp(l * w * d, 6), cost = dp(V * rate, 2);
+      qData.ans = cost; qData.ansTol = 0.005; qData.ansDisplay = msMoney(cost);
+      qData.workSteps = 'Volume of soil: ' + l + ' × ' + msNum(w) + ' × ' + msNum(d) + ' = ' + msNum(V) + ' m³. Cost: ' + msNum(V) + ' × $' + rate + ' = <b>' + qData.ansDisplay + '</b>.';
+      msQ(el, 'A garden bed is ' + l + ' m long, ' + msNum(w) + ' m wide and ' + msNum(d) + ' m deep. Soil costs <b>$' + rate + ' per cubic metre</b>. Find the cost of filling it.', msBoxSVG(l, d, w, { l: msU(l, 'm'), h: msU(d, 'm'), w: msU(w, 'm') }));
+      return;
+    }
+    const l = rr(4, 10), w = rr(3, 6), t = ffPick([0.1, 0.15, 0.2]), rate = ffPick([180, 190, 200, 220, 240]);
+    const V = dp(l * w * t, 6), cost = dp(V * rate, 2);
+    qData.ans = cost; qData.ansTol = 0.005; qData.ansDisplay = msMoney(cost);
+    qData.workSteps = 'Volume of concrete: ' + l + ' × ' + w + ' × ' + msNum(t) + ' = ' + msNum(V) + ' m³. Cost: ' + msNum(V) + ' × $' + rate + ' = <b>' + qData.ansDisplay + '</b>.';
+    msQ(el, 'A concrete slab is ' + l + ' m long, ' + w + ' m wide and ' + msNum(t) + ' m thick. Concrete costs <b>$' + rate + ' per cubic metre</b>. Find the cost of the concrete.', msBoxSVG(l, t, w, { l: msU(l, 'm'), h: msU(t, 'm'), w: msU(w, 'm') }));
+    return;
+  }
+  if (level === 5){
+    if (Math.random() < 0.5){
+      const L = rr(3, 6), W = dp(rr(18, 25) / 10, 1), Hh = dp(rr(18, 24) / 10, 1), box = ffPick([[1, 0.5, 0.5], [0.5, 0.5, 0.5], [0.8, 0.5, 0.4], [1, 0.4, 0.5]]);
+      const Vt = dp(L * W * Hh, 6), Vb = dp(box[0] * box[1] * box[2], 6), n = Math.floor(Vt / Vb + 1e-9);
+      qData.ans = n; qData.ansDisplay = String(n);
+      qData.workSteps = 'Truck: ' + L + ' × ' + msNum(W) + ' × ' + msNum(Hh) + ' = ' + msNum(Vt) + ' m³. One box: ' + box.map(msNum).join(' × ') + ' = ' + msNum(Vb) + ' m³. ' + msNum(Vt) + ' ÷ ' + msNum(Vb) + ' = ' + msNum(dp(Vt / Vb, 3)) + ', so at most <b>' + n + '</b> whole boxes.';
+      msQ(el, 'A truck has an inside space ' + L + ' m long, ' + msNum(W) + ' m wide and ' + msNum(Hh) + ' m high. Boxes are ' + box.map(function(x){ return msNum(x) + ' m'; }).join(' by ') + '. By volume, what is the greatest number of boxes that could fit?', '');
+      return;
+    }
+    let l, w, h, per, n, g = 0;
+    do { l = rr(6, 12); w = rr(5, 9); h = 3; per = ffPick([5, 6, 7, 8]); n = Math.floor(l * w * h / per); } while ((l * w * h) % per === 0 && g++ < 50);
+    qData.ans = n; qData.ansDisplay = String(n);
+    qData.workSteps = 'Room: ' + l + ' × ' + w + ' × ' + h + ' = ' + (l * w * h) + ' m³. ' + (l * w * h) + ' ÷ ' + per + ' = ' + msNum(dp(l * w * h / per, 2)) + ', so at most <b>' + n + '</b> people (round DOWN: a part person does not get their air).';
+    msQ(el, 'A room is ' + l + ' m by ' + w + ' m by ' + h + ' m high. Each person needs at least <b>' + per + ' m³</b> of air. What is the greatest number of people the room should hold?', '');
+    return;
+  }
+  if (level === 6){
+    const a = ffPick([1.5, 2, 2.5, 3]), b = ffPick([1, 1.2, 1.5, 2]), c = ffPick([1, 1.2, 1.5]);
+    const Lt = Math.round(a * b * c * 1000), rates = [10, 12, 15, 20, 24, 25, 30, 40, 50, 60].filter(function(r){ return Lt % r === 0; });
+    const rate = ffPick(rates), t = Lt / rate;
+    qData.ans = t; qData.ansDisplay = msNum(t) + ' minutes';
+    qData.workSteps = 'Volume: ' + msNum(a) + ' × ' + msNum(b) + ' × ' + msNum(c) + ' = ' + msNum(dp(a * b * c, 6)) + ' m³ = ' + msNum(Lt) + ' L. Time: ' + msNum(Lt) + ' ÷ ' + rate + ' = <b>' + qData.ansDisplay + '</b>.';
+    msQ(el, 'A tank ' + msNum(a) + ' m long, ' + msNum(b) + ' m wide and ' + msNum(c) + ' m high is filled at <b>' + rate + ' L per minute</b>. How many minutes does it take to fill?', msBoxSVG(a, c, b, { l: msU(a, 'm'), h: msU(c, 'm'), w: msU(b, 'm') }));
+    return;
+  }
+  /* Level 7: pour it into another container and find the depth */
+  let l1, w1, h1, l2, w2, frac, V, d, g = 0;
+  do {
+    l1 = rr(2, 6) * 5; w1 = rr(2, 5) * 5; h1 = rr(2, 6) * 5; frac = ffPick([1, 1, 0.5, 0.75]);
+    l2 = rr(3, 8) * 5; w2 = rr(3, 7) * 5; V = l1 * w1 * h1 * frac; d = V / (l2 * w2);
+  } while ((Math.abs(d * 10 - Math.round(d * 10)) > 1e-9 || d < 1 || d > 40) && g++ < 400);
+  qData.ans = dp(d, 6); qData.ansDisplay = msU(dp(d, 6), 'cm');
+  const fw = frac === 1 ? 'full of' : frac === 0.5 ? 'half full of' : 'three-quarters full of';
+  qData.workSteps = 'Water: ' + l1 + ' × ' + w1 + ' × ' + h1 + (frac === 1 ? '' : ' × ' + msNum(frac)) + ' = ' + msNum(V) + ' cm³. The volume stays the same, so depth = ' + msNum(V) + ' ÷ (' + l2 + ' × ' + w2 + ') = ' + msNum(V) + ' ÷ ' + (l2 * w2) + ' = <b>' + qData.ansDisplay + '</b>.';
+  msQ(el, 'A container ' + l1 + ' cm by ' + w1 + ' cm by ' + h1 + ' cm is ' + fw + ' water. The water is poured into an empty container with a base of ' + l2 + ' cm by ' + w2 + ' cm. How deep is the water now?', '');
+}
+
+/* ═══ 18. VOLUME OF COMPOSITE SOLIDS (SEAL L5) ══════════════════════ */
+function genMeasCompSolid(el){
+  const u = ffPick(['cm', 'cm', 'm']);
+  if (level === 1){
+    let W, H, w1, h1, D, g = 0;
+    do { W = rr(6, 14); H = rr(5, 12); w1 = rr(3, W - 3); h1 = rr(2, H - 3); D = rr(3, 10); } while ((w1 > W * 0.6 || w1 < W * 0.3 || h1 > H * 0.6 || h1 < H * 0.35 || D > W * 0.7) && g++ < 300);
+    const S = msLShape(W, H, w1, h1), A = W * h1 + w1 * (H - h1), V = A * D;
+    qData.ans = V; qData.ansDisplay = msU3(V, u);
+    qData.workSteps = 'Split the end into two rectangles: ' + W + ' × ' + h1 + ' = ' + (W * h1) + ' and ' + w1 + ' × ' + (H - h1) + ' = ' + (w1 * (H - h1)) + '. End area: ' + A + '. V = ' + A + ' × ' + D + ' = <b>' + qData.ansDisplay + '</b>.';
+    msQ(el, 'This solid is made from two rectangular prisms. Find its volume.', msPrismSVG(S.P, D, {
+      lbl: [{ p: S.bottom[0], q: S.bottom[1], t: msU(W, u) }, { p: S.left[0], q: S.left[1], t: msU(H, u) },
+            { p: S.top[0], q: S.top[1], t: msU(w1, u) }, { p: S.right[0], q: S.right[1], t: msU(h1, u) }],
+      depthLbl: msU(D, u) }));
+    return;
+  }
+  if (level === 2){
+    let W, H, nw, nh, x0, D, g = 0;
+    do { W = rr(8, 16); H = rr(5, 10); nw = rr(3, W - 4); nh = rr(2, H - 2); x0 = rr(2, W - nw - 2); D = rr(3, 10); } while ((nw > W * 0.5 || nw < W * 0.35 || nh < H * 0.3 || D > W * 0.7) && g++ < 300);
+    const P = [[0, 0], [W, 0], [W, H], [x0 + nw, H], [x0 + nw, H - nh], [x0, H - nh], [x0, H], [0, H]];
+    const V = (W * H - nw * nh) * D;
+    qData.ans = V; qData.ansDisplay = msU3(V, u);
+    qData.workSteps = 'The whole block: ' + W + ' × ' + H + ' × ' + D + ' = ' + (W * H * D) + '. The part cut out: ' + nw + ' × ' + nh + ' × ' + D + ' = ' + (nw * nh * D) + '. V = ' + (W * H * D) + ' − ' + (nw * nh * D) + ' = <b>' + qData.ansDisplay + '</b>.';
+    msQ(el, 'A slot <b>' + msU(nw, u) + ' wide</b> and <b>' + msU(nh, u) + ' deep</b> has been cut right through this rectangular block. Find the volume that is left.', msPrismSVG(P, D, {
+      lbl: [{ p: P[0], q: P[1], t: msU(W, u) }, { p: P[7], q: P[0], t: msU(H, u) },
+            ],
+      depthLbl: msU(D, u) }));
+    return;
+  }
+  /* Level 3: a block with a half cylinder on top, or with a round hole through it (2 d.p.) */
+  const hole = Math.random() < 0.4;
+  const R = msRoll(function(){
+    const l = rr(4, 12) , h = rr(3, 10), D = rr(4, 15), r = hole ? rr(Math.max(1, Math.ceil(Math.min(l, h) * 0.2)), Math.max(1, Math.floor(Math.min(l, h) / 2) - 1)) : l / 2;
+    const p = msPi2(function(P){ return hole ? (l * h - P * r * r) * D : (l * h + P * r * r / 2) * D; });
+    return p ? { l: l, h: h, D: D, r: r, p: p } : null;
+  });
+  msSetPi2(R.p, u + '³');
+  if (hole){
+    const cx = R.l / 2, cy = R.h / 2, circ = [];
+    for (let i = 0; i < 40; i++){ const t = 2 * Math.PI * i / 40; circ.push([cx + R.r * Math.cos(t), cy + R.r * Math.sin(t)]); }
+    qData.workSteps = 'Block: ' + R.l + ' × ' + R.h + ' × ' + R.D + ' = ' + (R.l * R.h * R.D) + '. Hole: π × ' + R.r + '² × ' + R.D + ' = ' + (Math.PI * R.r * R.r * R.D).toFixed(3) + '…. V = <b>' + qData.ansDisplay + '</b> (2 d.p.).';
+    msQ(el, 'A round hole of radius ' + msU(R.r, u) + ' is drilled right through this block. Find the volume left, correct to two decimal places.',
+      msPrismSVG([[0, 0], [R.l, 0], [R.l, R.h], [0, R.h]], R.D, { holes: [circ], lbl: [{ p: [0, 0], q: [R.l, 0], t: msU(R.l, u) }, { p: [0, R.h], q: [0, 0], t: msU(R.h, u) }], depthLbl: msU(R.D, u) }));
+    return;
+  }
+  const S = msSemiTop(R.l, R.h);
+  qData.workSteps = 'End area: the rectangle ' + R.l + ' × ' + R.h + ' = ' + (R.l * R.h) + ', plus a semicircle of radius ' + msNum(R.r) + ': ½ × π × ' + msNum(R.r) + '² = ' + (Math.PI * R.r * R.r / 2).toFixed(3) + '…. V = end area × ' + R.D + ' = <b>' + qData.ansDisplay + '</b> (2 d.p.).';
+  msQ(el, 'This solid is a rectangular prism with half a cylinder on top. Find its volume, correct to two decimal places.',
+    msPrismSVG(S.pts, R.D, { smooth: S.smooth, lbl: [{ p: [0, 0], q: [R.l, 0], t: msU(R.l, u) }, { p: [0, R.h], q: [0, 0], t: msU(R.h, u) }], depthLbl: msU(R.D, u) }));
 }
 
 </script>
