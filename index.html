@@ -1,3 +1,4 @@
+<!-- Sandy Fast Facts · v105 (Laura, 12 Oct 2026). 🎯 YEAR 8 GAP LEVELS, ALTs 1 TO 3 (8MAT Release 2 of 3). 39 new levels from the 8MAT booklet audit: 22 appended to existing skills and 6 new skills. ALT 1: Divisibility Tests (Factors, Multiples & Primes L6), Long Division by a Two-Digit Number (Division L6), Three or More Integers and Word Problems (Multiply / Divide Integers L5, L6), Average Rates (Simplifying Rates L3), Two Rates Together (Converting Rates L5), NEW Scale Drawings & Maps (3 levels), NEW Speed, Distance & Time (4). ALT 2: Equivalent Fractions (Simplify Fractions L5), Increase or Decrease by a Fraction (Fraction of an Amount L5), Find the Whole from a Part (Percentage of an Amount L5), Find the Percentage Change (Percentage Increase & Decrease L6), Divide Fractions & Decimals (Multiply Decimals & Fractions L4). ALT 3: Spot the Like Terms, Negative Outside the Bracket, Write and Expand, Bracketed Numerators, HCF of Two Terms, Words to Equation, The Zero Index, Mixed Index Laws, Rearrange First (x² − a = c), Read the Inequality, Inequality Word Problems, NEW Expressions, Equations & Identities (2), NEW Checking Solutions (2), NEW Multi-Step Equations (4), NEW Equation Word Problems (2). All routed from one map (V105_APPEND, V105_SKILLS) and one dispatcher (genV105Level); no existing generator reopened. Appended levels go on the END of each skill and of its LEVEL_ORDER entry. Every new band is a PLACEHOLDER (V105_LION). Storage-safe: new ids, new lvKeys, appended levels only; the .bas is regenerated (782 to 821 rows, every existing row byte-identical) and must be redeployed. The new levels are in the Year 8 ALT pools only; the Year 7 courses are unchanged. -->
 <!-- Sandy Fast Facts · v104 (Laura, 12 Oct 2026). 🎯 YEAR 8 MATHEMATICS ON THE EXAM / ALT SCREEN (8MAT, Release 1 of 3). A third course, Year 8 Mathematics (short "Year 8"), mapped from the 2027 8MAT student booklet: ALT 1 Number, Rates & Ratios; ALT 2 Fractions, Decimals & Percentages; ALT 3 Algebra & Equations; ALT 4 Measurement & Pythagoras; ALT 5 Linear Graphs; ALT 6 Probability & Statistics; ALT 7 Geometry (exam:false, taught after the exam, same note as Year 7's ALT 8). Exam Practice is the union of ALTs 1 to 6. This release uses ONLY levels that already exist, so it is metadata only: no skill, level, lvKey, band, storage key or share line changes, and the .bas is unchanged (FastFactsBands_v103.bas still parity-clean). Gap levels found in the booklet audit follow in v105 (ALTs 1 to 3) and v106 (ALTs 4 to 7). Enrichment, Challenge and the booklet's Extension items are in no 8MAT ALT (Laura: Extension waits for the 8MAS teaching order). test_courses.js now reads each course's own ALT count and non-exam ALT instead of assuming eight; test_v104.js locks the 8MAT pools. -->
 <!-- Sandy Fast Facts · v103 (Laura, Oct 2026). 📏 MEASUREMENT, RELEASE B: SURFACE AREA, VOLUME & CAPACITY. The 3D half of the strand: 8 skills and 47 levels from the 7MAT Measurement booklet (Lesson 5) and the 7MAS SEAL booklet (Lessons 3 to 5). Surface Area of Prisms, Surface Area of Cylinders, Units of Volume & Capacity, Volume of Rectangular Prisms, Volume of Prisms, Volume of Cylinders, Capacity of Containers, Volume of Composite Solids. One oblique 3D drawing engine (msPrismSVG, msCylSVG, msBlockSVG). ALT 8 complete in both courses; Enrichment and SEAL filling and pouring are built and kept out of ALT 8. Storage-safe and additive. -->
 <!-- Sandy Fast Facts · v102.1 (Laura, 11 Oct 2026). TRANSFORMATION BANDS HALVED: every Lion ceiling on Translations, Reflections, Dilations, Rotations, Combinations and Transformations of 2D Shapes halved (floor 3), signed off by Laura because students and teachers were stuck at Greyhound. Display-only; storage-safe. -->
@@ -5716,8 +5717,8 @@ const COURSES = {
   /* v104 (Laura, 12 Oct 2026): YEAR 8 MATHEMATICS (8MAT), mapped from the
      2027 8MAT student booklet, ALT n = Topic n. ALT 7 Geometry is taught
      after the exam, so it is exam:false and stays out of Exam Practice.
-     Release 1 uses only levels that already exist; the gap levels follow
-     in v105 (ALTs 1 to 3) and v106 (ALTs 4 to 7). Enrichment, Challenge
+     Release 1 used only levels that already existed; v105 adds the ALT 1
+     to 3 gap levels, and v106 will add ALTs 4 to 7. Enrichment, Challenge
      and the booklet's Extension items (surface area of cylinders, simple
      interest, multiplying along tree branches) are in no 8MAT ALT until
      the 8MAS teaching order is confirmed. Written in OLD level numbers,
@@ -5726,9 +5727,9 @@ const COURSES = {
     label: "Year 8 Mathematics", short: "Year 8",
     prereq: [["timesTables",[1,2,3]], ["division",[1,2,3]]],
     alts: [
-      { n: 1, title: "Number, Rates & Ratios", exam: true, skills: [["squares",[1,2,3,4]], ["roots",[1,2,3,4]], ["cubes",[1,2]], ["cubeRoots",[1,2]], ["indexExpand",[1,2,3]], ["factorsMultiples",[1,2,3]], ["primeFactor",[1,2,3,4]], ["hcfLcm",[1,2,3,5,4]], ["addition",[3,4]], ["subtraction",[3,4]], ["numLine",[3]], ["intAddSub",[1,2,3,4]], ["writtenMult",[1,2,3]], ["division",[5]], ["decPow10",[1,2,3]], ["intMultDiv",[1,2,4,3]], ["intSquareCube",[1,2,3]], ["orderOps",[2,3,4,5]], ["intOrderOps",[1,2,3,4]], ["algSub",[3]], ["roundEst",[3,4]], ["decLeadEst",[1,2,3]], ["ratioEquiv",[1,2,3]], ["ratioSimplify",[1,4,6,2,5,3]], ["ratioShare",[1,2,6,7,3,4,5]], ["rateSimplify",[1,2]], ["bestBuy",[1,2,3]], ["rateConvert",[1,2,3]], ["distTime",[1,2,3,4]]] },
-      { n: 2, title: "Fractions, Decimals & Percentages", exam: true, skills: [["fracSimplify",[1,4,2]], ["fracAddSub",[1,2,3,4]], ["fracMultiply",[1,2,3]], ["fracDivide",[1,2,3]], ["mixedToImp",[1,2,3]], ["impToMixed",[1,2,3]], ["fracOfAmount",[1,2,3,4]], ["decAddSub",[1,2,3,4]], ["decAddSubNeg",[1,2,3]], ["decPow10",[1,2,3,4]], ["decMultiply",[5,1,2,3,4]], ["decDivide",[1,2,3,4]], ["decMulDivNeg",[1,2,3]], ["decToFrac",[1,2,3]], ["fracToDec",[1,2,3,4]], ["decRecurring",[1,2,3]], ["decRound",[1,2,3]], ["compareDec",[1,6,2,3,4,5]], ["fracCompare",[1,2,3]], ["fdAddSub",[1,2,3]], ["fdMultiply",[1,2,3]], ["fracOrderOps",[1,2,3,4]], ["decOrderOps",[1,2,3,4]], ["pctDecConv",[1,2,3]], ["fracPctConv",[1,2,3,4]], ["pctFDP",[1,2,3,4]], ["pctOfAmount",[1,2,3,4]], ["pctExpress",[1,2,3]], ["pctChange",[1,2,3,4,5]], ["pctProfitLoss",[1,2]], ["gst",[1,2,3]], ["pctReverse",[1,2,3]]] },
-      { n: 3, title: "Algebra & Equations", exam: true, skills: [["algParts",[4,1,2,3]], ["algWords",[1,2,3,4,5]], ["algSub",[1,2,3,4,6]], ["algLikeTerms",[1,2,3]], ["algMultiply",[1,2,5,3,4]], ["algDivide",[1,2,5,3,4]], ["algFrac",[1,2,3,4,6]], ["fracSimplify",[3]], ["algExpand",[1,2,3]], ["algExpandTwo",[1,2,3]], ["algFactorHCF",[1,2,3]], ["algPerim",[1,2]], ["indexMult",[1,4,2,3]], ["indexDiv",[1,2,3]], ["indexPow",[1,2,3]], ["sciTo",[1,2,3]], ["sciFrom",[1,2,3]], ["eqOneStepAddSub",[1,2,3,4]], ["eqOneStepMulDiv",[1,2,4,3]], ["eqTwoStep",[1,2,3,4]], ["eqTwoStepFrac",[1,2,3]], ["eqBothSides",[1,2,3]], ["quadVerify",[1]], ["quadSolve",[1]], ["rearrange",[1,2]], ["numLine",[4]], ["ineqLinear",[1,2,3]]] },
+      { n: 1, title: "Number, Rates & Ratios", exam: true, skills: [["squares",[1,2,3,4]], ["roots",[1,2,3,4]], ["cubes",[1,2]], ["cubeRoots",[1,2]], ["indexExpand",[1,2,3]], ["factorsMultiples",[1,2,3,6]], ["primeFactor",[1,2,3,4]], ["hcfLcm",[1,2,3,5,4]], ["addition",[3,4]], ["subtraction",[3,4]], ["numLine",[3]], ["intAddSub",[1,2,3,4]], ["writtenMult",[1,2,3]], ["division",[5,6]], ["decPow10",[1,2,3]], ["intMultDiv",[1,2,4,3,5,6]], ["intSquareCube",[1,2,3]], ["orderOps",[2,3,4,5]], ["intOrderOps",[1,2,3,4]], ["algSub",[3]], ["roundEst",[3,4]], ["decLeadEst",[1,2,3]], ["ratioEquiv",[1,2,3]], ["ratioSimplify",[1,4,6,2,5,3]], ["ratioShare",[1,2,6,7,3,4,5]], ["mapScale",[1,2,3]], ["rateSimplify",[1,2,3]], ["bestBuy",[1,2,3]], ["rateConvert",[1,2,3,5]], ["speedDistTime",[1,2,3,4]], ["distTime",[1,2,3,4]]] },
+      { n: 2, title: "Fractions, Decimals & Percentages", exam: true, skills: [["fracSimplify",[1,4,2,5]], ["fracAddSub",[1,2,3,4]], ["fracMultiply",[1,2,3]], ["fracDivide",[1,2,3]], ["mixedToImp",[1,2,3]], ["impToMixed",[1,2,3]], ["fracOfAmount",[1,2,3,4,5]], ["decAddSub",[1,2,3,4]], ["decAddSubNeg",[1,2,3]], ["decPow10",[1,2,3,4]], ["decMultiply",[5,1,2,3,4]], ["decDivide",[1,2,3,4]], ["decMulDivNeg",[1,2,3]], ["decToFrac",[1,2,3]], ["fracToDec",[1,2,3,4]], ["decRecurring",[1,2,3]], ["decRound",[1,2,3]], ["compareDec",[1,6,2,3,4,5]], ["fracCompare",[1,2,3]], ["fdAddSub",[1,2,3]], ["fdMultiply",[1,2,3,4]], ["fracOrderOps",[1,2,3,4]], ["decOrderOps",[1,2,3,4]], ["pctDecConv",[1,2,3]], ["fracPctConv",[1,2,3,4]], ["pctFDP",[1,2,3,4]], ["pctOfAmount",[1,2,3,4,5]], ["pctExpress",[1,2,3]], ["pctChange",[1,2,3,4,5,6]], ["pctProfitLoss",[1,2]], ["gst",[1,2,3]], ["pctReverse",[1,2,3]]] },
+      { n: 3, title: "Algebra & Equations", exam: true, skills: [["algParts",[4,1,2,3]], ["algWords",[1,2,3,4,5,6]], ["algSub",[1,2,3,4,6]], ["algEquiv",[1,2]], ["algLikeTerms",[1,2,3,4]], ["algMultiply",[1,2,5,3,4]], ["algDivide",[1,2,5,3,4]], ["algFrac",[1,2,3,4,6,7]], ["fracSimplify",[3]], ["algExpand",[1,2,3,4,5]], ["algExpandTwo",[1,2,3]], ["algFactorHCF",[1,2,3,4]], ["algPerim",[1,2]], ["indexMult",[1,4,2,3]], ["indexDiv",[1,2,3,4]], ["indexPow",[1,2,3,4]], ["sciTo",[1,2,3]], ["sciFrom",[1,2,3]], ["eqVerify",[1,2]], ["eqOneStepAddSub",[1,2,3,4]], ["eqOneStepMulDiv",[1,2,4,3]], ["eqTwoStep",[1,2,3,4]], ["eqTwoStepFrac",[1,2,3]], ["eqBothSides",[1,2,3]], ["eqMulti",[1,2,3,4]], ["eqWord",[1,2]], ["quadVerify",[1]], ["quadSolve",[1,5]], ["rearrange",[1,2]], ["numLine",[4,5]], ["ineqLinear",[1,2,3,4]]] },
       { n: 4, title: "Measurement & Pythagoras", exam: true, prereq: [["timesTables",[1,2,3]], ["decPow10",[1,2,3]], ["squares",[1,2]], ["roots",[1,2]]], skills: [["measLength",[1,2,3,4,5]], ["measPerim",[1,2,3,4,5,6]], ["measAreaUnits",[1,2,3]], ["measArea",[1,2,3,4,5]], ["measQuad",[1,2,3]], ["measMissing",[1,2,3,4]], ["measCirc",[1,2,3,4,5,6]], ["measCircArea",[1,2,3,4,5]], ["measArc",[1,2,3,4,5,6]], ["measComposite",[1,2,3,4]], ["measSA",[1,2,3,4,5,6]], ["measVolUnits",[1,2,3,4,5]], ["measVolRect",[1,2,3,4,5]], ["measVolPrism",[1,2,4]], ["measVolCyl",[1,2,3]], ["measCap",[1,2]], ["pythagoras",[1,2,5,3]]] },
       { n: 5, title: "Linear Graphs", exam: true, skills: [["cartesian",[1,2,3,4]], ["tableValues",[1,2,3,4]], ["linearNonlinear",[1,2]], ["eqnGraph",[1,2,3]], ["sketchLinear",[1,2,3,4]], ["intercepts",[1,2,3,4,5]], ["gradientSeg",[1,2,3,4]], ["gradEqn",[1,2,3]], ["distTime",[1,2,3,4]], ["linearApps",[1,2,3,4]]] },
       { n: 6, title: "Probability & Statistics", exam: true, prereq: [["fracSimplify",[1,3]], ["pctFDP",[1,2]]], skills: [["dataRead",[1,2,3]], ["freqTables",[1,2,3,4]], ["dataClassify",[1,2,3,4]], ["dataMean",[1,2,3,4,5]], ["dataMedian",[1,2,3,4,5]], ["dataMode",[1,2,3,4,5]], ["dataOutliers",[1]], ["dataRange",[1,2,3,4,5]], ["dataQuartiles",[1,2,3,4,5]], ["dataShape",[1,2,3]], ["probSample",[1,2,3,4,5,6]], ["probLang",[1,2,3,4,5,6,7]], ["probTheory",[1,2,3,4,5,6,7,8,9]], ["probComp",[1,2,3,4,5]], ["probExp",[1,2,3,4,5,6]], ["probExpect",[1,2,3,4,5,6]], ["probTwoStep",[1,2,3,4,5]], ["probTree",[1,2]], ["probVenn",[1,2,3,4,5]], ["probTwoWay",[1,2,3,4]], ["probNotate",[1,2,3,4]], ["probMutEx",[1,2,3,4]]] },
@@ -6309,6 +6310,816 @@ function newLevelOf(key, oldLv){
   const i = m.indexOf(oldLv);
   return i < 0 ? 0 : i + 1;
 }
+/* ═══════════════════════════════════════════════════════════════════
+   v105 (Laura, Oct 2026) · 🎯 YEAR 8 GAP LEVELS, ALTs 1 TO 3
+   -------------------------------------------------------------------
+   The 8MAT booklet audit found skill lines in Topics 1 to 3 with nothing
+   in the app behind them. This block adds 22 levels to the end of
+   existing skills and six new skills (17 levels), all routed from ONE map
+   (V105_APPEND for appended levels, V105_SKILLS for new skills) and ONE
+   dispatcher (genV105Level), so no existing generator is reopened.
+   Storage-safe: appended levels go on the END of their skill (and on the
+   end of its LEVEL_ORDER entry, so the new card's display number and its
+   generator number are the same); every new lvKey is checked against the
+   keys that existed before this block (V105_PRE_KEYS). Student-facing text
+   avoids em dashes; the "Level n — Title" card format is the convention.
+   Every band here is a PLACEHOLDER (V105_LION, the house thirds formula).
+═══════════════════════════════════════════════════════════════════ */
+const V105_PRE_KEYS = Object.keys(LEVEL_DEFS);
+
+/* appended levels: skill → { level: input mode } (level = display = generator number) */
+const V105_APPEND = {
+  factorsMultiples: { 6: 'multiSel' },
+  division:         { 6: 'number' },
+  intMultDiv:       { 5: 'number', 6: 'number' },
+  rateSimplify:     { 3: 'number' },
+  rateConvert:      { 5: 'number' },
+  fracSimplify:     { 5: 'number' },
+  fracOfAmount:     { 5: 'number' },
+  pctOfAmount:      { 5: 'number' },
+  pctChange:        { 6: 'number' },
+  fdMultiply:       { 4: 'decFrac' },
+  algLikeTerms:     { 4: 'choice' },
+  algExpand:        { 4: 'algType', 5: 'algType' },
+  algFrac:          { 7: 'gapFill' },
+  algFactorHCF:     { 4: 'algProd' },
+  algWords:         { 6: 'choice' },
+  indexDiv:         { 4: 'number' },
+  indexPow:         { 4: 'algProd' },
+  quadSolve:        { 5: 'gapFill' },
+  numLine:          { 5: 'choice' },
+  ineqLinear:       { 4: 'number' }
+};
+const V105_APPEND_DEFS = {
+  fmp:    [{ title:'Level 6 — Divisibility Tests', desc:'Use the rules, not a calculator: 2 (last digit even), 3 (digit sum divides by 3), 4 (last two digits), 5 (ends in 0 or 5), 6 (both 2 and 3), 9 (digit sum divides by 9), 10 (ends in 0). Tick every one that works.', examples:['528 → 2, 3, 4, 6', '315 → 3, 5, 9'] }],
+  div:    [{ title:'Level 6 — Long Division by a Two-Digit Number', desc:'Divide by a number from 11 to 25. Work left to right: how many times does it go in, write the remainder, bring down the next digit.', examples:['4215 ÷ 15 → 281', '3496 ÷ 19 → 184'] }],
+  intmd:  [{ title:'Level 5 — Three or More Integers', desc:'Work left to right. Count the negatives first: an even number of them gives a positive answer, an odd number gives a negative one.', examples:['(−2) × 3 × (−4) → 24', '(−48) ÷ (−2) ÷ 3 → 8'] },
+           { title:'Level 6 — Word Problems', desc:'Falls, drops, losses and descents are negative. Decide whether to multiply or divide, then use the sign rules.', examples:['falls $3 a day for 5 days → −15', 'lost 42 points at 6 a wrong answer → 7'] }],
+  rtsim:  [{ title:'Level 3 — Average Rates', desc:'An average rate is the TOTAL amount ÷ the TOTAL time. Add up every part of the trip first, never average the two rates.', examples:['30 km in 2 h, then 20 km in 1 h → 50 ÷ 3', '6, 4, 5 and 5 cm in 4 weeks → 5 cm per week'] }],
+  rtcv:   [{ title:'Level 5 — Two Rates Together', desc:'Work out each rate on its own and add them, or find the combined rate first: two taps together fill at the SUM of their rates; a leak takes its rate away.', examples:['6 L/min and 9 L/min fill 300 L → 20 min', '$25/h for 30 h + $40/h for 8 h → $1070'] }],
+  fs:     [{ title:'Level 5 — Equivalent Fractions', desc:'Whatever you multiply the bottom by, multiply the top by the same number (and the other way round). Find the multiplier first.', examples:['2/5 = ?/20 → 8', '3/4 = 27/? → 36'] }],
+  foa:    [{ title:'Level 5 — Increase or Decrease by a Fraction', desc:'To increase by a fraction, multiply by (1 + the fraction). To decrease, multiply by (1 − the fraction).', examples:['increase $10 by 2/5 → $14', 'decrease 60 by 1/4 → 45'] }],
+  poa:    [{ title:'Level 5 — Find the Whole from a Part', desc:'You know a percentage of the amount. Divide by the percentage to find 1%, then multiply by 100.', examples:['12% is $90 → $750', '30% of a year level is 66 students → 220'] }],
+  pcd:    [{ title:'Level 6 — Find the Percentage Change', desc:'Percentage change = change ÷ ORIGINAL amount × 100. Always divide by the amount you started with.', examples:['$40 → $50 is a 25% increase', '25 000 → 22 000 is a 12% decrease'] }],
+  fdm:    [{ title:'Level 4 — Divide Fractions & Decimals', desc:'Change the decimal to a fraction (0.4 = 2/5), then keep, change, flip. A recurring answer must be given as a fraction.', examples:['3/4 ÷ 0.5 → 1.5', '2/3 ÷ 0.4 → 5/3'] }],
+  alike:  [{ title:'Level 4 — Spot the Like Terms', desc:'Like terms have exactly the same letters with exactly the same powers. The number in front does not matter.', examples:['like 3x²y: −5x²y, not 3xy²'] }],
+  aexp:   [{ title:'Level 4 — Negative Outside the Bracket', desc:'Multiply the negative by EVERY term inside. A negative times a negative is a positive, and −(x + 8) means −1 × (x + 8).', examples:['−3(x + 2) → −3x − 6', '−4(2x − 3) → −8x + 12'] },
+           { title:'Level 5 — Write and Expand', desc:'Write the story as a number times a bracket, then expand it. Type the expanded answer.', examples:['4 tickets at $(x + 5) → 4x + 20', 'rectangle (3x + 1) by 4 → 12x + 4'] }],
+  afrac:  [{ title:'Level 7 — Bracketed Numerators', desc:'Write both fractions over the lowest common denominator, multiply out each top, collect like terms. When you subtract, the minus goes on EVERY term of the second top.', examples:['(x + 2)/3 + (x − 1)/4 → (7x + 5)/12'] }],
+  afh:    [{ title:'Level 4 — HCF of Two Terms', desc:'Take the HCF of the numbers, then every letter that is in BOTH terms, to its lower power.', examples:['8ab and 12a → 4a', '6x and 9 → 3'] }],
+  awords: [{ title:'Level 6 — Words → Equation', desc:'Choose the equation that says what the words say. "Is", "equals" and "the result is" all become =. Do not solve it.', examples:['three times a number, less 2, equals 13 → 3x − 2 = 13'] }],
+  idiv:   [{ title:'Level 4 — The Zero Index', desc:'Anything (except 0) to the power 0 is 1. Watch the brackets: 5a⁰ = 5 × 1 = 5, but (5a)⁰ = 1.', examples:['5a⁰ → 5', '5a⁰ + (3b)⁰ → 6', 'x⁴ ÷ x⁴ → 1'] }],
+  ipow:   [{ title:'Level 4 — Mixed Index Laws', desc:'Powers of a power first, then multiply (add the indices), then divide (subtract them). Deal with the numbers separately. Type the whole answer.', examples:['x² × x⁴ ÷ x³ → x³', '(2x²)³ ÷ 4x³ → 2x³'] }],
+  qsol:   [{ title:'Level 5 — Rearrange First', desc:'Get x² on its own: undo the + or − first, then divide by the number in front. Then take the square root, positive AND negative.', examples:['x² − 4 = 21 → x = 5 or −5', '2x² − 3 = 29 → x = 4 or −4'] }],
+  nline:  [{ title:'Level 5 — Read the Inequality', desc:'An open circle means the number is NOT included (< or >). A closed circle means it is (≤ or ≥). The arrow points to all the other values.', examples:['open circle at 3, arrow right → x > 3'] }],
+  ineq:   [{ title:'Level 4 — Word Problems', desc:'"At least" is ≥, "at most" is ≤, "more than" is >, "fewer than" is <. Solve it, then give the whole number the question asks for.', examples:['$50 at $8 a ticket → 6 tickets'] }]
+};
+
+/* new skills: category, the skill it sits after (or before), and its levels */
+const V105_SKILLS = [
+  { cat:'ratiosrates', after:'ratioShare',  meta:{ id:'mapScale', name:'Scale Drawings &amp; Maps', inputMode:'number', lvKey:'rtscl' }, year:'Yr 7–8' },
+  { cat:'ratiosrates', after:'rateConvert', meta:{ id:'speedDistTime', name:'Speed, Distance &amp; Time', inputMode:'number', lvKey:'sdt' }, year:'Yr 8' },
+  { cat:'algebra',     after:'algSub',      meta:{ id:'algEquiv', name:'Expressions, Equations &amp; Identities', inputMode:'choice', lvKey:'aeqi' }, year:'Yr 8' },
+  { cat:'equations',   before:'eqOneStepAddSub', meta:{ id:'eqVerify', name:'Checking Solutions', inputMode:'choice', lvKey:'eqv' }, year:'Yr 7–8' },
+  { cat:'equations',   after:'eqBothSides', meta:{ id:'eqMulti', name:'Multi-Step Equations', inputMode:'number', lvKey:'eqm' }, year:'Yr 8' },
+  { cat:'equations',   after:'eqMulti',     meta:{ id:'eqWord', name:'Equation Word Problems', inputMode:'number', lvKey:'eqw', levelModes:{ 2:'gapFill' } }, year:'Yr 8' }
+];
+const V105_SKILL_DEFS = {
+  rtscl: [
+    { title:'Level 1 — Scale to Real Length', desc:'A scale of 1 : 200 means 1 cm on the plan is 200 cm in real life. Multiply by the scale, then change cm to metres (÷ 100).', examples:['1 : 200, 6 cm → 12 m'] },
+    { title:'Level 2 — Map Distances in Kilometres', desc:'Multiply the map distance by the scale to get centimetres, then ÷ 100 000 for kilometres (100 cm in a metre, 1000 m in a kilometre).', examples:['1 : 25 000, 8 cm → 2 km'] },
+    { title:'Level 3 — Real Length to the Map', desc:'Work backwards: change the real distance to centimetres, then DIVIDE by the scale.', examples:['1 : 50 000, 3 km → 6 cm'] }
+  ],
+  sdt: [
+    { title:'Level 1 — Find the Speed', desc:'Speed = distance ÷ time. km and hours give km/h; metres and seconds give m/s.', examples:['480 km in 6 h → 80 km/h', '200 m in 25 s → 8 m/s'] },
+    { title:'Level 2 — Find the Distance', desc:'Distance = speed × time. Check the units match: km/h with hours, m/s with seconds.', examples:['90 km/h for 4 h → 360 km', '50 km/h for 2.5 h → 125 km'] },
+    { title:'Level 3 — Find the Time', desc:'Time = distance ÷ speed.', examples:['300 km at 75 km/h → 4 h', '100 m at 5 m/s → 20 s'] },
+    { title:'Level 4 — Hours and Minutes', desc:'Times that are not whole hours. Change minutes to hours (30 min = 0.5 h), or hours to minutes (× 60) when the answer is in minutes.', examples:['45 km at 18 km/h → 150 min', '9:00 am to 11:30 am at 70 km/h → 175 km'] }
+  ],
+  aeqi: [
+    { title:'Level 1 — Expression, Equation, Formula or Identity?', desc:'An expression has no equals sign. An equation is true for particular values. A formula links two or more variables. An identity is true for EVERY value.', examples:['2a → expression', '2a + 4 = 10 → equation', 'A = lw → formula', '3(x + 2) = 3x + 6 → identity'] },
+    { title:'Level 2 — Equivalent or Not?', desc:'Equivalent expressions give the same value for every value of the pronumeral. Simplify both, or try a number: one mismatch proves they are not equivalent.', examples:['2(x + 3) and 2x + 6 → equivalent', 'x × x and 2x → not'] }
+  ],
+  eqv: [
+    { title:'Level 1 — True or False?', desc:'Substitute the value into the equation. If both sides come out equal, it is a solution.', examples:['x = 4 in 2x + 1 = 9 → yes', 'x = 3 in 5x − 2 = 12 → no'] },
+    { title:'Level 2 — Which Value Is the Solution?', desc:'Four values, one equation. Substitute each one into BOTH sides; only one makes them equal.', examples:['3x + 2 = x + 10 → x = 4'] }
+  ],
+  eqm: [
+    { title:'Level 1 — Collect Like Terms First', desc:'Simplify the side with several x terms first, then solve with inverse operations.', examples:['2x + 3x = 20 → 4', '4x + 2 − x = 11 → 3'] },
+    { title:'Level 2 — Brackets on One Side', desc:'Expand the bracket first (or divide both sides by the number outside), then solve.', examples:['3(x + 2) = 15 → 3', '2(x − 4) + 5 = 13 → 8'] },
+    { title:'Level 3 — Brackets on Both Sides', desc:'Expand every bracket, collect the x terms on one side and the numbers on the other, then solve.', examples:['2(x + 1) = x + 7 → 5', '3(2a − 3) = 5(a + 2) → 19'] },
+    { title:'Level 4 — Fractions on Both Sides', desc:'Multiply EVERY term by the lowest common denominator to clear the fractions, then solve what is left.', examples:['x/2 = (x + 3)/4 → 3', 'x/3 + 1 = x/2 → 6'] }
+  ],
+  eqw: [
+    { title:'Level 1 — Unknown on Both Sides', desc:'Two amounts that both contain the unknown. Write each side, set them equal, then solve.', examples:['5 times a number = the number + 12 → 3', 'Plan A $10 + $2/GB, Plan B $4 + $4/GB → 3 GB'] },
+    { title:'Level 2 — Two Related Unknowns', desc:'Write one unknown in terms of the other, form ONE equation, solve it, then find both. Type the smaller first.', examples:['add to 20, one is 4 more → 8 and 12', 'father 3 times son, together 48 → 12 and 36'] }
+  ]
+};
+
+/* placeholder Lion ceilings (house formula [L/3, 2L/3, L, 1.5L − 1]) */
+const V105_LION = {
+  factorsMultiples:{ 6:6 }, division:{ 6:4 }, intMultDiv:{ 5:10, 6:6 }, rateSimplify:{ 3:6 }, rateConvert:{ 5:5 },
+  fracSimplify:{ 5:14 }, fracOfAmount:{ 5:7 }, pctOfAmount:{ 5:6 }, pctChange:{ 6:5 }, fdMultiply:{ 4:5 },
+  algLikeTerms:{ 4:14 }, algExpand:{ 4:8, 5:6 }, algFrac:{ 7:4 }, algFactorHCF:{ 4:10 }, algWords:{ 6:9 },
+  indexDiv:{ 4:14 }, indexPow:{ 4:7 }, quadSolve:{ 5:6 }, numLine:{ 5:14 }, ineqLinear:{ 4:5 },
+  mapScale:{ 1:8, 2:6, 3:5 }, speedDistTime:{ 1:9, 2:9, 3:8, 4:5 },
+  algEquiv:{ 1:12, 2:10 }, eqVerify:{ 1:10, 2:6 }, eqMulti:{ 1:8, 2:7, 3:5, 4:4 }, eqWord:{ 1:5, 2:4 }
+};
+
+(function v105Register(){
+  /* rule 2b/2c/2d guards: an appended level must land exactly one past the end,
+     on a key no other skill shares; a new key must be new. */
+  const keyOf = {}; const keyCount = {};
+  for (const ck in CATS) CATS[ck].skills.forEach(function(s){ keyOf[s.id] = s.lvKey; keyCount[s.lvKey] = (keyCount[s.lvKey] || 0) + 1; });
+  Object.keys(V105_APPEND).forEach(function(sid){
+    const key = keyOf[sid], defs = LEVEL_DEFS[key], add = V105_APPEND_DEFS[key];
+    const first = Math.min.apply(null, Object.keys(V105_APPEND[sid]).map(Number));
+    if (!defs || !add || keyCount[key] !== 1 || defs.length !== first - 1) throw new Error('v105: cannot append to ' + sid);
+    add.forEach(function(d){ defs.push(d); });
+    const meta = (function(){ for (const ck in CATS){ const f = CATS[ck].skills.find(function(s){ return s.id === sid; }); if (f) return f; } })();
+    meta.levelModes = Object.assign({}, meta.levelModes || {}, V105_APPEND[sid]);
+    if (LEVEL_ORDER[key]) Object.keys(V105_APPEND[sid]).forEach(function(lv){ LEVEL_ORDER[key].push(Number(lv)); });
+    if (RECALL_SKILLS.indexOf(sid) >= 0) {
+      METHOD_LEVEL_OVERRIDE[sid] = (METHOD_LEVEL_OVERRIDE[sid] || []).concat(Object.keys(V105_APPEND[sid]).map(Number));
+    }
+  });
+  V105_SKILLS.forEach(function(n){
+    if (V105_PRE_KEYS.indexOf(n.meta.lvKey) >= 0 || keyOf[n.meta.id]) throw new Error('v105: key or id already used ' + n.meta.lvKey);
+    LEVEL_DEFS[n.meta.lvKey] = V105_SKILL_DEFS[n.meta.lvKey];
+    const list = CATS[n.cat].skills;
+    const at = n.after ? list.findIndex(function(s){ return s.id === n.after; }) + 1 : list.findIndex(function(s){ return s.id === n.before; });
+    if (at < 0) throw new Error('v105: no anchor for ' + n.meta.id);
+    list.splice(at, 0, n.meta);
+    SKILL_YEAR[n.meta.id] = n.year;
+  });
+  Object.keys(V105_LION).forEach(function(sid){
+    const isNew = V105_SKILLS.some(function(n){ return n.meta.id === sid; });
+    if (isNew) METHOD_BAND_CEIL[sid] = Object.keys(V105_LION[sid]).map(function(lv){ return V105_LION[sid][lv]; });
+    Object.keys(V105_LION[sid]).forEach(function(lv){
+      const L = V105_LION[sid][lv];
+      BAND_OVERRIDE[sid + '_L' + lv] = [Math.round(L / 3), Math.round(2 * L / 3), L, Math.round(1.5 * L) - 1];
+    });
+  });
+  /* the slow levels: recommendation only, never blocking */
+  Object.assign(LEVEL_REC, { rtscl:{ 2:'practice', 3:'practice' }, sdt:{ 4:'practice' }, eqm:{ 3:'practice', 4:'practice' }, eqw:{ 1:'practice', 2:'practice' } });
+  [['div', 6], ['afrac', 7], ['rtcv', 5], ['qsol', 5], ['ineq', 4]].forEach(function(r){
+    LEVEL_REC[r[0]] = Object.assign({}, LEVEL_REC[r[0]] || {}); LEVEL_REC[r[0]][r[1]] = 'practice';
+  });
+})();
+
+function isV105Skill(s){ return V105_SKILLS.some(function(n){ return n.meta.id === s; }); }
+function v105Mode(){ const m = V105_APPEND[skill]; return (m && m[level]) || null; }
+function isV105Level(){ return isV105Skill(skill) || !!v105Mode(); }
+
+/* ── shared helpers ─────────────────────────────────────────────────── */
+function v105Br(n){ return n < 0 ? '(' + sgnNum(n) + ')' : String(n); }
+function v105Big(n){ return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' '); }
+function v105Num(x){ return String(dp(x, 6)); }
+function v105Story(el, text){ wpSetup(el); el.innerHTML = text; }
+function v105Ans(v, work){ qData.ans = v; qData.ansDisplay = v105Num(v); qData.workSteps = work; }
+function v105Pick(arr){ return arr[ri(arr.length)]; }
+
+function genV105Level(el){
+  const f = {
+    factorsMultiples: v105Divisibility, division: v105LongDiv2, intMultDiv: v105IntMulti,
+    rateSimplify: v105AvgRate, rateConvert: v105TwoRates, fracSimplify: v105EquivFrac,
+    fracOfAmount: v105IncByFrac, pctOfAmount: v105WholeFromPart, pctChange: v105PctChange,
+    fdMultiply: v105DivFracDec, algLikeTerms: v105SpotLike, algExpand: v105ExpandNeg,
+    algFrac: v105BracketNumer, algFactorHCF: v105HcfTerms, algWords: v105WordsEq,
+    indexDiv: v105ZeroIndex, indexPow: v105MixedIndex, quadSolve: v105QuadRearrange,
+    numLine: v105ReadIneq, ineqLinear: v105IneqWords, mapScale: v105MapScale,
+    speedDistTime: v105SDT, algEquiv: v105AlgEquiv, eqVerify: v105EqVerify,
+    eqMulti: v105EqMulti, eqWord: v105EqWord
+  }[skill];
+  return f(el);
+}
+
+/* ── ALT 1 ──────────────────────────────────────────────────────────── */
+const V105_DIVS = [2, 3, 4, 5, 6, 9, 10];
+function v105Divisibility(el){
+  let N, yes;
+  do {
+    N = rr(4, 999) * v105Pick([1, 2, 3, 4, 5, 6, 9, 10, 12, 15, 18, 20, 36, 45]);
+    yes = V105_DIVS.filter(function(d){ return N % d === 0; });
+  } while (N < 100 || N > 9999 || yes.length === 0 || yes.length === V105_DIVS.length);
+  const s = String(N), dsum = s.split('').reduce(function(t, c){ return t + Number(c); }, 0), last2 = N % 100;
+  qData.msOptions = V105_DIVS.map(function(d){ return { code:'d' + d, label:'÷ ' + d }; });
+  qData.msAns = yes.map(function(d){ return 'd' + d; });
+  qData.msInstr = 'Tick every number that divides ' + v105Big(N) + ' exactly.';
+  const tick = function(ok){ return ok ? 'yes' : 'no'; };
+  qData.workSteps = 'Last digit ' + s.slice(-1) + ': 2 ' + tick(N % 2 === 0) + ', 5 ' + tick(N % 5 === 0) + ', 10 ' + tick(N % 10 === 0) + '.<br>'
+    + 'Last two digits ' + last2 + ': 4 ' + tick(N % 4 === 0) + '.<br>'
+    + 'Digit sum ' + s.split('').join(' + ') + ' = ' + dsum + ': 3 ' + tick(N % 3 === 0) + ', 9 ' + tick(N % 9 === 0) + '.<br>'
+    + '6 needs both 2 and 3: ' + tick(N % 6 === 0) + '.<br>Answer: <b>' + yes.join(', ') + '</b>.';
+  el.style.fontSize = '1.2rem';
+  el.innerHTML = '<div style="' + A_LBL + '">Use the divisibility rules. Which of these divide the number exactly?</div>'
+    + '<div style="font-size:2.4rem;font-weight:900;margin:10px 0;">' + v105Big(N) + '</div>';
+}
+function v105LongDiv2(el){
+  let d, q, N;
+  do { d = rr(11, 25); q = rr(21, 499); N = d * q; } while (N < 1000 || N > 9999 || d % 10 === 0);
+  const digits = String(N).split('').map(Number), lines = [];
+  let r = 0, started = false;
+  digits.forEach(function(dg){
+    const cur = r * 10 + dg, k = Math.floor(cur / d);
+    if (k > 0 || started) { lines.push(cur + ' ÷ ' + d + ' = ' + k + ' remainder ' + (cur - k * d)); started = true; }
+    r = cur - k * d;
+  });
+  v105Ans(q, 'Divide left to right, bringing down the next digit each time:<br>' + lines.join('<br>')
+    + '<br>So ' + v105Big(N) + ' ÷ ' + d + ' = <b>' + q + '</b>. Check: ' + q + ' × ' + d + ' = ' + v105Big(N) + '.');
+  el.style.fontSize = '2.2rem';
+  el.innerHTML = '<div style="' + A_LBL + '">Use long division.</div>' + v105Big(N) + ' ÷ ' + d;
+}
+function v105IntMulti(el){
+  if (level === 6) return v105IntWords(el);
+  const nzv = function(m){ return nzrand(-m, m); };
+  const nz2 = function(m){ let v; do { v = nzrand(-m, m); } while (Math.abs(v) < 2); return v; };
+  let parts, ops, val;
+  const form = ri(4);
+  if (form === 0) { parts = [nzv(9), nzv(9), nzv(9)]; ops = ['×', '×']; }
+  else if (form === 1) { const b = nzv(6), c = nz2(6), k = nzv(9); parts = [k * c, b, c]; ops = ['×', '÷']; }
+  else if (form === 2) { const b = nz2(6), k = nzv(6), c = nz2(6); parts = [b * k * c, b, c]; ops = ['÷', '÷']; }
+  else { parts = [nzv(5), nzv(5), nzv(4), nzv(3)]; ops = ['×', '×', '×']; }
+  if (form === 1 && Math.random() < 0.5) { const b = nz2(6), k = nzv(9), c = nzv(6); parts = [b * k, b, c]; ops = ['÷', '×']; }
+  val = parts[0];
+  for (let i = 0; i < ops.length; i++) val = ops[i] === '×' ? val * parts[i + 1] : val / parts[i + 1];
+  const negs = parts.filter(function(p){ return p < 0; }).length;
+  const shown = parts.map(v105Br).reduce(function(s, p, i){ return i === 0 ? p : s + ' ' + ops[i - 1] + ' ' + p; }, '');
+  let run = Math.abs(parts[0]), sizeSteps = String(run);
+  for (let i = 0; i < ops.length; i++) { run = ops[i] === '×' ? run * Math.abs(parts[i + 1]) : run / Math.abs(parts[i + 1]); sizeSteps += ' ' + ops[i] + ' ' + Math.abs(parts[i + 1]); }
+  v105Ans(val, 'Count the negatives: ' + negs + ' (' + (negs % 2 ? 'odd, so the answer is negative' : 'even, so the answer is positive') + ').<br>'
+    + 'Size, left to right: ' + sizeSteps + ' = ' + Math.abs(val) + '.<br>Answer: <b>' + sgnNum(val) + '</b>.');
+  qData.ansDisplay = sgnNum(val);
+  el.style.fontSize = parts.length > 3 ? '1.9rem' : '2.2rem';
+  el.textContent = shown;
+}
+function v105IntWords(el){
+  const t = ri(5); let text, ans, work;
+  if (t === 0) { const p = rr(2, 9), n = rr(3, 8); ans = -p * n;
+    text = 'A share price falls $' + p + ' each day for ' + n + ' days. What is the total change in the price, in dollars? (A fall is negative.)';
+    work = 'Each day is −' + p + '. Over ' + n + ' days: ' + n + ' × (−' + p + ') = <b>' + sgnNum(ans) + '</b>.'; }
+  else if (t === 1) { const h = rr(3, 9), each = rr(2, 6), T = h * each; ans = -each;
+    text = 'The temperature in a freezer dropped a total of ' + T + ' °C over ' + h + ' hours at a steady rate. What was the change each hour, in °C?';
+    work = 'The total change is −' + T + '. Shared over ' + h + ' hours: (−' + T + ') ÷ ' + h + ' = <b>' + sgnNum(ans) + '</b>.'; }
+  else if (t === 2) { const m = rr(5, 20), n = rr(3, 9); ans = -m * n;
+    text = 'A submarine descends ' + m + ' m each minute for ' + n + ' minutes. What is the total change in its height, in metres?';
+    work = 'Descending is negative: ' + n + ' × (−' + m + ') = <b>' + sgnNum(ans) + '</b>.'; }
+  else if (t === 3) { const p = rr(3, 9), k = rr(4, 12), L = p * k; ans = k;
+    text = 'A game takes off ' + p + ' points for each wrong answer. Priya lost ' + L + ' points in total from wrong answers. How many did she get wrong?';
+    work = 'Each wrong answer is −' + p + '. (−' + L + ') ÷ (−' + p + ') = <b>' + ans + '</b>.'; }
+  else { let A, x, y; do { A = rr(-8, -2); x = rr(-12, -1); y = rr(-3, 6); ans = 3 * A - x - y; } while (ans === x || ans === y || Math.abs(ans) > 20);
+    text = 'The average of three temperatures is ' + sgnNum(A) + ' °C. Two of them are ' + sgnNum(x) + ' °C and ' + sgnNum(y) + ' °C. What is the third, in °C?';
+    work = 'The three add to 3 × (' + sgnNum(A) + ') = ' + sgnNum(3 * A) + '.<br>' + sgnNum(3 * A) + ' − (' + sgnNum(x) + ') − (' + sgnNum(y) + ') = <b>' + sgnNum(ans) + '</b>.'; }
+  v105Ans(ans, work); qData.ansDisplay = sgnNum(ans);
+  v105Story(el, text);
+}
+function v105AvgRate(el){
+  const t = ri(3); let text, ans, work;
+  if (t === 0) { let g; do { g = [rr(2, 9), rr(2, 9), rr(2, 9), rr(2, 9)]; } while ((g[0] + g[1] + g[2] + g[3]) % 4 !== 0);
+    const tot = g[0] + g[1] + g[2] + g[3]; ans = tot / 4;
+    text = 'Over 4 weeks a plant grew ' + g.join(' cm, ') + ' cm. Find its average growth rate in cm per week.';
+    work = 'Total growth ' + g.join(' + ') + ' = ' + tot + ' cm. Total time 4 weeks.<br>' + tot + ' ÷ 4 = <b>' + ans + '</b> cm per week.'; }
+  else if (t === 1) { let a, b, h; do { h = rr(3, 8); ans = rr(40, 90); const tot = ans * h; a = rr(Math.round(tot * 0.3), Math.round(tot * 0.7)); b = tot - a; } while (a === b);
+    text = 'A delivery van travels ' + a + ' km in the morning and ' + b + ' km in the afternoon, over a total of ' + h + ' hours. Find its average speed in km/h.';
+    work = 'Total distance ' + a + ' + ' + b + ' = ' + (a + b) + ' km. Total time ' + h + ' h.<br>' + (a + b) + ' ÷ ' + h + ' = <b>' + ans + '</b> km/h.'; }
+  else { let t1, t2, d1, d2, s1, s2; do { t1 = rr(1, 4); t2 = rr(1, 3); s1 = rr(4, 12) * 5; s2 = rr(4, 12) * 5; d1 = s1 * t1; d2 = s2 * t2; ans = (d1 + d2) / (t1 + t2); } while (s1 === s2 || !Number.isInteger(ans));
+    text = 'A cyclist rides ' + d1 + ' km in the first ' + t1 + ' hour' + (t1 > 1 ? 's' : '') + ' and ' + d2 + ' km in the next ' + t2 + ' hour' + (t2 > 1 ? 's' : '') + '. Find the average speed for the whole trip, in km/h.';
+    work = 'Total distance ' + d1 + ' + ' + d2 + ' = ' + (d1 + d2) + ' km. Total time ' + t1 + ' + ' + t2 + ' = ' + (t1 + t2) + ' h.<br>' + (d1 + d2) + ' ÷ ' + (t1 + t2) + ' = <b>' + ans + '</b> km/h. (Not the average of the two speeds.)'; }
+  v105Ans(ans, work); v105Story(el, text);
+}
+function v105TwoRates(el){
+  const t = ri(5); let text, ans, work;
+  if (t === 0) { const a = rr(20, 32), b = a + rr(8, 20), h1 = rr(20, 38), h2 = rr(4, 12); ans = a * h1 + b * h2;
+    text = 'A worker earns $' + a + ' per hour on weekdays and $' + b + ' per hour on weekends. One week she works ' + h1 + ' weekday hours and ' + h2 + ' weekend hours. Find her total pay in dollars.';
+    work = a + ' × ' + h1 + ' = ' + a * h1 + ' and ' + b + ' × ' + h2 + ' = ' + b * h2 + '.<br>Total: <b>' + ans + '</b> dollars.'; }
+  else if (t === 1) { let r1, r2, m; do { r1 = rr(3, 12); r2 = rr(3, 12); m = rr(8, 30); } while (r1 === r2); const V = (r1 + r2) * m; ans = m;
+    text = 'Two taps fill a tank. One runs at ' + r1 + ' L/min and the other at ' + r2 + ' L/min. Running together, how many minutes do they take to fill a ' + V + ' L tank?';
+    work = 'Together they run at ' + r1 + ' + ' + r2 + ' = ' + (r1 + r2) + ' L/min.<br>' + V + ' ÷ ' + (r1 + r2) + ' = <b>' + ans + '</b> minutes.'; }
+  else if (t === 2) { let t1, t2, s1, s2; do { t1 = rr(1, 4); t2 = rr(1, 4); s1 = rr(12, 22) * 5; s2 = rr(12, 22) * 5; } while (s1 === s2); ans = s1 * t1 + s2 * t2;
+    text = 'A car travels for ' + t1 + ' hour' + (t1 > 1 ? 's' : '') + ' at ' + s1 + ' km/h and then ' + t2 + ' hour' + (t2 > 1 ? 's' : '') + ' at ' + s2 + ' km/h. Find the total distance travelled, in km.';
+    work = s1 + ' × ' + t1 + ' = ' + s1 * t1 + ' km and ' + s2 + ' × ' + t2 + ' = ' + s2 * t2 + ' km.<br>Total: <b>' + ans + '</b> km.'; }
+  else if (t === 3) { const i = rr(4, 10) * 5, l = rr(1, 6), m = rr(20, 90), V = (i - l) * m; ans = m;
+    text = 'A pool is filled by an inlet at ' + i + ' L/min, but it leaks at ' + l + ' L/min. How many minutes does it take to fill ' + v105Big(V) + ' L?';
+    work = 'The leak takes away from the inlet: ' + i + ' − ' + l + ' = ' + (i - l) + ' L/min.<br>' + v105Big(V) + ' ÷ ' + (i - l) + ' = <b>' + ans + '</b> minutes.'; }
+  else { let p1, p2, n1, n2; do { p1 = rr(2, 6); p2 = rr(2, 6); n1 = rr(40, 120); n2 = rr(20, 90); } while (p1 === p2); ans = p1 * n1 + p2 * n2;
+    text = 'A café makes $' + p1 + ' profit on each coffee and $' + p2 + ' on each tea. In a day it sells ' + n1 + ' coffees and ' + n2 + ' teas. Find the total profit in dollars.';
+    work = p1 + ' × ' + n1 + ' = ' + p1 * n1 + ' and ' + p2 + ' × ' + n2 + ' = ' + p2 * n2 + '.<br>Total: <b>' + ans + '</b> dollars.'; }
+  v105Ans(ans, work); v105Story(el, text);
+}
+function v105MapScale(el){
+  let text, ans, work;
+  if (level === 1) {
+    const n = v105Pick([50, 100, 200, 250, 500, 1000]), L = v105Pick([2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 1.5, 2.5, 3.5]);
+    ans = L * n / 100;
+    const what = v105Pick(['a wall is', 'a room is', 'a fence is', 'a garden bed is', 'a driveway is']);
+    text = 'A plan has a scale of 1 : ' + v105Big(n) + '. On the plan, ' + what + ' ' + L + ' cm long. How long is it in real life, in metres?';
+    work = L + ' cm × ' + v105Big(n) + ' = ' + v105Big(dp(L * n, 6)) + ' cm.<br>÷ 100 to change cm to m: <b>' + v105Num(ans) + '</b> m.';
+  } else if (level === 2) {
+    const n = v105Pick([10000, 20000, 25000, 50000, 100000, 200000]), L = v105Pick([2, 3, 4, 5, 6, 8, 10, 12, 1.5, 2.5, 4.5, 7.5]);
+    ans = dp(L * n / 100000, 6);
+    text = 'A map has a scale of 1 : ' + v105Big(n) + '. Two towns are ' + L + ' cm apart on the map. How far apart are they in real life, in kilometres?';
+    work = L + ' cm × ' + v105Big(n) + ' = ' + v105Big(dp(L * n, 6)) + ' cm.<br>÷ 100 000 to change cm to km: <b>' + v105Num(ans) + '</b> km.';
+  } else {
+    const n = v105Pick([1000, 5000, 10000, 25000, 50000, 100000]), mapCm = v105Pick([2, 3, 4, 5, 6, 8, 10, 12, 1.5, 2.5]);
+    const realCm = mapCm * n, inKm = realCm >= 100000;
+    const realTxt = inKm ? v105Num(realCm / 100000) + ' km' : v105Num(realCm / 100) + ' m';
+    ans = mapCm;
+    text = 'A map has a scale of 1 : ' + v105Big(n) + '. A walking track is ' + realTxt + ' long in real life. How long is it on the map, in centimetres?';
+    work = realTxt + ' = ' + v105Big(realCm) + ' cm.<br>' + v105Big(realCm) + ' ÷ ' + v105Big(n) + ' = <b>' + v105Num(ans) + '</b> cm.';
+  }
+  v105Ans(ans, work); v105Story(el, text);
+}
+function v105SDT(el){
+  const kmh = Math.random() < 0.6;
+  let text, ans, work;
+  if (level === 1) {
+    if (kmh) { const s = rr(8, 22) * 5, t = rr(2, 8), d = s * t; ans = s;
+      text = 'A ' + v105Pick(['train', 'bus', 'car', 'truck']) + ' travels ' + d + ' km in ' + t + ' hours. Find its average speed in km/h.';
+      work = 'Speed = distance ÷ time = ' + d + ' ÷ ' + t + ' = <b>' + ans + '</b> km/h.'; }
+    else { const s = rr(2, 12), t = rr(5, 40), d = s * t; ans = s;
+      text = 'A ' + v105Pick(['sprinter', 'cyclist', 'swimmer', 'drone']) + ' covers ' + d + ' m in ' + t + ' seconds. Find the average speed in m/s.';
+      work = 'Speed = distance ÷ time = ' + d + ' ÷ ' + t + ' = <b>' + ans + '</b> m/s.'; }
+  } else if (level === 2) {
+    if (kmh) { const s = rr(8, 22) * 5, t = v105Pick([2, 3, 4, 5, 1.5, 2.5, 3.5]); ans = s * t;
+      text = 'A car travels at ' + s + ' km/h for ' + t + ' hours. How far does it travel, in km?';
+      work = 'Distance = speed × time = ' + s + ' × ' + t + ' = <b>' + v105Num(ans) + '</b> km.'; }
+    else { const s = rr(2, 12), t = rr(5, 40); ans = s * t;
+      text = 'A ' + v105Pick(['runner', 'cyclist', 'skater']) + ' moves at ' + s + ' m/s for ' + t + ' seconds. How far does it go, in metres?';
+      work = 'Distance = speed × time = ' + s + ' × ' + t + ' = <b>' + ans + '</b> m.'; }
+  } else if (level === 3) {
+    if (kmh) { const s = rr(8, 22) * 5, t = v105Pick([2, 3, 4, 5, 6, 1.5, 2.5]), d = s * t; ans = t;
+      text = 'How many hours does it take to travel ' + v105Num(d) + ' km at ' + s + ' km/h?';
+      work = 'Time = distance ÷ speed = ' + v105Num(d) + ' ÷ ' + s + ' = <b>' + v105Num(ans) + '</b> hours.'; }
+    else { const s = rr(2, 10), t = rr(5, 30), d = s * t; ans = t;
+      text = 'How many seconds does it take to cover ' + d + ' m at ' + s + ' m/s?';
+      work = 'Time = distance ÷ speed = ' + d + ' ÷ ' + s + ' = <b>' + ans + '</b> seconds.'; }
+  } else {
+    if (Math.random() < 0.5) { let s, m; do { s = rr(10, 40); m = v105Pick([30, 40, 45, 50, 75, 90, 100, 120, 150, 180]); } while ((s * m) % 60 !== 0); const d = s * m / 60; ans = m;
+      text = 'A ferry travels ' + d + ' km at ' + s + ' km/h. How many minutes does the trip take?';
+      work = 'Time = ' + d + ' ÷ ' + s + ' = ' + v105Num(d / s) + ' hours.<br>× 60 to change to minutes: <b>' + ans + '</b> minutes.'; }
+    else { const s = rr(10, 20) * 5, h0 = rr(7, 11), mins = v105Pick([30, 90, 150, 210, 60, 120]), t = mins / 60;
+      const end = h0 * 60 + mins, eh = Math.floor(end / 60), em = end % 60;
+      const clock = function(h, m){ return (h > 12 ? h - 12 : h) + ':' + (m < 10 ? '0' : '') + m + (h >= 12 ? ' pm' : ' am'); };
+      ans = s * t;
+      text = 'A bus leaves at ' + clock(h0, 0) + ' and travels at ' + s + ' km/h. How far has it gone by ' + clock(eh, em) + ', in km?';
+      work = 'From ' + clock(h0, 0) + ' to ' + clock(eh, em) + ' is ' + mins + ' minutes = ' + v105Num(t) + ' hours.<br>Distance = ' + s + ' × ' + v105Num(t) + ' = <b>' + v105Num(ans) + '</b> km.'; }
+  }
+  v105Ans(ans, work); v105Story(el, text);
+}
+
+/* ── ALT 2 ──────────────────────────────────────────────────────────── */
+function v105EquivFrac(el){
+  let a, b; do { b = rr(2, 12); a = rr(1, b - 1); } while (gcd(a, b) !== 1);
+  const k = rr(2, 9), askTop = Math.random() < 0.6;
+  const q = askTop ? fracHTML('?', b * k) : fracHTML(a * k, '?');
+  v105Ans(askTop ? a * k : b * k, (askTop
+      ? 'The bottom went from ' + b + ' to ' + b * k + ', which is × ' + k + '. Do the same to the top: ' + a + ' × ' + k + ' = <b>' + a * k + '</b>.'
+      : 'The top went from ' + a + ' to ' + a * k + ', which is × ' + k + '. Do the same to the bottom: ' + b + ' × ' + k + ' = <b>' + b * k + '</b>.'));
+  el.style.fontSize = '2.2rem';
+  el.innerHTML = '<div style="' + A_LBL + '">Find the missing number.</div>' + fracHTML(a, b) + ' &nbsp;=&nbsp; ' + q;
+}
+function v105IncByFrac(el){
+  let n, d; do { d = v105Pick([2, 3, 4, 5, 6, 8, 10]); n = rr(1, d - 1); } while (gcd(n, d) !== 1);
+  const A = d * rr(2, 15), inc = Math.random() < 0.5, ans = inc ? A * (d + n) / d : A * (d - n) / d;
+  const unit = v105Pick([['$', ''], ['', ' kg'], ['', ' points'], ['', ' mL']]);
+  const amt = unit[0] + A + unit[1];
+  v105Ans(ans, 'Multiplier = 1 ' + (inc ? '+' : '−') + ' ' + n + '/' + d + ' = ' + (inc ? d + n : d - n) + '/' + d + '.<br>'
+    + A + ' ÷ ' + d + ' × ' + (inc ? d + n : d - n) + ' = <b>' + ans + '</b>.');
+  el.style.fontSize = '1.9rem';
+  el.innerHTML = '<div style="' + A_LBL + '">' + (inc ? 'Increase' : 'Decrease') + ' the amount by the fraction.</div>'
+    + (inc ? 'Increase ' : 'Decrease ') + amt + ' by ' + fracHTML(n, d);
+}
+function v105WholeFromPart(el){
+  const p = v105Pick([2, 4, 5, 8, 10, 12, 15, 20, 25, 30, 40, 60, 75, 80, 90]);
+  const step = 100 / gcd(p, 100), W = step * rr(2, Math.max(3, Math.floor(1200 / step))), P = W * p / 100;
+  const t = ri(3); let text;
+  if (t === 0) text = p + '% of an amount is $' + v105Big(P) + '. Find the whole amount, in dollars.';
+  else if (t === 1) text = p + '% of the students in a year level play a sport. ' + v105Big(P) + ' students play a sport. How many students are in the year level?';
+  else text = p + '% of a jar of marbles is ' + v105Big(P) + ' marbles. How many marbles are in the jar?';
+  v105Ans(W, p + '% → ' + v105Big(P) + ', so 1% → ' + v105Big(P) + ' ÷ ' + p + ' = ' + v105Num(P / p) + '.<br>100% → ' + v105Num(P / p) + ' × 100 = <b>' + v105Big(W) + '</b>.');
+  v105Story(el, text);
+}
+function v105PctChange(el){
+  const p = v105Pick([5, 10, 15, 20, 25, 30, 40, 50, 60, 75, 12, 35]), inc = Math.random() < 0.5;
+  if (!inc && p >= 75) return v105PctChange(el);
+  const step = 100 / gcd(p, 100), O = step * rr(Math.ceil(10 / step), Math.max(Math.ceil(10 / step) + 2, Math.floor(1000 / step)));
+  const N = inc ? O * (100 + p) / 100 : O * (100 - p) / 100, ch = Math.abs(N - O);
+  const t = ri(3), money = t !== 2;
+  const fmt = function(v){ return money ? '$' + v105Big(v) : v105Big(v); };
+  let text;
+  if (t === 0) text = 'A price ' + (inc ? 'rises' : 'falls') + ' from ' + fmt(O) + ' to ' + fmt(N) + '. Find the percentage ' + (inc ? 'increase' : 'decrease') + '.';
+  else if (t === 1) text = 'Weekly pocket money ' + (inc ? 'goes up' : 'goes down') + ' from ' + fmt(O) + ' to ' + fmt(N) + '. Find the percentage ' + (inc ? 'increase' : 'decrease') + '.';
+  else text = 'A town’s population ' + (inc ? 'grows' : 'falls') + ' from ' + fmt(O) + ' to ' + fmt(N) + '. Find the percentage ' + (inc ? 'increase' : 'decrease') + '.';
+  v105Ans(p, 'Change = ' + v105Big(N) + ' − ' + v105Big(O) + ' = ' + (inc ? '' : '−') + v105Big(ch) + '.<br>'
+    + v105Big(ch) + ' ÷ ' + v105Big(O) + ' (the ORIGINAL) × 100 = <b>' + p + '</b>%.');
+  v105Story(el, text + ' Type the number only.');
+}
+function v105DivFracDec(el){
+  const DEC = [[2, 10, '0.2'], [4, 10, '0.4'], [5, 10, '0.5'], [6, 10, '0.6'], [8, 10, '0.8'], [9, 10, '0.9'], [25, 100, '0.25'], [75, 100, '0.75'], [12, 10, '1.2'], [15, 10, '1.5']];
+  const FR = [[1, 2], [2, 3], [3, 4], [3, 5], [2, 5], [5, 6], [3, 8], [1, 4], [4, 5], [1, 3]];
+  const dc = v105Pick(DEC), fr = v105Pick(FR), decFirst = Math.random() < 0.5;
+  /* a ÷ b: (dn/dd) ÷ (fn/fd) or the other way round */
+  const [dn, dd] = fdReduce(dc[0], dc[1]);
+  const an = decFirst ? dn : fr[0], ad = decFirst ? dd : fr[1], bn = decFirst ? fr[0] : dn, bd = decFirst ? fr[1] : dd;
+  const [rn, rd] = fdReduce(an * bd, ad * bn), term = fdTerminates(rd);
+  qData.ansNum = rn; qData.ansDen = rd; qData.terminates = term;
+  const disp = term ? v105Num(rn / rd) : rn + '/' + rd;
+  qData.ansDisplay = disp;
+  const aT = decFirst ? dc[2] : fr[0] + '/' + fr[1], bT = decFirst ? fr[0] + '/' + fr[1] : dc[2];
+  qData.workSteps = dc[2] + ' = ' + dn + '/' + dd + '.<br>Keep, change, flip: ' + an + '/' + ad + ' × ' + bd + '/' + bn + ' = ' + an * bd + '/' + ad * bn
+    + ' = <b>' + disp + '</b>.' + (term ? '' : ' It recurs as a decimal, so give it as a fraction.');
+  el.style.fontSize = '2.2rem';
+  el.textContent = aT + ' ÷ ' + bT;
+}
+
+/* ── ALT 3 ──────────────────────────────────────────────────────────── */
+function v105Mono(c, vars){                 /* {x:2, y:1} → "3x²y" as HTML */
+  const letters = Object.keys(vars).filter(function(k){ return vars[k] > 0; }).sort();
+  const body = letters.map(function(L){ return vars[L] === 1 ? aVar(L) : aPow(L, vars[L]); }).join('');
+  const mag = Math.abs(c), cs = (letters.length && mag === 1) ? '' : String(mag);
+  return (c < 0 ? '−' : '') + cs + body;
+}
+function v105MonoTxt(c, vars){             /* the same term as plain text, for option buttons and feedback */
+  const letters = Object.keys(vars).filter(function(k){ return vars[k] > 0; }).sort();
+  const body = letters.map(function(L){ return vars[L] === 1 ? L : L + aSupChar(vars[L]); }).join('');
+  const mag = Math.abs(c), cs = (letters.length && mag === 1) ? '' : String(mag);
+  return (c < 0 ? '−' : '') + cs + body;
+}
+function v105SpotLike(el){
+  const L = pickDistinct(['x', 'y', 'a', 'b', 'm', 'n'], 3), p = rr(1, 2), q = 3 - p;
+  const tv = {}; tv[L[0]] = p; tv[L[1]] = q;
+  const c0 = rr(2, 9);
+  const like = {}; like[L[0]] = p; like[L[1]] = q;
+  const swap = {}; swap[L[0]] = q; swap[L[1]] = p;
+  const both2 = {}; both2[L[0]] = 2; both2[L[1]] = 2;
+  const other = {}; other[L[0]] = p; other[L[2]] = q;
+  const one = {}; one[L[0]] = p;
+  let c1; do { c1 = nzrand(-9, 9); } while (c1 === c0 || Math.abs(c1) === 1);
+  const right = v105MonoTxt(c1, like);
+  const wrongs = [v105MonoTxt(c0, swap), v105MonoTxt(c0, both2), v105MonoTxt(c0, other), v105MonoTxt(c0, one)].filter(function(w){ return w !== right; });
+  const opts = [right].concat(shuffleArr(wrongs).slice(0, 3));
+  const lt = [L[0], L[1]].sort(), desc = lt.map(function(x){ return x + (tv[x] > 1 ? ' squared' : ''); }).join(' and ');
+  qData.workSteps = 'Like terms need the SAME letters with the SAME powers. ' + v105Mono(c0, tv) + ' has ' + desc + '.<br>Only <b>' + v105Mono(c1, like) + '</b> matches; the number in front can be anything.';
+  el.style.fontSize = '1.3rem';
+  decSetChoice(el, '<div style="' + A_LBL + '">Which term is a like term with</div><div style="font-size:2.3rem;font-weight:900;margin:10px 0;">' + v105Mono(c0, tv) + '</div>', opts, right, false);
+}
+function v105ExpandNeg(el){
+  const v = v105Pick(['x', 'y', 'a', 'm', 'p']);
+  if (level === 5) return v105WriteExpand(el, v);
+  const k = rr(1, 6), a = rr(1, 4), b = rr(1, 9), minus = Math.random() < 0.5;
+  const c1 = -k * a, c2 = minus ? k * b : -k * b;
+  qData.alg = { slots: [{ coeff:c1, varLabel:v, askPower:false }, { coeff:c2, varLabel:'', askPower:false }] };
+  const inside = (a === 1 ? '' : a) + aVar(v) + ' ' + (minus ? '−' : '+') + ' ' + b;
+  const outside = k === 1 ? '−' : '−' + k;
+  qData.workSteps = 'Multiply ' + (k === 1 ? '−1' : '−' + k) + ' by EACH term inside:<br>'
+    + (k === 1 ? '−1' : '−' + k) + ' × ' + (a === 1 ? '' : a) + v + ' = ' + v99Term(c1, v, 1) + '<br>'
+    + (k === 1 ? '−1' : '−' + k) + ' × ' + (minus ? '(−' + b + ')' : b) + ' = ' + sgnNum(c2) + '<br>Answer: <b>' + algAnswerStr(qData.alg.slots) + '</b>.';
+  el.style.fontSize = '2.2rem';
+  el.innerHTML = outside + '(' + inside + ')';
+}
+function v105WriteExpand(el, v){
+  const t = ri(4); let k, a, b, minus = false, text;
+  if (t === 0) { k = rr(3, 9); a = 1; b = rr(2, 9); text = 'A concert ticket costs $(' + v + ' + ' + b + '). Write and expand an expression for the cost of ' + k + ' tickets.'; }
+  else if (t === 1) { k = rr(3, 9); a = 1; b = rr(1, 4); minus = true; text = 'A crate holds (' + v + ' − ' + b + ') oranges. Write and expand an expression for the number of oranges in ' + k + ' crates.'; }
+  else if (t === 2) { k = rr(2, 9); a = rr(2, 5); b = rr(1, 9); text = 'A rectangle has length (' + a + v + ' + ' + b + ') cm and width ' + k + ' cm. Write and expand an expression for its area.'; }
+  else { k = rr(3, 8); a = rr(2, 4); b = rr(1, 6); minus = Math.random() < 0.5; text = 'Each bag holds (' + a + v + ' ' + (minus ? '−' : '+') + ' ' + b + ') marbles. Write and expand an expression for the number of marbles in ' + k + ' bags.'; }
+  qData.alg = { slots: [{ coeff:k * a, varLabel:v, askPower:false }, { coeff:(minus ? -1 : 1) * k * b, varLabel:'', askPower:false }] };
+  qData.workSteps = 'Write it as ' + k + '(' + (a === 1 ? '' : a) + v + ' ' + (minus ? '−' : '+') + ' ' + b + ').<br>'
+    + k + ' × ' + (a === 1 ? '' : a) + v + ' = ' + (k * a) + v + ' and ' + k + ' × ' + b + ' = ' + k * b + '.<br>Answer: <b>' + algAnswerStr(qData.alg.slots) + '</b>.';
+  v105Story(el, text + ' Type the expanded answer.');
+}
+function v105BracketNumer(el){
+  let m, n, a1, b1, a2, b2, sub, L, p, q, g;
+  do {
+    m = rr(2, 6); n = rr(2, 6); a1 = rr(1, 3); a2 = rr(1, 3); b1 = nzrand(-6, 9); b2 = nzrand(-6, 9); sub = Math.random() < 0.5;
+    L = lcm(m, n);
+    p = a1 * (L / m) + (sub ? -1 : 1) * a2 * (L / n);
+    q = b1 * (L / m) + (sub ? -1 : 1) * b2 * (L / n);
+    g = gcd(gcd(Math.abs(p), Math.abs(q)), L);
+  } while (m === n || p <= 0 || q <= 0 || g !== 1);
+  const top = function(a, b){ return (a === 1 ? '' : a) + 'x ' + (b < 0 ? '− ' + (-b) : '+ ' + b); };
+  qData.gapTemplate = ['Top: ', 0, 'x + ', 1, '&nbsp;&nbsp;&nbsp;Bottom: ', 2];
+  qData.gapAns = [p, q, L];
+  qData.gapHint = 'Fill in the simplified fraction: the top is ▢x + ▢, then the bottom.';
+  qData.gapAnsText = '(' + top(p, q) + ')/' + L;
+  const e1 = L / m, e2 = L / n;
+  qData.workSteps = 'Lowest common denominator: ' + L + '.<br>'
+    + e1 + '(' + top(a1, b1) + ') ' + (sub ? '−' : '+') + ' ' + e2 + '(' + top(a2, b2) + ')<br>'
+    + '= ' + top(e1 * a1, e1 * b1) + ' ' + (sub ? '− ' : '+ ') + '(' + top(e2 * a2, e2 * b2) + ')<br>'
+    + '= <b>(' + top(p, q) + ')/' + L + '</b>.';
+  el.style.fontSize = '1.9rem';
+  el.innerHTML = '<div style="' + A_LBL + '">Simplify into one fraction.</div>' + fracHTML(top(a1, b1), m) + ' &nbsp;' + (sub ? '−' : '+') + '&nbsp; ' + fracHTML(top(a2, b2), n);
+}
+function v105HcfTerms(el){
+  const letters = pickDistinct(['a', 'b', 'x', 'y', 'm', 'p'], 3);
+  let g, c1, c2, v1, v2, h;
+  const numberOnly = Math.random() < 0.2;     /* now and then the HCF is just a number (6x and 9 → 3) */
+  do {
+    g = rr(1, 6); c1 = rr(1, 6); c2 = rr(1, 6);
+    v1 = {}; v2 = {}; h = {};
+    letters.forEach(function(L, i){
+      const r = ri(4);                         /* 0 neither, 1 first only, 2 second only, 3 both */
+      if (r === 1 || r === 3) v1[L] = rr(1, 3);
+      if (r === 2 || r === 3) v2[L] = rr(1, 3);
+      if (r === 3) h[L] = Math.min(v1[L], v2[L]);
+    });
+  } while (gcd(c1, c2) !== 1 || c1 === c2 || (Object.keys(v1).length + Object.keys(v2).length) === 0
+           || (g === 1 && Object.keys(h).length === 0) || (!numberOnly && Object.keys(h).length === 0));
+  qData.prodAns = { coeff:g, vars:h };
+  const show = function(c, v){ return v105Mono(c, v); };
+  const hk = Object.keys(h).sort();
+  qData.workSteps = 'HCF of ' + g * c1 + ' and ' + g * c2 + ' = ' + g + '.<br>'
+    + (hk.length ? 'Letters in both terms, to the lower power: ' + hk.map(function(L){ return h[L] === 1 ? L : L + aSupChar(h[L]); }).join(', ') + '.' : 'No letter is in both terms.')
+    + '<br>HCF: <b>' + prodAnsHtml(qData.prodAns) + '</b>.';
+  el.style.fontSize = '1.3rem';
+  el.innerHTML = '<div style="' + A_LBL + '">Find the highest common factor of</div><div style="font-size:2.2rem;font-weight:900;margin:10px 0;">'
+    + show(g * c1, v1) + ' &nbsp;and&nbsp; ' + show(g * c2, v2) + '</div>';
+}
+const V105_WORDS = [
+  function(n, m){ return { w:'A number plus ' + n + ' is ' + m + '.', r:'x + ' + n + ' = ' + m, bad:['x = ' + n + ' + ' + m, n + 'x = ' + m, 'x − ' + n + ' = ' + m] }; },
+  function(n, m){ return { w:'Twice a number is ' + m + '.', r:'2x = ' + m, bad:['x + 2 = ' + m, 'x ÷ 2 = ' + m, 'x² = ' + m] }; },
+  function(n, m){ return { w:'A number less ' + n + ' is ' + m + '.', r:'x − ' + n + ' = ' + m, bad:[n + ' − x = ' + m, 'x + ' + n + ' = ' + m, n + 'x = ' + m] }; },
+  function(n, m){ return { w:'Half a number is ' + m + '.', r:'x ÷ 2 = ' + m, bad:['2x = ' + m, 'x − 2 = ' + m, '2 ÷ x = ' + m] }; },
+  function(n, m){ return { w:'Three times a number, less ' + n + ', equals ' + m + '.', r:'3x − ' + n + ' = ' + m, bad:['3(x − ' + n + ') = ' + m, n + ' − 3x = ' + m, '3x + ' + n + ' = ' + m] }; },
+  function(n, m){ return { w:'The sum of a number and ' + n + ' is ' + m + '.', r:'x + ' + n + ' = ' + m, bad:[n + 'x = ' + m, 'x − ' + n + ' = ' + m, 'x = ' + m + ' + ' + n] }; },
+  function(n, m){ return { w:n + ' less than a number is ' + m + '.', r:'x − ' + n + ' = ' + m, bad:[n + ' − x = ' + m, 'x + ' + n + ' = ' + m, 'x ÷ ' + n + ' = ' + m] }; },
+  function(n, m){ return { w:'A number is multiplied by 3, then ' + n + ' is added. The result is ' + m + '.', r:'3x + ' + n + ' = ' + m, bad:['3(x + ' + n + ') = ' + m, n + 'x + 3 = ' + m, '3x − ' + n + ' = ' + m] }; },
+  function(n, m){ return { w:n + ' more than double a number is ' + m + '.', r:'2x + ' + n + ' = ' + m, bad:['2(x + ' + n + ') = ' + m, n + 'x + 2 = ' + m, '2x − ' + n + ' = ' + m] }; },
+  function(n, m){ return { w:'Double the sum of a number and ' + n + ' is ' + m + '.', r:'2(x + ' + n + ') = ' + m, bad:['2x + ' + n + ' = ' + m, 'x + 2 × ' + n + ' = ' + m, '2(x − ' + n + ') = ' + m] }; },
+  function(n, m){ return { w:'A number divided by ' + n + ' gives ' + m + '.', r:'x ÷ ' + n + ' = ' + m, bad:[n + ' ÷ x = ' + m, n + 'x = ' + m, 'x − ' + n + ' = ' + m] }; }
+];
+function v105WordsEq(el){
+  const n = rr(2, 9), m = rr(11, 30), rec = v105Pick(V105_WORDS)(n, m);
+  const opts = [rec.r].concat(rec.bad.filter(function(b, i, A){ return b !== rec.r && A.indexOf(b) === i; }).slice(0, 3));
+  qData.workSteps = 'Use x for the number and = for "is", "equals" or "the result is".<br>"' + rec.w + '" → <b>' + rec.r + '</b>.';
+  el.style.fontSize = '1.25rem';
+  decSetChoice(el, '<div style="' + A_LBL + '">Which equation matches the words? (Do not solve it.)</div><div style="font-weight:800;margin:8px 0;">' + rec.w + '</div>', opts, rec.r, false);
+}
+function v105ZeroIndex(el){
+  const v = v105Pick(['a', 'b', 'x', 'y', 'm']), k = rr(2, 9), j = rr(2, 9), p = rr(2, 7);
+  const forms = [
+    [aPow(String(rr(2, 99)), 0), 1, 'Anything to the power 0 is 1'],
+    [k + aPow(v, 0), k, 'Only the ' + v + ' has the power 0: ' + k + ' × 1 = ' + k],
+    ['(' + k + aVar(v) + ')' + '<sup>0</sup>', 1, 'The bracket is to the power 0, so the whole bracket is 1'],
+    [k + aPow(v, 0) + ' + (' + j + aVar(v) + ')<sup>0</sup>', k + 1, k + ' × 1 + 1 = ' + (k + 1)],
+    [aPow(v, p) + ' ÷ ' + aPow(v, p), 1, 'Subtract the indices: ' + v + '<sup>' + p + ' − ' + p + '</sup> = ' + v + '<sup>0</sup> = 1'],
+    [k + aPow(v, 0) + ' + ' + j, k + j, k + ' × 1 + ' + j + ' = ' + (k + j)],
+    ['(' + j + aVar(v) + ')<sup>0</sup> × ' + k, k, '1 × ' + k + ' = ' + k],
+    [k + aPow(v, p) + ' ÷ ' + aPow(v, p), k, k + v + '<sup>0</sup> = ' + k + ' × 1 = ' + k]
+  ];
+  const f = v105Pick(forms);
+  v105Ans(f[1], f[2] + '.<br>Answer: <b>' + f[1] + '</b>.');
+  el.style.fontSize = '2.2rem';
+  el.innerHTML = '<div style="' + A_LBL + '">Simplify. The answer is a number.</div>' + f[0];
+}
+function v105MixedIndex(el){
+  const v = v105Pick(['x', 'a', 'y', 'm']);
+  const t = ri(4); let html, c = 1, e, work;
+  if (t === 0) { const a = rr(2, 6), b = rr(2, 6), cc = rr(1, a + b - 1); e = a + b - cc;
+    html = aPow(v, a) + ' × ' + aPow(v, b) + ' ÷ ' + aPow(v, cc); work = 'Add, then subtract the indices: ' + a + ' + ' + b + ' − ' + cc + ' = ' + e + '.'; }
+  else if (t === 1) { const a = rr(4, 9), b = rr(1, a - 2), cc = rr(1, 5); e = a - b + cc;
+    html = aPow(v, a) + ' ÷ ' + aPow(v, b) + ' × ' + aPow(v, cc); work = 'Left to right: ' + a + ' − ' + b + ' + ' + cc + ' = ' + e + '.'; }
+  else if (t === 2) { const k = rr(2, 3), m = rr(1, 3), n = rr(2, 3), p = rr(1, 3); c = Math.pow(k, n); e = m * n + p;
+    html = '(' + k + aPow(v, m) + ')<sup>' + n + '</sup> × ' + aPow(v, p); work = 'Power of a power first: ' + k + '<sup>' + n + '</sup> = ' + c + ' and ' + m + ' × ' + n + ' = ' + m * n + '. Then add ' + p + ': ' + e + '.'; }
+  else { let k, m, n, p, j; do { k = rr(2, 3); m = rr(2, 3); n = rr(2, 3); p = rr(1, m * n - 1); j = v105Pick([2, 3, 4, 6, 8, 9]); } while (Math.pow(k, n) % j !== 0 || Math.pow(k, n) === j);
+    c = Math.pow(k, n) / j; e = m * n - p;
+    html = '(' + k + aPow(v, m) + ')<sup>' + n + '</sup> ÷ ' + j + aPow(v, p); work = 'Power of a power first: ' + k + '<sup>' + n + '</sup> = ' + Math.pow(k, n) + ' and ' + m + ' × ' + n + ' = ' + m * n + '.<br>Then divide: ' + Math.pow(k, n) + ' ÷ ' + j + ' = ' + c + ' and ' + m * n + ' − ' + p + ' = ' + e + '.'; }
+  const vars = {}; vars[v] = e;
+  qData.prodAns = { coeff:c, vars:vars };
+  qData.workSteps = work + '<br>Answer: <b>' + prodAnsHtml(qData.prodAns) + '</b>.';
+  el.style.fontSize = '2.1rem';
+  el.innerHTML = '<div style="' + A_LBL + '">Simplify. Type the whole answer.</div>' + html;
+}
+function v105QuadRearrange(el){
+  const k = rr(2, 12), kk = k * k, t = ri(4);
+  let html, work;
+  if (t === 0) { const a = rr(1, 30); html = 'x² − ' + a + ' = ' + (kk - a); work = 'Add ' + a + ' to both sides: x² = ' + kk + '.'; if (kk - a <= 0) return v105QuadRearrange(el); }
+  else if (t === 1) { const a = rr(1, 30); html = 'x² + ' + a + ' = ' + (kk + a); work = 'Subtract ' + a + ' from both sides: x² = ' + kk + '.'; }
+  else if (t === 2) { const a = rr(2, 5); html = a + 'x² = ' + a * kk; work = 'Divide both sides by ' + a + ': x² = ' + kk + '.'; }
+  else { const a = rr(2, 4), c = rr(1, 20); html = a + 'x² − ' + c + ' = ' + (a * kk - c); work = 'Add ' + c + ': ' + a + 'x² = ' + a * kk + '. Divide by ' + a + ': x² = ' + kk + '.'; }
+  qData.gapTemplate = ['x = ', 0, '&nbsp;&nbsp;or&nbsp;&nbsp;x = ', 1];
+  qData.gapAns = [k, -k];
+  qData.gapUnordered = true;
+  qData.gapHint = 'Two solutions, either order is fine.';
+  qData.gapAnsText = 'x = ' + k + ' or x = −' + k;
+  qData.workSteps = work + '<br>Square root, positive and negative: <b>x = ' + k + ' or x = −' + k + '</b>.';
+  el.style.fontSize = '1.3rem';
+  el.innerHTML = '<div style="' + A_LBL + '">Solve for x.</div><div style="font-size:1.9rem;font-weight:900;margin:12px 0;">' + html + '</div>';
+}
+function v105IneqSVG(b, closed, right){
+  const W = 300, H = 70, lo = b - 5, step = (W - 30) / 10, X = function(v){ return 15 + (v - lo) * step; }, y = 32;
+  let s = '<svg viewBox="0 0 ' + W + ' ' + H + '" width="300" height="70" style="max-width:100%;display:block;margin:6px auto;">';
+  s += '<line x1="6" y1="' + y + '" x2="' + (W - 6) + '" y2="' + y + '" stroke="var(--text)" stroke-width="2"/>';
+  for (let v = lo; v <= b + 5; v++) {
+    s += '<line x1="' + X(v) + '" y1="' + (y - 6) + '" x2="' + X(v) + '" y2="' + (y + 6) + '" stroke="var(--text)" stroke-width="1.5"/>';
+    s += '<text x="' + X(v) + '" y="' + (y + 24) + '" text-anchor="middle" font-size="12" font-weight="700" fill="var(--text)">' + (v < 0 ? '−' + (-v) : v) + '</text>';
+  }
+  const end = right ? W - 8 : 8;
+  s += '<line x1="' + X(b) + '" y1="' + y + '" x2="' + (right ? end - 8 : end + 8) + '" y2="' + y + '" stroke="var(--accent)" stroke-width="5"/>';
+  s += '<path d="M' + end + ' ' + y + ' L' + (right ? end - 12 : end + 12) + ' ' + (y - 7) + ' L' + (right ? end - 12 : end + 12) + ' ' + (y + 7) + ' Z" fill="var(--accent)"/>';
+  s += '<circle cx="' + X(b) + '" cy="' + y + '" r="7" stroke="var(--accent)" stroke-width="3" fill="' + (closed ? 'var(--accent)' : 'var(--card,#fff)') + '"/>';
+  return s + '</svg>';
+}
+function v105ReadIneq(el){
+  const b = rr(-6, 6), closed = Math.random() < 0.5, right = Math.random() < 0.5;
+  const bs = b < 0 ? '−' + (-b) : String(b);
+  const opts = ['x < ' + bs, 'x ≤ ' + bs, 'x > ' + bs, 'x ≥ ' + bs];
+  const right_ = opts[(right ? 2 : 0) + (closed ? 1 : 0)];
+  qData.workSteps = 'The circle is ' + (closed ? 'closed (filled), so ' + bs + ' IS included' : 'open, so ' + bs + ' is NOT included') + '.<br>'
+    + 'The arrow points ' + (right ? 'right, to the bigger numbers' : 'left, to the smaller numbers') + '.<br>Answer: <b>' + right_.replace('<', '&lt;') + '</b>.';
+  el.style.fontSize = '1.2rem';
+  decSetChoice(el, '<div style="' + A_LBL + '">Which inequality does the number line show?</div>' + v105IneqSVG(b, closed, right), opts, right_, true);
+}
+function v105IneqWords(el){
+  const t = ri(5); let text, ans, work;
+  if (t === 0) { let money, price; do { money = rr(20, 90); price = rr(3, 12); } while (money % price === 0); ans = Math.floor(money / price);
+    text = 'Sam has $' + money + ' and tickets cost $' + price + ' each. What is the greatest number of tickets he can buy?';
+    work = price + 't ≤ ' + money + ', so t ≤ ' + money + ' ÷ ' + price + ' = ' + v105Num(dp(money / price, 2)) + '.<br>Only whole tickets: <b>' + ans + '</b>.'; }
+  else if (t === 1) { let cap, me, box; do { cap = rr(5, 9) * 100; me = rr(60, 95); box = v105Pick([15, 20, 25, 30, 40]); } while ((cap - me) % box === 0); ans = Math.floor((cap - me) / box);
+    text = 'A lift can carry at most ' + cap + ' kg. A person weighs ' + me + ' kg and each box weighs ' + box + ' kg. What is the greatest number of boxes they can take in the lift with them?';
+    work = me + ' + ' + box + 'b ≤ ' + cap + ', so ' + box + 'b ≤ ' + (cap - me) + ' and b ≤ ' + v105Num(dp((cap - me) / box, 2)) + '.<br>Whole boxes only: <b>' + ans + '</b>.'; }
+  else if (t === 2) { let base, per, max; do { base = rr(10, 25); per = rr(2, 6); max = rr(40, 80); } while ((max - base) % per === 0); ans = Math.floor((max - base) / per);
+    text = 'A phone plan costs $' + base + ' plus $' + per + ' per GB of data. To spend at most $' + max + ', what is the greatest number of whole GB you can use?';
+    work = base + ' + ' + per + 'g ≤ ' + max + ', so ' + per + 'g ≤ ' + (max - base) + ' and g ≤ ' + v105Num(dp((max - base) / per, 2)) + '.<br>Whole GB: <b>' + ans + '</b>.'; }
+  else if (t === 3) { const k = rr(2, 5), c = rr(1, 9), T = rr(15, 50); ans = Math.floor((T - c) / k) + 1;
+    text = k + ' times a number, plus ' + c + ', is more than ' + T + '. What is the smallest whole number it could be?';
+    work = k + 'x + ' + c + ' > ' + T + ', so ' + k + 'x > ' + (T - c) + ' and x > ' + v105Num(dp((T - c) / k, 2)) + '.<br>The smallest whole number bigger than that is <b>' + ans + '</b>.'; }
+  else { const d = rr(2, 9), M = rr(5, 20); ans = M + d;
+    text = 'A number decreased by ' + d + ' is at most ' + M + '. What is the largest whole number it could be?';
+    work = 'x − ' + d + ' ≤ ' + M + ', so x ≤ ' + (M + d) + '.<br>"At most" includes it: <b>' + ans + '</b>.'; }
+  v105Ans(ans, work); v105Story(el, text);
+}
+
+/* New skill: Expressions, Equations & Identities */
+function v105AlgEquiv(el){
+  const v = v105Pick(['a', 'x', 'm', 'n']), k = rr(2, 9), c = rr(2, 9), w2 = v105Pick(['b', 'y', 'p']);
+  if (level === 1) {
+    const kind = ri(4); let s;
+    if (kind === 0) s = v105Pick([k + v + ' + ' + c, k + v + ' − ' + c + w2, v + '² + ' + k + v, k + '(' + v + ' + ' + c + ')']);
+    else if (kind === 1) { const x = rr(1, 9); s = v105Pick([k + v + ' + ' + c + ' = ' + (k * x + c), k + v + ' = ' + k * x, v + ' − ' + c + ' = ' + x, k + '(' + v + ' + ' + c + ') = ' + k * (x + c)]); }
+    else if (kind === 2) s = v105Pick(['A = lw', 'P = 2l + 2w', 'v = u + at', 'A = ½bh', 'F = ma', 'C = 2πr', 'd = st']);
+    else s = v105Pick([k + '(' + v + ' + ' + c + ') = ' + k + v + ' + ' + k * c, k + v + ' + ' + v + ' = ' + (k + 1) + v, (k + c) + v + ' − ' + c + v + ' = ' + k + v, v + ' + ' + w2 + ' = ' + w2 + ' + ' + v, v + ' × ' + v + ' = ' + v + '²']);
+    const names = ['Expression', 'Equation', 'Formula', 'Identity'];
+    const why = ['It has no equals sign, so it is an <b>Expression</b>.',
+                 'It has an equals sign and is only true for one value of ' + v + ', so it is an <b>Equation</b>.',
+                 'It links two or more variables, one of them on its own as the subject, so it is a <b>Formula</b>.',
+                 'Both sides are the same for EVERY value, so it is an <b>Identity</b>.'];
+    qData.workSteps = why[kind];
+    el.style.fontSize = '1.3rem';
+    return decSetChoice(el, '<div style="' + A_LBL + '">Is this an expression, an equation, a formula or an identity?</div><div style="font-size:2rem;font-weight:900;margin:12px 0;">' + s + '</div>', names, names[kind], true);
+  }
+  /* L2: each pair carries the two functions it was written from, so "equivalent"
+     is DECIDED by evaluating both sides, never by the label. */
+  const P = [
+    function(){ return [k + '(' + v + ' + ' + c + ')', k + v + ' + ' + k * c, function(x){ return k * (x + c); }, function(x){ return k * x + k * c; }]; },
+    function(){ return [k + '(' + v + ' + ' + c + ')', k + v + ' + ' + c, function(x){ return k * (x + c); }, function(x){ return k * x + c; }]; },
+    function(){ return [k + v + ' + ' + v, (k + 1) + v, function(x){ return k * x + x; }, function(x){ return (k + 1) * x; }]; },
+    function(){ return [k + v + ' + ' + c + v, (k + c) + v + '²', function(x){ return k * x + c * x; }, function(x){ return (k + c) * x * x; }]; },
+    function(){ return [v + ' × ' + v, '2' + v, function(x){ return x * x; }, function(x){ return 2 * x; }]; },
+    function(){ return [(k + c) + v + ' − ' + c + v, k + v, function(x){ return (k + c) * x - c * x; }, function(x){ return k * x; }]; },
+    function(){ return [k + '(2' + v + ' − ' + c + ')', 2 * k + v + ' − ' + k * c, function(x){ return k * (2 * x - c); }, function(x){ return 2 * k * x - k * c; }]; },
+    function(){ return [k + '(2' + v + ' − ' + c + ')', 2 * k + v + ' − ' + c, function(x){ return k * (2 * x - c); }, function(x){ return 2 * k * x - c; }]; },
+    function(){ return [k * c + v + ' ÷ ' + c, k + v, function(x){ return k * c * x / c; }, function(x){ return k * x; }]; },
+    function(){ return [v + ' + ' + c, c + ' + ' + v, function(x){ return x + c; }, function(x){ return c + x; }]; },
+    function(){ return [v + ' − ' + c, c + ' − ' + v, function(x){ return x - c; }, function(x){ return c - x; }]; },
+    function(){ return [k + v + ' + ' + c, (k + c) + v, function(x){ return k * x + c; }, function(x){ return (k + c) * x; }]; }
+  ];
+  const pr = v105Pick(P)(), tests = [1, 2, 3, 5, 10];
+  const eq = tests.every(function(x){ return Math.abs(pr[2](x) - pr[3](x)) < 1e-9; });
+  const bad = tests.find(function(x){ return Math.abs(pr[2](x) - pr[3](x)) > 1e-9; });
+  qData.workSteps = eq ? 'Simplify both: they give the same value for every ' + v + ' (try ' + v + ' = 2: both give ' + v105Num(pr[2](2)) + ').<br>Answer: <b>Equivalent</b>.'
+                       : 'Try ' + v + ' = ' + bad + ': the first gives ' + sgnNum(pr[2](bad)) + ', the second gives ' + sgnNum(pr[3](bad)) + '. One mismatch is enough.<br>Answer: <b>Not equivalent</b>.';
+  qData.v105Pair = { l: pr[0], r: pr[1], eq: eq };
+  el.style.fontSize = '1.3rem';
+  decSetChoice(el, '<div style="' + A_LBL + '">Are these two expressions equivalent?</div><div style="font-size:1.9rem;font-weight:900;margin:12px 0;">' + pr[0] + ' &nbsp;and&nbsp; ' + pr[1] + '</div>',
+    ['Equivalent', 'Not equivalent'], eq ? 'Equivalent' : 'Not equivalent', true);
+}
+
+/* equations as data: { html, f(x) = LHS − RHS } so a candidate is checked by value */
+function v105EqForms(x){
+  const a = rr(2, 9), b = rr(1, 12), c = rr(2, 5);
+  return [
+    { html: a + 'x + ' + b + ' = ' + sgnNum(a * x + b), f: function(t){ return a * t + b - (a * x + b); } },
+    { html: a + 'x − ' + b + ' = ' + sgnNum(a * x - b), f: function(t){ return a * t - b - (a * x - b); } },
+    { html: c + '(x + ' + b + ') = ' + sgnNum(c * (x + b)), f: function(t){ return c * (t + b) - c * (x + b); } },
+    { html: b + ' + ' + a + 'x = ' + sgnNum(a * x + b), f: function(t){ return b + a * t - (a * x + b); } },
+    { html: (a + c) + 'x + ' + b + ' = ' + v105Lin(c, a * x + b), f: function(t){ return (a + c) * t + b - (c * t + a * x + b); } }
+  ];
+}
+function v105EqVerify(el){
+  const x = nzrand(-6, 9);
+  if (level === 1) {
+    let forms = v105EqForms(x);
+    if (Math.random() < 0.2 && x > 0) forms = [{ html:'x² = ' + x * x, f:function(t){ return t * t - x * x; } }];
+    const e = v105Pick(forms);
+    let cand = x;
+    if (Math.random() < 0.5) { do { cand = x + v105Pick([-2, -1, 1, 2, -2 * x]); } while (cand === x); }
+    const lhsMinusRhs = e.f(cand), ok = Math.abs(lhsMinusRhs) < 1e-9;
+    qData.workSteps = 'Substitute x = ' + sgnNum(cand) + ' into the left side and compare it with the right side.<br>'
+      + (ok ? 'Both sides are equal, so it <b>is</b> a solution: <b>Yes</b>.' : 'The two sides are not equal (they differ by ' + v105Num(Math.abs(lhsMinusRhs)) + '), so it is <b>not</b> a solution: <b>No</b>.');
+    qData.v105Eq = { html:e.html, cand:cand };
+    el.style.fontSize = '1.3rem';
+    return decSetChoice(el, '<div style="' + A_LBL + '">Is this value a solution of the equation?</div><div style="font-size:1.9rem;font-weight:900;margin:12px 0;">' + e.html
+      + '</div><div style="font-size:1.4rem;font-weight:900;">x = ' + sgnNum(cand) + '</div>', ['Yes', 'No'], ok ? 'Yes' : 'No', true);
+  }
+  const e = v105Pick(v105EqForms(x));
+  const set = [x]; let guard = 0;
+  while (set.length < 4 && guard++ < 60) { const c = x + nzrand(-4, 4); if (set.indexOf(c) < 0 && Math.abs(e.f(c)) > 1e-9) set.push(c); }
+  const opts = set.map(function(c){ return 'x = ' + sgnNum(c); });
+  qData.workSteps = 'Try each value in both sides. x = ' + sgnNum(x) + ' makes the two sides equal; the others do not.<br>Answer: <b>x = ' + sgnNum(x) + '</b>.';
+  qData.v105Eq = { html:e.html };
+  el.style.fontSize = '1.3rem';
+  decSetChoice(el, '<div style="' + A_LBL + '">Which value is the solution?</div><div style="font-size:1.9rem;font-weight:900;margin:12px 0;">' + e.html + '</div>', opts, 'x = ' + sgnNum(x), false);
+}
+function v105Lin(a, b){ return (a === 1 ? '' : a === -1 ? '−' : String(a).replace('-', '−')) + 'x' + (b === 0 ? '' : b < 0 ? ' − ' + (-b) : ' + ' + b); }
+function v105EqMulti(el){
+  const x = nzrand(-5, 9);
+  let html, work;
+  if (level === 1) {
+    if (Math.random() < 0.5) { const a = rr(2, 7), b = rr(1, 6), d = (a + b) * x;
+      html = a + 'x + ' + (b === 1 ? '' : b) + 'x = ' + sgnNum(d); work = 'Collect: ' + (a + b) + 'x = ' + sgnNum(d) + '.<br>÷ ' + (a + b) + ': x = <b>' + sgnNum(x) + '</b>.'; }
+    else { let a, b, c; do { a = rr(3, 8); b = rr(1, a - 1); c = nzrand(-9, 9); } while (a - b === 0); const d = (a - b) * x + c;
+      html = a + 'x ' + (c < 0 ? '− ' + (-c) : '+ ' + c) + ' − ' + (b === 1 ? '' : b) + 'x = ' + sgnNum(d);
+      work = 'Collect the x terms: ' + v105Lin(a - b, c) + ' = ' + sgnNum(d) + '.<br>' + (c < 0 ? 'Add ' + (-c) : 'Subtract ' + c) + ': ' + v105Lin(a - b, 0) + ' = ' + sgnNum(d - c) + (a - b === 1 ? ', so x = <b>' + sgnNum(x) + '</b>.' : '.<br>÷ ' + (a - b) + ': x = <b>' + sgnNum(x) + '</b>.'); }
+  } else if (level === 2) {
+    const a = rr(2, 6), b = nzrand(-6, 8);
+    if (Math.random() < 0.5) { const c = a * (x + b);
+      html = a + '(' + v105Lin(1, b) + ') = ' + sgnNum(c); work = 'Expand: ' + v105Lin(a, a * b) + ' = ' + sgnNum(c) + '.<br>' + (a * b < 0 ? 'Add ' + (-a * b) : 'Subtract ' + a * b) + ': ' + a + 'x = ' + (c - a * b) + '.<br>÷ ' + a + ': x = <b>' + sgnNum(x) + '</b>.'; }
+    else { const c = nzrand(-9, 9), d = a * (x + b) + c;
+      html = a + '(' + v105Lin(1, b) + ') ' + (c < 0 ? '− ' + (-c) : '+ ' + c) + ' = ' + sgnNum(d); work = 'Expand and collect: ' + v105Lin(a, a * b + c) + ' = ' + d + '.<br>' + a + 'x = ' + (d - a * b - c) + ', so x = <b>' + sgnNum(x) + '</b>.'; }
+  } else if (level === 3) {
+    let a, b, c; do { a = rr(2, 6); c = rr(1, 5); b = nzrand(-6, 6); } while (a === c);
+    if (Math.random() < 0.5) { const d = a * (x + b) - c * x;
+      html = a + '(' + v105Lin(1, b) + ') = ' + v105Lin(c, d);
+      work = 'Expand: ' + v105Lin(a, a * b) + ' = ' + v105Lin(c, d) + '.<br>Take ' + (c === 1 ? '' : c) + 'x from both sides: ' + v105Lin(a - c, a * b) + ' = ' + sgnNum(d) + '.<br>'
+        + v105Lin(a - c, 0) + ' = ' + sgnNum(d - a * b) + ', so x = <b>' + sgnNum(x) + '</b>.'; }
+    else { let e, g2 = 0; do { e = rr(2, 5); } while ((e === a || (a * (x + b) - e * x) % e !== 0 || a * (x + b) - e * x === 0) && g2++ < 60);
+      if (g2 >= 60) return v105EqMulti(el);
+      const d = (a * (x + b) - e * x) / e;
+      html = a + '(' + v105Lin(1, b) + ') = ' + e + '(' + v105Lin(1, d) + ')';
+      work = 'Expand both: ' + v105Lin(a, a * b) + ' = ' + v105Lin(e, e * d) + '.<br>Collect: ' + v105Lin(a - e, 0) + ' = ' + sgnNum(e * d - a * b) + ', so x = <b>' + sgnNum(x) + '</b>.'; }
+  } else {
+    const t = ri(3);
+    if (t === 0) { let a, c; do { a = rr(2, 5); c = rr(2, 6); } while (a === c); const X = lcm(a, c) * nzrand(-2, 3), b = X * (c - a) / a; if (b === 0) return v105EqMulti(el);
+      html = fracHTML('x', a) + ' &nbsp;=&nbsp; ' + fracHTML(v105Lin(1, b), c); work = 'Multiply both sides by ' + a * c + ': ' + c + 'x = ' + a + '(' + v105Lin(1, b) + ') = ' + v105Lin(a, a * b) + '.<br>' + (c - a) + 'x = ' + a * b + ', so x = <b>' + sgnNum(X) + '</b>.';
+      return v105EqDone(el, X, html, work); }
+    if (t === 1) { let a, c; do { a = rr(2, 5); c = rr(2, 6); } while (a === c); const X = lcm(a, c) * nzrand(-2, 3), b = X / c - X / a; if (b === 0) return v105EqMulti(el);
+      html = fracHTML('x', a) + ' &nbsp;' + (b < 0 ? '−' : '+') + ' ' + Math.abs(b) + '&nbsp; = &nbsp;' + fracHTML('x', c); work = 'Multiply every term by ' + lcm(a, c) + ': ' + lcm(a, c) / a + 'x ' + (b < 0 ? '− ' : '+ ') + Math.abs(b * lcm(a, c)) + ' = ' + lcm(a, c) / c + 'x.<br>Solve: x = <b>' + sgnNum(X) + '</b>.';
+      return v105EqDone(el, X, html, work); }
+    let a, c, b, X, d; let guard = 0;
+    do { a = rr(2, 5); c = rr(2, 6); X = nzrand(-6, 9); b = nzrand(-6, 6); d = (c * (X + b)) / a - X; } while ((a === c || !Number.isInteger(d) || d === 0 || Math.abs(d) > 20) && guard++ < 200);
+    if (!Number.isInteger(d)) return v105EqMulti(el);
+    html = fracHTML(v105Lin(1, b), a) + ' &nbsp;=&nbsp; ' + fracHTML(v105Lin(1, d), c); work = 'Cross-multiply: ' + c + '(' + v105Lin(1, b) + ') = ' + a + '(' + v105Lin(1, d) + ').<br>' + v105Lin(c, c * b) + ' = ' + v105Lin(a, a * d) + ', so x = <b>' + sgnNum(X) + '</b>.';
+    return v105EqDone(el, X, html, work);
+  }
+  v105EqDone(el, x, html, work);
+}
+function v105EqDone(el, x, html, work){
+  v105Ans(x, work); qData.ansDisplay = sgnNum(x);
+  qData.v105EqHtml = html;
+  el.style.fontSize = '1.3rem';
+  el.innerHTML = '<div style="' + A_LBL + '">Solve for x.</div><div style="font-size:1.9rem;font-weight:900;margin:12px 0;">' + html + '</div>';
+}
+function v105EqWord(el){
+  if (level === 1) {
+    const t = ri(3); let text, ans, work;
+    if (t === 0) { const k = rr(2, 6), x = rr(2, 12), m = (k - 1) * x; ans = x;
+      text = 'A number multiplied by ' + k + ' equals the number plus ' + m + '. Find the number.';
+      work = k + 'x = x + ' + m + '.<br>Take x from both sides: ' + (k - 1) + 'x = ' + m + ', so x = <b>' + ans + '</b>.'; }
+    else if (t === 1) { const x = rr(3, 15), k = rr(2, 4), add = (k - 1) * x; ans = x;
+      text = 'A number plus ' + add + ' equals ' + (k === 2 ? 'twice' : k === 3 ? 'three times' : 'four times') + ' the number. Find the number.';
+      work = 'x + ' + add + ' = ' + k + 'x.<br>Take x from both sides: ' + add + ' = ' + (k - 1 === 1 ? '' : k - 1) + 'x, so x = <b>' + ans + '</b>.'; }
+    else { const p = rr(1, 4), q = p + rr(1, 4), n = rr(2, 12), b = rr(2, 15); const a = b + (q - p) * n; ans = n;
+      const unit = v105Pick(['GB', 'texts', 'hours']), u1 = unit === 'GB' ? 'GB' : unit.slice(0, -1);
+      text = 'Plan A costs $' + a + ' plus $' + p + ' per ' + u1 + '. Plan B costs $' + b + ' plus $' + q + ' per ' + u1 + '. For how many ' + unit + ' do the two plans cost the same?';
+      work = a + ' + ' + (p === 1 ? '' : p) + 'n = ' + b + ' + ' + q + 'n.<br>' + (a - b) + ' = ' + (q - p === 1 ? '' : q - p) + 'n, so n = <b>' + ans + '</b>.'; }
+    v105Ans(ans, work); return v105Story(el, text);
+  }
+  const t = ri(5); let text, lo, hi, l1, l2, work;
+  if (t === 0) { const k = rr(2, 4); lo = rr(3, 15); hi = k * lo;
+    text = 'Two numbers add to ' + (lo + hi) + ' and one is ' + (k === 2 ? 'twice' : k === 3 ? 'three times' : 'four times') + ' the other. Find them.'; l1 = 'smaller'; l2 = 'larger';
+    work = 'Let the smaller be x: x + ' + k + 'x = ' + (lo + hi) + ', so ' + (k + 1) + 'x = ' + (lo + hi) + ' and x = ' + lo + '.<br>The numbers are <b>' + lo + ' and ' + hi + '</b>.'; }
+  else if (t === 1) { const d = rr(2, 12); lo = rr(3, 20); hi = lo + d;
+    text = 'Two numbers have a sum of ' + (lo + hi) + ' and differ by ' + d + '. Find them.'; l1 = 'smaller'; l2 = 'larger';
+    work = 'x + (x + ' + d + ') = ' + (lo + hi) + ', so 2x = ' + (lo + hi - d) + ' and x = ' + lo + '.<br>The numbers are <b>' + lo + ' and ' + hi + '</b>.'; }
+  else if (t === 2) { const k = rr(3, 5); lo = rr(6, 14); hi = k * lo;
+    text = 'A father is ' + k + ' times as old as his son. Together they are ' + (lo + hi) + ' years old. Find their ages.'; l1 = 'son'; l2 = 'father';
+    work = 's + ' + k + 's = ' + (lo + hi) + ', so ' + (k + 1) + 's = ' + (lo + hi) + ' and s = ' + lo + '.<br>Son <b>' + lo + '</b>, father <b>' + hi + '</b>.'; }
+  else if (t === 3) { const d = rr(1, 5); lo = rr(1, 9); hi = lo + d;
+    text = 'A pen costs $' + d + ' more than a rubber. Together they cost $' + (lo + hi) + '. Find the cost of each, in dollars.'; l1 = 'rubber $'; l2 = 'pen $';
+    work = 'r + (r + ' + d + ') = ' + (lo + hi) + ', so 2r = ' + (lo + hi - d) + ' and r = ' + lo + '.<br>Rubber <b>$' + lo + '</b>, pen <b>$' + hi + '</b>.'; }
+  else { const d = rr(2, 6); lo = rr(9, 14); hi = lo + d;
+    text = 'A class of ' + (lo + hi) + ' students has ' + d + ' more girls than boys. How many boys and how many girls are there?'; l1 = 'boys'; l2 = 'girls';
+    work = 'b + (b + ' + d + ') = ' + (lo + hi) + ', so 2b = ' + (lo + hi - d) + ' and b = ' + lo + '.<br>Boys <b>' + lo + '</b>, girls <b>' + hi + '</b>.'; }
+  qData.gapTemplate = [l1 + ' = ', 0, '&nbsp;&nbsp;&nbsp;' + l2 + ' = ', 1];
+  qData.gapAns = [lo, hi];
+  qData.gapHint = 'Fill in both.';
+  qData.gapAnsText = l1 + ' ' + lo + ', ' + l2 + ' ' + hi;
+  qData.workSteps = work;
+  v105Story(el, text);
+}
+/* ═══ end v105 ═══ */
+
 (function applyLevelOrder(){
   /* skills sharing a lvKey move together, which is the point of keying on it */
   const byKey = {};
@@ -6855,6 +7666,8 @@ function beginGame() {
 ═══════════════════════════════════════════════ */
 function getInputMode() {
   if (!skillMeta) return 'number';
+  /* v105: the appended Year 8 levels name their own mode (some of these skills hard-code one below) */
+  if (typeof V105_APPEND !== 'undefined' && v105Mode()) return v105Mode();
   // Like terms (all levels) and single-bracket expanding L1–L2 use free-text
   // entry: the student types the WHOLE answer (e.g. 7x, 8x + 2y, 3x + 6) so they
   // must produce the variable themselves — stops the "join the letters" error.
@@ -9731,6 +10544,8 @@ function nextQCore() {
      from here rather than from inside eleven generators means no existing
      generator changed at all. */
   if (skill === 'pctChange' && level === 4) { genPctError(el); }
+  /* v105: Year 8 gap levels and skills, one map and one dispatcher */
+  else if (isV105Level()) { genV105Level(el); }
   else if (WORD_LEVEL[skill] === level) { genWordProblem(el); }
   else if (isV96Level()) { genV96Level(el); }
   else if (isV98Level()) { genV98Level(el); }
@@ -18124,7 +18939,8 @@ function kbShow() {
                   // v78 — the Yr 7-9 sequence skills all have negative terms, differences and ratios
                   || ['seqWords','arithSeq','geoSeq'].includes(skillId)
                   // v78.2 — table-of-values y rows and intercepts off a table go negative
-                  || ['tableValues','linearApps'].includes(skillId);   // v78.2 / v78.3
+                  || ['tableValues','linearApps'].includes(skillId)    // v78.2 / v78.3
+                  || skillId === 'eqMulti';   // v105: multi-step solutions can be negative
   const decSkillsWithDot = ['sciTo','sciFrom','decAddSub','decAdd','decSub','decMultiply','decDivide','decPow10','decSquareCube','decOrderOps','decRound','sigFigs',
                             'decAddSubNeg','decMulDivNeg','decLeadEst','decSqCubeRoot',
                             'rateSimplify','rateConvert','decIdentify','decExpand','fracToDec','decRecurring',
@@ -18133,7 +18949,8 @@ function kbShow() {
                             // v77 — money answers and half-solutions
                             'gst','simpleInterest','flatDep','intercepts','quadSolve'];
   const showDot  = (mode === 'sci' || mode === 'pctTable' || mode === 'plToggle' || mode === 'decFrac' || mode === 'gapFill' || decSkillsWithDot.includes(skillId)
-                   || isMeasSkill(skillId));   // v102: lengths and areas are decimals
+                   || isMeasSkill(skillId)    // v102: lengths and areas are decimals
+                   || skillId === 'mapScale' || skillId === 'speedDistTime');   // v105: km, m and hours can be decimals
   const showNext = (mode === 'fraction' || mode === 'mixed' || mode === 'index' || mode === 'sci' || mode === 'ratio' || mode === 'algebra' || mode === 'factor' || mode === 'pctTable' || mode === 'gapFill' || mode === 'gridFill');
 
   const negBtn  = document.getElementById('kbNegBtn');
