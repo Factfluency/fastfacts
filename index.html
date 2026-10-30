@@ -1,3 +1,4 @@
+<!-- Sandy Fast Facts · v105.1 (Laura, 28 Oct 2026). 📱 IPHONE KEYPAD HOTFIX. Students signing in for the first time on an iPhone (or after clearing their cache) got a locked "?" box and no keypad: iOS reports its on-screen keyboard as real key presses, so typing a first name or class code tripped the v78.4 physical-keyboard escape hatch and switched the keypad off for the session (refreshing fixed it). The escape hatch now ignores key presses in ordinary text fields; only a key press aimed at a game box or the page counts. Fail-safe: on a phone with no keypad showing, tapping any answer box brings the keypad back. Focus tracking is now wired on every device so the restored keypad can move between boxes. Behaviour only: no skill, level, band, course, ff_ key or share-line change; FastFactsBands_v103.bas unchanged. New suite test_v1051.js. -->
 <!-- Sandy Fast Facts · v105 (Laura, 12 Oct 2026). 🎯 YEAR 8 GAP LEVELS, ALTs 1 TO 3 (8MAT Release 2 of 3). 39 new levels from the 8MAT booklet audit: 22 appended to existing skills and 6 new skills. ALT 1: Divisibility Tests (Factors, Multiples & Primes L6), Long Division by a Two-Digit Number (Division L6), Three or More Integers and Word Problems (Multiply / Divide Integers L5, L6), Average Rates (Simplifying Rates L3), Two Rates Together (Converting Rates L5), NEW Scale Drawings & Maps (3 levels), NEW Speed, Distance & Time (4). ALT 2: Equivalent Fractions (Simplify Fractions L5), Increase or Decrease by a Fraction (Fraction of an Amount L5), Find the Whole from a Part (Percentage of an Amount L5), Find the Percentage Change (Percentage Increase & Decrease L6), Divide Fractions & Decimals (Multiply Decimals & Fractions L4). ALT 3: Spot the Like Terms, Negative Outside the Bracket, Write and Expand, Bracketed Numerators, HCF of Two Terms, Words to Equation, The Zero Index, Mixed Index Laws, Rearrange First (x² − a = c), Read the Inequality, Inequality Word Problems, NEW Expressions, Equations & Identities (2), NEW Checking Solutions (2), NEW Multi-Step Equations (4), NEW Equation Word Problems (2). All routed from one map (V105_APPEND, V105_SKILLS) and one dispatcher (genV105Level); no existing generator reopened. Appended levels go on the END of each skill and of its LEVEL_ORDER entry. Every new band is a PLACEHOLDER (V105_LION). Storage-safe: new ids, new lvKeys, appended levels only; the .bas is regenerated (782 to 821 rows, every existing row byte-identical) and must be redeployed. The new levels are in the Year 8 ALT pools only; the Year 7 courses are unchanged. -->
 <!-- Sandy Fast Facts · v104 (Laura, 12 Oct 2026). 🎯 YEAR 8 MATHEMATICS ON THE EXAM / ALT SCREEN (8MAT, Release 1 of 3). A third course, Year 8 Mathematics (short "Year 8"), mapped from the 2027 8MAT student booklet: ALT 1 Number, Rates & Ratios; ALT 2 Fractions, Decimals & Percentages; ALT 3 Algebra & Equations; ALT 4 Measurement & Pythagoras; ALT 5 Linear Graphs; ALT 6 Probability & Statistics; ALT 7 Geometry (exam:false, taught after the exam, same note as Year 7's ALT 8). Exam Practice is the union of ALTs 1 to 6. This release uses ONLY levels that already exist, so it is metadata only: no skill, level, lvKey, band, storage key or share line changes, and the .bas is unchanged (FastFactsBands_v103.bas still parity-clean). Gap levels found in the booklet audit follow in v105 (ALTs 1 to 3) and v106 (ALTs 4 to 7). Enrichment, Challenge and the booklet's Extension items are in no 8MAT ALT (Laura: Extension waits for the 8MAS teaching order). test_courses.js now reads each course's own ALT count and non-exam ALT instead of assuming eight; test_v104.js locks the 8MAT pools. -->
 <!-- Sandy Fast Facts · v103 (Laura, Oct 2026). 📏 MEASUREMENT, RELEASE B: SURFACE AREA, VOLUME & CAPACITY. The 3D half of the strand: 8 skills and 47 levels from the 7MAT Measurement booklet (Lesson 5) and the 7MAS SEAL booklet (Lessons 3 to 5). Surface Area of Prisms, Surface Area of Cylinders, Units of Volume & Capacity, Volume of Rectangular Prisms, Volume of Prisms, Volume of Cylinders, Capacity of Containers, Volume of Composite Solids. One oblique 3D drawing engine (msPrismSVG, msCylSVG, msBlockSVG). ALT 8 complete in both courses; Enrichment and SEAL filling and pouring are built and kept out of ALT 8. Storage-safe and additive. -->
@@ -15992,7 +15993,30 @@ function f(x)        { return x<0?`(${x})`:String(x); }
         the readonly trick OFF for the rest of the session and hides the keypad,
         so a tablet with a keyboard case, or anything the pointer test gets wrong,
         recovers by itself the moment the student tries to type.               */
+/* ── v105.1 (Laura, 28 Oct: "keyboard not working on phones, students had
+   iPhones") ─────────────────────────────────────────────────────────────────
+   The escape hatch above fired on iPhones. iOS reports taps on its ON-SCREEN
+   keyboard as real key presses (Android mostly sends "Unidentified", which is
+   why only iPhones broke). A student signing in for the first time types a first
+   name and a class code, the app decides a physical keyboard is attached, and
+   the keypad is switched off for the rest of the session: a locked "?" box and
+   nothing to type with. Refreshing fixed it, because the flag lives in memory.
+
+   Two changes:
+     1. A key press in an ORDINARY text field (name, class code, backup box) no
+        longer counts. Only a key press aimed at a game box or at the page itself
+        can mean a physical keyboard: the game boxes are readonly on a phone, so
+        the phone's own keyboard can never be the source. A tablet with a keyboard
+        case still switches over the moment the student types an answer.
+     2. A fail-safe. If a phone ever ends up with no keypad on screen, tapping any
+        answer box brings it back (kbRestoreOnTap, below kbActivateInputs).    */
 let kbPhysical = false;
+function kbIsOrdinaryTextField(t) {
+  if (!t || !t.tagName) return false;
+  if (t.id && KB_INPUTS.indexOf(t.id) !== -1) return false;   // a game box
+  const tag = String(t.tagName).toLowerCase();
+  return tag === 'input' || tag === 'textarea' || tag === 'select' || t.isContentEditable === true;
+}
 function kbHasCoarsePointer() {
   try {
     if (window.matchMedia) return window.matchMedia('(pointer: coarse)').matches;
@@ -18701,10 +18725,21 @@ function kbSetup() {
     if (kbPhysical) return;
     if (e.ctrlKey || e.metaKey || e.altKey) return;
     if (!(String(e.key).length === 1 || e.key === 'Backspace' || e.key === 'Enter')) return;
+    if (kbIsOrdinaryTextField(e.target)) return;   // v105.1: iPhone soft keyboard on sign-in
     kbPhysical = true;
     kbUnlockInputs();
     kbHide();
   }, true);
+
+  /* v105.1: focus tracking is wired on every device (kbFocus does nothing off a
+     phone), so a keypad brought back by the fail-safe can still move between
+     boxes even if the page was first loaded wide. */
+  KB_INPUTS.forEach(inputId => {
+    const el = document.getElementById(inputId);
+    if (!el) return;
+    el.addEventListener('click', () => kbFocus(el));
+    el.addEventListener('focus', () => kbFocus(el));
+  });
 
   if (!IS_MOBILE()) return;
 
@@ -18715,10 +18750,6 @@ function kbSetup() {
     /* Suppress native keyboard */
     el.setAttribute('inputmode', 'none');
     el.setAttribute('readonly', 'readonly');
-
-    /* Focus tracking — highlight the active input visually */
-    el.addEventListener('click', () => kbFocus(el));
-    el.addEventListener('focus', () => kbFocus(el));
   });
 }
 
@@ -19090,6 +19121,29 @@ function kbActivateInputs() {
     }
   });
 }
+
+/* v105.1 fail-safe: a phone with an answer box and no keypad on screen is a dead
+   end, so tapping any game box brings the keypad back. It covers anything that
+   switches the keypad off by mistake (a misread key press, rotating to a wide
+   window and back). pointerdown / touchstart run before iOS decides whether to
+   raise its own keyboard, so readonly is back on in time. On a tablet with a
+   keyboard case the next real key press simply switches over again. */
+function kbDeviceIsPhone() { return window.innerWidth < 900 && kbHasCoarsePointer(); }
+function kbRestoreOnTap(e) {
+  const el = e && e.target;
+  if (!el || !el.id || KB_INPUTS.indexOf(el.id) === -1 || el.disabled) return;
+  if (getInputMode() === 'choice' || getInputMode() === 'arrange'
+      || getInputMode() === 'multiSel' || getInputMode() === 'plotPts') return;
+  const pad = document.getElementById('mobileKeypad');
+  if (!pad || pad.style.display !== 'none') return;   // keypad already up
+  if (!kbDeviceIsPhone()) return;
+  kbPhysical = false;
+  kbActivateInputs();
+  kbShow();
+  kbFocus(el);
+}
+document.addEventListener('pointerdown', kbRestoreOnTap, true);
+document.addEventListener('touchstart', kbRestoreOnTap, true);   // older iOS without pointer events
 
 /* Window resize — show/hide keypad if crossing the 768px threshold */
 window.addEventListener('resize', () => {
